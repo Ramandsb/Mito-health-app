@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#26446d</color>
+    <color name="colorPrimaryDark">#112c53</color>
+    <color name="colorAccent">#677FA2</color>
+    <color name="back">#26446d</color>
+    <color name="bottombar">#a0c894</color>
+    <color name="white">#ffffff</color>
+
+    <color name="sample_bg">#ffe6e6e6</color>
+    <color name="cal_bg">#E7E2C4</color>
+    <color name="md_black_1000">#c0000000</color>
+
+
+    <color name="ultra_dark">#29303F</color>
+    <color name="dark">#696E79</color>
+    <color name="ultra_dark_overlay">#0D29303F</color>
+</resources>

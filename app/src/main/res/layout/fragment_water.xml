@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:background="@color/white"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical">
+
+       <android.support.v7.widget.CardView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           card_view:cardCornerRadius="35dp"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="40dp"
+           android:layout_marginRight="40dp"
+           android:layout_marginBottom="20dp"
+           android:elevation="10dp">
+
+           <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+               xmlns:app="http://schemas.android.com/apk/res-auto"
+               android:id="@+id/calendarView"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               app:mcv_showOtherDates="all"
+               app:mcv_selectionColor="@color/bottombar"
+               />
+       </android.support.v7.widget.CardView>
+
+
+       <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_margin="30dp"
+            android:elevation="10dp"
+            app:cardCornerRadius="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WATER"
+                    android:layout_gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                     android:textColor="@color/colorPrimary"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/colorPrimary"></LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:weightSum="8">
+
+
+        <RelativeLayout
+            android:id="@+id/g1"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp">
+            <!--DFE8F4-->
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout1"
+                android:background="@drawable/water_back_shade"
+                android:orientation="horizontal"></LinearLayout>
+            <uk.co.barbuzz.beerprogressview.BeerProgressView
+                android:id="@+id/DrawingwaterView1"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                app:beerColor="#29b6f6"
+                app:beerProgress="10"
+                app:bubbleColor="#29b6f6"
+                app:waveMax="100"
+                app:waveAmplitude="1dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/transparent_glass"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"></LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/g2"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="50dp">
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/water_back_shade"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout2"
+                android:orientation="horizontal"></LinearLayout>
+            <uk.co.barbuzz.beerprogressview.BeerProgressView
+                android:id="@+id/DrawingwaterView2"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                app:beerColor="#29b6f6"
+                app:bubbleColor="#29b6f6"
+                app:beerProgress="0"
+                app:waveMax="100"
+                app:waveAmplitude="3dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/transparent_glass"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"></LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/g3"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/water_back_shade"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout3"
+                android:orientation="horizontal"></LinearLayout>
+            <uk.co.barbuzz.beerprogressview.BeerProgressView
+                android:id="@+id/DrawingwaterView3"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                app:beerColor="#29b6f6"
+                app:bubbleColor="#29b6f6"
+                app:beerProgress="0"
+                app:waveMax="100"
+                app:waveAmplitude="3dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/transparent_glass"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"></LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/g4"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/water_back_shade"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout4"
+                android:orientation="horizontal"></LinearLayout>
+            <uk.co.barbuzz.beerprogressview.BeerProgressView
+                android:id="@+id/DrawingwaterView4"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                app:beerColor="#29b6f6"
+                app:bubbleColor="#29b6f6"
+                app:beerProgress="10"
+                app:waveMax="100"
+                app:waveAmplitude="3dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/transparent_glass"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"></LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/g5"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout5"
+                android:background="@drawable/water_back_shade"
+                android:orientation="horizontal"></LinearLayout>
+            <uk.co.barbuzz.beerprogressview.BeerProgressView
+                android:id="@+id/DrawingwaterView5"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                app:beerColor="#29b6f6"
+                app:bubbleColor="#29b6f6"
+                app:beerProgress="0"
+                app:waveMax="100"
+                app:waveAmplitude="3dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/transparent_glass"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"></LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/g6"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout6"
+                android:background="@drawable/water_back_shade"
+                android:orientation="horizontal"></LinearLayout>
+            <uk.co.barbuzz.beerprogressview.BeerProgressView
+                android:id="@+id/DrawingwaterView6"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                app:beerColor="#29b6f6"
+                app:bubbleColor="#29b6f6"
+                app:beerProgress="10"
+
+                app:waveMax="100"
+                app:waveAmplitude="3dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/transparent_glass"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"></LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/g7"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout7"
+                android:background="@drawable/water_back_shade"
+                android:orientation="horizontal"></LinearLayout>
+            <uk.co.barbuzz.beerprogressview.BeerProgressView
+                android:id="@+id/DrawingwaterView7"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                app:beerColor="#29b6f6"
+                app:bubbleColor="#29b6f6"
+                app:beerProgress="0"
+                app:waveMax="100"
+                app:waveAmplitude="3dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/transparent_glass"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"></LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/g8"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/linearLayout8"
+                android:background="@drawable/water_back_shade"
+                android:orientation="horizontal"></LinearLayout>
+            <uk.co.barbuzz.beerprogressview.BeerProgressView
+                android:id="@+id/DrawingwaterView8"
+                android:layout_width="35dp"
+                android:layout_height="40dp"
+                app:beerColor="#29b6f6"
+                app:bubbleColor="#29b6f6"
+                app:beerProgress="0"
+                app:waveMax="100"
+                app:waveAmplitude="3dp"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+            <LinearLayout
+                android:layout_width="35dp"
+                android:layout_height="45dp"
+                android:background="@drawable/transparent_glass"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"></LinearLayout>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/colorPrimary"></LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="50dp"
+                    >
+                    <!--DFE8F4-->
+                    <uk.co.barbuzz.beerprogressview.BeerProgressView
+                        android:id="@+id/complete_beer"
+                        android:layout_width="70dp"
+                        android:layout_height="65dp"
+                        app:beerColor="#29b6f6"
+                        app:beerProgress="10"
+                        app:bubbleColor="#29b6f6"
+                        app:waveMax="100"
+                        app:waveAmplitude="1dp"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true" />
+                    <LinearLayout
+                        android:layout_width="75dp"
+                        android:layout_height="70dp"
+                        android:background="@drawable/beaker"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"></LinearLayout>
+
+                </RelativeLayout>
+
+
+
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+       </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>

@@ -1,0 +1,109 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="in.tagbin.mitohealthapp.SignupFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="30dp"
+        android:id="@+id/linearLayout3"
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp">
+
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="50dp"
+            android:drawableLeft="@drawable/sm1"
+            android:hint="E mail"
+            android:inputType="textEmailAddress"
+            android:drawablePadding="10dp"
+            android:textColor="#f2f2f2"
+            android:textColorHint="#f2f2f2"
+            ></EditText>
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:id="@+id/linearLayout2"
+        android:paddingLeft="30dp"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentStart="true">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="50dp"
+            android:drawableLeft="@drawable/sm1"
+            android:inputType="textPassword"
+            android:hint="Choose Password"
+            android:drawablePadding="10dp"
+            android:textColor="#f2f2f2"
+            android:textColorHint="#f2f2f2"
+            ></EditText>
+
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/next"
+        android:id="@+id/login"
+        android:layout_marginTop="42dp"
+        android:layout_below="@+id/linearLayout4"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:id="@+id/linearLayout4"
+        android:paddingLeft="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_centerHorizontal="true">
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/TextLabel">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight="50dp"
+            android:drawableLeft="@drawable/sm1"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:drawablePadding="10dp"
+            android:textColor="#f2f2f2"
+            android:textColorHint="#f2f2f2" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+</RelativeLayout>
