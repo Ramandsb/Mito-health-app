@@ -31,7 +31,6 @@
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ProfileImage.ImageCropActivity"
             android:label="Set Profile"
@@ -71,9 +70,7 @@
             android:name=".HomePage"
             android:label="@string/title_activity_home_page"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".FoodLogging"
             android:label="@string/title_activity_food_logging"
@@ -88,9 +85,7 @@
             android:name=".CollapsableLogging"
             android:label="@string/title_activity_collapsable_logging"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".FoodDetails"
             android:label="@string/title_activity_food_details"
@@ -99,9 +94,8 @@
         <activity
             android:name=".Test"
             android:label="@string/title_activity_test"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".InitActivity"></activity>
     </application>
 
 </manifest>
