@@ -20,11 +20,7 @@
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
 
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -62,11 +58,6 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".ProfilePage"
-            android:label="@string/title_activity_profile_page"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".HomePage"
             android:label="@string/title_activity_home_page"
             android:screenOrientation="portrait"
@@ -95,7 +86,17 @@
             android:name=".Test"
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".InitActivity"></activity>
+        <activity android:name=".InitActivity"
+            android:label="@string/title_activity_profile_page"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
