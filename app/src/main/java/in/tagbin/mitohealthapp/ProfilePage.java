@@ -53,6 +53,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,6 +64,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import in.tagbin.mitohealthapp.Fragments.Profile;
 import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
 import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
@@ -551,6 +553,9 @@ showDialog();
          */
 
 
+
+
+
         postParam.put("first_name", first_name);
         postParam.put("last_name", last_name);
         postParam.put("email", email);
@@ -569,12 +574,17 @@ showDialog();
                 new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
+                    public void onResponse(JSONObject res) {
+                        Log.d("response", res.toString());
 
                         showDialog();
                         progressBar.setVisibility(View.GONE);
                         messageView.setText("Profile Updated Successfuly");
+                        startActivity(new Intent(ProfilePage.this,HomePage.class));
+                        finish();
+
+
+
 
                     }
                 }, new Response.ErrorListener() {
@@ -610,7 +620,7 @@ showDialog();
     private void makeJsonObjReq() {
 
         Map<String, String> postParam = new HashMap<String, String>();
-
+        final SharedPreferences.Editor editor= login_details.edit();
         Log.d("details", user_id + "//" + auth_key);
         /**
          *  "first_name": "Nairitya",
@@ -640,22 +650,23 @@ showDialog();
                 new Response.Listener<JSONObject>() {
 
                     @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
+                    public void onResponse(JSONObject res) {
+                        Log.d("response", res.toString());
 
                         try {
 
                             dismissDialog();
-                            JSONObject obj = response.getJSONObject("user");
+                            JSONObject obj = res.getJSONObject("user");
                             username = obj.getString("username");
                             first_name = obj.getString("first_name");
                             last_name = obj.getString("last_name");
                             email = obj.getString("email");
-                            JSONObject profile = response.getJSONObject("profile");
+                            JSONObject profile = res.getJSONObject("profile");
                             String dob = profile.getString("dob");
                             String gender = profile.getString("gender");
                             String height = profile.getString("height");
                             String weight = profile.getString("weight");
+                            String waist = profile.getString("waist");
 
                             int wei=Integer.valueOf(weight);
                           int  grams= wei%1000;
@@ -665,7 +676,12 @@ showDialog();
                             int inv =wei%1000;
                             dob_tv.setText(dob + "");
                             height_tv.setText("" + fee+"'"+inv+"''");
-
+                            editor.putString("weight",weight);
+                            editor.putString("waist",waist);
+                            editor.putString("height",height);
+                            editor.putString("gender",gender);
+                            editor.putString("dob",dob);
+editor.commit();
 
                             weight_tv.setText("" + kg+"."+grams);
                             if (gender.equals("M")) {
@@ -678,6 +694,49 @@ showDialog();
 
                             }
 
+                            try {
+
+
+
+
+//                                JSONObject images=     res.getJSONObject("images");
+//                                String master=   images.getString("master");
+//                                editor.putString("master_image",master);
+//
+
+                                JSONArray energy=    res.getJSONArray("energy");
+                                Log.d("energy details",energy.toString());
+
+                                int[] energyi=new int[5];
+                                for (int i =0;i<energy.length();i++){
+
+                                    energyi[i]=energy.getInt(i);
+
+                                    Log.d("energy val",energyi[i]+"");
+                                }
+                                editor.putInt("water_amount",energyi[1]);
+                                editor.putInt("food_cal",energyi[2]);
+                                editor.putInt("calorie_burnt",energyi[3]);
+                                editor.putInt("total_calorie_required",energyi[4]);
+                                Log.d("energy details",energyi[1]+"///"+energyi[2]+"///"+energyi[3]+"///"+energyi[4]+"///");
+
+                                JSONObject user =   res.getJSONObject("user");
+                                String user_username=   user.getString("username");
+                                String user_first_name=   user.getString("first_name");
+                                String user_last_name=  user.getString("last_name");
+                                String user_email=   user.getString("email");
+
+                                editor.putString("user_username",user_username);
+                                editor.putString("user_first_name",user_first_name);
+                                editor.putString("user_last_name",user_last_name);
+                                editor.putString("user_email",user_email);
+
+                                editor.commit();
+                                Log.d("all details",login_details.getAll().toString())   ;
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();

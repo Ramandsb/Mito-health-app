@@ -17,6 +17,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -26,8 +27,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -39,12 +45,16 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import org.joda.time.LocalDateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,6 +67,7 @@ import in.tagbin.mitohealthapp.Pojo.DataItems;
 public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
 
+    String user_id;
     MaterialCalendarView widget;
     RWeekCalendar rCalendarFragment;
 
@@ -64,6 +75,10 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
     SharedPreferences login_details;
     String auth_key;
     TextView cal_consumed,cal_left,cal_burned;
+    TextView messageView;
+    ProgressBar progressBar;
+    android.app.AlertDialog alert;
+    String myurl=Config.url + "logger/history/dates/";
 
     int a = 0, b = 0, c = 0;
     int mBgColor = 0;
@@ -127,6 +142,17 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
         cal_left = (TextView) findViewById(R.id.cal_left);
         cal_burned = (TextView) findViewById(R.id.cal_burned);
         login_details=getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
+
+        makeJsonObjGETReq();
+
+        int water_amount=   login_details.getInt("water_amount",0);
+        int food_cal=   login_details.getInt("food_cal",0);
+        int calorie_burnt=   login_details.getInt("calorie_burnt",0);
+        int total_calorie_required=   login_details.getInt("total_calorie_required",0);
+        cal_consumed.setText(food_cal);
+        Float left= Float.valueOf(total_calorie_required)-Float.valueOf(food_cal);
+        cal_left.setText(food_cal+"/"+total_calorie_required);
+        cal_burned.setText(calorie_burnt);
         plus_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +183,7 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
 
             }
         });
+        customDialog();
         food_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,6 +325,158 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
 ////        t.commit();
 
     }
+
+    private void makeJsonObjGETReq() {
+
+        Map<String, String> postParam = new HashMap<String, String>();
+        final SharedPreferences.Editor editor= login_details.edit();
+
+        auth_key=   login_details.getString("key","");
+        user_id=   login_details.getString("user_id","");
+        Log.d("details", user_id + "//" + auth_key);
+        /**
+         *  "first_name": "Nairitya",
+         "last_name": "Khilari",
+         "email": "nairitya@gmail.com",
+         "phone_number": "4512356578",
+         "weight": 66,
+         "waist": 35,
+         "height": 179,
+         "dob": "1994-12-18"
+         */
+
+//
+//        postParam.put("gender", sex);
+//        postParam.put("dob", dob);
+//        postParam.put("height", height);
+//        postParam.put("waist", waist);
+//        postParam.put("weight", weight);
+
+//
+//        JSONObject jsonObject = new JSONObject(postParam);
+//        Log.d("postpar", jsonObject.toString());
+//
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                Config.url + "users/" + user_id + "/", null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject res) {
+                        Log.d("response", res.toString());
+
+                        try {
+
+                            dismissDialog();
+                            JSONObject obj = res.getJSONObject("user");
+                          String  username = obj.getString("username");
+                          String  first_name = obj.getString("first_name");
+                           String last_name = obj.getString("last_name");
+                          String   email = obj.getString("email");
+                            JSONObject profile = res.getJSONObject("profile");
+                            String dob = profile.getString("dob");
+                            String gender = profile.getString("gender");
+                            String height = profile.getString("height");
+                            String weight = profile.getString("weight");
+                            String waist = profile.getString("waist");
+
+
+                            int wei=Integer.valueOf(weight);
+                            int  grams= wei%1000;
+                            int kg =wei/1000;
+                            int hei=Integer.valueOf(height);
+                            int  fee= hei/12;
+                            int inv =wei%1000;
+
+                            editor.putString("weight",weight);
+                            editor.putString("waist",waist);
+                            editor.putString("height",height);
+                            editor.putString("gender",gender);
+                            editor.putString("dob",dob);
+                            editor.commit();
+
+
+                            try {
+
+
+
+
+//                                JSONObject images=     res.getJSONObject("images");
+//                                String master=   images.getString("master");
+//                                editor.putString("master_image",master);
+//
+
+                                JSONArray energy=    res.getJSONArray("energy");
+                                Log.d("energy details",energy.toString());
+
+                                int[] energyi=new int[5];
+                                for (int i =0;i<energy.length();i++){
+
+                                    energyi[i]=energy.getInt(i);
+
+                                    Log.d("energy val",energyi[i]+"");
+                                }
+                                editor.putInt("water_amount",energyi[1]);
+                                editor.putInt("food_cal",energyi[2]);
+                                editor.putInt("calorie_burnt",energyi[3]);
+                                editor.putInt("total_calorie_required",energyi[4]);
+                                Log.d("energy details",energyi[1]+"///"+energyi[2]+"///"+energyi[3]+"///"+energyi[4]+"///");
+
+                                JSONObject user =   res.getJSONObject("user");
+                                String user_username=   user.getString("username");
+                                String user_first_name=   user.getString("first_name");
+                                String user_last_name=  user.getString("last_name");
+                                String user_email=   user.getString("email");
+
+                                editor.putString("user_username",user_username);
+                                editor.putString("user_first_name",user_first_name);
+                                editor.putString("user_last_name",user_last_name);
+                                editor.putString("user_email",user_email);
+
+                                editor.commit();
+                                Log.d("all details",login_details.getAll().toString())   ;
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("error", "Error: " + error.getMessage());
+                displayErrors(error);
+
+                Log.d("error", error.toString());
+            }
+        }) {
+
+            //
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("charset", "utf-8");
+                headers.put("Authorization", "JWT " + auth_key);
+                return headers;
+            }
+//
+
+
+        };
+
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
         Fade fade = new Fade();
@@ -377,15 +556,11 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
-        Calendar calendar = Calendar.getInstance();
 
-        calendar.set(year, monthOfYear, dayOfMonth);
-        rCalendarFragment.setDateWeek(calendar);
-        //Sets the selected date from Picker
     }
     private void makeJsonObjReq() {
 
-        auth_key=   login_details.getString("auth_key", "");
+        auth_key=   login_details.getString("key", "");
         Map<String, String> postParam = new HashMap<String, String>();
         postParam.put("ltype", "water");
         postParam.put("c_id", "1");
@@ -444,6 +619,83 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
+    public  String convertTimestamp(String selectedDate) throws ParseException {
+
+        String str_date="2016-08-04 15:15:15";
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date date = (Date)formatter.parse(selectedDate+" 15:15:15");
+       String timestamp=String.valueOf(date.getTime()/1000);
+        Log.d("converted date",timestamp);
+
+
+
+        return timestamp;
+    }
+    private void makeJsonObjReq(String start,String end) {
+
+        auth_key=   login_details.getString("key", "");
+        Map<String, String> postParam = new HashMap<String, String>();
+
+        Log.d("check auth",auth_key);
+
+        postParam.put("start", start);
+        postParam.put("end", end);
+
+
+
+
+        JSONObject jsonObject = new JSONObject(postParam);
+        Log.d("postpar", jsonObject.toString());
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                myurl, jsonObject,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response", response.toString());
+
+
+
+
+
+
+
+                    }
+
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("error", "Error: " + error.getMessage());
+
+
+
+                Log.d("error", error.toString()+"//////////"+error.getMessage());
+            }
+        }) {
+
+            //
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put( "charset", "utf-8");
+                headers.put("Authorization","JWT "+auth_key);
+                return headers;
+            }
+
+
+
+        };
+
+
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+
 
 
     private String getSelectedDatesString() {
@@ -459,7 +711,58 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
         int day=   date.getDay();
         int month=   date.getMonth()+1;
         int year=   date.getYear();
-        selectedDate=year+"-"+month+"-"+day;
-        Log.d("date",getSelectedDatesString());
+        selectedDate=year+"-0"+month+"-0"+day;
+        Log.d("date",selectedDate);
+//        String selectedDate=year+"-"+"0"+day+"-"+"0"+month;
+
+        int nextdays=day+7;
+         try {
+             String start_date=convertTimestamp(selectedDate);
+             String end_date=convertTimestamp(year+"-0"+month+"-0"+nextdays);
+makeJsonObjReq(start_date,end_date);
+         } catch (ParseException e) {
+                e.printStackTrace();
+
+        }
+    }
+    public void customDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+
+        View customView = inflater.inflate(R.layout.dialog, null);
+        builder.setView(customView);
+        messageView = (TextView) customView.findViewById(R.id.tvdialog);
+        progressBar = (ProgressBar) customView.findViewById(R.id.progress);
+        alert = builder.create();
+
+    }
+
+    public void showDialog() {
+
+        progressBar.setVisibility(View.VISIBLE);
+        alert.show();
+        messageView.setText("Loading");
+    }
+
+    public void dismissDialog() {
+        alert.dismiss();
+    }
+
+    public void displayErrors(VolleyError error) {
+        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("Connection failed");
+        } else if (error instanceof AuthFailureError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("AuthFailureError");
+        } else if (error instanceof ServerError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("ServerError");
+        } else if (error instanceof NetworkError) {
+            messageView.setText("NetworkError");
+        } else if (error instanceof ParseError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("ParseError");
+        }
     }
 }

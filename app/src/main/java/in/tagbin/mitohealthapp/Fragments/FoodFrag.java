@@ -169,7 +169,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
 
     private void makeJsonObjReq(String date) {
 
-        auth_key = login_details.getString("auth_key", "");
+        auth_key = login_details.getString("key", "");
         Map<String, String> postParam = new HashMap<String, String>();
         postParam.put("day", date);
 

@@ -164,6 +164,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         loginDetails = getSharedPreferences(LOGIN_DETAILS, MODE_PRIVATE);
+
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         Fblogin = (Button) findViewById(R.id.login_button);
 
