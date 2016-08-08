@@ -22,13 +22,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 
-import android.support.v7.widget.Toolbar;
 import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +39,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -89,8 +90,16 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     public static final int REQUEST_CODE_UPDATE_PIC = 0x1;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+
+        
 
 //
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -101,7 +110,9 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 //
 //        }
         View Fragview = inflater.inflate(R.layout.content_profile_page, container, false);
-        Toolbar toolbar = (Toolbar) Fragview.findViewById(R.id.toolbar);
+
+
+
 
         choose_image = (Button) Fragview.findViewById(R.id.choose_image);
         login_details=getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
@@ -473,10 +484,10 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         }
     }
 
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getActivity().getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        //menu.findItem(R.id.action_done).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
