@@ -707,17 +707,17 @@ editor.commit();
                                 JSONArray energy=    res.getJSONArray("energy");
                                 Log.d("energy details",energy.toString());
 
-                                int[] energyi=new int[5];
+                                String[] energyi=new String[5];
                                 for (int i =0;i<energy.length();i++){
 
-                                    energyi[i]=energy.getInt(i);
+                                    energyi[i]=energy.get(i).toString();
 
-                                    Log.d("energy val",energyi[i]+"");
+                                    Log.d("energy val",energyi[i]);
                                 }
-                                editor.putInt("water_amount",energyi[1]);
-                                editor.putInt("food_cal",energyi[2]);
-                                editor.putInt("calorie_burnt",energyi[3]);
-                                editor.putInt("total_calorie_required",energyi[4]);
+                                editor.putString("water_amount",energyi[1]);
+                                editor.putString("food_cal",energyi[2]);
+                                editor.putString("calorie_burnt",energyi[3]);
+                                editor.putString("total_calorie_required",energyi[4]);
                                 Log.d("energy details",energyi[1]+"///"+energyi[2]+"///"+energyi[3]+"///"+energyi[4]+"///");
 
                                 JSONObject user =   res.getJSONObject("user");

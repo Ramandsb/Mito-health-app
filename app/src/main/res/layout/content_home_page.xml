@@ -16,7 +16,7 @@
         card_view:cardCornerRadius="35dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="40dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_marginRight="40dp"
         android:layout_marginBottom="20dp"
         android:elevation="10dp">
@@ -153,6 +153,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/food_img"
             android:orientation="vertical"
+            android:visibility="visible"
             android:layout_gravity="center">
 
             <LinearLayout
@@ -203,6 +204,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="13sp"
+                    android:id="@+id/foodcard_recomended"
                     android:textColor="#ffffff"
                     android:text="279 Kcal"/>
                 </LinearLayout>
@@ -262,10 +264,12 @@
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp"
                         android:background="#ffffff"></LinearLayout>
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center">
 
                         <Button
                             android:layout_width="25dp"
@@ -292,6 +296,14 @@
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="17sp"
+                            android:textColor="#ffffff"
+                            android:text="Glasses"
+                            android:layout_marginLeft="10dp" />
+
 
                         <Button
                             android:layout_width="25dp"
@@ -305,7 +317,7 @@
                             android:layout_alignTop="@+id/glasses"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true" />
-                    </RelativeLayout>
+                    </LinearLayout>
 
 
                 </LinearLayout>
@@ -331,7 +343,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
@@ -339,6 +352,12 @@
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
                             android:src="@drawable/exercise_icon"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="17sp"
+                            android:textColor="#ffffff"
+                            android:text="Exercise"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -351,14 +370,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="17sp"
+                            android:id="@+id/exercard_burnt"
                             android:textColor="#ffffff"
-                            android:text="Exercise"/>
+                            android:text="83458"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="19sp"
+                            android:textColor="#ffffff"
+                            android:text="Calories Burnt"/>
                     </LinearLayout>
 
 
@@ -387,6 +414,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:orientation="vertical"
                         android:gravity="center">
                         <ImageView
                             android:layout_width="50dp"
@@ -395,6 +423,12 @@
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
                             android:src="@drawable/sleep_icon_main"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="17sp"
+                            android:textColor="#ffffff"
+                            android:text="Sleep"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -407,6 +441,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:orientation="vertical"
                         android:gravity="center">
 
                         <TextView
@@ -414,7 +449,13 @@
                             android:layout_height="wrap_content"
                             android:textSize="17sp"
                             android:textColor="#ffffff"
-                            android:text="Sleep"/>
+                            android:text="Healthy"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="19sp"
+                            android:textColor="#ffffff"
+                            android:text="8 Hours"/>
                     </LinearLayout>
 
 

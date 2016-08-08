@@ -89,7 +89,7 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
     public static boolean flagHome = false;
     public static String firstdate = "";
     Button plus_button,minus_button;
-    TextView glasses;
+    TextView glasses,foodcard_recom,exercard_burnt;
     int j =4;
 
 
@@ -135,54 +135,73 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
         water_card = (CardView) findViewById(R.id.water_card);
         exercise_card = (CardView) findViewById(R.id.exercise_card);
         sleep_card = (CardView) findViewById(R.id.sleep_card);
-        plus_button = (Button) findViewById(R.id.plus_but);
-        minus_button = (Button) findViewById(R.id.minus_but);
         glasses = (TextView) findViewById(R.id.glasses);
         cal_consumed = (TextView) findViewById(R.id.cal_consumed);
         cal_left = (TextView) findViewById(R.id.cal_left);
         cal_burned = (TextView) findViewById(R.id.cal_burned);
+        foodcard_recom = (TextView) findViewById(R.id.foodcard_recomended);
+        exercard_burnt = (TextView) findViewById(R.id.exercard_burnt);
         login_details=getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
 
         makeJsonObjGETReq();
 
-        int water_amount=   login_details.getInt("water_amount",0);
-        int food_cal=   login_details.getInt("food_cal",0);
-        int calorie_burnt=   login_details.getInt("calorie_burnt",0);
-        int total_calorie_required=   login_details.getInt("total_calorie_required",0);
-        cal_consumed.setText(food_cal);
+        String water_amount=   login_details.getString("water_amount","");
+        String food_cal=   login_details.getString("food_cal","");
+        String calorie_burnt=   login_details.getString("calorie_burnt","");
+        String total_calorie_required=   login_details.getString("total_calorie_required","");
+
         Float left= Float.valueOf(total_calorie_required)-Float.valueOf(food_cal);
-        cal_left.setText(food_cal+"/"+total_calorie_required);
-        cal_burned.setText(calorie_burnt);
-        plus_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (j <=9 && j>=2) {
-                    j++;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
+        if (water_amount.equals("") ||food_cal.equals("")||calorie_burnt.equals("")||total_calorie_required.equals("")){
 
-                if (j==1){
-                    j++;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
-
-
-
-            }
-        });
-        minus_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (j < 10 && j>=2) {
-                    j--;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
-
-            }
-        });
+        }else {
+            double wat_int=(Double.valueOf(water_amount));
+            int i=Integer.valueOf((int) wat_int);
+            double wat_int1=(Double.valueOf(food_cal));
+            int j=Integer.valueOf((int) wat_int1);
+            double wat_int2=(Double.valueOf(calorie_burnt));
+            int k=Integer.valueOf((int) wat_int2);
+            double wat_int3=(Double.valueOf(total_calorie_required));
+            int l=Integer.valueOf((int) wat_int3);
+            int fcal_int=j;
+            int calbur_int=k;
+            int totcal_int=l;
+            cal_consumed.setText(fcal_int+"");
+            cal_left.setText(fcal_int+"/"+totcal_int+"");
+            cal_burned.setText(calbur_int+"");
+//            foodcard_recom.setText(totcal_int+"");
+//            exercard_burnt.setText(calbur_int);
+        }
+//
+//        plus_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (j <=9 && j>=2) {
+//                    j++;
+//                    glasses.setText(j+"/9");
+//                    makeJsonObjReq();
+//                }
+//
+//                if (j==1){
+//                    j++;
+//                    glasses.setText(j+"/9");
+//                    makeJsonObjReq();
+//                }
+//
+//
+//
+//            }
+//        });
+//        minus_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (j < 10 && j>=2) {
+//                    j--;
+//                    glasses.setText(j+"/9");
+//                    makeJsonObjReq();
+//                }
+//
+//            }
+//        });
         customDialog();
         food_card.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -410,17 +429,17 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
                                 JSONArray energy=    res.getJSONArray("energy");
                                 Log.d("energy details",energy.toString());
 
-                                int[] energyi=new int[5];
+                                String[] energyi=new String[5];
                                 for (int i =0;i<energy.length();i++){
 
-                                    energyi[i]=energy.getInt(i);
+                                    energyi[i]=energy.get(i).toString();
 
-                                    Log.d("energy val",energyi[i]+"");
+                                    Log.d("energy val",energyi[i]);
                                 }
-                                editor.putInt("water_amount",energyi[1]);
-                                editor.putInt("food_cal",energyi[2]);
-                                editor.putInt("calorie_burnt",energyi[3]);
-                                editor.putInt("total_calorie_required",energyi[4]);
+                                editor.putString("water_amount",energyi[1]);
+                                editor.putString("food_cal",energyi[2]);
+                                editor.putString("calorie_burnt",energyi[3]);
+                                editor.putString("total_calorie_required",energyi[4]);
                                 Log.d("energy details",energyi[1]+"///"+energyi[2]+"///"+energyi[3]+"///"+energyi[4]+"///");
 
                                 JSONObject user =   res.getJSONObject("user");
