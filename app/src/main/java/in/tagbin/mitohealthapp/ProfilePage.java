@@ -2,10 +2,13 @@ package in.tagbin.mitohealthapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.app.TimePickerDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,6 +42,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
@@ -66,6 +70,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Fragments.Profile;
 import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
 import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
@@ -93,9 +98,9 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     public static String myurl = "";
     public static Bitmap profileImage;
     String username;
-    String first_name;
-    String last_name;
-    String email;
+    String first_name="";
+    String last_name="";
+    String email="";
     View male_view;
     View female_view;
     //////////////////////
@@ -136,11 +141,12 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         auth_key = login_details.getString("auth_key", "");
 
         calendar = Calendar.getInstance();
-        makeJsonObjReq();
+
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         dob = year + "-" + month + "-" + day;
+        makeJsonObjReq();
         profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
         profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
         name = getActivity().getIntent().getStringExtra("name");
@@ -202,9 +208,46 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         customDialog();
         assert select_date != null;
         select_date.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
-                getActivity().showDialog(999);
+//                TimePickerDialog tpd = new TimePickerDialog(getActivity(),
+//                        new TimePickerDialog.OnTimeSetListener() {
+//
+//                            @Override
+//                            public void onTimeSet(TimePicker view, int hourOfDay,
+//                                                  int minute) {
+//
+//                                String time=hourOfDay + ":" + minute;
+//
+//                            }
+//                        }, hour, min, false);
+//                tpd.show();
+                int j=0, j1=0, j2=0;
+                DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                                month = month + 1;
+                                year=i;
+                                month=i1+1;
+                                day=i2;
+                                if (month<10 || day <10){
+                                    dob = year + "-" + "0"+month + "-" + "0"+day;
+                                    dob_tv.setText(dob);
+                                    Log.d("date",dob);
+                                }else {
+                                    dob = year + "-" + month + "-" + day;
+                                    Log.d("date", dob);
+                                    dob_tv.setText(dob);
+
+                                }
+
+                            }
+                        }, year, month, day);
+
+                dpd.show();
             }
         });
         select_weight.setOnClickListener(new View.OnClickListener() {
@@ -438,26 +481,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
     }
 
-    protected Dialog onCreateDialog(int id) {
-        // TODO Auto-generated method stub
-        if (id == 999) {
-            return new DatePickerDialog(getActivity(), myDateListener, year, month, day);
-        }
-        return null;
-    }
 
-    private DatePickerDialog.OnDateSetListener myDateListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker arg0, int year, int month, int day) {
-            // arg1 = year
-            // arg2 = month
-            // arg3 = day
-            month = month + 1;
-            dob_tv.setText(day + " " + month + " " + year);
-            dob = year + "-" + month + "-" + day;
-
-        }
-    };
 
 
     @Override
@@ -484,11 +508,11 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
 
+
             makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
 //            InitActivity.change(2);
 
-            InitActivity i = (InitActivity) getActivity();
-            i.bottomNavigation.setCurrentItem(2);
+
             //i.change(2);
 
 //            getFragmentManager().beginTransaction().replace(R.id.fragmentnew,new HomePage()).commit();
@@ -503,6 +527,8 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     private void makeJsonObjReq(String name, String sex, String dob, String height, String waist, String weight) {
         showDialog();
         Map<String, String> postParam = new HashMap<String, String>();
+        auth_key=login_details.getString("key","");
+        user_id=login_details.getString("user_id","");
 
         Log.d("details", user_id + "//" + auth_key);
         /**
@@ -521,6 +547,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         postParam.put("last_name", last_name);
         postParam.put("email", email);
         postParam.put("dob", dob);
+        postParam.put("gender", gender);
         postParam.put("height", height);
         postParam.put("waist", waist);
         postParam.put("weight", weight);
@@ -541,6 +568,8 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         showDialog();
                         progressBar.setVisibility(View.GONE);
                         messageView.setText("Profile Updated Successfuly");
+                        InitActivity i = (InitActivity) getActivity();
+                        i.bottomNavigation.setCurrentItem(2);
                         //startActivity(new Intent(ProfilePage.this, HomePage.class));
                         //finish();
 
@@ -580,6 +609,8 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
         Map<String, String> postParam = new HashMap<String, String>();
         final SharedPreferences.Editor editor = login_details.edit();
+        auth_key= login_details.getString("key","");
+        user_id= login_details.getString("user_id","");
         Log.d("details", user_id + "//" + auth_key);
         /**
          *  "first_name": "Nairitya",
@@ -643,15 +674,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                             editor.commit();
 
                             weight_tv.setText("" + kg + "." + grams);
-                            if (gender.equals("M")) {
-                                male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
-                                female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
-
-                            } else if (gender.equals("F")) {
-                                male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_m));
-                                female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
-
-                            }
 
                             try {
 
@@ -682,6 +704,9 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                                 String user_first_name = user.getString("first_name");
                                 String user_last_name = user.getString("last_name");
                                 String user_email = user.getString("email");
+                                email=user_email;
+                                first_name=user_first_name;
+                                last_name=user_last_name;
 
                                 editor.putString("user_username", user_username);
                                 editor.putString("user_first_name", user_first_name);

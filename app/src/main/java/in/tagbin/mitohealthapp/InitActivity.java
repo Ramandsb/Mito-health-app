@@ -9,11 +9,12 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import android.widget.Toolbar;
+
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -44,7 +45,7 @@ public class InitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_init);
 
         toolbar = (Toolbar) findViewById(R.id.toolbarInit);
-        setActionBar(toolbar);
+        setSupportActionBar(toolbar);
 
         fra = new ProfilePage();
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);

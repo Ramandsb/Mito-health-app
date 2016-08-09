@@ -3,6 +3,7 @@ package in.tagbin.mitohealthapp.Fragments;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,20 +14,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
@@ -65,9 +72,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
     MaterialCalendarView widget;
     public static String selectedDate = "";
 
-    int a = 0, b = 0, c = 0;
-    int i = 0;
-    int mBgColor = 0;
+
 
     public FoodFrag() {
         // Required empty public constructor
@@ -80,12 +85,28 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         super.onCreate(savedInstanceState);
         dop = new DatabaseOperations(getActivity());
         login_details = getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, getActivity().MODE_PRIVATE);
-        LocalDateTime mSelectedDate = LocalDateTime.now();
-        int day = mSelectedDate.getDayOfMonth();
-        int month = mSelectedDate.getMonthOfYear();
-        int year = mSelectedDate.getYear();
-        selectedDate = year + "-" + month + "-" + day;
-        Log.d("food startdate",selectedDate);
+      Calendar  calendar = Calendar.getInstance();
+
+      int  year = calendar.get(Calendar.YEAR);
+      int  month = calendar.get(Calendar.MONTH);
+       int day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = month+1;
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+
+        }
+        makeJsonArrayReq(selectedDate);
+        Log.d("date",selectedDate);
 
 
     }
@@ -113,7 +134,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         customAdapter = new CustomAdapter(getActivity());
         food_list.setAdapter(customAdapter);
         food_list.setHasFixedSize(true);
-        database_list = dop.getInformation(dop, CollapsableLogging.selectedDate);
+        database_list = dop.getInformation(dop, selectedDate);
         customAdapter.setData(database_list);
         customAdapter.notifyDataSetChanged();
 /////////////////////
@@ -163,7 +184,6 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         Calendar calendar = Calendar.getInstance();
 
         calendar.set(year, monthOfYear, dayOfMonth);
-        rCalendarFragment.setDateWeek(calendar);
         //Sets the selected date from Picker
     }
 
@@ -178,7 +198,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         Log.d("postpar", jsonObject.toString());
 
 
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 Config.url + "logger/food/", jsonObject,
                 new Response.Listener<JSONObject>() {
 
@@ -238,7 +258,20 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
      int day=   date.getDay();
      int month=   date.getMonth()+1;
      int year=   date.getYear();
-        selectedDate=year+"-"+month+"-"+day;
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+        }
+        makeJsonArrayReq(selectedDate);
         database_list = dop.getInformation(dop, selectedDate);
         customAdapter.setData(database_list);
         customAdapter.notifyDataSetChanged();
@@ -251,4 +284,57 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         }
         return FORMATTER.format(date.getDate());
     }
+    private void makeJsonArrayReq(String s) {
+        auth_key = login_details.getString("key", "");
+        Map<String, String> postParam = new HashMap<String, String>();
+        postParam.put("day", s);
+
+
+        JSONObject jsonObject = new JSONObject(postParam);
+        Log.d("postpar", jsonObject.toString());
+        JsonArrayRequest jsonObjReq = new JsonArrayRequest(
+                Config.url + "logger/food/?day="+s,
+                new Response.Listener<JSONArray>() {
+
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        Log.d("ArrayRequest Response",response.toString());
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("error", "Error: " + error.getMessage());
+
+                Log.d("error", error.toString());
+            }
+        })
+        {
+
+            //
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("charset", "utf-8");
+                headers.put("Authorization", "JWT " + auth_key);
+                return headers;
+            }
+
+
+//
+
+
+        };
+
+
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+
 }

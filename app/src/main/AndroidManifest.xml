@@ -25,7 +25,6 @@
 
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -62,11 +61,7 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity
-            android:name=".HomePage"
-            android:label="@string/title_activity_home_page"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <activity
             android:name=".FoodLogging"
             android:label="@string/title_activity_food_logging"
@@ -81,7 +76,10 @@
             android:name=".CollapsableLogging"
             android:label="@string/title_activity_collapsable_logging"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+
+        </activity>
         <activity
             android:name=".FoodDetails"
             android:label="@string/title_activity_food_details"
