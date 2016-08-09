@@ -118,29 +118,6 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         auth_key=   login_details.getString("key","");
         user_id=   login_details.getString("user_id","");
         Log.d("details", user_id + "//" + auth_key);
-        /**
-         *  "first_name": "Nairitya",
-         "last_name": "Khilari",
-         "email": "nairitya@gmail.com",
-         "phone_number": "4512356578",
-         "weight": 66,
-         "waist": 35,
-         "height": 179,
-         "dob": "1994-12-18"
-         */
-
-//
-//        postParam.put("gender", sex);
-//        postParam.put("dob", dob);
-//        postParam.put("height", height);
-//        postParam.put("waist", waist);
-//        postParam.put("weight", weight);
-
-//
-//        JSONObject jsonObject = new JSONObject(postParam);
-//        Log.d("postpar", jsonObject.toString());
-//
-
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 Config.url + "users/" + user_id + "/", null,

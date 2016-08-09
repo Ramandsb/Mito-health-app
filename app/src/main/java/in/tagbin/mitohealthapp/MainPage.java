@@ -477,7 +477,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
                             editor.putString("user_id", response.getString("user_id"));
                             editor.putString("key", response.getString("key"));
                             editor.commit();
-                            Intent intent = new Intent(MainPage.this, ProfilePage.class);
+                            Intent intent = new Intent(MainPage.this, InitActivity.class);
                             intent.putExtra("name", profile_name);
                             intent.putExtra("picture", profile_picture);
                             startActivity(intent);
