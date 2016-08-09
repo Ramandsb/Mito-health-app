@@ -92,6 +92,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
     }
 
@@ -486,7 +487,15 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        //menu.findItem(R.id.action_done).setVisible(false);
+        Log.d("PREPDUG", "hereProfile");
+        for (int i=0;i< menu.size();i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setVisible(false);
+        }
+        //InitActivity i = (InitActivity) getActivity();
+        //i.getActionBar().setTitle("Profile");
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                                        .setVisible(true);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -501,7 +510,13 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         if (id == R.id.action_save) {
 
             makeJsonObjReq(name,gender,dob,String.valueOf(height),String.valueOf(waist),String.valueOf(weight));
-            startActivity(new Intent(getActivity(),HomePage.class));
+//            InitActivity.change(2);
+
+            InitActivity i = (InitActivity) getActivity();
+            i.bottomNavigation.setCurrentItem(2);
+            //i.change(2);
+
+//            getFragmentManager().beginTransaction().replace(R.id.fragmentnew,new HomePage()).commit();
             //finish();
             return true;
         }

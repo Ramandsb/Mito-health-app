@@ -2,12 +2,15 @@ package in.tagbin.mitohealthapp;
 
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -17,7 +20,11 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.transition.Fade;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -31,8 +38,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -54,7 +59,7 @@ import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.CalenderView.WeekFragment;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 
-public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
+public class HomePage extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
 
     MaterialCalendarView widget;
@@ -80,119 +85,18 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_page);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        Log.d("PREPDUG","Setting options true");
+        InitActivity i = (InitActivity) getActivity();
+        setHasOptionsMenu(true);
+        i.invalidateOptionsMenu();
 
 
-        creatBottombar();
+
+
 //        rCalendarFragment = new RWeekCalendar();
-        LocalDateTime mSelectedDate = LocalDateTime.now();
-        int day = mSelectedDate.getDayOfMonth();
-        int month = mSelectedDate.getMonthOfYear();
-        int year = mSelectedDate.getYear();
-        selectedDate = year + "-" + month + "-" + day;
-        widget= (MaterialCalendarView) findViewById(R.id.calendarView);
-        // Add a decorator to disable prime numbered days
 
-        Log.d("start Date",selectedDate);
-        Calendar calendar = Calendar.getInstance();
-        widget.setSelectedDate(calendar.getTime());
-
-        Calendar instance1 = Calendar.getInstance();
-        instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
-
-        Calendar instance2 = Calendar.getInstance();
-        instance2.set(instance2.get(Calendar.YEAR) + 2, Calendar.OCTOBER, 31);
-        widget.setOnDateChangedListener(this);
-        widget.state().edit()
-                .setMinimumDate(instance1.getTime())
-                .setMaximumDate(instance2.getTime())
-                .setCalendarDisplayMode(CalendarMode.WEEKS)
-                .setFirstDayOfWeek(Calendar.MONDAY)
-                .commit();
-
-
-        mBgColor = getResources().getColor(R.color.sample_bg);
-        food_card = (CardView) findViewById(R.id.food_card);
-        water_card = (CardView) findViewById(R.id.water_card);
-        exercise_card = (CardView) findViewById(R.id.exercise_card);
-        sleep_card = (CardView) findViewById(R.id.sleep_card);
-        plus_button = (Button) findViewById(R.id.plus_but);
-        minus_button = (Button) findViewById(R.id.minus_but);
-        glasses = (TextView) findViewById(R.id.glasses);
-        cal_consumed = (TextView) findViewById(R.id.cal_consumed);
-        cal_left = (TextView) findViewById(R.id.cal_left);
-        cal_burned = (TextView) findViewById(R.id.cal_burned);
-        login_details=getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
-        plus_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (j <=9 && j>=2) {
-                    j++;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
-
-                if (j==1){
-                    j++;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
-
-
-
-            }
-        });
-        minus_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (j < 10 && j>=2) {
-                    j--;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
-
-            }
-        });
-        food_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(HomePage.this,CollapsableLogging.class);
-                intent.putExtra("selection",0);
-                startActivity(intent);
-            }
-        });
-        water_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(HomePage.this,CollapsableLogging.class);
-                intent.putExtra("selection",1);
-                startActivity(intent);
-            }
-        });
-        exercise_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(HomePage.this,CollapsableLogging.class);
-                intent.putExtra("selection",2);
-                startActivity(intent);
-            }
-        });
-        sleep_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(HomePage.this,CollapsableLogging.class);
-                intent.putExtra("selection",3);
-                startActivity(intent);
-            }
-        });
 //        CalenderListener listener = new CalenderListener() {
 //            @Override
 //            public void onSelectPicker() {
@@ -298,81 +202,141 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
 ////        t.commit();
 
     }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View v = inflater.inflate(R.layout.content_home_page,container,false);
+        LocalDateTime mSelectedDate = LocalDateTime.now();
+        int day = mSelectedDate.getDayOfMonth();
+        int month = mSelectedDate.getMonthOfYear();
+        int year = mSelectedDate.getYear();
+        selectedDate = year + "-" + month + "-" + day;
+        widget= (MaterialCalendarView) v.findViewById(R.id.calendarView);
+        // Add a decorator to disable prime numbered days
+
+        Log.d("start Date",selectedDate);
+        Calendar calendar = Calendar.getInstance();
+        widget.setSelectedDate(calendar.getTime());
+
+        Calendar instance1 = Calendar.getInstance();
+        instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
+
+        Calendar instance2 = Calendar.getInstance();
+        instance2.set(instance2.get(Calendar.YEAR) + 2, Calendar.OCTOBER, 31);
+        widget.setOnDateChangedListener(this);
+        widget.state().edit()
+                .setMinimumDate(instance1.getTime())
+                .setMaximumDate(instance2.getTime())
+                .setCalendarDisplayMode(CalendarMode.WEEKS)
+                .setFirstDayOfWeek(Calendar.MONDAY)
+                .commit();
+
+
+        mBgColor = getResources().getColor(R.color.sample_bg);
+        food_card = (CardView) v.findViewById(R.id.food_card);
+        water_card = (CardView) v.findViewById(R.id.water_card);
+        exercise_card = (CardView) v.findViewById(R.id.exercise_card);
+        sleep_card = (CardView) v.findViewById(R.id.sleep_card);
+        plus_button = (Button) v.findViewById(R.id.plus_but);
+        minus_button = (Button) v.findViewById(R.id.minus_but);
+        glasses = (TextView) v.findViewById(R.id.glasses);
+        cal_consumed = (TextView) v.findViewById(R.id.cal_consumed);
+        cal_left = (TextView) v.findViewById(R.id.cal_left);
+        cal_burned = (TextView) v.findViewById(R.id.cal_burned);
+        login_details=getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
+        plus_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (j <=9 && j>=2) {
+                    j++;
+                    glasses.setText(j+"/9");
+                    makeJsonObjReq();
+                }
+
+                if (j==1){
+                    j++;
+                    glasses.setText(j+"/9");
+                    makeJsonObjReq();
+                }
+
+
+
+            }
+        });
+        minus_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (j < 10 && j>=2) {
+                    j--;
+                    glasses.setText(j+"/9");
+                    makeJsonObjReq();
+                }
+
+            }
+        });
+        food_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(),CollapsableLogging.class);
+                intent.putExtra("selection",0);
+                startActivity(intent);
+            }
+        });
+        water_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(),CollapsableLogging.class);
+                intent.putExtra("selection",1);
+                startActivity(intent);
+            }
+        });
+        exercise_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(),CollapsableLogging.class);
+                intent.putExtra("selection",2);
+                startActivity(intent);
+            }
+        });
+        sleep_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(),CollapsableLogging.class);
+                intent.putExtra("selection",3);
+                startActivity(intent);
+            }
+        });
+
+        return v;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("PREPDUG", "hereHOME");
+        for (int i=0;i< menu.size();i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setVisible(false);
+        }
+        menu.findItem(R.id.action_done).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(true);
+        //InitActivity.toolbar.setTitle("Mito");
+        super.onPrepareOptionsMenu(menu);
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setupWindowAnimations() {
         Fade fade = new Fade();
         fade.setDuration(1000);
-        getWindow().setEnterTransition(fade);
+        getActivity().getWindow().setEnterTransition(fade);
     }
-    public void creatBottombar(){
-        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-
-// Create items
-
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.big_partner);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.big_profile);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("", R.drawable.big_mito);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.big_cart);
-
-// Add itemsF63D2B
-        bottomNavigation.addItem(item1);
-        bottomNavigation.addItem(item2);
-        bottomNavigation.addItem(item3);
-        bottomNavigation.addItem(item4);
-
-// Set background color
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#ffffff"));
-
-// Disable the translation inside the CoordinatorLayout
-        bottomNavigation.setBehaviorTranslationEnabled(true);
-
-// Change colors
-//        bottomNavigation.setAccentColor(R.color.colorAccent);
-//        bottomNavigation.setInactiveColor(R.color.sample_bg);
 
 
-// Force to tint the drawable (useful for font with icon for example)
-        bottomNavigation.setForceTint(true);
-//        bottomNavigation.setInactiveColor(getResources().getColor(R.color.bottombar));
-        bottomNavigation.setAccentColor(getResources().getColor(R.color.bottombar));
-
-// Force the titles to be displayed (against Material Design guidelines!)
-        bottomNavigation.setForceTitlesDisplay(true);
-
-// Use colored navigation with circle reveal effect
-        bottomNavigation.setColored(false);
-
-// Set current item programmatically
-        bottomNavigation.setCurrentItem(2);
-
-// Customize notification (title, background, typeface)
-        bottomNavigation.setNotificationBackgroundColor(getResources().getColor(R.color.bottombar));
-
-// Add or remove notification for each item68822836
-        bottomNavigation.setNotification("4", 1);
-        bottomNavigation.setNotification("", 1);
-
-// Set listeners
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                // Do something cool here...
-                if (position==2){
-                    startActivity(new Intent(HomePage.this,HomePage.class));
-                }
-                if (position==1){
-                    startActivity(new Intent(HomePage.this,ProfilePage.class));
-                }
-                return true;
-            }
-        });
-        bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
-            @Override public void onPositionChange(int y) {
-                // Manage the new y position
-            }
-        });
-
-    }
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

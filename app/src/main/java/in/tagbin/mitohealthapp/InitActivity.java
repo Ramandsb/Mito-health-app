@@ -29,22 +29,25 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class InitActivity extends AppCompatActivity {
 
 
-    Fragment fra;
+    static Fragment fra;
     FragmentTransaction fraTra;
+    Toolbar toolbar;
+    public AHBottomNavigation bottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_init);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbarInit);
         setActionBar(toolbar);
 
         fra = new ProfilePage();
-        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigate);
 
         fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
         fraTra.commit();
@@ -99,28 +102,7 @@ public class InitActivity extends AppCompatActivity {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
                 // Do something cool here...
-                switch (position){
-                    case 0:
-                        Toast.makeText(InitActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 1:
-                        Toast.makeText(InitActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
-                        fra = new ProfilePage();
-                        break;
-                    case 2:
-                        Toast.makeText(InitActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
-                        break;
-                    case 3:
-                        Toast.makeText(InitActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        fra = new ProfilePage();
-                        break;
-
-                }
-
-                fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew,fra);
-                fraTra.commit();
+                change(position);
                 return true;
             }
         });
@@ -131,10 +113,44 @@ public class InitActivity extends AppCompatActivity {
         });
     }
 
+    public void change (int position){
+
+        switch (position){
+            case 0:
+                Toast.makeText(InitActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
+                break;
+            case 1:
+                toolbar.setTitle("Profile");
+                Toast.makeText(InitActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
+                fra = new ProfilePage();
+                break;
+            case 2:
+                toolbar.setTitle("Mito");
+
+                fra = new HomePage();
+                Toast.makeText(InitActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
+                break;
+            case 3:
+                Toast.makeText(InitActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                fra = new ProfilePage();
+                break;
+
+        }
+
+        fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew,fra);
+        fraTra.commit();
+        invalidateOptionsMenu();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        for (int i=0;i< menu.size();i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 }
