@@ -294,7 +294,7 @@ static class MyviewHolder extends AnimateViewHolder {
 
     private void makeJsonObjReq(String food_id,String time_stamp,String amount) {
 
-      auth_key=   login_details.getString("auth_key", "");
+      auth_key=   login_details.getString("key", "");
         Map<String, String> postParam = new HashMap<String, String>();
         postParam.put("ltype", "food");
         postParam.put("c_id", food_id);

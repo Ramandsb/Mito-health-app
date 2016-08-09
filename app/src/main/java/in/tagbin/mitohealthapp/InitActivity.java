@@ -47,7 +47,7 @@ public class InitActivity extends AppCompatActivity {
         setActionBar(toolbar);
 
         fra = new ProfilePage();
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigate);
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
 
         fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
         fraTra.commit();

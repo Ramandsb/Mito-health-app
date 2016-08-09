@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/android-image-zoom-crop/android-image-zoom-crop.iml" filepath="$PROJECT_DIR$/android-image-zoom-crop/android-image-zoom-crop.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/mitohealthapp.iml" filepath="$PROJECT_DIR$/mitohealthapp.iml" />
     </modules>
   </component>

@@ -1,1 +1,1 @@
-include ':app', ':android-image-zoom-crop', ':library'
+include ':app', ':android-image-zoom-crop'

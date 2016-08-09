@@ -16,6 +16,7 @@
         card_view:cardCornerRadius="35dp"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="40dp"
+        android:visibility="visible"
         android:layout_marginRight="40dp"
         android:layout_marginBottom="20dp"
         android:elevation="10dp">
@@ -25,6 +26,7 @@
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             app:mcv_showOtherDates="all"
             app:mcv_selectionColor="@color/bottombar"
             />
@@ -92,15 +94,15 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0768"
+                    android:text="0768/2000"
                     android:textColor="@color/bottombar"
                     android:id="@+id/cal_left"
-                    android:textSize="40sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Burned"
+                    android:text="KCal"
                     android:textSize="20sp"
                     android:id="@+id/textView9" />
             </LinearLayout>
@@ -151,19 +153,28 @@
             android:layout_height="match_parent"
             android:background="@drawable/food_img"
             android:orientation="vertical"
+            android:visibility="visible"
             android:layout_gravity="center">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center">
+                android:gravity="center"
+                android:orientation="vertical">
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
                     android:src="@drawable/food_icon"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp"
+                    android:textColor="#ffffff"
+                    android:layout_marginTop="10dp"
+                    android:text="FOOD"/>
 
             </LinearLayout>
             <LinearLayout
@@ -177,13 +188,27 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center">
-
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="#ffffff"
+                        android:text="Recomended"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="17sp"
+                    android:textSize="13sp"
+                    android:id="@+id/foodcard_recomended"
                     android:textColor="#ffffff"
-                    android:text="FOOD"/>
+                    android:text="279 Kcal"/>
+                </LinearLayout>
+
             </LinearLayout>
 
 
@@ -239,10 +264,12 @@
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp"
                         android:background="#ffffff"></LinearLayout>
-                    <RelativeLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center">
 
                         <Button
                             android:layout_width="25dp"
@@ -251,6 +278,7 @@
                             android:layout_gravity="left"
                             android:gravity="left"
                             android:id="@+id/minus_but"
+                            android:visibility="gone"
                             android:layout_marginLeft="30dp"
                             android:layout_alignTop="@+id/glasses"
                             android:layout_alignParentLeft="true"
@@ -268,6 +296,14 @@
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="17sp"
+                            android:textColor="#ffffff"
+                            android:text="Glasses"
+                            android:layout_marginLeft="10dp" />
+
 
                         <Button
                             android:layout_width="25dp"
@@ -275,12 +311,13 @@
                             android:background="@drawable/pus_butt"
                             android:layout_gravity="right"
                             android:gravity="right"
+                            android:visibility="gone"
                             android:id="@+id/plus_but"
                             android:layout_marginRight="30dp"
                             android:layout_alignTop="@+id/glasses"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentEnd="true" />
-                    </RelativeLayout>
+                    </LinearLayout>
 
 
                 </LinearLayout>
@@ -306,7 +343,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
                         <ImageView
                             android:layout_width="50dp"
                             android:layout_height="50dp"
@@ -314,6 +352,12 @@
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
                             android:src="@drawable/exercise_icon"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="17sp"
+                            android:textColor="#ffffff"
+                            android:text="Exercise"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -326,14 +370,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="17sp"
+                            android:id="@+id/exercard_burnt"
                             android:textColor="#ffffff"
-                            android:text="Exercise"/>
+                            android:text="83458"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="19sp"
+                            android:textColor="#ffffff"
+                            android:text="Calories Burnt"/>
                     </LinearLayout>
 
 
@@ -362,6 +414,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:orientation="vertical"
                         android:gravity="center">
                         <ImageView
                             android:layout_width="50dp"
@@ -370,6 +423,12 @@
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
                             android:src="@drawable/sleep_icon_main"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="17sp"
+                            android:textColor="#ffffff"
+                            android:text="Sleep"/>
 
                     </LinearLayout>
                     <LinearLayout
@@ -382,6 +441,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:orientation="vertical"
                         android:gravity="center">
 
                         <TextView
@@ -389,7 +449,13 @@
                             android:layout_height="wrap_content"
                             android:textSize="17sp"
                             android:textColor="#ffffff"
-                            android:text="Sleep"/>
+                            android:text="Healthy"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="19sp"
+                            android:textColor="#ffffff"
+                            android:text="8 Hours"/>
                     </LinearLayout>
 
 
@@ -399,7 +465,11 @@
 
 
             </android.support.v7.widget.CardView>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+            </LinearLayout>
         </LinearLayout>
+
     </ScrollView>
 </LinearLayout>

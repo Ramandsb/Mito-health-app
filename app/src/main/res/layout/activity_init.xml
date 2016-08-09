@@ -25,7 +25,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
-        android:id="@+id/bottom_navigate"
+        android:id="@+id/bottom_navigater"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true" />
@@ -35,7 +35,7 @@
         android:layout_below="@id/barcontainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigate"
+        android:layout_above="@id/bottom_navigater"
         android:orientation="vertical"
         />
 
