@@ -20,18 +20,13 @@
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
 
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ProfileImage.ImageCropActivity"
             android:label="Set Profile"
@@ -63,17 +58,10 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".ProfilePage"
-            android:label="@string/title_activity_profile_page"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".HomePage"
             android:label="@string/title_activity_home_page"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" >
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".FoodLogging"
             android:label="@string/title_activity_food_logging"
@@ -88,9 +76,7 @@
             android:name=".CollapsableLogging"
             android:label="@string/title_activity_collapsable_logging"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".FoodDetails"
             android:label="@string/title_activity_food_details"
@@ -99,8 +85,17 @@
         <activity
             android:name=".Test"
             android:label="@string/title_activity_test"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".InitActivity"
+            android:label="@string/title_activity_profile_page"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
 
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
     </application>
 

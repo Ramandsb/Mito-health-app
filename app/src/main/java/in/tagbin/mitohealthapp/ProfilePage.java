@@ -2,10 +2,11 @@ package in.tagbin.mitohealthapp;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,19 +17,21 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
 import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -37,6 +40,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -49,8 +53,6 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -69,8 +71,11 @@ import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
 import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
-public class ProfilePage extends AppCompatActivity implements PicModeSelectDialogFragment.IPicModeSelectListener {
+
+public class ProfilePage extends Fragment implements PicModeSelectDialogFragment.IPicModeSelectListener {
     private int year, month, day;
     private DatePicker datePicker;
     private Calendar calendar;
@@ -103,41 +108,50 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
     public static final int REQUEST_CODE_UPDATE_PIC = 0x1;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            Window w = getWindow();
-//            w.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-//            w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
-        }
-        setContentView(R.layout.activity_profile_page);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
 
 
-        choose_image = (Button) findViewById(R.id.choose_image);
-        login_details = getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+////            Window w = getWindow();
+////            w.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+////            w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+////            w.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//
+//        }
+        View Fragview = inflater.inflate(R.layout.content_profile_page, container, false);
+
+
+        choose_image = (Button) Fragview.findViewById(R.id.choose_image);
+        login_details = getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
         user_id = login_details.getString("user_id", "");
-        auth_key = login_details.getString("key", "");
+        auth_key = login_details.getString("auth_key", "");
+
         calendar = Calendar.getInstance();
         makeJsonObjReq();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         dob = year + "-" + month + "-" + day;
-        profile_pic = (ImageView) findViewById(R.id.profile_pic);
-        profile_name = (TextView) findViewById(R.id.profile_name);
-        name = getIntent().getStringExtra("name");
+        profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
+        profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
+        name = getActivity().getIntent().getStringExtra("name");
 
 
-        if (getIntent().hasExtra("picture")) {
-            url = getIntent().getStringExtra("picture");
+        if (getActivity().getIntent().hasExtra("picture")) {
+            url = getActivity().getIntent().getStringExtra("picture");
         }
         Log.d("check url", "" + myurl);
         if (url.equals("")) {
-            if (profileImage.equals(null)) {
+            if (profileImage == null) {
 
                 profile_pic.setImageDrawable(getResources().getDrawable(R.drawable.profile_tabicon));
 
@@ -150,16 +164,16 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
         }
         profile_name.setText(name);
 //        Picasso.with(this).load(url).into(profile_pic);
-        View select_date = findViewById(R.id.select_date);
-        View select_height = findViewById(R.id.select_height);
-        View select_weight = findViewById(R.id.select_weight);
-        View select_waist = findViewById(R.id.select_waist);
-        male_view = findViewById(R.id.male_view);
-        female_view = findViewById(R.id.female_view);
-        dob_tv = (TextView) findViewById(R.id.dob);
-        height_tv = (TextView) findViewById(R.id.height_tv);
-        weight_tv = (TextView) findViewById(R.id.weight_tv);
-        waist_tv = (TextView) findViewById(R.id.waist_tv);
+        View select_date = Fragview.findViewById(R.id.select_date);
+        View select_height = Fragview.findViewById(R.id.select_height);
+        View select_weight = Fragview.findViewById(R.id.select_weight);
+        View select_waist = Fragview.findViewById(R.id.select_waist);
+        final View male_view = Fragview.findViewById(R.id.male_view);
+        final View female_view = Fragview.findViewById(R.id.female_view);
+        dob_tv = (TextView) Fragview.findViewById(R.id.dob);
+        height_tv = (TextView) Fragview.findViewById(R.id.height_tv);
+        weight_tv = (TextView) Fragview.findViewById(R.id.weight_tv);
+        waist_tv = (TextView) Fragview.findViewById(R.id.waist_tv);
 
 
         choose_image.setOnClickListener(new View.OnClickListener() {
@@ -190,7 +204,7 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
         select_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(999);
+                getActivity().showDialog(999);
             }
         });
         select_weight.setOnClickListener(new View.OnClickListener() {
@@ -211,77 +225,11 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
                 WheelDialog("waist");
             }
         });
-
-        AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-
-// Create items
-
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("", R.drawable.big_partner);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("", R.drawable.big_profile);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("", R.drawable.big_mito);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.big_cart);
-
-// Add itemsF63D2B
-        bottomNavigation.addItem(item1);
-        bottomNavigation.addItem(item2);
-        bottomNavigation.addItem(item3);
-        bottomNavigation.addItem(item4);
-
-// Set background color
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#ffffff"));
-
-// Disable the translation inside the CoordinatorLayout
-        bottomNavigation.setBehaviorTranslationEnabled(true);
-
-// Change colors
-//        bottomNavigation.setAccentColor(R.color.colorAccent);
-//        bottomNavigation.setInactiveColor(R.color.sample_bg);
-
-
-// Force to tint the drawable (useful for font with icon for example)
-        bottomNavigation.setForceTint(true);
-//        bottomNavigation.setInactiveColor(getResources().getColor(R.color.bottombar));
-        bottomNavigation.setAccentColor(getResources().getColor(R.color.bottombar));
-
-// Force the titles to be displayed (against Material Design guidelines!)
-        bottomNavigation.setForceTitlesDisplay(true);
-
-// Use colored navigation with circle reveal effect
-        bottomNavigation.setColored(false);
-
-// Set current item programmatically
-        bottomNavigation.setCurrentItem(1);
-
-// Customize notification (title, background, typeface)
-        bottomNavigation.setNotificationBackgroundColor(getResources().getColor(R.color.bottombar));
-
-// Add or remove notification for each item68822836
-        bottomNavigation.setNotification("4", 1);
-        bottomNavigation.setNotification("", 1);
-
-// Set listeners
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                // Do something cool here...
-                if (position == 2) {
-                    startActivity(new Intent(ProfilePage.this, HomePage.class));
-                }
-                return true;
-            }
-        });
-        bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
-            @Override
-            public void onPositionChange(int y) {
-                // Manage the new y position
-            }
-        });
-
+        return Fragview;
     }
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent result) {
+    public void onActivityResult(int requestCode, int resultCode, Intent result) {
         if (requestCode == REQUEST_CODE_UPDATE_PIC) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
@@ -290,7 +238,7 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
                 //TODO : Handle case
             } else {
                 String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
-                Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -309,20 +257,20 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
     private void showAddProfilePicDialog() {
         PicModeSelectDialogFragment dialogFragment = new PicModeSelectDialogFragment();
         dialogFragment.setiPicModeSelectListener(this);
-        dialogFragment.show(getFragmentManager(), "picModeSelector");
+        dialogFragment.show(getActivity().getFragmentManager(), "picModeSelector");
     }
 
     private void actionProfilePic(String action) {
-        Intent intent = new Intent(this, ImageCropActivity.class);
+        Intent intent = new Intent(getActivity(), ImageCropActivity.class);
         intent.putExtra("ACTION", action);
         startActivityForResult(intent, REQUEST_CODE_UPDATE_PIC);
     }
 
     @SuppressLint("InlinedApi")
     private void checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1234);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1234);
         }
     }
 
@@ -333,38 +281,13 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         // Necessary to restore the BottomBar's state, otherwise we would
         // lose the current tab on orientation change.
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
-
-            makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
-//            startActivity(new Intent(ProfilePage.this,HomePage.class));
-//            finish();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     public void WheelDialog(String source) {
         String[] feets = null, inches = null, unit = null;
@@ -402,7 +325,7 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
         }
 
 
-        View outerView = View.inflate(this, R.layout.wheel_view, null);
+        View outerView = View.inflate(getActivity(), R.layout.wheel_view, null);
         if (source.equals("waist")) {
 
 
@@ -449,7 +372,7 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
         });
 
         if (source.equals("weight")) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(getActivity())
                     .setTitle("Weight Tracker")
                     .setView(outerView)
                     .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
@@ -470,7 +393,8 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
                     })
                     .show();
         } else if (source.equals("height")) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(getActivity())
+
                     .setTitle("Height Tracker")
                     .setView(outerView)
                     .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
@@ -490,7 +414,7 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
                     })
                     .show();
         } else if (source.equals("waist")) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(getActivity())
                     .setTitle("Waist Tracker")
                     .setView(outerView)
                     .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
@@ -514,11 +438,10 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
 
     }
 
-    @Override
     protected Dialog onCreateDialog(int id) {
         // TODO Auto-generated method stub
         if (id == 999) {
-            return new DatePickerDialog(this, myDateListener, year, month, day);
+            return new DatePickerDialog(getActivity(), myDateListener, year, month, day);
         }
         return null;
     }
@@ -536,8 +459,49 @@ public class ProfilePage extends AppCompatActivity implements PicModeSelectDialo
         }
     };
 
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("PREPDUG", "hereProfile");
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setVisible(false);
+        }
+        //InitActivity i = (InitActivity) getActivity();
+        //i.getActionBar().setTitle("Profile");
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(true);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_save) {
+
+            makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+//            InitActivity.change(2);
+
+            InitActivity i = (InitActivity) getActivity();
+            i.bottomNavigation.setCurrentItem(2);
+            //i.change(2);
+
+//            getFragmentManager().beginTransaction().replace(R.id.fragmentnew,new HomePage()).commit();
+            //finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
     private void makeJsonObjReq(String name, String sex, String dob, String height, String waist, String weight) {
-showDialog();
+        showDialog();
         Map<String, String> postParam = new HashMap<String, String>();
 
         Log.d("details", user_id + "//" + auth_key);
@@ -551,9 +515,6 @@ showDialog();
          "height": 179,
          "dob": "1994-12-18"
          */
-
-
-
 
 
         postParam.put("first_name", first_name);
@@ -580,10 +541,8 @@ showDialog();
                         showDialog();
                         progressBar.setVisibility(View.GONE);
                         messageView.setText("Profile Updated Successfuly");
-                        startActivity(new Intent(ProfilePage.this,HomePage.class));
-                        finish();
-
-
+                        //startActivity(new Intent(ProfilePage.this, HomePage.class));
+                        //finish();
 
 
                     }
@@ -620,7 +579,7 @@ showDialog();
     private void makeJsonObjReq() {
 
         Map<String, String> postParam = new HashMap<String, String>();
-        final SharedPreferences.Editor editor= login_details.edit();
+        final SharedPreferences.Editor editor = login_details.edit();
         Log.d("details", user_id + "//" + auth_key);
         /**
          *  "first_name": "Nairitya",
@@ -668,22 +627,22 @@ showDialog();
                             String weight = profile.getString("weight");
                             String waist = profile.getString("waist");
 
-                            int wei=Integer.valueOf(weight);
-                          int  grams= wei%1000;
-                            int kg =wei/1000;
-                            int hei=Integer.valueOf(height);
-                            int  fee= hei/12;
-                            int inv =wei%1000;
+                            int wei = Integer.valueOf(weight);
+                            int grams = wei % 1000;
+                            int kg = wei / 1000;
+                            int hei = Integer.valueOf(height);
+                            int fee = hei / 12;
+                            int inv = wei % 1000;
                             dob_tv.setText(dob + "");
-                            height_tv.setText("" + fee+"'"+inv+"''");
-                            editor.putString("weight",weight);
-                            editor.putString("waist",waist);
-                            editor.putString("height",height);
-                            editor.putString("gender",gender);
-                            editor.putString("dob",dob);
-editor.commit();
+                            height_tv.setText("" + fee + "'" + inv + "''");
+                            editor.putString("weight", weight);
+                            editor.putString("waist", waist);
+                            editor.putString("height", height);
+                            editor.putString("gender", gender);
+                            editor.putString("dob", dob);
+                            editor.commit();
 
-                            weight_tv.setText("" + kg+"."+grams);
+                            weight_tv.setText("" + kg + "." + grams);
                             if (gender.equals("M")) {
                                 male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
                                 female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
@@ -697,42 +656,40 @@ editor.commit();
                             try {
 
 
-
-
 //                                JSONObject images=     res.getJSONObject("images");
 //                                String master=   images.getString("master");
 //                                editor.putString("master_image",master);
 //
 
-                                JSONArray energy=    res.getJSONArray("energy");
-                                Log.d("energy details",energy.toString());
+                                JSONArray energy = res.getJSONArray("energy");
+                                Log.d("energy details", energy.toString());
 
-                                String[] energyi=new String[5];
-                                for (int i =0;i<energy.length();i++){
+                                String[] energyi = new String[5];
+                                for (int i = 0; i < energy.length(); i++) {
 
-                                    energyi[i]=energy.get(i).toString();
+                                    energyi[i] = energy.get(i).toString();
 
-                                    Log.d("energy val",energyi[i]);
+                                    Log.d("energy val", energyi[i]);
                                 }
-                                editor.putString("water_amount",energyi[1]);
-                                editor.putString("food_cal",energyi[2]);
-                                editor.putString("calorie_burnt",energyi[3]);
-                                editor.putString("total_calorie_required",energyi[4]);
-                                Log.d("energy details",energyi[1]+"///"+energyi[2]+"///"+energyi[3]+"///"+energyi[4]+"///");
+                                editor.putString("water_amount", energyi[1]);
+                                editor.putString("food_cal", energyi[2]);
+                                editor.putString("calorie_burnt", energyi[3]);
+                                editor.putString("total_calorie_required", energyi[4]);
+                                Log.d("energy details", energyi[1] + "///" + energyi[2] + "///" + energyi[3] + "///" + energyi[4] + "///");
 
-                                JSONObject user =   res.getJSONObject("user");
-                                String user_username=   user.getString("username");
-                                String user_first_name=   user.getString("first_name");
-                                String user_last_name=  user.getString("last_name");
-                                String user_email=   user.getString("email");
+                                JSONObject user = res.getJSONObject("user");
+                                String user_username = user.getString("username");
+                                String user_first_name = user.getString("first_name");
+                                String user_last_name = user.getString("last_name");
+                                String user_email = user.getString("email");
 
-                                editor.putString("user_username",user_username);
-                                editor.putString("user_first_name",user_first_name);
-                                editor.putString("user_last_name",user_last_name);
-                                editor.putString("user_email",user_email);
+                                editor.putString("user_username", user_username);
+                                editor.putString("user_first_name", user_first_name);
+                                editor.putString("user_last_name", user_last_name);
+                                editor.putString("user_email", user_email);
 
                                 editor.commit();
-                                Log.d("all details",login_details.getAll().toString())   ;
+                                Log.d("all details", login_details.getAll().toString());
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -749,7 +706,7 @@ editor.commit();
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("error", "Error: " + error.getMessage());
-displayErrors(error);
+                displayErrors(error);
 
                 Log.d("error", error.toString());
             }
@@ -774,14 +731,15 @@ displayErrors(error);
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
-    private class DownloadImage extends AsyncTask<String, Void, Bitmap> {
+
+    class DownloadImage extends AsyncTask<String, Void, Bitmap> {
         ProgressDialog mProgressDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             // Create a progressdialog
-            mProgressDialog = new ProgressDialog(ProfilePage.this);
+            mProgressDialog = new ProgressDialog(getActivity());
             // Set progressdialog title
             mProgressDialog.setTitle("Download Image");
             // Set progressdialog message
@@ -818,8 +776,8 @@ displayErrors(error);
     }
 
     public void customDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View customView = inflater.inflate(R.layout.dialog, null);
         builder.setView(customView);

@@ -1,11 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="in.tagbin.googlecalender.MainActivity">
+    xmlns:app1="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/action_save"
-        android:orderInCategory="100"
-        android:title="Save"
-        app:showAsAction="always" />
+        android:title="@string/save"
+        app1:showAsAction="always"
+        android:orderInCategory="1"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/action_done"
+        android:title="Done"
+        app1:showAsAction="always"
+        android:visible="true" />
+
 
 </menu>
