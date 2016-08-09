@@ -150,7 +150,7 @@ public class HomePage extends AppCompatActivity implements DatePickerDialog.OnDa
         String calorie_burnt=   login_details.getString("calorie_burnt","");
         String total_calorie_required=   login_details.getString("total_calorie_required","");
 
-        Float left= Float.valueOf(total_calorie_required)-Float.valueOf(food_cal);
+//        Float left= Float.valueOf(total_calorie_required)-Float.valueOf(food_cal);
         if (water_amount.equals("") ||food_cal.equals("")||calorie_burnt.equals("")||total_calorie_required.equals("")){
 
         }else {
