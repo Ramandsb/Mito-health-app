@@ -62,14 +62,28 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
        handler = new Handler();
-        LocalDateTime mSelectedDate = LocalDateTime.now();
+        Calendar  calendar = Calendar.getInstance();
 
-        int day = mSelectedDate.getDayOfMonth();
-        int month = mSelectedDate.getMonthOfYear();
-        int year = mSelectedDate.getYear();
-        selectedDate = year + "-" + month + "-" + day;
-        Log.d("Water startdate",selectedDate);
-//        calenderTrans();
+        int  year = calendar.get(Calendar.YEAR);
+        int  month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = month+1;
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+
+        }
+
+
     }
 
     @Override
@@ -308,11 +322,23 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+
         int day=   date.getDay();
         int month=   date.getMonth()+1;
         int year=   date.getYear();
-        selectedDate=year+"-"+month+"-"+day;
-        Log.d("date",selectedDate);
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+        }
     }
     private String getSelectedDatesString() {
         CalendarDay date = widget.getSelectedDate();

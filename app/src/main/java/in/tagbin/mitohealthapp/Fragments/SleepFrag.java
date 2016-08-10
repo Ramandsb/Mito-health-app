@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
@@ -50,7 +52,6 @@ public class SleepFrag extends Fragment implements DatePickerDialog.OnDateSetLis
     RecyclerView food_list;
     SleepAdapter sleepAdapter;
    DatabaseOperations dop;
-    RWeekCalendar rCalendarFragment;
     SharedPreferences login_details;
     String auth_key;
     int hour,min;
@@ -64,6 +65,7 @@ RatingBar ratingBar;
     int a=0,b=0,c=0;
     int i = 0;
     int mBgColor=0;
+   static String uniqueId="";
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
 
     MaterialCalendarView widget;
@@ -76,12 +78,24 @@ RatingBar ratingBar;
         super.onCreate(savedInstanceState);
         dop=new DatabaseOperations(getActivity());
         login_details=getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, getActivity().MODE_PRIVATE);
-        LocalDateTime mSelectedDate = LocalDateTime.now();
-
-        int day = mSelectedDate.getDayOfMonth();
-        int month = mSelectedDate.getMonthOfYear();
-        int year = mSelectedDate.getYear();
-        selectedDate = year + "-" + month + "-" + day;
+        Calendar  calendar = Calendar.getInstance();
+        int  year = calendar.get(Calendar.YEAR);
+        int  month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = month+1;
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+        }
         Log.d("food startdate", selectedDate);
 
 
@@ -97,7 +111,7 @@ RatingBar ratingBar;
         end_time= (TextView) view.findViewById(R.id.end_time);
         no_of_hours= (TextView) view.findViewById(R.id.set_no_hours);
         ratingBar= (RatingBar) view.findViewById(R.id.rating);
-        setDatafromdatabase(selectedDate);
+//        setDatafromdatabase(selectedDate);
         /////////////////////
 
         Calendar calendar = Calendar.getInstance();
@@ -115,6 +129,7 @@ RatingBar ratingBar;
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
                 .commit();
 
+
         //////////////////
 
         start_time.setOnClickListener(new View.OnClickListener(){
@@ -129,11 +144,18 @@ RatingBar ratingBar;
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
 
+
                                 String time=hourOfDay + ":" + minute;
                                 start_time.setText(time);
-                                ContentValues cv = new ContentValues();
-                                cv.put(TableData.Tableinfo.START_TIME, time);
-                                dop.updateSleepRow(dop, cv, test);
+                                if (uniqueId.equals("")){
+                                    uniqueId=   String.valueOf(System.currentTimeMillis());
+                                    dop.putSleepInformation(dop,uniqueId,time,"end",selectedDate);
+                                }else {
+                                    ContentValues cv = new ContentValues();
+                                    cv.put(TableData.Tableinfo.START_TIME, time);
+                                    dop.updateSleepRow(dop, cv, uniqueId);
+                                }
+
                                 Log.d("sleep date",SleepFrag.selectedDate);
                             }
                         }, hour, min, false);
@@ -154,53 +176,21 @@ RatingBar ratingBar;
                                 // holder.end_tiem.setText(hourOfDay + ":" + minute);
                                 String time=hourOfDay + ":" + minute;
                                 end_time.setText(time);
-                                ContentValues cv = new ContentValues();
-                                cv.put(TableData.Tableinfo.END_TIME, time);
-                                dop.updateSleepRow(dop, cv, test);
+                                if (uniqueId.equals("")){
+                                    Snackbar.make(view,"Select Start Time",Snackbar.LENGTH_LONG).show();
+
+                                }else {
+                                    ContentValues cv = new ContentValues();
+                                    cv.put(TableData.Tableinfo.END_TIME, time);
+                                    dop.updateSleepRow(dop, cv, uniqueId);
+                                }
+
                             }
                         }, hour, min, false);
                 tpd.show();
 
             }
         });
-//        food_list= (RecyclerView) view.findViewById(R.id.food_list);
-//        food_list.setItemAnimator(new SlideInLeftAnimator());
-//        food_list.getItemAnimator().setRemoveDuration(1000);
-//        SlideInLeftAnimator animator = new SlideInLeftAnimator();
-//        animator.setInterpolator(new OvershootInterpolator());
-//// or recyclerView.setItemAnimator(new SlideInUpAnimator(new OvershootInterpolator(1f));
-//        food_list.setItemAnimator(animator);
-////        calenderTrans();
-//        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
-//        food_list.setLayoutManager(linearLayoutManager);
-//        database_list=new ArrayList<>();
-//        dop=new DatabaseOperations(getActivity());
-//        sleepAdapter=new SleepAdapter(getActivity());
-//
-//        food_list.setAdapter(sleepAdapter);
-//        food_list.setHasFixedSize(true);
-//        database_list=  dop.getsleepInformation(dop, CollapsableLogging.selectedDate);
-//        sleepAdapter.setData(database_list);
-//        sleepAdapter.notifyDataSetChanged();
-//
-//
-//        ItemClickSupport.addTo(food_list).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-//            @Override
-//            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-//
-////                startActivity(new Intent(getActivity(), FoodDetails.class));
-////
-//// akshayluthra12@
-//
-//            }
-//        });
-//        if (database_list.isEmpty()){
-//
-//        }else {
-//
-//        }
-//        Log.d("final selected date", CollapsableLogging.selectedDate);
-
         return view;
     }
 
@@ -245,10 +235,7 @@ int min=0;
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        Calendar calendar = Calendar.getInstance();
 
-        calendar.set(year, monthOfYear, dayOfMonth);
-        rCalendarFragment.setDateWeek(calendar);
     }
 
     @Override
@@ -260,11 +247,24 @@ int min=0;
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+
         int day=   date.getDay();
-        int month=   date.getMonth();
+        int month=   date.getMonth()+1;
         int year=   date.getYear();
-        selectedDate=year+"-"+month+"-"+day;
-        database_list = dop.getInformation(dop, selectedDate);
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+        }
+        database_list = dop.getsleepInformation(dop, selectedDate);
         sleepAdapter.setData(database_list);
         sleepAdapter.notifyDataSetChanged();
         Log.d("date",selectedDate);

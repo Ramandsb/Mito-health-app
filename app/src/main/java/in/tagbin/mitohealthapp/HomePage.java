@@ -104,7 +104,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         super.onCreate(savedInstanceState);
 
         Log.d("PREPDUG","Setting options true");
-        InitActivity i = (InitActivity) getActivity();
+        BinderActivity i = (BinderActivity) getActivity();
         setHasOptionsMenu(true);
         i.invalidateOptionsMenu();
 
@@ -407,7 +407,6 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         }
         menu.findItem(R.id.action_done).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(true);
-        //InitActivity.toolbar.setTitle("Mito");
         super.onPrepareOptionsMenu(menu);
     }
 

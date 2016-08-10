@@ -38,13 +38,13 @@ import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.R;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
-public class ExerciseFrag extends Fragment implements DatePickerDialog.OnDateSetListener,ExerciseInterface,OnDateSelectedListener {
+public class ExerciseFrag extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
     ArrayList<DataItems> database_list;
     RecyclerView food_list;
-    ExerciseAdapter sleepAdapter;
+    ExerciseAdapter exerciseAdapter;
     DatabaseOperations dop;
-    RWeekCalendar rCalendarFragment;
     SharedPreferences login_details;
+
     String auth_key;
     ExerciseInterface exerciseInterface;
 
@@ -53,9 +53,6 @@ public class ExerciseFrag extends Fragment implements DatePickerDialog.OnDateSet
     MaterialCalendarView widget;
     public static String selectedDate = "";
 
-    int a = 0, b = 0, c = 0;
-    int i = 0;
-    int mBgColor = 0;
 
     public ExerciseFrag() {
 
@@ -66,13 +63,26 @@ public class ExerciseFrag extends Fragment implements DatePickerDialog.OnDateSet
         super.onCreate(savedInstanceState);
         dop = new DatabaseOperations(getActivity());
         login_details = getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, getActivity().MODE_PRIVATE);
-        LocalDateTime mSelectedDate = LocalDateTime.now();
+        Calendar  calendar = Calendar.getInstance();
 
-        int day = mSelectedDate.getDayOfMonth();
-        int month = mSelectedDate.getMonthOfYear();
-        int year = mSelectedDate.getYear();
-        selectedDate = year + "-" + month + "-" + day;
-        Log.d("food startdate", selectedDate);
+        int  year = calendar.get(Calendar.YEAR);
+        int  month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = month+1;
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+
+        }
 
     }
 
@@ -94,12 +104,12 @@ public class ExerciseFrag extends Fragment implements DatePickerDialog.OnDateSet
         food_list.setLayoutManager(linearLayoutManager);
         database_list = new ArrayList<>();
         dop = new DatabaseOperations(getActivity());
-        sleepAdapter = new ExerciseAdapter(getActivity());
-        food_list.setAdapter(sleepAdapter);
+        exerciseAdapter = new ExerciseAdapter(getActivity());
+        food_list.setAdapter(exerciseAdapter);
         food_list.setHasFixedSize(true);
         database_list = dop.getExerciseInformation(dop, selectedDate);
-        sleepAdapter.setData(database_list);
-        sleepAdapter.notifyDataSetChanged();
+        exerciseAdapter.setData(database_list);
+        exerciseAdapter.notifyDataSetChanged();
         /////////////////////
 
         Calendar calendar = Calendar.getInstance();
@@ -140,18 +150,11 @@ public class ExerciseFrag extends Fragment implements DatePickerDialog.OnDateSet
 
         return view;
     }
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-        ((CollapsableLogging)getActivity()).exerciseInterface = this;
-    }
+
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
-
-        calendar.set(year, monthOfYear, dayOfMonth);
-        rCalendarFragment.setDateWeek(calendar);
     }
 
     @Override
@@ -159,26 +162,29 @@ public class ExerciseFrag extends Fragment implements DatePickerDialog.OnDateSet
         super.onResume();
     }
 
-    @Override
-    public void passDataToFragment(String selected) {
-        Log.d("interfaceWorks",selected);
-        database_list = dop.getExerciseInformation(dop, selected);
-        sleepAdapter.setData(database_list);
-        sleepAdapter.notifyDataSetChanged();
-        selectedDate=selected;
-
-    }
 
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
 
         int day=   date.getDay();
-        int month=   date.getMonth();
+        int month=   date.getMonth()+1;
         int year=   date.getYear();
-        selectedDate=year+"-"+month+"-"+day;
-        database_list = dop.getInformation(dop, selectedDate);
-        sleepAdapter.setData(database_list);
-        sleepAdapter.notifyDataSetChanged();
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+        }
+        database_list = dop.getExerciseInformation(dop, selectedDate);
+        exerciseAdapter.setData(database_list);
+        exerciseAdapter.notifyDataSetChanged();
         Log.d("date",selectedDate);
     }
     private String getSelectedDatesString() {

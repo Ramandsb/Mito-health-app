@@ -124,7 +124,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
             }
         });
 
-        Picasso.with(context).load(url).into(holder.food_image);
+//        Picasso.with(context).load(url).into(holder.food_image);
         holder.select_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -63,7 +63,6 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
     RecyclerView food_list;
     CustomAdapter customAdapter;
     DatabaseOperations dop;
-    RWeekCalendar rCalendarFragment;
     SharedPreferences login_details;
     String auth_key;
 

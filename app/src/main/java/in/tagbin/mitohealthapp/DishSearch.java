@@ -40,6 +40,7 @@ import org.json.JSONObject;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import br.com.mauker.materialsearchview.MaterialSearchView;
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
@@ -101,8 +102,7 @@ public class DishSearch extends AppCompatActivity {
                 if (back.equals("food")){
                     Timepick();
                 }else  if (back.equals("exercise")){
-                    dop.putExerciseInformation(dop,unique_id,food_id,adapterView.getItemAtPosition(i).toString(),ExerciseFrag.selectedDate,"20","5","3");
-
+                    WheelDialog("Select Weight");
 
                 }
 
@@ -144,8 +144,15 @@ public class DishSearch extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",0));
-                finish();
+
+                if (back.equals("exercise")){
+                    startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",2));
+                    finish();
+
+                }else if (back.equals("food")){
+                    startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",0));
+                    finish();
+                }
             }
         });
     }
@@ -362,4 +369,131 @@ public class DishSearch extends AppCompatActivity {
                 }, hour, min, false);
         tpd.show();
     }
-}
+    ArrayList<String> weightList,setsList,repsList;
+    String weight="20",sets="4",reps="15";
+    String currentId="",currentDate="";
+
+    public void setUplists(){
+        int weightint=0;
+        for (int i=0;i<25;i++){
+            weightint=i*5;
+            weightList.add(String.valueOf(weightint));
+        }
+        for (int i =0; i<20;i++){
+            setsList.add(String.valueOf(i));
+        }
+        for (int i =0; i<50;i++){
+            repsList.add(String.valueOf(i));
+        }
+
+    }
+    public void WheelDialog(final String source) {
+        String[] feets = null, inches = null, unit = null;
+
+
+        feets = new String[22];
+        inches = new String[21];
+        unit = new String[51];
+        for (int i = 0; i <= 21; i++) {
+            feets[i] = "" + (i * 5);
+        }
+        for (int i = 0; i <= 20; i++) {
+            inches[i] = "" + (i);
+        }
+        for (int i = 0; i <= 50; i++) {
+            unit[i] = "" + (i);
+        }
+
+
+        View outerView = View.inflate(this, R.layout.wheel_view, null);
+        if (source.equals("Select Weight")) {
+            WheelView wv1 = (WheelView) outerView.findViewById(R.id.wheel_view_wv1);
+            wv1.setOffset(2);
+            wv1.setItems(Arrays.asList(feets));
+            wv1.setSeletion(5);
+            wv1.setVisibility(View.VISIBLE);
+            wv1.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+                @Override
+                public void onSelected(int selectedIndex, String item) {
+                    Log.d("feet", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+                    weight = item;
+                }
+            });
+        }
+
+        if (source.equals("Select Sets")) {
+            WheelView wv2 = (WheelView) outerView.findViewById(R.id.wheel_view_wv2);
+            wv2.setOffset(2);
+            wv2.setItems(Arrays.asList(inches));
+            wv2.setSeletion(4);
+            wv2.setVisibility(View.VISIBLE);
+            wv2.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+                @Override
+                public void onSelected(int selectedIndex, String item) {
+                    Log.d("inches", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+
+                    sets = item;
+
+                }
+            });
+        }
+
+
+        if (source.equals("Select Reps")) {
+            WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_view_wv3);
+            wv.setOffset(2);
+            wv.setItems(Arrays.asList(unit));
+            wv.setSeletion(5);
+            wv.setVisibility(View.VISIBLE);
+            wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+                @Override
+                public void onSelected(int selectedIndex, String item) {
+                    Log.d("Tag", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+
+                    reps = item;
+                }
+            });
+        }
+        new android.support.v7.app.AlertDialog.Builder(this)
+                .setTitle(source)
+                .setView(outerView)
+                .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (source.equals("Select Weight")) {
+
+                            Log.d("val", weight);
+//                            ContentValues contentValues = new ContentValues();
+//                            contentValues.put(TableData.Tableinfo.WEIGHT, weight);
+//                            dop.updateExerRow(dop, contentValues, currentId);
+                            WheelDialog("Select Sets");
+
+
+                        } else if (source.equals("Select Sets")) {
+                            Log.d("val", sets);
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(TableData.Tableinfo.SETS, sets);
+//                            dop.updateExerRow(dop, contentValues, currentId);
+                            WheelDialog("Select Reps");
+                        } else if (source.equals("Select Reps")) {
+                            Log.d("val", reps);
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(TableData.Tableinfo.REPS, reps);
+//                            dop.updateExerRow(dop, contentValues, currentId);
+             dop.putExerciseInformation(dop,unique_id,food_id,dishName,ExerciseFrag.selectedDate,weight,sets,reps);
+
+                        }
+
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+
+    }
+    }
