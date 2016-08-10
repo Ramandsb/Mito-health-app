@@ -70,7 +70,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
     SharedPreferences login_details;
     String auth_key;
     int current_item=0;
+   String Uniqueid="";
     String time_stamp="";
+    MyviewHolder myviewHolder;
     String url="http://pngimg.com/upload/small/apple_PNG12458.png";
     public CustomAdapter(Context context) {
         // TODO Auto-generated constructor stub
@@ -90,8 +92,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
     @Override
     public MyviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.listview_layout, parent, false);
-        MyviewHolder viewHolder = new MyviewHolder(view);
-        return viewHolder;
+        myviewHolder = new MyviewHolder(view);
+        return myviewHolder;
     }
 
     @Override
@@ -99,13 +101,25 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
         current_item=position;
         final DataItems dataItems= result.get(position);
 
+        Uniqueid=dataItems.getId();
         holder.food_name.setText(dataItems.getFood_name());
         holder.time.setText(dataItems.getTime_consumed());
-        holder.quantity.setText(dataItems.getAmount());
+        holder.quantity.setText(dataItems.getAmount()+" Pieces");
+        String sync= dataItems.getSynced();
+        Log.d("check sync",sync);
+        if (sync.equals("yes")){
+            holder.tick.setVisibility(View.INVISIBLE);
+            holder.cross.setVisibility(View.INVISIBLE);
+            holder.reset.setVisibility(View.INVISIBLE);
+            holder.select_time.setEnabled(false);
+            holder.quantity.setEnabled(false);
+            Log.d("yes sync",sync);
+        }else Log.d("no sync",sync);
         holder.quantity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 quantity_dialog(dataItems.getId());
+
                 notifyDataSetChanged();
             }
         });
@@ -152,7 +166,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
             @Override
             public void onClick(View v) {
                 Toast.makeText(context,"cross"+dataItems.getFood_name(),Toast.LENGTH_LONG).show();
-                Cross_dialog(dataItems.getFood_id());
+                Cross_dialog(dataItems.getFood_id(),dataItems.getId());
             }
         });
         holder.reset.setOnClickListener(new View.OnClickListener() {
@@ -182,7 +196,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
     }
 
 
-    public  void Cross_dialog(final String id){
+    public  void Cross_dialog(final String foodId, final String id){
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle("Did you have Something else?");
                alertDialog.setPositiveButton("Yes",
@@ -190,12 +204,15 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
                            public void onClick(DialogInterface dialog, int which) {
 
                                CollapsableLogging.mSheetLayout.expandFab();
+                               dop.deleteRow(dop, TableData.Tableinfo.TABLE_NAME_FOOD, TableData.Tableinfo.ID,id);
 
                            }
                        });
         alertDialog.setNegativeButton("No",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+
+                        dop.deleteRow(dop, TableData.Tableinfo.TABLE_NAME_FOOD, TableData.Tableinfo.ID,id);
                         result.remove(current_item);
                         notifyItemRemoved(current_item);
                         dialog.cancel();
@@ -316,6 +333,15 @@ static class MyviewHolder extends AnimateViewHolder {
                         Log.d("response", response.toString());
 
 
+
+                        ContentValues cv = new ContentValues();
+                        cv.put(TableData.Tableinfo.SYNCED,"yes");
+                        dop.updateRow(dop,cv,Uniqueid);
+                        myviewHolder.tick.setVisibility(View.INVISIBLE);
+                        myviewHolder.cross.setVisibility(View.INVISIBLE);
+                        myviewHolder.reset.setVisibility(View.INVISIBLE);
+                        myviewHolder.select_time.setEnabled(false);
+                        myviewHolder.quantity.setEnabled(false);
 
 
 

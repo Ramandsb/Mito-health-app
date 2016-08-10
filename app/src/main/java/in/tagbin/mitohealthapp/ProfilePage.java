@@ -93,7 +93,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     SharedPreferences login_details;
     String user_id, auth_key;
     String dob = "";
-    int height, weight, waist;
+   static int height=0, weight=0, waist=0;
     Button choose_image;
     public static String myurl = "";
     public static Bitmap profileImage;
@@ -138,7 +138,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         choose_image = (Button) Fragview.findViewById(R.id.choose_image);
         login_details = getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
         user_id = login_details.getString("user_id", "");
-        auth_key = login_details.getString("auth_key", "");
+        auth_key = login_details.getString("key", "");
 
         calendar = Calendar.getInstance();
 
@@ -150,6 +150,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
         profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
         name = getActivity().getIntent().getStringExtra("name");
+
 
 
         if (getActivity().getIntent().hasExtra("picture")) {
@@ -180,8 +181,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         height_tv = (TextView) Fragview.findViewById(R.id.height_tv);
         weight_tv = (TextView) Fragview.findViewById(R.id.weight_tv);
         waist_tv = (TextView) Fragview.findViewById(R.id.waist_tv);
-
-
         choose_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -189,12 +188,16 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             }
         });
         checkPermissions();
+        updateProfile();
         male_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
                 female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
                 gender = "M";
+                SharedPreferences.Editor saveGender= login_details.edit();
+                saveGender.putString("gender",gender);
+                saveGender.commit();
             }
         });
         female_view.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +206,9 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                 male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_m));
                 female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_));
                 gender = "F";
+                SharedPreferences.Editor saveGender= login_details.edit();
+                saveGender.putString("gender",gender);
+                saveGender.commit();
             }
         });
         customDialog();
@@ -233,16 +239,24 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                                 year=i;
                                 month=i1+1;
                                 day=i2;
-                                if (month<10 || day <10){
-                                    dob = year + "-" + "0"+month + "-" + "0"+day;
-                                    dob_tv.setText(dob);
-                                    Log.d("date",dob);
-                                }else {
-                                    dob = year + "-" + month + "-" + day;
-                                    Log.d("date", dob);
-                                    dob_tv.setText(dob);
 
+                                if (month<=9 && day <=9){
+                                    dob = year + "-" + "0"+month + "-" + "0"+day;
+                                    Log.d("dob",dob);
+                                }else  if (month<=9 && day >9){
+                                    dob = year + "-" + "0"+month + "-" + day;
+                                    Log.d("dob",dob);
+                                }else  if (day <=9 && month >9){
+                                    dob = year + "-" +month + "-" + "0"+day;
+                                    Log.d("dob",dob);
+                                }else if (day >9 && month >9){
+                                    dob = year + "-" + month + "-" + day;
+                                    Log.d("dob", dob);
                                 }
+                                SharedPreferences.Editor saveDob= login_details.edit();
+                                saveDob.putString("dob",dob);
+                                saveDob.commit();
+                                dob_tv.setText(dob);
 
                             }
                         }, year, month, day);
@@ -333,6 +347,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
 
     public void WheelDialog(String source) {
+
         String[] feets = null, inches = null, unit = null;
         if (source.equals("weight")) {
             feets = new String[101];
@@ -424,6 +439,24 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 //                        phyEd.setText(""+Sfeet+"."+Sinches+"  feets");
                             weight_tv.setText(feet_val + "." + inches_val + " " + unit_val);
                             weight = (Integer.valueOf(feet_val) * 1000) + Integer.valueOf(inches_val);
+                            final SharedPreferences.Editor saveDetails=login_details.edit();
+                            saveDetails.putInt("weight",weight);
+                            saveDetails.commit();
+                            if (height==0 || waist==0 || weight==0 ){
+
+                                if (height==0){
+                                    WheelDialog("height");
+
+                                }else if(weight==0){
+                                    WheelDialog("weight");
+                                }else if(waist==0){
+                                    WheelDialog("waist");
+                                }
+
+                            }else {
+
+                                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+                            }
 
 
                         }
@@ -445,6 +478,25 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         public void onClick(DialogInterface dialog, int which) {
                             height_tv.setText(feet_val + "'" + inches_val + "''");
                             height = (Integer.valueOf(feet_val) * 12) + Integer.valueOf(inches_val);
+                            final SharedPreferences.Editor saveDetails=login_details.edit();
+                            saveDetails.putInt("height",height);
+                            saveDetails.commit();
+                            if (height==0 || waist==0 || weight==0 ){
+
+
+                                if (height==0){
+                                    WheelDialog("height");
+
+                                }else if(weight==0){
+                                    WheelDialog("weight");
+                                }else if(waist==0){
+                                    WheelDialog("waist");
+                                }
+
+                            }else {
+
+                                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+                            }
 
 
                         }
@@ -466,6 +518,24 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 //                        phyEd.setText(""+Sfeet+"."+Sinches+"  feets");
                             waist_tv.setText(inches_val + "''");
                             waist = Integer.valueOf(inches_val);
+                            final SharedPreferences.Editor saveDetails=login_details.edit();
+                            saveDetails.putInt("waist",waist);
+                            saveDetails.commit();
+                            if (height==0 || waist==0 || weight==0 ){
+
+                                if (height==0){
+                                    WheelDialog("height");
+
+                                }else if(weight==0){
+                                    WheelDialog("weight");
+                                }else if(waist==0){
+                                    WheelDialog("waist");
+                                }
+
+                            }else {
+
+                                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+                            }
 
                         }
                     })
@@ -508,8 +578,21 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
 
+            if (height==0 || waist==0 || weight==0 ){
 
-            makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+                if (height==0){
+                    WheelDialog("height");
+
+                }else if(weight==0){
+                    WheelDialog("weight");
+                }else if(waist==0){
+                    WheelDialog("waist");
+                }
+
+            }else {
+
+                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+            }
 //            InitActivity.change(2);
 
 
@@ -664,16 +747,9 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                             int hei = Integer.valueOf(height);
                             int fee = hei / 12;
                             int inv = wei % 1000;
-                            dob_tv.setText(dob + "");
-                            height_tv.setText("" + fee + "'" + inv + "''");
-                            editor.putString("weight", weight);
-                            editor.putString("waist", waist);
-                            editor.putString("height", height);
-                            editor.putString("gender", gender);
-                            editor.putString("dob", dob);
-                            editor.commit();
+//
 
-                            weight_tv.setText("" + kg + "." + grams);
+//                            weight_tv.setText("" + kg + "." + grams);
 
                             try {
 
@@ -840,4 +916,54 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             messageView.setText("ParseError");
         }
     }
+    public void updateProfile() {
+
+     dob=   login_details.getString("dob","");
+     gender=   login_details.getString("gender","");
+     height=   login_details.getInt("height",0);
+     weight=   login_details.getInt("weight",0);
+     waist=   login_details.getInt("waist",0);
+
+        dob_tv.setText(dob);
+//        if (gender.equals("M")){
+//            male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
+//            female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
+//        }else  if (gender.equals("F")){
+//            male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_m));
+//            female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
+//        }
+
+
+
+        if (height==0){
+            height_tv.setText("Set Height");
+        }else {
+            int fee = height / 12;
+            int inch = height%12;
+            height_tv.setText(fee+"'"+inch+"''");
+
+        }
+        if (weight==0){
+            weight_tv.setText("Set Weight");
+        }else {
+            int grams = weight % 1000;
+            int kg = weight / 1000;
+            weight_tv.setText(kg+"."+grams+" Kg");
+        }
+        if (waist==0){
+            waist_tv.setText("Set Waist");
+        }else {
+
+            int inv = waist % 1000;
+            waist_tv.setText(inv+" ''");
+        }
+
+
+
+
+
+
+
+    }
+
 }

@@ -162,7 +162,7 @@ public class SleepAdapter extends RecyclerView.Adapter<SleepAdapter.MyviewHolder
         holder.del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dop.deleteRow(dop,dataItems.getSleep_unique());
+                dop.deleteRow(dop, TableData.Tableinfo.TABLE_NAME_SLEEP, TableData.Tableinfo.SLEEP_UNIQUE_ID,dataItems.getSleep_unique());
                 result.remove(current_item);
                 notifyItemRemoved(current_item);
                 setData(dop.getsleepInformation(dop, SleepFrag.selectedDate));

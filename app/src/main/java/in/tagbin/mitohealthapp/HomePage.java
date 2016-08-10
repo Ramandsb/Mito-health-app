@@ -150,12 +150,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
                             int  fee= hei/12;
                             int inv =wei%1000;
 
-                            editor.putString("weight",weight);
-                            editor.putString("waist",waist);
-                            editor.putString("height",height);
-                            editor.putString("gender",gender);
-                            editor.putString("dob",dob);
-                            editor.commit();
+
 
 
                             try {
@@ -247,16 +242,31 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.content_home_page,container,false);
-        LocalDateTime mSelectedDate = LocalDateTime.now();
-        int day = mSelectedDate.getDayOfMonth();
-        int month = mSelectedDate.getMonthOfYear();
-        int year = mSelectedDate.getYear();
-        selectedDate = year + "-" + month + "-" + day;
+        Calendar  calendar = Calendar.getInstance();
+
+        int  year = calendar.get(Calendar.YEAR);
+        int  month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = month+1;
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+
+        }
         widget= (MaterialCalendarView) v.findViewById(R.id.calendarView);
         // Add a decorator to disable prime numbered days
 
         Log.d("start Date",selectedDate);
-        Calendar calendar = Calendar.getInstance();
+
         widget.setSelectedDate(calendar.getTime());
 
         Calendar instance1 = Calendar.getInstance();

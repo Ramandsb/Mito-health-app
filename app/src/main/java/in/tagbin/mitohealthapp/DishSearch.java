@@ -322,7 +322,7 @@ public class DishSearch extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                      quantity=input.getText().toString();
-                        dop.putInformation(dop, unique_id, food_id, dishName, time, quantity, FoodFrag.selectedDate, "yes");
+                        dop.putInformation(dop, unique_id, food_id, dishName, time, quantity, FoodFrag.selectedDate, "no");
 
                         Snackbar.make(layout, "Food Logged Successfuly", Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
@@ -352,9 +352,9 @@ public class DishSearch extends AppCompatActivity {
                         min=minute;
                         if (hour >12){
                             hour=hour-12;
-                            time=hour+":"+min+ "PM";
+                            time=hour+":"+min;
                         }else {
-                            time=hour+":"+min+ "AM";
+                            time=hour+":"+min;
                         }
                         quantity_dialog();
 
