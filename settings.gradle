@@ -1,1 +1,1 @@
-include ':app', ':android-image-zoom-crop'
+include ':app', ':android-image-zoom-crop', ':ViewPagerIndicator-Library'
