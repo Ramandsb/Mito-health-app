@@ -46,7 +46,7 @@ public class InitActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbarInit);
         setActionBar(toolbar);
 
-        fra = new ProfilePage();
+        fra = new PartnerIntro();
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
 
         fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
@@ -117,7 +117,9 @@ public class InitActivity extends AppCompatActivity {
 
         switch (position){
             case 0:
+                toolbar.setTitle("Partner Connect");
                 Toast.makeText(InitActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
+                fra = new PartnerIntro();
                 break;
             case 1:
                 toolbar.setTitle("Profile");
