@@ -137,20 +137,7 @@ currentDate=dataItems.getExercise_date();
                 setData(dop.getExerciseInformation(dop, ExerciseFrag.selectedDate));
             }
         });
-        holder.tick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-//                try {
-////                    Date startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataItems.getDate()+" "+dataItems.getTime_consumed()+":00");
-////                    Log.d("converted time",startDate.toString()+"////"+startDate.getTime()+"////"+startDate.getDate());
-////                    time_stamp=String.valueOf(startDate.getTime()/1000);
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-                makeJsonObjReq(dataItems.getExercise_id());
-            }
-        });
 
 
 
@@ -302,7 +289,7 @@ if (source.equals("Select Weight")){
         TextView weight,sets,reps;
         TextView exercise_name;
         ImageView del;
-        ImageView tick;
+
 
 
 
@@ -313,7 +300,7 @@ if (source.equals("Select Weight")){
             sets = (TextView) rowView.findViewById(R.id.sets);
             reps = (TextView) rowView.findViewById(R.id.reps);
             del= (ImageView) rowView.findViewById(R.id.del);
-            tick= (ImageView) rowView.findViewById(R.id.done);
+
 
         }
 

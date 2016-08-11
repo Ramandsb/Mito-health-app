@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,12 +24,19 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
@@ -41,6 +50,8 @@ import org.json.JSONObject;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import br.com.mauker.materialsearchview.MaterialSearchView;
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
@@ -52,22 +63,26 @@ import in.tagbin.mitohealthapp.Pojo.DataItems;
 
 public class DishSearch extends AppCompatActivity {
     AutoCompleteTextView auto_tv;
-    ArrayList<String> names,sql_ids,add_dish;
+    ArrayList<String> names, sql_ids, add_dish;
     ArrayAdapter<String> adapter;
     ListView food_list;
     CustomAdapter customAdapter;
     MaterialSearchView searchView;
-    public  static String unique_id="";
-    String back="";
+    public static String unique_id = "";
+    String back = "";
+    SharedPreferences login_details;
     View layout;
     DatabaseOperations dop;
-    private static int hour=0, min=0, day=0;
+    private static int hour = 0, min = 0, day = 0;
     private static final String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/mito/recipe/_search";
 
-   static String food_id="";
-    String searchUrl="";
-    String exerUrl="http://api.mitoapp.com/v1/data/exercise?name=";
-    static  String dishName="",time="",quantity="";
+    static String food_id = "";
+    String searchUrl = "";
+    String exerUrl = "http://api.mitoapp.com/v1/data/exercise?name=";
+    static String dishName = "", time = "", quantity = "";
+    TextView messageView;
+    ProgressBar progressBar;
+    android.app.AlertDialog alert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +91,13 @@ public class DishSearch extends AppCompatActivity {
         setContentView(R.layout.activity_dish_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-       back= getIntent().getStringExtra("back");
-        Log.d("intent",back);
-        layout= findViewById(R.id.layout);
+        back = getIntent().getStringExtra("back");
+        Log.d("intent", back);
+        layout = findViewById(R.id.layout);
         names = new ArrayList<String>();
-        sql_ids=new ArrayList<String>();
-        add_dish=new ArrayList<String>();
+        sql_ids = new ArrayList<String>();
+        add_dish = new ArrayList<String>();
+        login_details = getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
         auto_tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
 
         auto_tv.setThreshold(1);
@@ -94,19 +110,19 @@ public class DishSearch extends AppCompatActivity {
 
                 unique_id = String.valueOf(System.currentTimeMillis());
                 add_dish.add(adapterView.getItemAtPosition(i).toString());
-             food_id=    sql_ids.get(i);
+                food_id = sql_ids.get(i);
 
-                dishName=adapterView.getItemAtPosition(i).toString();
+                dishName = adapterView.getItemAtPosition(i).toString();
                 dop = new DatabaseOperations(DishSearch.this);
 
-                if (back.equals("food")){
+                if (back.equals("food")) {
                     Timepick();
-                }else  if (back.equals("exercise")){
+                } else if (back.equals("exercise")) {
                     WheelDialog("Select Weight");
 
                 }
 
-
+                customDialog();
 
 
             }
@@ -126,16 +142,16 @@ public class DishSearch extends AppCompatActivity {
                 if (s.toString().length() <= 2) {
                     Log.d("tagbhi", s.toString().length() + "");
                 } else {
-                    if (back.equals("food")){
-                        searchUrl=url+"?q="+s.toString();
+                    if (back.equals("food")) {
+                        searchUrl = url + "?q=" + s.toString();
                         names = new ArrayList<String>();
                         makeJsonObjReq(searchUrl);
-                        Log.d("length", s.toString().length() + ""+back);
-                    }else if (back.equals("exercise")){
+                        Log.d("length", s.toString().length() + "" + back);
+                    } else if (back.equals("exercise")) {
                         names = new ArrayList<String>();
-                        searchUrl=exerUrl+s.toString();
+                        searchUrl = exerUrl + s.toString();
                         makeJsonArrayReq(searchUrl);
-                        Log.d("length", s.toString().length() + ""+back);
+                        Log.d("length", s.toString().length() + "" + back);
                     }
                 }
             }
@@ -145,12 +161,12 @@ public class DishSearch extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (back.equals("exercise")){
-                    startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",2));
+                if (back.equals("exercise")) {
+                    startActivity(new Intent(DishSearch.this, CollapsableLogging.class).putExtra("selection", 2));
                     finish();
 
-                }else if (back.equals("food")){
-                    startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",0));
+                } else if (back.equals("food")) {
+                    startActivity(new Intent(DishSearch.this, CollapsableLogging.class).putExtra("selection", 0));
                     finish();
                 }
             }
@@ -163,6 +179,7 @@ public class DishSearch extends AppCompatActivity {
         overridePendingTransition(R.anim.activity_no_animation, R.anim.activity_close_translate_to_bottom);
         super.onPause();
     }
+
     private void makeJsonObjReq(String s) {
 
 //        Map<String, String> postParam = new HashMap<String, String>();
@@ -175,7 +192,7 @@ public class DishSearch extends AppCompatActivity {
 //        Log.d("postpar", jsonObject.toString());
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-               s, null,
+                s, null,
                 new Response.Listener<JSONObject>() {
 
                     @Override
@@ -197,7 +214,7 @@ public class DishSearch extends AppCompatActivity {
                                     sql_ids.add(event_id);
 
                                 }
-                            } else if (back.equals("exercise")){
+                            } else if (back.equals("exercise")) {
 
                             }
 //                            Toast.makeText(getActivity(), names.toString(), Toast.LENGTH_LONG).show();
@@ -218,7 +235,7 @@ public class DishSearch extends AppCompatActivity {
                             adapter.notifyDataSetChanged();
                         } catch (Exception e) {
 //                            Toast.makeText(getActivity(), "try vala expe" + e.toString(), Toast.LENGTH_LONG).show();
-                            Log.d("tag", "onERROR: "+e.toString());
+                            Log.d("tag", "onERROR: " + e.toString());
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -237,10 +254,10 @@ public class DishSearch extends AppCompatActivity {
         };
 
 
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
+
     private void makeJsonArrayReq(String s) {
 
 //        Map<String, String> postParam = new HashMap<String, String>();
@@ -253,20 +270,20 @@ public class DishSearch extends AppCompatActivity {
 //        Log.d("postpar", jsonObject.toString());
 
         JsonArrayRequest jsonObjReq = new JsonArrayRequest(
-               s,
+                s,
                 new Response.Listener<JSONArray>() {
 
                     @Override
                     public void onResponse(JSONArray response) {
 
-                        Log.d("ArrayRequest Response",response.toString());
+                        Log.d("ArrayRequest Response", response.toString());
                         names.clear();
                         sql_ids.clear();
-                        for (int i=0;i<response.length();i++){
+                        for (int i = 0; i < response.length(); i++) {
                             try {
-                                JSONObject jsonObject= response.getJSONObject(i);
-                              String activity= jsonObject.getString("activity");
-                              String id= jsonObject.getString("id");
+                                JSONObject jsonObject = response.getJSONObject(i);
+                                String activity = jsonObject.getString("activity");
+                                String id = jsonObject.getString("id");
                                 Log.d("activity", activity);
                                 names.add(activity);
                                 sql_ids.add(id);
@@ -308,27 +325,26 @@ public class DishSearch extends AppCompatActivity {
         };
 
 
-
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
-    public  void quantity_dialog(){
+    public void quantity_dialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("Enter Quantity");
-        final View view= View.inflate(this,R.layout.quantity_getter, null);
+        final View view = View.inflate(this, R.layout.quantity_getter, null);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
         );
         lp.setMargins(30, 0, 30, 10);
 
-        final EditText input= (EditText) view.findViewById(R.id.get_quantity);
+        final EditText input = (EditText) view.findViewById(R.id.get_quantity);
         alertDialog.setView(view);
         alertDialog.setPositiveButton("Done",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                     quantity=input.getText().toString();
+                        quantity = input.getText().toString();
                         dop.putInformation(dop, unique_id, food_id, dishName, time, quantity, FoodFrag.selectedDate, "no");
 
                         Snackbar.make(layout, "Food Logged Successfuly", Snackbar.LENGTH_LONG)
@@ -347,7 +363,8 @@ public class DishSearch extends AppCompatActivity {
         alertDialog.show();
 
     }
-    public void Timepick(){
+
+    public void Timepick() {
 
         TimePickerDialog tpd = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
@@ -355,13 +372,13 @@ public class DishSearch extends AppCompatActivity {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay,
                                           int minute) {
-                        hour=hourOfDay;
-                        min=minute;
-                        if (hour >12){
-                            hour=hour-12;
-                            time=hour+":"+min;
-                        }else {
-                            time=hour+":"+min;
+                        hour = hourOfDay;
+                        min = minute;
+                        if (hour > 12) {
+                            hour = hour - 12;
+                            time = hour + ":" + min;
+                        } else {
+                            time = hour + ":" + min;
                         }
                         quantity_dialog();
 
@@ -369,24 +386,26 @@ public class DishSearch extends AppCompatActivity {
                 }, hour, min, false);
         tpd.show();
     }
-    ArrayList<String> weightList,setsList,repsList;
-    String weight="20",sets="4",reps="15";
-    String currentId="",currentDate="";
 
-    public void setUplists(){
-        int weightint=0;
-        for (int i=0;i<25;i++){
-            weightint=i*5;
+    ArrayList<String> weightList, setsList, repsList;
+    String weight = "20", sets = "4", reps = "15";
+    String currentId = "", currentDate = "";
+
+    public void setUplists() {
+        int weightint = 0;
+        for (int i = 0; i < 25; i++) {
+            weightint = i * 5;
             weightList.add(String.valueOf(weightint));
         }
-        for (int i =0; i<20;i++){
+        for (int i = 0; i < 20; i++) {
             setsList.add(String.valueOf(i));
         }
-        for (int i =0; i<50;i++){
+        for (int i = 0; i < 50; i++) {
             repsList.add(String.valueOf(i));
         }
 
     }
+
     public void WheelDialog(final String source) {
         String[] feets = null, inches = null, unit = null;
 
@@ -481,7 +500,9 @@ public class DishSearch extends AppCompatActivity {
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(TableData.Tableinfo.REPS, reps);
 //                            dop.updateExerRow(dop, contentValues, currentId);
-             dop.putExerciseInformation(dop,unique_id,food_id,dishName,ExerciseFrag.selectedDate,weight,sets,reps);
+                            dop.putExerciseInformation(dop, unique_id, food_id, dishName, ExerciseFrag.selectedDate, weight, sets, reps);
+                            makeJsonObjReq(food_id,"");
+
 
                         }
 
@@ -496,4 +517,101 @@ public class DishSearch extends AppCompatActivity {
                 .show();
 
     }
+
+    String auth_key;
+
+
+    private void makeJsonObjReq(String food_id, String lg) {
+showDialog();
+        auth_key = login_details.getString("key", "");
+        Map<String, String> postParam = new HashMap<String, String>();
+        postParam.put("ltype", "exercise");
+        postParam.put("c_id", food_id);
+
+
+        JSONObject jsonObject = new JSONObject(postParam);
+        Log.d("postpar", jsonObject.toString());
+
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                Config.url + "logger/", jsonObject,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response", response.toString());
+
+                        dismissDialog();
+
+                    }
+
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("error", "Error: " + error.getMessage());
+
+displayErrors(error);
+                Log.d("error", error.toString());
+            }
+        }) {
+
+            //
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("charset", "utf-8");
+                headers.put("Authorization", "JWT " + auth_key);
+                return headers;
+            }
+
+
+        };
+
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
+
+    public void customDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+
+        View customView = inflater.inflate(R.layout.dialog, null);
+        builder.setView(customView);
+        messageView = (TextView) customView.findViewById(R.id.tvdialog);
+        progressBar = (ProgressBar) customView.findViewById(R.id.progress);
+        alert = builder.create();
+
+    }
+
+    public void showDialog() {
+
+        progressBar.setVisibility(View.VISIBLE);
+        alert.show();
+        messageView.setText("Loading");
+    }
+
+    public void dismissDialog() {
+        alert.dismiss();
+    }
+
+    public void displayErrors(VolleyError error) {
+        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("Connection failed");
+        } else if (error instanceof AuthFailureError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("AuthFailureError");
+        } else if (error instanceof ServerError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("ServerError");
+        } else if (error instanceof NetworkError) {
+            messageView.setText("NetworkError");
+        } else if (error instanceof ParseError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("ParseError");
+        }
+    }
+}

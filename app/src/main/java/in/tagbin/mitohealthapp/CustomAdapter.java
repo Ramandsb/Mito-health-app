@@ -24,13 +24,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -70,6 +76,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
     SharedPreferences login_details;
     String auth_key;
     int current_item=0;
+
+    TextView messageView;
+    ProgressBar progressBar;
+    android.app.AlertDialog alert;
    String Uniqueid="";
     String time_stamp="";
     MyviewHolder myviewHolder;
@@ -80,6 +90,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
         inflater = LayoutInflater.from(context);
         dop = new DatabaseOperations(context);
         login_details=context.getSharedPreferences(MainPage.LOGIN_DETAILS, context.MODE_PRIVATE);
+        customDialog();
     }
 
 
@@ -213,8 +224,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
                     public void onClick(DialogInterface dialog, int which) {
 
                         dop.deleteRow(dop, TableData.Tableinfo.TABLE_NAME_FOOD, TableData.Tableinfo.ID,id);
-                        result.remove(current_item);
-                        notifyItemRemoved(current_item);
+                        setData(dop.getInformation(dop,FoodFrag.selectedDate));
                         dialog.cancel();
                     }
                 });
@@ -311,6 +321,7 @@ static class MyviewHolder extends AnimateViewHolder {
 
     private void makeJsonObjReq(String food_id,String time_stamp,String amount) {
 
+        showDialog();
       auth_key=   login_details.getString("key", "");
         Map<String, String> postParam = new HashMap<String, String>();
         postParam.put("ltype", "food");
@@ -343,6 +354,7 @@ static class MyviewHolder extends AnimateViewHolder {
                         myviewHolder.select_time.setEnabled(false);
                         myviewHolder.quantity.setEnabled(false);
 
+                        dismissDialog();
 
 
 
@@ -355,6 +367,7 @@ static class MyviewHolder extends AnimateViewHolder {
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("error", "Error: " + error.getMessage());
 
+                displayErrors(error);
 
                 Log.d("error", error.toString());
             }
@@ -380,6 +393,46 @@ static class MyviewHolder extends AnimateViewHolder {
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
+    public void customDialog() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+
+
+        View customView = inflater.inflate(R.layout.dialog, null);
+        builder.setView(customView);
+        messageView = (TextView) customView.findViewById(R.id.tvdialog);
+        progressBar = (ProgressBar) customView.findViewById(R.id.progress);
+        alert = builder.create();
+
+    }
+
+    public void showDialog() {
+
+        progressBar.setVisibility(View.VISIBLE);
+        alert.show();
+        messageView.setText("Loading");
+    }
+
+    public void dismissDialog() {
+        alert.dismiss();
+    }
+
+    public void displayErrors(VolleyError error) {
+        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("Connection failed");
+        } else if (error instanceof AuthFailureError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("AuthFailureError");
+        } else if (error instanceof ServerError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("ServerError");
+        } else if (error instanceof NetworkError) {
+            messageView.setText("NetworkError");
+        } else if (error instanceof ParseError) {
+            progressBar.setVisibility(View.GONE);
+            messageView.setText("ParseError");
+        }
+    }
 
 
 
