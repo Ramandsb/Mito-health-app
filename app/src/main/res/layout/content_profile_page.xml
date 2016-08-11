@@ -126,7 +126,7 @@
                 android:textColor="#666666"/>
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_height="35dp"
                 android:orientation="horizontal"
                 android:layout_marginRight="20dp"
                 android:layout_alignParentTop="true"
@@ -136,14 +136,14 @@
                 <LinearLayout
                     android:id="@+id/male_view"
                     android:layout_width="40dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/grey_m"
                     android:orientation="horizontal"/>
                 <LinearLayout
                     android:id="@+id/female_view"
                     android:layout_width="40dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
                     android:background="@drawable/grey_f"
                     android:orientation="horizontal"/>

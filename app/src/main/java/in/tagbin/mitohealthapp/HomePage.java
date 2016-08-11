@@ -102,8 +102,9 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.d("PREPDUG","Setting options true");
-        InitActivity i = (InitActivity) getActivity();
+        BinderActivity i = (BinderActivity) getActivity();
         setHasOptionsMenu(true);
         i.invalidateOptionsMenu();
 
@@ -117,29 +118,6 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         auth_key=   login_details.getString("key","");
         user_id=   login_details.getString("user_id","");
         Log.d("details", user_id + "//" + auth_key);
-        /**
-         *  "first_name": "Nairitya",
-         "last_name": "Khilari",
-         "email": "nairitya@gmail.com",
-         "phone_number": "4512356578",
-         "weight": 66,
-         "waist": 35,
-         "height": 179,
-         "dob": "1994-12-18"
-         */
-
-//
-//        postParam.put("gender", sex);
-//        postParam.put("dob", dob);
-//        postParam.put("height", height);
-//        postParam.put("waist", waist);
-//        postParam.put("weight", weight);
-
-//
-//        JSONObject jsonObject = new JSONObject(postParam);
-//        Log.d("postpar", jsonObject.toString());
-//
-
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 Config.url + "users/" + user_id + "/", null,
@@ -172,12 +150,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
                             int  fee= hei/12;
                             int inv =wei%1000;
 
-                            editor.putString("weight",weight);
-                            editor.putString("waist",waist);
-                            editor.putString("height",height);
-                            editor.putString("gender",gender);
-                            editor.putString("dob",dob);
-                            editor.commit();
+
 
 
                             try {
@@ -269,16 +242,31 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.content_home_page,container,false);
-        LocalDateTime mSelectedDate = LocalDateTime.now();
-        int day = mSelectedDate.getDayOfMonth();
-        int month = mSelectedDate.getMonthOfYear();
-        int year = mSelectedDate.getYear();
-        selectedDate = year + "-" + month + "-" + day;
+        Calendar  calendar = Calendar.getInstance();
+
+        int  year = calendar.get(Calendar.YEAR);
+        int  month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = month+1;
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+
+        }
         widget= (MaterialCalendarView) v.findViewById(R.id.calendarView);
         // Add a decorator to disable prime numbered days
 
         Log.d("start Date",selectedDate);
-        Calendar calendar = Calendar.getInstance();
+
         widget.setSelectedDate(calendar.getTime());
 
         Calendar instance1 = Calendar.getInstance();
@@ -419,7 +407,6 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         }
         menu.findItem(R.id.action_done).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(true);
-        //InitActivity.toolbar.setTitle("Mito");
         super.onPrepareOptionsMenu(menu);
     }
 

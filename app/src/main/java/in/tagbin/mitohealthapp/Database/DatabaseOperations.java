@@ -201,10 +201,10 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         Log.d("update","true"+cv.toString()+"///"+id);
     }
 
-    public  void deleteRow(DatabaseOperations dop,String id){
+    public  void deleteRow(DatabaseOperations dop,String tableName,String param,String id){
         SQLiteDatabase SQ = dop.getWritableDatabase();
 //        SQ.update(TableData.Tableinfo.TABLE_NAME_SLEEP, cv, TableData.Tableinfo.SLEEP_UNIQUE_ID + "=" + id, null);
-        SQ.delete(TableData.Tableinfo.TABLE_NAME_SLEEP,TableData.Tableinfo.SLEEP_UNIQUE_ID + "=" + id, null);
+        SQ.delete(tableName,param + "=" + id, null);
         Log.d("deleted","true"+"///"+id);
     }
 

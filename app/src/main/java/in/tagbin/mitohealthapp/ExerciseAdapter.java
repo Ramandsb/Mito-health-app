@@ -33,14 +33,18 @@ import com.android.volley.toolbox.StringRequest;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
+import in.tagbin.mitohealthapp.Fragments.ExerciseFrag;
 import in.tagbin.mitohealthapp.Fragments.SleepFrag;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import jp.wasabeef.recyclerview.animators.holder.AnimateViewHolder;
@@ -123,6 +127,28 @@ currentDate=dataItems.getExercise_date();
             @Override
             public void onClick(View v) {
                 WheelDialog("Select Reps");
+            }
+        });
+        holder.del.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dop.deleteRow(dop, TableData.Tableinfo.TABLE_NAME_EXERCISE, TableData.Tableinfo.EXER_UNIQUE_ID,dataItems.getExercise_uniq_id());
+
+                setData(dop.getExerciseInformation(dop, ExerciseFrag.selectedDate));
+            }
+        });
+        holder.tick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+//                try {
+////                    Date startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataItems.getDate()+" "+dataItems.getTime_consumed()+":00");
+////                    Log.d("converted time",startDate.toString()+"////"+startDate.getTime()+"////"+startDate.getDate());
+////                    time_stamp=String.valueOf(startDate.getTime()/1000);
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+                makeJsonObjReq(dataItems.getExercise_id());
             }
         });
 
@@ -276,6 +302,8 @@ if (source.equals("Select Weight")){
         TextView weight,sets,reps;
         TextView exercise_name;
         ImageView del;
+        ImageView tick;
+
 
 
         public MyviewHolder(View rowView) {
@@ -285,6 +313,7 @@ if (source.equals("Select Weight")){
             sets = (TextView) rowView.findViewById(R.id.sets);
             reps = (TextView) rowView.findViewById(R.id.reps);
             del= (ImageView) rowView.findViewById(R.id.del);
+            tick= (ImageView) rowView.findViewById(R.id.done);
 
         }
 
@@ -315,14 +344,12 @@ if (source.equals("Select Weight")){
         }
     }
 
-    private void makeJsonObjReq(String food_id,String time_stamp,String amount) {
+    private void makeJsonObjReq(String food_id) {
 
-        auth_key=   login_details.getString("auth_key", "");
+        auth_key=   login_details.getString("key", "");
         Map<String, String> postParam = new HashMap<String, String>();
-        postParam.put("ltype", "food");
+        postParam.put("ltype", "exercise");
         postParam.put("c_id", food_id);
-        postParam.put("time_consumed", time_stamp);
-        postParam.put("amount", amount);
 
 
 

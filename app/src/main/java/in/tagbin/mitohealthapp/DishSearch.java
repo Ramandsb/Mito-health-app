@@ -1,5 +1,10 @@
 package in.tagbin.mitohealthapp;
 
+import android.app.AlertDialog;
+import android.app.TimePickerDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,8 +19,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -30,11 +38,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import br.com.mauker.materialsearchview.MaterialSearchView;
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Fragments.ExerciseFrag;
 import in.tagbin.mitohealthapp.Fragments.FoodFrag;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
@@ -48,10 +59,15 @@ public class DishSearch extends AppCompatActivity {
     MaterialSearchView searchView;
     public  static String unique_id="";
     String back="";
+    View layout;
+    DatabaseOperations dop;
+    private static int hour=0, min=0, day=0;
     private static final String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/mito/recipe/_search";
 
+   static String food_id="";
     String searchUrl="";
     String exerUrl="http://api.mitoapp.com/v1/data/exercise?name=";
+    static  String dishName="",time="",quantity="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +78,7 @@ public class DishSearch extends AppCompatActivity {
         setSupportActionBar(toolbar);
        back= getIntent().getStringExtra("back");
         Log.d("intent",back);
-
+        layout= findViewById(R.id.layout);
         names = new ArrayList<String>();
         sql_ids=new ArrayList<String>();
         add_dish=new ArrayList<String>();
@@ -78,15 +94,15 @@ public class DishSearch extends AppCompatActivity {
 
                 unique_id = String.valueOf(System.currentTimeMillis());
                 add_dish.add(adapterView.getItemAtPosition(i).toString());
-            String food_id=    sql_ids.get(i);
-                DatabaseOperations dop = new DatabaseOperations(DishSearch.this);
+             food_id=    sql_ids.get(i);
+
+                dishName=adapterView.getItemAtPosition(i).toString();
+                dop = new DatabaseOperations(DishSearch.this);
 
                 if (back.equals("food")){
-                    dop.putInformation(dop, unique_id, food_id, adapterView.getItemAtPosition(i).toString(), "2:30", "3", FoodFrag.selectedDate, "yes");
-
+                    Timepick();
                 }else  if (back.equals("exercise")){
-                    dop.putExerciseInformation(dop,unique_id,food_id,adapterView.getItemAtPosition(i).toString(),ExerciseFrag.selectedDate,"20","5","3");
-
+                    WheelDialog("Select Weight");
 
                 }
 
@@ -128,8 +144,15 @@ public class DishSearch extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+
+                if (back.equals("exercise")){
+                    startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",2));
+                    finish();
+
+                }else if (back.equals("food")){
+                    startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",0));
+                    finish();
+                }
             }
         });
     }
@@ -290,4 +313,187 @@ public class DishSearch extends AppCompatActivity {
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
-}
+    public  void quantity_dialog(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Enter Quantity");
+        final View view= View.inflate(this,R.layout.quantity_getter, null);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT
+        );
+        lp.setMargins(30, 0, 30, 10);
+
+        final EditText input= (EditText) view.findViewById(R.id.get_quantity);
+        alertDialog.setView(view);
+        alertDialog.setPositiveButton("Done",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                     quantity=input.getText().toString();
+                        dop.putInformation(dop, unique_id, food_id, dishName, time, quantity, FoodFrag.selectedDate, "no");
+
+                        Snackbar.make(layout, "Food Logged Successfuly", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+
+                    }
+                });
+
+        alertDialog.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+
+    }
+    public void Timepick(){
+
+        TimePickerDialog tpd = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay,
+                                          int minute) {
+                        hour=hourOfDay;
+                        min=minute;
+                        if (hour >12){
+                            hour=hour-12;
+                            time=hour+":"+min;
+                        }else {
+                            time=hour+":"+min;
+                        }
+                        quantity_dialog();
+
+                    }
+                }, hour, min, false);
+        tpd.show();
+    }
+    ArrayList<String> weightList,setsList,repsList;
+    String weight="20",sets="4",reps="15";
+    String currentId="",currentDate="";
+
+    public void setUplists(){
+        int weightint=0;
+        for (int i=0;i<25;i++){
+            weightint=i*5;
+            weightList.add(String.valueOf(weightint));
+        }
+        for (int i =0; i<20;i++){
+            setsList.add(String.valueOf(i));
+        }
+        for (int i =0; i<50;i++){
+            repsList.add(String.valueOf(i));
+        }
+
+    }
+    public void WheelDialog(final String source) {
+        String[] feets = null, inches = null, unit = null;
+
+
+        feets = new String[22];
+        inches = new String[21];
+        unit = new String[51];
+        for (int i = 0; i <= 21; i++) {
+            feets[i] = "" + (i * 5);
+        }
+        for (int i = 0; i <= 20; i++) {
+            inches[i] = "" + (i);
+        }
+        for (int i = 0; i <= 50; i++) {
+            unit[i] = "" + (i);
+        }
+
+
+        View outerView = View.inflate(this, R.layout.wheel_view, null);
+        if (source.equals("Select Weight")) {
+            WheelView wv1 = (WheelView) outerView.findViewById(R.id.wheel_view_wv1);
+            wv1.setOffset(2);
+            wv1.setItems(Arrays.asList(feets));
+            wv1.setSeletion(5);
+            wv1.setVisibility(View.VISIBLE);
+            wv1.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+                @Override
+                public void onSelected(int selectedIndex, String item) {
+                    Log.d("feet", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+                    weight = item;
+                }
+            });
+        }
+
+        if (source.equals("Select Sets")) {
+            WheelView wv2 = (WheelView) outerView.findViewById(R.id.wheel_view_wv2);
+            wv2.setOffset(2);
+            wv2.setItems(Arrays.asList(inches));
+            wv2.setSeletion(4);
+            wv2.setVisibility(View.VISIBLE);
+            wv2.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+                @Override
+                public void onSelected(int selectedIndex, String item) {
+                    Log.d("inches", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+
+                    sets = item;
+
+                }
+            });
+        }
+
+
+        if (source.equals("Select Reps")) {
+            WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_view_wv3);
+            wv.setOffset(2);
+            wv.setItems(Arrays.asList(unit));
+            wv.setSeletion(5);
+            wv.setVisibility(View.VISIBLE);
+            wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+                @Override
+                public void onSelected(int selectedIndex, String item) {
+                    Log.d("Tag", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+
+                    reps = item;
+                }
+            });
+        }
+        new android.support.v7.app.AlertDialog.Builder(this)
+                .setTitle(source)
+                .setView(outerView)
+                .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (source.equals("Select Weight")) {
+
+                            Log.d("val", weight);
+//                            ContentValues contentValues = new ContentValues();
+//                            contentValues.put(TableData.Tableinfo.WEIGHT, weight);
+//                            dop.updateExerRow(dop, contentValues, currentId);
+                            WheelDialog("Select Sets");
+
+
+                        } else if (source.equals("Select Sets")) {
+                            Log.d("val", sets);
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(TableData.Tableinfo.SETS, sets);
+//                            dop.updateExerRow(dop, contentValues, currentId);
+                            WheelDialog("Select Reps");
+                        } else if (source.equals("Select Reps")) {
+                            Log.d("val", reps);
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put(TableData.Tableinfo.REPS, reps);
+//                            dop.updateExerRow(dop, contentValues, currentId);
+             dop.putExerciseInformation(dop,unique_id,food_id,dishName,ExerciseFrag.selectedDate,weight,sets,reps);
+
+                        }
+
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+
+    }
+    }

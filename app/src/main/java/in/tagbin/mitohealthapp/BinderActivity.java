@@ -2,37 +2,21 @@ package in.tagbin.mitohealthapp;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
-
-
-public class InitActivity extends AppCompatActivity {
-
+public class BinderActivity extends AppCompatActivity {
 
     static Fragment fra;
     FragmentTransaction fraTra;
@@ -42,12 +26,11 @@ public class InitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_init);
-
-        toolbar = (Toolbar) findViewById(R.id.toolbarInit);
+        setContentView(R.layout.activity_binder);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        fra = new PartnerIntro();
+        toolbar.setTitle("Profile");
+        fra = new ProfilePage();
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
 
         fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
@@ -118,23 +101,20 @@ public class InitActivity extends AppCompatActivity {
 
         switch (position){
             case 0:
-                toolbar.setTitle("Partner Connect");
-                Toast.makeText(InitActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
-                fra = new PartnerIntro();
+                Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 toolbar.setTitle("Profile");
-                Toast.makeText(InitActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 fra = new ProfilePage();
                 break;
             case 2:
                 toolbar.setTitle("Mito");
-
                 fra = new HomePage();
-                Toast.makeText(InitActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
-                Toast.makeText(InitActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BinderActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 fra = new ProfilePage();
@@ -145,6 +125,8 @@ public class InitActivity extends AppCompatActivity {
         fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew,fra);
         fraTra.commit();
         invalidateOptionsMenu();
+
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -156,4 +138,5 @@ public class InitActivity extends AppCompatActivity {
         }
         return super.onCreateOptionsMenu(menu);
     }
+
 }
