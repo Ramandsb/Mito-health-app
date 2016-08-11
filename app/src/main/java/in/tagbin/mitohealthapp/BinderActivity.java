@@ -1,11 +1,13 @@
 package in.tagbin.mitohealthapp;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -30,10 +32,10 @@ public class BinderActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setTitle("Profile");
-        fra = new ProfilePage();
+        fra = new ProfileFragMent();
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
 
-        fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
+        fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
         fraTra.commit();
 
 // Create items
@@ -101,12 +103,13 @@ public class BinderActivity extends AppCompatActivity {
 
         switch (position){
             case 0:
+                fra = new PartnerIntro();
                 Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 toolbar.setTitle("Profile");
                 Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
-                fra = new ProfilePage();
+                fra = new ProfileFragMent();
                 break;
             case 2:
                 toolbar.setTitle("Mito");
@@ -122,7 +125,7 @@ public class BinderActivity extends AppCompatActivity {
 
         }
 
-        fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew,fra);
+        fraTra = getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew,fra);
         fraTra.commit();
         invalidateOptionsMenu();
 

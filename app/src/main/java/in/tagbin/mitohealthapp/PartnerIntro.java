@@ -1,10 +1,11 @@
 package in.tagbin.mitohealthapp;
 
-import android.app.Fragment;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;

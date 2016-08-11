@@ -9,17 +9,32 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 
 public class ProfilePagerAdapter extends FragmentPagerAdapter {
+
+    private String frags[] = {"Health", "Partner Connect"};
+
     public ProfilePagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
     public Fragment getItem(int position) {
-        return null;
+        switch (position) {
+            case 0:
+                return new ProfilePage();
+            case 1:
+                return new PartProfile();
+            default:
+                return new ProfilePage();
+        }
     }
 
     @Override
     public int getCount() {
-        return 0;
+        return frags.length;
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return frags[position];
     }
 }

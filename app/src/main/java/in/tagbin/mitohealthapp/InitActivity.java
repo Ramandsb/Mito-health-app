@@ -1,12 +1,14 @@
 package in.tagbin.mitohealthapp;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -50,7 +52,7 @@ public class InitActivity extends AppCompatActivity {
         fra = new PartnerIntro();
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
 
-        fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
+        fraTra = getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
         fraTra.commit();
 
 // Create items
@@ -125,24 +127,24 @@ public class InitActivity extends AppCompatActivity {
             case 1:
                 toolbar.setTitle("Profile");
                 Toast.makeText(InitActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
-                fra = new ProfilePage();
+                //fra = new ProfilePage();
                 break;
             case 2:
                 toolbar.setTitle("Mito");
 
-                fra = new HomePage();
+                //fra = new HomePage();
                 Toast.makeText(InitActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
                 Toast.makeText(InitActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
                 break;
             default:
-                fra = new ProfilePage();
+                //fra = new ProfilePage();
                 break;
 
         }
 
-        fraTra = getFragmentManager().beginTransaction().replace(R.id.fragmentnew,fra);
+        fraTra = getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew,fra);
         fraTra.commit();
         invalidateOptionsMenu();
     }
