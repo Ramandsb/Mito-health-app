@@ -24,7 +24,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     public static final int database_version = 2;
     public String CREATE_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_FOOD + "(" + TableData.Tableinfo.ID + " TEXT," + TableData.Tableinfo.FOOD_ID + " TEXT," + TableData.Tableinfo.FOOD_NAME + " TEXT," + TableData.Tableinfo.TIME_CONSUMED + " TEXT," + TableData.Tableinfo.AMOUNT + " TEXT," + TableData.Tableinfo.DATE + " TEXT," + TableData.Tableinfo.SYNCED + " TEXT)";
-    public String CREATE_SLEEP_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_SLEEP + "(" + TableData.Tableinfo.SLEEP_UNIQUE_ID + " TEXT," + TableData.Tableinfo.START_TIME + " TEXT," + TableData.Tableinfo.END_TIME + " TEXT," + TableData.Tableinfo.SLEEP_DATE + " TEXT)";
+    public String CREATE_SLEEP_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_SLEEP + "(" + TableData.Tableinfo.SLEEP_UNIQUE_ID + " TEXT," + TableData.Tableinfo.START_TIME + " TEXT," + TableData.Tableinfo.END_TIME + " TEXT," + TableData.Tableinfo.SLEEP_DATE + " TEXT," + TableData.Tableinfo.SLEEP_HOURS + " TEXT," + TableData.Tableinfo.SLEEP_QUALITY + " TEXT)";
     public String CREATE_EXERCISE_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_EXERCISE + "(" + TableData.Tableinfo.EXER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.EXER_NAME + " TEXT," + TableData.Tableinfo.WEIGHT + " TEXT," + TableData.Tableinfo.SETS + " TEXT," + TableData.Tableinfo.REPS + " TEXT," + TableData.Tableinfo.EXER_ID + " TEXT," + TableData.Tableinfo.EXER_DATE + " TEXT)";
 
     @Override
@@ -70,13 +70,15 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         Log.d("Database Created", "true");
 
     }
-    public void putSleepInformation(DatabaseOperations dop, String id, String start, String end,String date) {
+    public void putSleepInformation(DatabaseOperations dop, String id, String start, String end,String date,String hours,String quality) {
         SQLiteDatabase SQ = dop.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(TableData.Tableinfo.SLEEP_UNIQUE_ID, id);
         cv.put(TableData.Tableinfo.START_TIME, start);
         cv.put(TableData.Tableinfo.END_TIME, end);
         cv.put(TableData.Tableinfo.SLEEP_DATE, date);
+        cv.put(TableData.Tableinfo.SLEEP_HOURS, hours);
+        cv.put(TableData.Tableinfo.SLEEP_QUALITY, quality);
         long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_SLEEP, null, cv);
         Log.d("Database Created", "true");
 
@@ -166,6 +168,8 @@ public class DatabaseOperations extends SQLiteOpenHelper {
                 item.setSleep_start(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.START_TIME)));
                 item.setSleep_end(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.END_TIME)));
                 item.setSleep_date(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_DATE)));
+                item.setSleep_hours(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_HOURS)));
+                item.setSleep_quality(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_QUALITY)));
                 Log.d("Database read", listData.toString());
                 listData.add(item);
 

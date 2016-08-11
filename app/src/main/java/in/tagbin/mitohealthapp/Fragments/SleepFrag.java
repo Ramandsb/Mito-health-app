@@ -38,6 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.CollapsableLogging;
@@ -105,13 +106,7 @@ RatingBar ratingBar;
             Log.d("date", selectedDate);
         }
         Log.d("food startdate", selectedDate);
-        try {
-            calculateNohours(20,25,3,25);
-            calculateNohours(15,25,20,25);
-            calculateNohours(1,25,15,25);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
 
 
     }
@@ -126,7 +121,33 @@ RatingBar ratingBar;
         end_time= (TextView) view.findViewById(R.id.end_time);
         no_of_hours= (TextView) view.findViewById(R.id.set_no_hours);
         ratingBar= (RatingBar) view.findViewById(R.id.rating);
-//        setDatafromdatabase(selectedDate);
+        ratingBar.setMax(5);
+        ratingBar.setNumStars(5);
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+
+                Log.d("num stars",ratingBar.getNumStars()+"");
+                Log.d("rating",ratingBar.getRating()+"");
+                Cursor cursor = dop.getslInformation(dop, selectedDate);
+                int count = cursor.getCount();
+                if (count == 1) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        do {
+                            uniqueId = cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_UNIQUE_ID));
+                        } while (cursor.moveToNext());
+
+                        ContentValues cv = new ContentValues();
+                        cv.put(TableData.Tableinfo.SLEEP_QUALITY, String.valueOf(ratingBar.getRating()));
+                        dop.updateSleepRow(dop, cv, uniqueId);
+
+                    }
+                }
+
+            }
+        });
+        setDatafromdatabase(selectedDate);
         /////////////////////
 
         Calendar calendar = Calendar.getInstance();
@@ -143,6 +164,7 @@ RatingBar ratingBar;
                 .setMaximumDate(instance2.getTime())
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
                 .commit();
+
 
 
         //////////////////
@@ -196,9 +218,10 @@ RatingBar ratingBar;
                                     // holder.end_tiem.setText(hourOfDay + ":" + minute);
                                     end_t = hourOfDay + ":" + minute;
 
-                                        end_time.setTextSize(20);
                                         end_time.setText(end_t);
 
+                                    eth=hourOfDay;
+                                    etm=minute;
                                         Cursor cursor = dop.getslInformation(dop, selectedDate);
                                         int count = cursor.getCount();
                                         if (count == 1) {
@@ -213,9 +236,14 @@ RatingBar ratingBar;
                                             }
                                         }else if (count == 0) {
                                                 uniqueId = String.valueOf(System.currentTimeMillis());
-                                                dop.putSleepInformation(dop, uniqueId, start_t, end_t, selectedDate);
+                                                dop.putSleepInformation(dop, uniqueId, start_t, end_t, selectedDate,"","");
 
                                             }
+                                    try {
+                                        calculateNohours(sth,stm,eth,etm);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
 
                                 }
                             }, hour, min, false);
@@ -229,37 +257,25 @@ RatingBar ratingBar;
 
     public  void setDatafromdatabase(String dateRe){
         Cursor cursor =dop.getslInformation(dop,dateRe);
+        if (cursor.getCount()==0){
+            start_time.setText("End Time");
+            end_time.setText("Start Time");
+            no_of_hours.setText("00:00");
+            ratingBar.setRating(2);
+        }
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 //create a new movie object and retrieve the data from the cursor to be stored in this movie object
          String starttim=       cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.START_TIME));
                 String endtime=    cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.END_TIME));
-            String s[]=    starttim.split(":");
-              String s1[]=  endtime.split(":");
-                int h1=Integer.valueOf(s1[0]);
-                int m1=Integer.valueOf(s1[1]);
-                int h=Integer.valueOf(s[0]);
-                int m=Integer.valueOf(s[1]);
-                int hour=0;
-                if (h1>h){
-                   hour= h1-h;
-                }else if (h>h1){
-                    hour= h-h1;
-                }
-int min=0;
-                if (m1>m){
-                    min= m1-m;
-                }else if (m>m1){
-                    min= m-m1;
-                }
-
-
-
+                String noOfhours=    cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_HOURS));
+                String qua=    cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_QUALITY));
                 unique=     cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_UNIQUE_ID));
                 start_time.setText(starttim);
                 end_time.setText(endtime);
-                no_of_hours.setText(hour+":"+min);
+                no_of_hours.setText(noOfhours);
+                ratingBar.setRating(Float.parseFloat(qua));
 
             }
             while (cursor.moveToNext());
@@ -298,6 +314,7 @@ int min=0;
             Log.d("date", selectedDate);
         }
 
+        setDatafromdatabase(selectedDate);
     }
 
     public void calculateNohours(int sth,int stm,int eh,int em) throws ParseException {
@@ -316,12 +333,17 @@ int min=0;
 
             long s=startTime.getTime();
             long e=endTime.getTime();
-            Log.d("startTimeif",s+"");
-            Log.d("endTimeif",e+"");
             long d =e-s;
-            long h =d/3600000;
-            Log.d("final no of hours",h+"");
+            long hr =d/1000;
+            int mn = (int) (d%60);
+            int[] i=   splitToComponentTimes(hr);
+            Log.d("split time",i[0]+"////////"+i[1]+"/////"+i[2]);
 
+            no_of_hours.setText(i[0]+":"+i[1]);
+            Log.d("endTimeelse",d+"");
+            ContentValues cv = new ContentValues();
+            cv.put(TableData.Tableinfo.SLEEP_HOURS, i[0]+":"+i[1]);
+            dop.updateSleepRow(dop, cv, uniqueId);
 
 
 
@@ -333,14 +355,37 @@ int min=0;
             long s=startTime.getTime();
             long e=endTime.getTime();
             long d =e-s;
-            long h =d/3600000;
-            Log.d("startTimeelse",s+"");
-            Log.d("endTimeelse",e+"");
-            Log.d("final",h+"");
+            long hr =d/1000;
+            int mn = (int) (d%60);
+         int[] i=   splitToComponentTimes(hr);
+            Log.d("split time",i[0]+"////////"+i[1]+"/////"+i[2]);
+            no_of_hours.setText(i[0]+":"+i[1]);
+            ContentValues cv = new ContentValues();
+            cv.put(TableData.Tableinfo.SLEEP_HOURS, i[0]+":"+i[1]);
+            dop.updateSleepRow(dop, cv, uniqueId);
+
+            Log.d("endTimeelse",d+"");
+
+
+
+
         }
 
 
 
 
     }
+    public static int[] splitToComponentTimes(long longVal)
+    {
+
+        int hours = (int) longVal / 3600;
+        int remainder = (int) longVal - hours * 3600;
+        int mins = remainder / 60;
+        remainder = remainder - mins * 60;
+        int secs = remainder;
+
+        int[] ints = {hours , mins , secs};
+        return ints;
+    }
+
 }

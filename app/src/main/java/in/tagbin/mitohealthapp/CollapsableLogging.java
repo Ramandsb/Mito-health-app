@@ -50,7 +50,7 @@ import in.tagbin.mitohealthapp.Interfaces.FoodInterface;
 import in.tagbin.mitohealthapp.Interfaces.SleepInterface;
 import in.tagbin.mitohealthapp.Interfaces.WaterInterface;
 
-public class CollapsableLogging extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener, TimeRangePickerDialog.OnTimeRangeSelectedListener{
+public class CollapsableLogging extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener{
 
     private LineChart mChart;
     private TabLayout tabLayout;
@@ -89,13 +89,7 @@ public FoodInterface foodInterface;
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         dop = new DatabaseOperations(this);
         sendDate=new Intent(SENDDATE);
-        if (savedInstanceState != null) {
-            TimeRangePickerDialog tpd = (TimeRangePickerDialog) this.getSupportFragmentManager()
-                    .findFragmentByTag(TIMERANGEPICKER_TAG);
-            if (tpd != null) {
-                tpd.setOnTimeRangeSetListener(this);
-            }
-        }
+
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -412,9 +406,7 @@ public FoodInterface foodInterface;
             startActivityForResult(intent, REQUEST_CODE);
 
         } else if (currentFrag == 3) {
-            final TimeRangePickerDialog timePickerDialog = TimeRangePickerDialog.newInstance(
-                    CollapsableLogging.this, false);
-            timePickerDialog.show(this.getSupportFragmentManager(), TIMERANGEPICKER_TAG);
+
 
         }
     }
@@ -428,15 +420,7 @@ public FoodInterface foodInterface;
         }
     }
 
-    @Override
-    public void onTimeRangeSelected(int startHour, int startMin, int endHour, int endMin) {
-        String start_time = startHour + ":" + startMin + ":00";
-        String end_time = endHour + ":" + endMin + ":00";
 
-
-        Log.d("sleep date", SleepFrag.selectedDate);
-        dop.putSleepInformation(dop, String.valueOf(System.currentTimeMillis()), start_time, end_time, SleepFrag.selectedDate);
-    }
 
 //    @Override
 //    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

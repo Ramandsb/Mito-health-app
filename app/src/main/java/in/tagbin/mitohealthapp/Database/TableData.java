@@ -26,6 +26,8 @@ public class TableData {
         public static final String START_TIME = "start_time";
         public static final String END_TIME = "end_time";
         public static final String SLEEP_DATE = "sleep_date";
+        public static final String SLEEP_HOURS = "sleep_hours";
+        public static final String SLEEP_QUALITY = "sleep_quality";
 
         public static final String TABLE_NAME_FOOD = "food_log_table";
         public static final String TABLE_NAME_SLEEP = "sleep_log_table";
