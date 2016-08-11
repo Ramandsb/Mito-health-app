@@ -18,6 +18,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -651,7 +652,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         showDialog();
                         progressBar.setVisibility(View.GONE);
                         messageView.setText("Profile Updated Successfuly");
-                        InitActivity i = (InitActivity) getActivity();
+                        BinderActivity i = (BinderActivity) getActivity();
                         i.bottomNavigation.setCurrentItem(2);
                         //startActivity(new Intent(ProfilePage.this, HomePage.class));
                         //finish();

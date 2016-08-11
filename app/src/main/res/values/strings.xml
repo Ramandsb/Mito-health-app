@@ -26,6 +26,6 @@
     <string name="from_gallery">From Gallery</string>
     <string name="update_profile_picture">Update Picture</string>
     <string name="save">Save</string>
-    <string name="title_activity_binder">BinderActivity</string>
+    <string name="title_activity_binder">Profle</string>
 
 </resources>
