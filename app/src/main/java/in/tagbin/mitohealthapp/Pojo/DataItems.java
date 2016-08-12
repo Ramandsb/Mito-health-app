@@ -4,7 +4,7 @@ package in.tagbin.mitohealthapp.Pojo;
  * Created by admin pc on 15-07-2016.
  */
 public class DataItems {
-    String id, food_id, food_name, time_consumed, amount, date, synced, sleep_unique, sleep_start, sleep_end, sleep_date;
+    String id, food_id, food_name, time_consumed, amount, date, synced, sleep_unique, sleep_start, sleep_end, sleep_date,sleep_hours,sleep_quality;
     private String exercise_name,exercise_id,exercise_uniq_id,exercise_date,exercise_weight,exercise_sets,exercise_reps;
 
     public String getId() {
@@ -112,6 +112,22 @@ public class DataItems {
 
     public String getExercise_name() {
         return exercise_name;
+    }
+
+    public String getSleep_hours() {
+        return sleep_hours;
+    }
+
+    public void setSleep_hours(String sleep_hours) {
+        this.sleep_hours = sleep_hours;
+    }
+
+    public String getSleep_quality() {
+        return sleep_quality;
+    }
+
+    public void setSleep_quality(String sleep_quality) {
+        this.sleep_quality = sleep_quality;
     }
 
     public String getExercise_reps() {

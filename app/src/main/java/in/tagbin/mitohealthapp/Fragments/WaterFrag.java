@@ -1,6 +1,8 @@
 package in.tagbin.mitohealthapp.Fragments;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
@@ -13,19 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
+import com.github.zeng1990java.widget.WaveProgressView;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-
-import org.joda.time.LocalDateTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import in.tagbin.mitohealthapp.CollapsableLogging;
-import in.tagbin.mitohealthapp.Interfaces.ExerciseInterface;
 import in.tagbin.mitohealthapp.Interfaces.WaterInterface;
 import in.tagbin.mitohealthapp.PourBeerTask;
 import in.tagbin.mitohealthapp.R;
@@ -35,7 +35,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     BeerProgressView water1,water2,water3,water4,water5,water6,water7,water8,water9;
     Bitmap bitmapWater1,bitmapWater2,bitmapWater3,bitmapWater4,bitmapWater5,bitmapWater6,bitmapWater7,bitmapWater8,bitmapWater9;
     Canvas canvas;
-    Handler handler;
+    int count=0;
+
     PourBeerTask mPourBeerTask;
     boolean boo1=false;
     boolean boo2=false;
@@ -57,11 +58,16 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     public WaterFrag() {
         // Required empty public constructor
     }
-
+//    private void animWave(WaveProgressView waveProgressView, long duration){
+//        ObjectAnimator progressAnim = ObjectAnimator.ofInt(waveProgressView, "progress", 0, waveProgressView.getMax());
+//        progressAnim.setDuration(duration);
+////        progressAnim.setRepeatCount(ObjectAnimator.INFINITE);
+////        progressAnim.setRepeatMode(ObjectAnimator.RESTART);
+//        progressAnim.start();
+//    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       handler = new Handler();
         Calendar  calendar = Calendar.getInstance();
 
         int  year = calendar.get(Calendar.YEAR);
@@ -85,6 +91,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
 
 
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,7 +125,9 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                 .commit();
 
         //////////////////
-
+//        WaveProgressView waveProgressView = (WaveProgressView) view.findViewById(R.id.DrawingwaterView1);
+//        waveProgressView.setMax(60);
+//        animWave(waveProgressView, 2 * 1000);
         water1= (BeerProgressView) view.findViewById(R.id.DrawingwaterView1);
         water2= (BeerProgressView) view.findViewById(R.id.DrawingwaterView2);
         water3= (BeerProgressView) view.findViewById(R.id.DrawingwaterView3);
@@ -129,11 +138,6 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
         water8= (BeerProgressView) view.findViewById(R.id.DrawingwaterView8);
         water9= (BeerProgressView) view.findViewById(R.id.complete_beer);
 
-//        bitmapWater = Bitmap.createBitmap((int) getActivity().getWindowManager()
-//                .getDefaultDisplay().getWidth(), (int) getActivity().getWindowManager()
-//                .getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
-
-
         g1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,13 +146,16 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.cancel(true);
                     water1.setBeerProgress(0);
                     boo1=false;
+                    count--;
                     Log.d("cancel","tr");
                 }else {
                     pourBeerTask.execute(true);
                     boo1=true;
+                    count++;
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,8,0);
                     Task.execute(true);
                     Log.d("else","tr");
+                    count--;
 
                 }
 
@@ -159,17 +166,19 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
         g2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PourBeerTask pourBeerTask=new PourBeerTask(getActivity(), water2,80,0);
+                PourBeerTask pourBeerTask=new PourBeerTask (getActivity(), water2,80,0);
                 if (boo2){
                     pourBeerTask.cancel(true);
                     water2.setBeerProgress(0);
                     boo2=false;
+                    count--;
                     Log.d("cancel","tr");
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,16,8);
                     Task.execute(true);
                     boo2=true;
+                    count++;
                     Log.d("else","tr");
 
                 }
@@ -185,12 +194,14 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.cancel(true);
                     water3.setBeerProgress(0);
                     boo3=false;
+                    count--;
                     Log.d("cancel","tr");
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,24,16);
                     Task.execute(true);
                     boo3=true;
+                    count++;
                     Log.d("else","tr");
 
                 }            }
@@ -204,12 +215,14 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.cancel(true);
                     water4.setBeerProgress(0);
                     boo4=false;
+                    count--;
                     Log.d("cancel","tr");
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,32,24);
                     Task.execute(true);
                     boo4=true;
+                    count++;
                     Log.d("else","tr");
 
                 }            }
@@ -225,7 +238,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                 if (boo5){
                     pourBeerTask.cancel(true);
                     water5.setBeerProgress(0);
-
+                    count--;
                     boo5=false;
                     Log.d("cancel","tr");
                 }else {
@@ -233,6 +246,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,40,32);
                     Task.execute(true);
                     boo5=true;
+                    count++;
                     Log.d("else","tr");
 
                 }                   }
@@ -244,7 +258,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                 if (boo6){
                     pourBeerTask.cancel(true);
                     water6.setBeerProgress(0);
-
+                    count--;
                     boo6=false;
                     Log.d("cancel","tr");
                 }else {
@@ -252,6 +266,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,50,40);
                     Task.execute(true);
                     boo6=true;
+                    count++;
                     Log.d("else","tr");
 
                 }                       }
@@ -264,12 +279,14 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.cancel(true);
                     water7.setBeerProgress(0);
                     boo7=false;
+                    count--;
                     Log.d("cancel","tr");
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,60,50);
                     Task.execute(true);
                     boo7=true;
+                    count++;
                     Log.d("else","tr");
 
                 }                     }
@@ -281,13 +298,14 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                 if (boo8){
                     pourBeerTask.cancel(true);
                     water8.setBeerProgress(0);
-
+                    count--;
 
                     boo8=false;
                     Log.d("cancel","tr");
                 }else {
                     pourBeerTask.execute(true);
                     boo8=true;
+                    count++;
                     Log.d("else","tr");
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,70,60);
                     Task.execute(true);
@@ -303,6 +321,13 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     @Override
     public void onResume() {
         super.onResume();
+//        getActivity().finish();
+//        startActivity(new Intent(getActivity().getIntent()).putExtra("selection",1));
+
+    }
+
+    public void fillGlasses(int i){
+
 
     }
 

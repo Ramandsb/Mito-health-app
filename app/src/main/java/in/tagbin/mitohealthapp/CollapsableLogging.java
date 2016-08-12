@@ -50,7 +50,7 @@ import in.tagbin.mitohealthapp.Interfaces.FoodInterface;
 import in.tagbin.mitohealthapp.Interfaces.SleepInterface;
 import in.tagbin.mitohealthapp.Interfaces.WaterInterface;
 
-public class CollapsableLogging extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener, TimeRangePickerDialog.OnTimeRangeSelectedListener{
+public class CollapsableLogging extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener{
 
     private LineChart mChart;
     private TabLayout tabLayout;
@@ -85,17 +85,12 @@ public FoodInterface foodInterface;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collapsable_logging);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         dop = new DatabaseOperations(this);
         sendDate=new Intent(SENDDATE);
-        if (savedInstanceState != null) {
-            TimeRangePickerDialog tpd = (TimeRangePickerDialog) this.getSupportFragmentManager()
-                    .findFragmentByTag(TIMERANGEPICKER_TAG);
-            if (tpd != null) {
-                tpd.setOnTimeRangeSetListener(this);
-            }
-        }
+
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -130,7 +125,7 @@ public FoodInterface foodInterface;
         });
        int i = getIntent().getIntExtra("selection",0);
         setupViewPager(viewPager);
-        viewPager.setOffscreenPageLimit(0);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setCurrentItem(i);
 
 //        calenderTrans();
@@ -183,108 +178,7 @@ public FoodInterface foodInterface;
         getMenuInflater().inflate(R.menu.line, menu);
         return true;
     }
-//    public void calenderTrans(){
-//        rCalendarFragment = new RWeekCalendar();
-//        mBgColor = getResources().getColor(R.color.sample_bg);
-//        LocalDateTime mSelectedDate = LocalDateTime.now();
-//        int day = mSelectedDate.getDayOfMonth();
-//        int month = mSelectedDate.getMonthOfYear();
-//        int year = mSelectedDate.getYear();
-//
-//        if (String.valueOf(month).length()<2){
-//            selectedDate=year+"-"+"0"+month+"-"+day;
-//
-//        }else {
-//            selectedDate = year + "-" + month + "-" + day;
-//        }
-//        CalenderListener listener = new CalenderListener() {
-//            @Override
-//            public void onSelectPicker() {
-//
-//                //User can use any type of pickers here the below picker is only Just a example
-//
-////                DatePickerDialog.newInstance(Sample.this, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH)).show(getFragmentManager(), "datePicker");
-//
-//
-//            }
-//
-//            @Override
-//            public void onSelectDate(LocalDateTime mSelectedDate) {
-//
-//                //callback when a date is selcted
-//                a=mSelectedDate.getDayOfMonth();
-//                b=mSelectedDate.getMonthOfYear();
-//                c=mSelectedDate.getYear();
-//
-//                if (WeekFragment.click_hppn.equals("yes")){
-//                    if (String.valueOf(b).length()<2){
-//                        selectedDate=c+"-"+"0"+b+"-"+a;
-//
-//
-//                    }else {
-//                        selectedDate=c+"-"+b+"-"+a;
-//
-//                    }
-//                    if (currentFrag==0){
-//                        foodInterface.passDataToFoodFragment(selectedDate);
-//                    }else if (currentFrag==1){
-//waterInterface.passDataToWaterFragment(selectedDate);
-//                    }else if (currentFrag==2){
-//                        exerciseInterface.passDataToFragment(selectedDate);
-//                    }else if (currentFrag==3){
-//sleepInterface.passDataToSleepFragment(selectedDate);
-//                    }
-//
-//
-//                    Log.d("Click_happend", "--------only -----" + selectedDate+"----------------");
-//                    WeekFragment.click_hppn="no";
-//                }
-//
-//
-////                 + mSelectedDate.getDayOfMonth() + "-" + mSelectedDate.getMonthOfYear() + "-" + mSelectedDate.getYear());
-////                mDateSelectedTv.setText(""+mSelectedDate.getDayOfMonth()+"-"+mSelectedDate.getMonthOfYear()+"-"+mSelectedDate.getYear());
-//
-//
-//
-//            }
-//        };
-//
-//        //setting the listener
-//        rCalendarFragment.setCalenderListener(listener);
-//
-//
-//        Bundle args = new Bundle();
-//
-//       /*Should add this attribute if you adding  the NOW_BACKGROUND or DATE_SELECTOR_BACKGROUND Attribute*/
-//        args.putString(RWeekCalendar.PACKAGENAME, this.getPackageName());
-//
-//       /* IMPORTANT: Customization for the calender commenting or un commenting any of the attribute below will reflect change in calender*/
-//
-////---------------------------------------------------------------------------------------------------------------------//
-//
-////      args.putInt(RWeekCalender.CALENDER_BACKGROUND, ContextCompat.getColor(this,R.color.md_pink_700));//set background color to calender
-//
-//        args.putString(RWeekCalendar.DATE_SELECTOR_BACKGROUND, "bg_select");//set background to the selected dates
-//
-//        args.putInt(RWeekCalendar.WEEKCOUNT, 1000);//add N weeks from the current week (53 or 52 week is one year)
-//
-////        args.putString(RWeekCalender.NOW_BACKGROUND,"bg_now");//set background to nowView
-//
-//        args.putInt(RWeekCalendar.CURRENT_DATE_BACKGROUND, ContextCompat.getColor(this, R.color.md_black_1000));//set color to the currentdate
-//
-////        args.putInt(RWeekCalender.PRIMARY_BACKGROUND, ContextCompat.getColor(this,R.color.md_white_1000));//Set color to the primary views (Month name and dates)
-//
-////        args.putInt(RWeekCalender.SECONDARY_BACKGROUND, ContextCompat.getColor(this,R.color.md_green_500));//Set color to the secondary views (now view and week names)
-//
-////---------------------------------------------------------------------------------------------------------------------//
-//
-//        rCalendarFragment.setArguments(args);
-//
-//        // Attach to the activity
-//        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-//        t.replace(R.id.container_colaps, rCalendarFragment);
-//        t.commit();
-//    }
+
 
 
     @Override
@@ -412,9 +306,7 @@ public FoodInterface foodInterface;
             startActivityForResult(intent, REQUEST_CODE);
 
         } else if (currentFrag == 3) {
-            final TimeRangePickerDialog timePickerDialog = TimeRangePickerDialog.newInstance(
-                    CollapsableLogging.this, false);
-            timePickerDialog.show(this.getSupportFragmentManager(), TIMERANGEPICKER_TAG);
+
 
         }
     }
@@ -428,15 +320,7 @@ public FoodInterface foodInterface;
         }
     }
 
-    @Override
-    public void onTimeRangeSelected(int startHour, int startMin, int endHour, int endMin) {
-        String start_time = startHour + ":" + startMin + ":00";
-        String end_time = endHour + ":" + endMin + ":00";
 
-
-        Log.d("sleep date", SleepFrag.selectedDate);
-        dop.putSleepInformation(dop, String.valueOf(System.currentTimeMillis()), start_time, end_time, SleepFrag.selectedDate);
-    }
 
 //    @Override
 //    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {

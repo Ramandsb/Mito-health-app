@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -29,11 +30,15 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.chrono.StrictChronology;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.CollapsableLogging;
@@ -59,6 +64,9 @@ public class SleepFrag extends Fragment implements DatePickerDialog.OnDateSetLis
     ArrayList<DataItems> arrayList;
     TextView start_time,end_time,no_of_hours;
 RatingBar ratingBar;
+    String start_t="";
+    String end_t="";
+
     String test="";
     public static String selectedDate="";
     String unique;
@@ -66,6 +74,7 @@ RatingBar ratingBar;
     int i = 0;
     int mBgColor=0;
    static String uniqueId="";
+    int sth=0,stm=0,eth=0,etm=0;
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
 
     MaterialCalendarView widget;
@@ -101,17 +110,44 @@ RatingBar ratingBar;
 
 
     }
+    View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view=inflater.inflate(R.layout.fragment_sleep, container, false);
+       view=inflater.inflate(R.layout.fragment_sleep, container, false);
         widget= (MaterialCalendarView) view.findViewById(R.id.calendarView);
         start_time= (TextView) view.findViewById(R.id.start_time);
         end_time= (TextView) view.findViewById(R.id.end_time);
         no_of_hours= (TextView) view.findViewById(R.id.set_no_hours);
         ratingBar= (RatingBar) view.findViewById(R.id.rating);
-//        setDatafromdatabase(selectedDate);
+        ratingBar.setMax(5);
+        ratingBar.setNumStars(5);
+
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+
+                Log.d("num stars",ratingBar.getNumStars()+"");
+                Log.d("rating",ratingBar.getRating()+"");
+                Cursor cursor = dop.getslInformation(dop, selectedDate);
+                int count = cursor.getCount();
+                if (count == 1) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        do {
+                            uniqueId = cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_UNIQUE_ID));
+                        } while (cursor.moveToNext());
+
+                        ContentValues cv = new ContentValues();
+                        cv.put(TableData.Tableinfo.SLEEP_QUALITY, String.valueOf(ratingBar.getRating()));
+                        dop.updateSleepRow(dop, cv, uniqueId);
+
+                    }
+                }
+
+            }
+        });
+        setDatafromdatabase(selectedDate);
         /////////////////////
 
         Calendar calendar = Calendar.getInstance();
@@ -130,6 +166,7 @@ RatingBar ratingBar;
                 .commit();
 
 
+
         //////////////////
 
         start_time.setOnClickListener(new View.OnClickListener(){
@@ -145,16 +182,13 @@ RatingBar ratingBar;
                                                   int minute) {
 
 
-                                String time=hourOfDay + ":" + minute;
-                                start_time.setText(time);
-                                if (uniqueId.equals("")){
-                                    uniqueId=   String.valueOf(System.currentTimeMillis());
-                                    dop.putSleepInformation(dop,uniqueId,time,"end",selectedDate);
-                                }else {
-                                    ContentValues cv = new ContentValues();
-                                    cv.put(TableData.Tableinfo.START_TIME, time);
-                                    dop.updateSleepRow(dop, cv, uniqueId);
-                                }
+
+
+                                sth=hourOfDay;
+                                stm=minute;
+                                    start_t=hourOfDay + ":" + minute;
+                                    start_time.setText(start_t);
+                                    end_time.setText("End Time");
 
                                 Log.d("sleep date",SleepFrag.selectedDate);
                             }
@@ -167,28 +201,55 @@ RatingBar ratingBar;
 
             @Override
             public void onClick(View v) {
-                TimePickerDialog tpd = new TimePickerDialog(getActivity(),
-                        new TimePickerDialog.OnTimeSetListener() {
 
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-                                // holder.end_tiem.setText(hourOfDay + ":" + minute);
-                                String time=hourOfDay + ":" + minute;
-                                end_time.setText(time);
-                                if (uniqueId.equals("")){
-                                    Snackbar.make(view,"Select Start Time",Snackbar.LENGTH_LONG).show();
+                if (start_t.equals("")) {
 
-                                }else {
-                                    ContentValues cv = new ContentValues();
-                                    cv.put(TableData.Tableinfo.END_TIME, time);
-                                    dop.updateSleepRow(dop, cv, uniqueId);
+                    Snackbar.make(view, "Set Start Time", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+
+
+                } else {
+                    TimePickerDialog tpd = new TimePickerDialog(getActivity(),
+                            new TimePickerDialog.OnTimeSetListener() {
+
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay,
+                                                      int minute) {
+                                    // holder.end_tiem.setText(hourOfDay + ":" + minute);
+                                    end_t = hourOfDay + ":" + minute;
+
+                                        end_time.setText(end_t);
+
+                                    eth=hourOfDay;
+                                    etm=minute;
+                                        Cursor cursor = dop.getslInformation(dop, selectedDate);
+                                        int count = cursor.getCount();
+                                        if (count == 1) {
+                                            if (cursor != null && cursor.moveToFirst()) {
+                                                do {
+                                                    uniqueId = cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_UNIQUE_ID));
+                                                } while (cursor.moveToNext());
+                                                ContentValues cv = new ContentValues();
+                                                cv.put(TableData.Tableinfo.START_TIME, start_t);
+                                                cv.put(TableData.Tableinfo.END_TIME, end_t);
+                                                dop.updateSleepRow(dop, cv, uniqueId);
+                                            }
+                                        }else if (count == 0) {
+                                                uniqueId = String.valueOf(System.currentTimeMillis());
+                                                dop.putSleepInformation(dop, uniqueId, start_t, end_t, selectedDate,"","");
+
+                                            }
+                                    try {
+                                        calculateNohours(sth,stm,eth,etm);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
+                            }, hour, min, false);
+                    tpd.show();
 
-                            }
-                        }, hour, min, false);
-                tpd.show();
-
+                }
             }
         });
         return view;
@@ -196,37 +257,25 @@ RatingBar ratingBar;
 
     public  void setDatafromdatabase(String dateRe){
         Cursor cursor =dop.getslInformation(dop,dateRe);
+        if (cursor.getCount()==0){
+            start_time.setText("End Time");
+            end_time.setText("Start Time");
+            no_of_hours.setText("00:00");
+            ratingBar.setRating(2);
+        }
 
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 //create a new movie object and retrieve the data from the cursor to be stored in this movie object
          String starttim=       cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.START_TIME));
                 String endtime=    cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.END_TIME));
-            String s[]=    starttim.split(":");
-              String s1[]=  endtime.split(":");
-                int h1=Integer.valueOf(s1[0]);
-                int m1=Integer.valueOf(s1[1]);
-                int h=Integer.valueOf(s[0]);
-                int m=Integer.valueOf(s[1]);
-                int hour=0;
-                if (h1>h){
-                   hour= h1-h;
-                }else if (h>h1){
-                    hour= h-h1;
-                }
-int min=0;
-                if (m1>m){
-                    min= m1-m;
-                }else if (m>m1){
-                    min= m-m1;
-                }
-
-
-
+                String noOfhours=    cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_HOURS));
+                String qua=    cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_QUALITY));
                 unique=     cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_UNIQUE_ID));
                 start_time.setText(starttim);
                 end_time.setText(endtime);
-                no_of_hours.setText(hour+":"+min);
+                no_of_hours.setText(noOfhours);
+                ratingBar.setRating(Float.parseFloat(qua));
 
             }
             while (cursor.moveToNext());
@@ -264,30 +313,79 @@ int min=0;
             selectedDate = year + "-" + month + "-" + day;
             Log.d("date", selectedDate);
         }
-        database_list = dop.getsleepInformation(dop, selectedDate);
-        sleepAdapter.setData(database_list);
-        sleepAdapter.notifyDataSetChanged();
-        Log.d("date",selectedDate);
-        String s[]= selectedDate.split("-");
-        test=s[0]+s[1]+s[2];
+
         setDatafromdatabase(selectedDate);
-        int c=dop.getProfilesCount(dop,test);
-        if (c==0) {
-            dop.putSleepInformation(dop, test, "13:56", "22:34", selectedDate);
-            Log.d("Sleeep c=0", String.valueOf(c));
+    }
 
-        }else {
-            setDatafromdatabase(selectedDate);
-            Log.d("Sleeep c", String.valueOf(c));
+    public void calculateNohours(int sth,int stm,int eh,int em) throws ParseException {
+      String [] selectSplit=selectedDate.split("-");
+     int year = Integer.valueOf(selectSplit[0]);
+     int month = Integer.valueOf(selectSplit[1]);
+     int day = Integer.valueOf(selectSplit[2])+1;
+
+
+        String newDate= year + "-" + "0"+month + "-" + day;
+
+
+        if (eh<sth){
+            Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(selectedDate+" "+sth+":"+stm+":00");
+            Date endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(newDate+" "+eh+":"+em+":00");
+
+            long s=startTime.getTime();
+            long e=endTime.getTime();
+            long d =e-s;
+            long hr =d/1000;
+            int mn = (int) (d%60);
+            int[] i=   splitToComponentTimes(hr);
+            Log.d("split time",i[0]+"////////"+i[1]+"/////"+i[2]);
+
+            no_of_hours.setText(i[0]+":"+i[1]);
+            Log.d("endTimeelse",d+"");
+            ContentValues cv = new ContentValues();
+            cv.put(TableData.Tableinfo.SLEEP_HOURS, i[0]+":"+i[1]);
+            dop.updateSleepRow(dop, cv, uniqueId);
+
+
+
+
+        }else{
+            Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(selectedDate+" "+sth+":"+stm+":00");
+            Date endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(selectedDate+" "+eh+":"+em+":00");
+
+            long s=startTime.getTime();
+            long e=endTime.getTime();
+            long d =e-s;
+            long hr =d/1000;
+            int mn = (int) (d%60);
+         int[] i=   splitToComponentTimes(hr);
+            Log.d("split time",i[0]+"////////"+i[1]+"/////"+i[2]);
+            no_of_hours.setText(i[0]+":"+i[1]);
+            ContentValues cv = new ContentValues();
+            cv.put(TableData.Tableinfo.SLEEP_HOURS, i[0]+":"+i[1]);
+            dop.updateSleepRow(dop, cv, uniqueId);
+
+            Log.d("endTimeelse",d+"");
+
+
+
 
         }
-        Log.d("Sleeep interface",selectedDate);
+
+
+
+
     }
-    private String getSelectedDatesString() {
-        CalendarDay date = widget.getSelectedDate();
-        if (date == null) {
-            return "No Selection";
-        }
-        return FORMATTER.format(date.getDate());
+    public static int[] splitToComponentTimes(long longVal)
+    {
+
+        int hours = (int) longVal / 3600;
+        int remainder = (int) longVal - hours * 3600;
+        int mins = remainder / 60;
+        remainder = remainder - mins * 60;
+        int secs = remainder;
+
+        int[] ints = {hours , mins , secs};
+        return ints;
     }
+
 }
