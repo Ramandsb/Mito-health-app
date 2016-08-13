@@ -82,6 +82,15 @@ public class BinderActivity extends AppCompatActivity {
 // Add or remove notification for each item68822836
         bottomNavigation.setNotification("4", 1);
         bottomNavigation.setNotification("", 1);
+        if (getIntent().hasExtra("selection")) {
+            if (getIntent().getIntExtra("selection", 1) == 2) {
+                change(2);
+
+            }else if(getIntent().getIntExtra("selection", 1) == 1) {
+                fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
+                fraTra.commit();
+            }
+        }
 
 // Set listeners
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {

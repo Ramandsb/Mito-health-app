@@ -68,6 +68,7 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.newrelic.agent.android.NewRelic;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -143,6 +144,10 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_landing);
+        NewRelic.withApplicationToken(
+
+                "AAab8a197df22ed375a8ad6f54fcb1c736ae09e5f2"
+        ).start(this.getApplication());
         UXCam.startWithKey("075a1785b64ccb2");
         customDialog();
         validateServerClientID();
@@ -309,6 +314,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
     }
 
     public void RequestData() {
+showDialog();
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
@@ -326,6 +332,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
                         profile_picture = data.getString("url");
                         Log.d("Details", profile_name + "\n" + link + "\n" + email + "\n" + profile_picture + "\n" + id);
                         Log.d("GraphResponse", response.toString());
+                        dismissDialog();
 //                        Intent intent = new Intent(MainPage.this, ProfilePage.class);
 //                        intent.putExtra("name", profile_name);
 //                        intent.putExtra("picture", profile_picture);
@@ -420,6 +427,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
             if (result.isSuccess()) {
                 GoogleSignInAccount acct = result.getSignInAccount();
                 String idToken = acct.getIdToken();
+                showDialog();
                 makeJsonObjReq(idToken,"google");
 
                 // Show signed-in UI.
@@ -434,6 +442,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
                 // Show signed-out UI.
             }else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
+
         }
 
     }
@@ -455,6 +464,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
 
     private void makeJsonObjReq(String s,String source) {
 
+        showDialog();
         Map<String, String> postParam = new HashMap<String, String>();
         postParam.put("access_token", s);
         postParam.put("source", source);
@@ -480,8 +490,10 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
                             Intent intent = new Intent(MainPage.this, BinderActivity.class);
                             intent.putExtra("name", profile_name);
                             intent.putExtra("picture", profile_picture);
+                            intent.putExtra("selection", 1);
                             startActivity(intent);
                             finish();
+                            dismissDialog();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -494,6 +506,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
                 VolleyLog.d("error", "Error: " + error.getMessage());
 
 
+                displayErrors(error);
                 Log.d("error", error.toString());
             }
         }) {
@@ -506,6 +519,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
 //                headers.put( "charset", "utf-8");
 //                headers.put("Authorization","Authkey");
 //                return headers;
+
 //            }
 //
 
@@ -542,6 +556,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
     }
 
     public void displayErrors(VolleyError error) {
+        showDialog();
         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
             progressBar.setVisibility(View.GONE);
             messageView.setText("Connection failed");

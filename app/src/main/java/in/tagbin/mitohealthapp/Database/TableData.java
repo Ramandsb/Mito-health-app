@@ -41,5 +41,17 @@ public class TableData {
         public static final String REPS = "reps";
 
         public static final String TABLE_NAME_EXERCISE = "exer_log_table";
+
+
+        public static final String WATER_UNIQUE_ID = "water_unique_id";
+        public static final String WATER_DATE = "water_date";
+        public static final String GLASSES = "glasses";
+        public static final String ML = "ml";
+        public static final String GLASS_SIZE = "glass_size";
+        public static final String WATER_SYNCED = "water_synced";
+
+        public static final String TABLE_NAME_WATER = "water_log_table";
+
+
     }
 }

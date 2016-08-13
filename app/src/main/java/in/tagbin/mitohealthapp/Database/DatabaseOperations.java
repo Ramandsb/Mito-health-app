@@ -26,12 +26,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public String CREATE_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_FOOD + "(" + TableData.Tableinfo.ID + " TEXT," + TableData.Tableinfo.FOOD_ID + " TEXT," + TableData.Tableinfo.FOOD_NAME + " TEXT," + TableData.Tableinfo.TIME_CONSUMED + " TEXT," + TableData.Tableinfo.AMOUNT + " TEXT," + TableData.Tableinfo.DATE + " TEXT," + TableData.Tableinfo.SYNCED + " TEXT)";
     public String CREATE_SLEEP_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_SLEEP + "(" + TableData.Tableinfo.SLEEP_UNIQUE_ID + " TEXT," + TableData.Tableinfo.START_TIME + " TEXT," + TableData.Tableinfo.END_TIME + " TEXT," + TableData.Tableinfo.SLEEP_DATE + " TEXT," + TableData.Tableinfo.SLEEP_HOURS + " TEXT," + TableData.Tableinfo.SLEEP_QUALITY + " TEXT)";
     public String CREATE_EXERCISE_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_EXERCISE + "(" + TableData.Tableinfo.EXER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.EXER_NAME + " TEXT," + TableData.Tableinfo.WEIGHT + " TEXT," + TableData.Tableinfo.SETS + " TEXT," + TableData.Tableinfo.REPS + " TEXT," + TableData.Tableinfo.EXER_ID + " TEXT," + TableData.Tableinfo.EXER_DATE + " TEXT)";
+    public String CREATE_WATER_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_WATER + "(" + TableData.Tableinfo.WATER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.WATER_DATE + " TEXT," + TableData.Tableinfo.GLASSES + " TEXT," + TableData.Tableinfo.ML + " TEXT," + TableData.Tableinfo.GLASS_SIZE + " TEXT," + TableData.Tableinfo.WATER_SYNCED + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase sdb) {
         sdb.execSQL(CREATE_TABLE);
         sdb.execSQL(CREATE_SLEEP_TABLE);
         sdb.execSQL(CREATE_EXERCISE_TABLE);
+        sdb.execSQL(CREATE_WATER_TABLE);
 
         Log.d("Database operations", "Table created");
     }
@@ -53,6 +55,19 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         cv.put(TableData.Tableinfo.DATE, date);
         cv.put(TableData.Tableinfo.SYNCED, synced);
         long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_FOOD, null, cv);
+        Log.d("Database Created", "true");
+
+    }
+    public void putWaterInformation(DatabaseOperations dop, String unique_id, String water_date, String glasses,String ml,String glass_size,String synced) {
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(TableData.Tableinfo.WATER_UNIQUE_ID, unique_id);
+        cv.put(TableData.Tableinfo.WATER_DATE, water_date);
+        cv.put(TableData.Tableinfo.GLASSES, glasses);
+        cv.put(TableData.Tableinfo.ML, ml);
+        cv.put(TableData.Tableinfo.GLASS_SIZE, glass_size);
+        cv.put(TableData.Tableinfo.WATER_SYNCED, synced);
+        long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_WATER, null, cv);
         Log.d("Database Created", "true");
 
     }
@@ -91,6 +106,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
         return cursor;
           }
+
+    public Cursor getWaterInformation(DatabaseOperations dop,String  date){
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_WATER + " WHERE " + TableData.Tableinfo.WATER_DATE + "='" + date + "'", null);
+
+        return cursor;
+    }
 
     public ArrayList<DataItems> getInformation(DatabaseOperations dop,String date){
         ArrayList<DataItems> listData = new ArrayList<>();
@@ -197,6 +220,11 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public  void updateSleepRow(DatabaseOperations dop,ContentValues cv,String id){
         SQLiteDatabase SQ = dop.getWritableDatabase();
         SQ.update(TableData.Tableinfo.TABLE_NAME_SLEEP, cv, TableData.Tableinfo.SLEEP_UNIQUE_ID + "=" + id, null);
+        Log.d("update","true"+cv.toString()+"///"+id);
+    }
+    public  void updateWaterRow(DatabaseOperations dop,ContentValues cv,String id){
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        SQ.update(TableData.Tableinfo.TABLE_NAME_WATER, cv, TableData.Tableinfo.WATER_UNIQUE_ID + "=" + id, null);
         Log.d("update","true"+cv.toString()+"///"+id);
     }
     public  void updateExerRow(DatabaseOperations dop,ContentValues cv,String id){

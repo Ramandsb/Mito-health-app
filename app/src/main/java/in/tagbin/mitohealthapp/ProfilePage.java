@@ -153,23 +153,23 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         name = getActivity().getIntent().getStringExtra("name");
 
 
-
-        if (getActivity().getIntent().hasExtra("picture")) {
-            url = getActivity().getIntent().getStringExtra("picture");
-        }
+//
+//        if (getActivity().getIntent().hasExtra("picture")) {
+//            url = getActivity().getIntent().getStringExtra("picture");
+//        }
         Log.d("check url", "" + myurl);
-        if (url.equals("")) {
-            if (profileImage == null) {
-
-                profile_pic.setImageDrawable(getResources().getDrawable(R.drawable.profile_tabicon));
-
-            } else {
-                profile_pic.setImageBitmap(profileImage);
-            }
-
-        } else {
-            new DownloadImage().execute(url);
-        }
+//        if (url.equals("")) {
+//            if (profileImage == null) {
+//
+//                profile_pic.setImageDrawable(getResources().getDrawable(R.drawable.profile_tabicon));
+//
+//            } else {
+//                profile_pic.setImageBitmap(profileImage);
+//            }
+//
+//        } else {
+//            new DownloadImage().execute(url);
+//        }
         profile_name.setText(name);
 //        Picasso.with(this).load(url).into(profile_pic);
         View select_date = Fragview.findViewById(R.id.select_date);
@@ -268,19 +268,19 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         select_weight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WheelDialog("weight");
+                WheelDialog("weight","select");
             }
         });
         select_height.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WheelDialog("height");
+                WheelDialog("height","select");
             }
         });
         select_waist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WheelDialog("waist");
+                WheelDialog("waist","select");
             }
         });
         return Fragview;
@@ -347,7 +347,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     }
 
 
-    public void WheelDialog(String source) {
+    public void WheelDialog(String source, final String init) {
 
         String[] feets = null, inches = null, unit = null;
         if (source.equals("weight")) {
@@ -446,17 +446,23 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                             if (height==0 || waist==0 || weight==0 ){
 
                                 if (height==0){
-                                    WheelDialog("height");
+                                    WheelDialog("height",init);
 
                                 }else if(weight==0){
-                                    WheelDialog("weight");
+                                    WheelDialog("weight",init);
                                 }else if(waist==0){
-                                    WheelDialog("waist");
+                                    WheelDialog("waist",init);
                                 }
 
                             }else {
 
-                                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+                                if (init.equals("save")){
+                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+
+                                }else {
+
+                                }
+
                             }
 
 
@@ -486,17 +492,21 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
 
                                 if (height==0){
-                                    WheelDialog("height");
+                                    WheelDialog("height",init);
 
                                 }else if(weight==0){
-                                    WheelDialog("weight");
+                                    WheelDialog("weight",init);
                                 }else if(waist==0){
-                                    WheelDialog("waist");
+                                    WheelDialog("waist",init);
                                 }
 
                             }else {
+                                if (init.equals("save")){
+                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
 
-                                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+                                }else {
+
+                                }
                             }
 
 
@@ -525,17 +535,21 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                             if (height==0 || waist==0 || weight==0 ){
 
                                 if (height==0){
-                                    WheelDialog("height");
+                                    WheelDialog("height",init);
 
                                 }else if(weight==0){
-                                    WheelDialog("weight");
+                                    WheelDialog("weight",init);
                                 }else if(waist==0){
-                                    WheelDialog("waist");
+                                    WheelDialog("waist",init);
                                 }
 
                             }else {
+                                if (init.equals("save")){
+                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
 
-                                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+                                }else {
+
+                                }
                             }
 
                         }
@@ -582,12 +596,12 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             if (height==0 || waist==0 || weight==0 ){
 
                 if (height==0){
-                    WheelDialog("height");
+                    WheelDialog("height","save");
 
                 }else if(weight==0){
-                    WheelDialog("weight");
+                    WheelDialog("weight","save");
                 }else if(waist==0){
-                    WheelDialog("waist");
+                    WheelDialog("waist","save");
                 }
 
             }else {
@@ -696,28 +710,28 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         auth_key= login_details.getString("key","");
         user_id= login_details.getString("user_id","");
         Log.d("details", user_id + "//" + auth_key);
-        /**
-         *  "first_name": "Nairitya",
-         "last_name": "Khilari",
-         "email": "nairitya@gmail.com",
-         "phone_number": "4512356578",
-         "weight": 66,
-         "waist": 35,
-         "height": 179,
-         "dob": "1994-12-18"
-         */
-
+//        /**
+//         *  "first_name": "Nairitya",
+//         "last_name": "Khilari",
+//         "email": "nairitya@gmail.com",
+//         "phone_number": "4512356578",
+//         "weight": 66,
+//         "waist": 35,
+//         "height": 179,
+//         "dob": "1994-12-18"
+//         */
 //
-//        postParam.put("gender", sex);
-//        postParam.put("dob", dob);
-//        postParam.put("height", height);
-//        postParam.put("waist", waist);
-//        postParam.put("weight", weight);
-
+////
+////        postParam.put("gender", sex);
+////        postParam.put("dob", dob);
+////        postParam.put("height", height);
+////        postParam.put("waist", waist);
+////        postParam.put("weight", weight);
 //
-//        JSONObject jsonObject = new JSONObject(postParam);
-//        Log.d("postpar", jsonObject.toString());
-//
+////
+////        JSONObject jsonObject = new JSONObject(postParam);
+////        Log.d("postpar", jsonObject.toString());
+////
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 Config.url + "users/" + user_id + "/", null,
@@ -728,7 +742,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         Log.d("response", res.toString());
 
                         try {
-
                             dismissDialog();
                             JSONObject obj = res.getJSONObject("user");
                             username = obj.getString("username");
@@ -755,9 +768,10 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                             try {
 
 
-//                                JSONObject images=     res.getJSONObject("images");
-//                                String master=   images.getString("master");
-//                                editor.putString("master_image",master);
+                                JSONObject images=     profile.getJSONObject("images");
+                                String master=   images.getString("master");
+                                editor.putString("master_image",master);
+                                new DownloadImage().execute(master);
 //
 
                                 JSONArray energy = res.getJSONArray("energy");

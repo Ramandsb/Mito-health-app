@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android'
+apply plugin: 'newrelic'
 
 android {
     compileSdkVersion 24
@@ -33,6 +35,7 @@ android {
         maven {
             url "https://jitpack.io"
         }
+        mavenCentral()
     }
 
     dexOptions {
@@ -66,6 +69,8 @@ dependencies {
     compile 'com.android.support:support-v4:24.1.1'
     testCompile 'junit:junit:4.12'
     compile 'com.github.zeng1990java:WaveProgressView:1.0.5'
+    compile 'com.newrelic.agent.android:android-agent:5.+'
+
 }
 
 

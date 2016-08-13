@@ -19,6 +19,7 @@
             card_view:cardCornerRadius="35dp"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="40dp"
+            android:visibility="gone"
             android:layout_marginRight="40dp"
             android:layout_marginBottom="20dp"
             android:elevation="10dp">
@@ -137,6 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="60dp"
+                android:numStars="5"
                 android:layout_marginRight="60dp"/>
             <TextView
                 android:layout_width="wrap_content"

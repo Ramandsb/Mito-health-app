@@ -198,6 +198,11 @@ public FoodInterface foodInterface;
                 mChart.invalidate();
                 break;
             }
+            case android.R.id.home: {
+                startActivity(new Intent(CollapsableLogging.this,BinderActivity.class).putExtra("selection",2));
+                finish();
+                break;
+            }
             case R.id.actionTogglePinch: {
                 if (mChart.isPinchZoomEnabled())
                     mChart.setPinchZoom(false);

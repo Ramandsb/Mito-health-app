@@ -2,17 +2,22 @@ package in.tagbin.mitohealthapp.Fragments;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 import com.github.zeng1990java.widget.WaveProgressView;
@@ -26,6 +31,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import in.tagbin.mitohealthapp.CollapsableLogging;
+import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Interfaces.WaterInterface;
 import in.tagbin.mitohealthapp.PourBeerTask;
 import in.tagbin.mitohealthapp.R;
@@ -51,10 +58,13 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
 
     MaterialCalendarView widget;
     public static String selectedDate="";
+    public static String unique_id="";
 
+    TextView ml;
     int a=0,b=0,c=0;
     int i = 0;
     int mBgColor=0;
+    DatabaseOperations dop;
     public WaterFrag() {
         // Required empty public constructor
     }
@@ -86,15 +96,15 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
         }else if (day >9 && month >9){
             selectedDate = year + "-" + month + "-" + day;
             Log.d("date", selectedDate);
-
         }
+        dop= new DatabaseOperations(getActivity());
 
 
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_water, container, false);
@@ -107,6 +117,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
         final  View g6=view.findViewById(R.id.g6);
         final  View g7=view.findViewById(R.id.g7);
         final View g8=view.findViewById(R.id.g8);
+        ml= (TextView) view.findViewById(R.id.ml);
         /////////////////////
 
         Calendar calendar = Calendar.getInstance();
@@ -137,6 +148,29 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
         water7= (BeerProgressView) view.findViewById(R.id.DrawingwaterView7);
         water8= (BeerProgressView) view.findViewById(R.id.DrawingwaterView8);
         water9= (BeerProgressView) view.findViewById(R.id.complete_beer);
+        Cursor cursor = dop.getWaterInformation(dop, selectedDate);
+        if (cursor.getCount()==0){
+            count=0;
+            fillGlasses(count,"start");
+
+
+        }else if (cursor.getCount()==1) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    count = Integer.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.GLASSES)));
+                    fillGlasses(count,"start");
+
+                    ml.setText(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.ML))+" ml");
+                    Log.d("count",count+"");
+
+                } while (cursor.moveToNext());
+            }
+        }
+
+
+
+
+
 
         g1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,6 +182,10 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo1=false;
                     count--;
                     Log.d("cancel","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
+
+
                 }else {
                     pourBeerTask.execute(true);
                     boo1=true;
@@ -155,8 +193,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,8,0);
                     Task.execute(true);
                     Log.d("else","tr");
-                    count--;
-
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
                 }
 
 
@@ -173,6 +211,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo2=false;
                     count--;
                     Log.d("cancel","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,16,8);
@@ -180,6 +220,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo2=true;
                     count++;
                     Log.d("else","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
 
                 }
             }
@@ -196,6 +238,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo3=false;
                     count--;
                     Log.d("cancel","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,24,16);
@@ -203,6 +247,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo3=true;
                     count++;
                     Log.d("else","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
 
                 }            }
         });
@@ -217,6 +263,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo4=false;
                     count--;
                     Log.d("cancel","tr");
+                    Log.d("count",count+"");
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,32,24);
@@ -224,6 +271,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo4=true;
                     count++;
                     Log.d("else","tr");
+                    Log.d("count",count+"");
 
                 }            }
         });
@@ -241,6 +289,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     count--;
                     boo5=false;
                     Log.d("cancel","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,40,32);
@@ -248,6 +298,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo5=true;
                     count++;
                     Log.d("else","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
 
                 }                   }
         });
@@ -261,6 +313,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     count--;
                     boo6=false;
                     Log.d("cancel","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,50,40);
@@ -268,6 +322,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo6=true;
                     count++;
                     Log.d("else","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
 
                 }                       }
         });
@@ -281,6 +337,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo7=false;
                     count--;
                     Log.d("cancel","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,60,50);
@@ -288,6 +346,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo7=true;
                     count++;
                     Log.d("else","tr");
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
 
                 }                     }
         });
@@ -299,9 +359,10 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.cancel(true);
                     water8.setBeerProgress(0);
                     count--;
-
+                    Log.d("count",count+"");
                     boo8=false;
                     Log.d("cancel","tr");
+                    UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
                     boo8=true;
@@ -309,6 +370,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     Log.d("else","tr");
                     PourBeerTask Task=new PourBeerTask(getActivity(), water9,70,60);
                     Task.execute(true);
+                    Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
 
                 }
                     }
@@ -321,24 +384,129 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     @Override
     public void onResume() {
         super.onResume();
-//        getActivity().finish();
-//        startActivity(new Intent(getActivity().getIntent()).putExtra("selection",1));
 
     }
 
-    public void fillGlasses(int i){
+    public void fillGlasses(int i,String source){
+
+        if (i==0){
+            water1.setBeerProgress(0);
+            water2.setBeerProgress(0);
+            water3.setBeerProgress(0);
+            water4.setBeerProgress(0);
+            water5.setBeerProgress(0);
+            water6.setBeerProgress(0);
+            water7.setBeerProgress(0);
+            water8.setBeerProgress(0);
+            boo1=false;
+            boo2=false;
+            boo3=false;
+            boo4=false;
+            boo5=false;
+            boo6=false;
+            boo7=false;
+            boo8=false;
+
+        }else if (i>=1){
+            water1.setBeerProgress(0);
+            water2.setBeerProgress(0);
+            water3.setBeerProgress(0);
+            water4.setBeerProgress(0);
+            water5.setBeerProgress(0);
+            water6.setBeerProgress(0);
+            water7.setBeerProgress(0);
+            water8.setBeerProgress(0);
+            boo1=false;
+            boo2=false;
+            boo3=false;
+            boo4=false;
+            boo5=false;
+            boo6=false;
+            boo7=false;
+            boo8=false;
+            for (int j = 1; j <= i; j++) {
+
+                if (source.equals("start")){
+                    PourBeerTask pourBeerTask = new PourBeerTask(getActivity(), ReturnImageView(j), 80, 0);
+                    pourBeerTask.execute(true);
+                }else if (source.equals("click")){
+                    ReturnImageView(j).setBeerProgress(80);
+
+                }
+
+
+            }
+        }
 
 
     }
 
+    public BeerProgressView ReturnImageView(int i){
 
+        BeerProgressView currentView=new BeerProgressView(getActivity());
+        switch (i){
+            case 1:
+                currentView=water1;
+                boo1=true;
+                break;
+            case 2:
+                currentView=water2;
+                boo2=true;
+                break;
+            case 3:
+                currentView=water3;
+                boo3=true;
+                break;
+            case 4:
+                currentView=water4;
+                boo4=true;
+                break;
+            case 5:
+                currentView=water5;
+                boo5=true;
+                break;
+            case 6:
+                currentView=water6;
+                boo6=true;
+                break;
+            case 7:
+                currentView=water7;
+                boo7=true;
+                break;
+            case 8:
+                currentView=water8;
+                boo8=true;
+                break;
 
+        }
 
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-        ((CollapsableLogging)getActivity()).waterInterface = this;
+        return currentView;
     }
+
+
+public void UpdateDataBase(String count){
+    Cursor cursor = dop.getWaterInformation(dop, selectedDate);
+    int co = cursor.getCount();
+    int mli=Integer.valueOf(count)*250;
+
+    if (co == 1) {
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                unique_id = cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.WATER_UNIQUE_ID));
+            } while (cursor.moveToNext());
+            ContentValues cv = new ContentValues();
+            cv.put(TableData.Tableinfo.GLASSES, String.valueOf(count));
+            cv.put(TableData.Tableinfo.ML, String.valueOf(mli));
+            dop.updateWaterRow(dop, cv, unique_id);
+            ml.setText(String.valueOf(mli)+" ml");
+
+        }
+    }else if (co == 0) {
+        unique_id = String.valueOf(System.currentTimeMillis());
+        dop.putWaterInformation(dop, unique_id,selectedDate,String.valueOf(count),String.valueOf(mli),"250","no");
+        ml.setText(String.valueOf(mli)+" ml");
+    }
+}
 
     @Override
     public void passDataToWaterFragment(String selectedDate) {
@@ -363,6 +531,21 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
         }else if (day >9 && month >9){
             selectedDate = year + "-" + month + "-" + day;
             Log.d("date", selectedDate);
+        }
+        Cursor cursor = dop.getWaterInformation(dop, selectedDate);
+        if (cursor.getCount()==0){
+            count=0;
+            fillGlasses(count,"click");
+
+
+        }else if (cursor.getCount()==1) {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    count = Integer.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.GLASSES)));
+                    fillGlasses(count,"click");
+                    ml.setText(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.ML))+" ml");
+                } while (cursor.moveToNext());
+            }
         }
     }
     private String getSelectedDatesString() {

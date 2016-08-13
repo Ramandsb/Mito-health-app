@@ -405,8 +405,8 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
             MenuItem itm = menu.getItem(i);
             itm.setVisible(false);
         }
-        menu.findItem(R.id.action_done).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                .setVisible(true);
+//        menu.findItem(R.id.action_done).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+//                .setVisible(true);
         super.onPrepareOptionsMenu(menu);
     }
 

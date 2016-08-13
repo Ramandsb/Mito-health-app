@@ -34,7 +34,7 @@ public class PourBeerTask extends AsyncTask<Boolean, Integer, Boolean> {
         for (int i = startpos; i < prog; i++) {
             publishProgress(i);
             try {
-                if (i > 10) Thread.sleep(SLEEP_TIME);
+                if (i > 20) Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
 
             }

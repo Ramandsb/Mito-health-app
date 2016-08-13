@@ -188,7 +188,8 @@ RatingBar ratingBar;
                                 stm=minute;
                                     start_t=hourOfDay + ":" + minute;
                                     start_time.setText(start_t);
-                                    end_time.setText("End Time");
+
+                                    end_time.setText("00:00");
 
                                 Log.d("sleep date",SleepFrag.selectedDate);
                             }
@@ -258,8 +259,8 @@ RatingBar ratingBar;
     public  void setDatafromdatabase(String dateRe){
         Cursor cursor =dop.getslInformation(dop,dateRe);
         if (cursor.getCount()==0){
-            start_time.setText("End Time");
-            end_time.setText("Start Time");
+            start_time.setText("00:00");
+            end_time.setText("00:00");
             no_of_hours.setText("00:00");
             ratingBar.setRating(2);
         }
@@ -275,7 +276,7 @@ RatingBar ratingBar;
                 start_time.setText(starttim);
                 end_time.setText(endtime);
                 no_of_hours.setText(noOfhours);
-                ratingBar.setRating(Float.parseFloat(qua));
+//                ratingBar.setRating(Float.parseFloat(qua));
 
             }
             while (cursor.moveToNext());

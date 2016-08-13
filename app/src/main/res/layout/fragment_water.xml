@@ -20,6 +20,7 @@
            card_view:cardCornerRadius="35dp"
            android:layout_marginTop="10dp"
            android:layout_marginLeft="40dp"
+           android:visibility="visible"
            android:layout_marginRight="40dp"
            android:layout_marginBottom="20dp"
            android:elevation="10dp">
@@ -372,6 +373,14 @@
                 </RelativeLayout>
 
 
+                <TextView
+                    android:id="@+id/ml"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1000 ml"
+                    android:textSize="20sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_gravity="center"/>
 
 
             </LinearLayout>

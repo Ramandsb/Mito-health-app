@@ -8,11 +8,7 @@
         android:orderInCategory="1"
         android:visible="true"/>
 
-    <item
-        android:id="@+id/action_done"
-        android:title="Done"
-        app1:showAsAction="always"
-        android:visible="true" />
+
 
 
 </menu>
