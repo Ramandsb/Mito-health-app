@@ -2,28 +2,49 @@ package in.tagbin.mitohealthapp;
 
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
-public class BinderActivity extends AppCompatActivity {
+import in.tagbin.mitohealthapp.helper.PrefManager;
+import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
+import in.tagbin.mitohealthapp.helper.ViewPagerAdapter1;
+
+public class BinderActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
 
     static Fragment fra;
     FragmentTransaction fraTra;
     Toolbar toolbar;
     public AHBottomNavigation bottomNavigation;
+    private ViewPagerAdapter1 mAdapter;
+    private int dotsCount;
+    private ImageView[] dots;
+    private LinearLayout pager_indicator;
+    private ViewPager intro_images;
+    RelativeLayout pager;
+    private int[] mImageResources = {
+            R.drawable.profile_intro1,
+            R.drawable.profile_intro2,
+            R.drawable.profile_intro3,
+            R.drawable.profile_intro4/*,
+            R.drawable.intro4*/};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +52,14 @@ public class BinderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_binder);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+//        pager = (RelativeLayout) findViewById(R.id.relativeProfileIntro);
+//        intro_images = (ViewPager) findViewById(R.id.pagerProfileIntro);
+//        pager_indicator = (LinearLayout) findViewById(R.id.viewPagerCountDots);
+//        mAdapter = new ViewPagerAdapter1(this, mImageResources,getSupportFragmentManager());
+//        intro_images.setAdapter(mAdapter);
+//        intro_images.setCurrentItem(0);
+//        intro_images.setOnPageChangeListener(this);
+//        setUiPageViewController();
         toolbar.setTitle("Profile");
         fra = new ProfileFragMent();
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
@@ -107,12 +136,39 @@ public class BinderActivity extends AppCompatActivity {
             }
         });
     }
+    private void setUiPageViewController() {
+        dotsCount = mAdapter.getCount();
+        dots = new ImageView[dotsCount];
+
+        for (int i = 0; i < dotsCount; i++) {
+            dots[i] = new ImageView(this);
+            dots[i].setImageDrawable(getResources().getDrawable(R.drawable.pointer_page_unactive));
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+
+            params.setMargins(4, 0, 4, 0);
+
+            pager_indicator.addView(dots[i], params);
+        }
+        dots[0].setImageDrawable(getResources().getDrawable(R.drawable.pointer_page_active));
+    }
 
     public void change (int position){
 
         switch (position){
             case 0:
-                fra = new PartnerIntro();
+                PrefManager pref = new PrefManager(this);
+//                if (!pref.isTutorialShown()){
+//                    pref.setTutorial(true);
+//                    pager.setVisibility(View.VISIBLE);
+//                }else{
+//                    pager.setVisibility(View.GONE);
+//                    fra = new PartnerFrag();
+//                }
+                fra = new PartnerFrag();
                 Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
@@ -150,5 +206,30 @@ public class BinderActivity extends AppCompatActivity {
         }
         return super.onCreateOptionsMenu(menu);
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Fragment fragment = new AddActivityfrag();
+        fragment.onActivityResult(requestCode, resultCode, data);
 
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        for (int i = 0; i < dotsCount; i++) {
+            dots[i].setImageDrawable(getResources().getDrawable(R.drawable.pointer_page_unactive));
+        }
+
+        dots[position].setImageDrawable(getResources().getDrawable(R.drawable.pointer_page_active));
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
 }

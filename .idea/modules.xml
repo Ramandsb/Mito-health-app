@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MitoHealthApp.iml" filepath="$PROJECT_DIR$/MitoHealthApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/ViewPagerIndicator-Library/ViewPagerIndicator-Library.iml" filepath="$PROJECT_DIR$/ViewPagerIndicator-Library/ViewPagerIndicator-Library.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-image-zoom-crop/android-image-zoom-crop.iml" filepath="$PROJECT_DIR$/android-image-zoom-crop/android-image-zoom-crop.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mitohealthapp.iml" filepath="$PROJECT_DIR$/mitohealthapp.iml" />
     </modules>
   </component>
 </project>

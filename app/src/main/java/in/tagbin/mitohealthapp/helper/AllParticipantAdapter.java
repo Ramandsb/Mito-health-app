@@ -1,0 +1,99 @@
+package in.tagbin.mitohealthapp.helper;
+
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+
+
+import java.util.List;
+
+import in.tagbin.mitohealthapp.ParticipantDetailfrag;
+import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.model.ParticipantModel;
+
+/**
+ * Created by aasaqt on 10/8/16.
+ */
+public class AllParticipantAdapter extends RecyclerView.Adapter<AllParticipantAdapter.ViewHolder>  {
+    Context mContext;
+    List<ParticipantModel> mModel;
+    FragmentManager mFragment;
+    FrameLayout mFrameLayout;
+    String dataObject;
+    private static final int TYPE_ITEM = 1;
+
+    public AllParticipantAdapter(Context pContext, List<ParticipantModel> pModel, String dataObject, FragmentManager fragmentManager, FrameLayout frameLayout){
+        mContext = pContext;
+        mModel = pModel;
+        mFragment = fragmentManager;
+        mFrameLayout = frameLayout;
+        this.dataObject = dataObject;
+    }
+
+    @Override
+    public AllParticipantAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType == TYPE_ITEM){
+            View v = LayoutInflater.from(mContext).inflate(R.layout.item_allparticipant,parent,false);
+            ViewHolder vhItem = new ViewHolder(v,viewType);
+            return vhItem;
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(AllParticipantAdapter.ViewHolder holder, int position) {
+        ((AllParticipantAdapter.ViewHolder) holder).populateData(mModel.get(position),mContext,mModel,mFragment,mFrameLayout,dataObject,position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mModel.size();
+    }
+    @Override
+    public int getItemViewType(int position) {
+        return TYPE_ITEM;
+    }
+    public static class ViewHolder extends RecyclerView.ViewHolder{
+        ParticipantModel mModel;
+        Context mContext;
+        ImageView imageView;
+
+        public ViewHolder(View itemView,int viewTpe) {
+            super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.ivAllParticipants);
+        }
+        public void populateData(ParticipantModel pModel, Context pContext, final List<ParticipantModel> data, final FragmentManager pFragment, final FrameLayout mFrameLayout, final String dataObj, final int position){
+            mModel = pModel;
+            mContext = pContext;
+            imageView.setImageResource(mModel.getUser().getDrawable());
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mFrameLayout.setVisibility(View.VISIBLE);
+
+                    Bundle bundle = new Bundle();
+                    Fragment fragment = new ParticipantDetailfrag();
+                    String dataobject = JsonUtils.jsonify(mModel);
+                    String allModels = JsonUtils.jsonify(data);
+                    bundle.putString("participantModel",dataobject);
+                    bundle.putString("allmodels",allModels);
+                    bundle.putString("dataobject",dataObj);
+                    bundle.putInt("positon",position);
+                    fragment.setArguments(bundle);
+                    FragmentTransaction transaction = pFragment.beginTransaction();
+                    transaction.add(R.id.frameAddActivity, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            });
+        }
+    }
+}

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivAddActivityImage"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="10dp"
+        android:src="@drawable/hotel"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabAddImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/ivAddActivityImage"
+        android:layout_alignRight="@+id/ivAddActivityImage"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="10dp"
+        android:background="#4c516d"
+        android:rotation="45"
+        android:src="@drawable/plus"
+        app:backgroundTint="#4c516d"
+        app:fabSize="mini"
+        app:rippleColor="#FFF" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivAddActivityImage"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textColor="#6f87b3"
+            android:id="@+id/tvAddTitle"
+            android:textSize="17sp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvAddTitle"
+            android:hint="Please join for riding"
+            android:textColorHint="#bbbbbb"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:id="@+id/etAddTitle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Desciption"
+            android:textColor="#6f87b3"
+            android:layout_below="@+id/etAddTitle"
+            android:id="@+id/tvAddDesciption"
+            android:textSize="17sp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvAddDesciption"
+            android:hint="Please add desciption"
+            android:textColorHint="#bbbbbb"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:id="@+id/etAddDesciption"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Type"
+            android:textColor="#6f87b3"
+            android:layout_below="@+id/etAddDesciption"
+            android:id="@+id/tvAddType"
+            android:textSize="17sp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvAddType"
+            android:hint="Horse riding"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:textColorHint="#bbbbbb"
+            android:id="@+id/etAddType"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:textColor="#6f87b3"
+            android:layout_below="@+id/etAddType"
+            android:id="@+id/tvAddLocation"
+            android:textSize="17sp" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvAddLocation"
+            android:hint="New Delhi"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:textColorHint="#bbbbbb"
+            android:id="@+id/etAddLocation"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Member"
+            android:textColor="#6f87b3"
+            android:layout_below="@+id/etAddLocation"
+            android:id="@+id/tvAddMember"
+            android:textSize="17sp"  />
+        <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/rangebar"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:layout_below="@+id/tvAddMember"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            custom:connectingLineColor="@color/colorPrimary"
+            custom:pinColor="@color/colorPrimary"
+            custom:pinMaxFont="20sp"
+            custom:pinMinFont="14sp"
+            custom:pinPadding="10dp"
+            custom:pinRadius="17dp"
+            custom:rangeBarColor="#d0cfcf"
+            custom:selectorColor="@color/colorPrimary"
+            custom:textColor="#ffffff"
+            custom:tickColor="#000000"
+            custom:tickEnd="100"
+            custom:tickInterval="1"
+            custom:tickStart="0" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:id="@+id/relativeAddDecisionTimer"
+            android:layout_below="@+id/rangebar">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Decision Timer"
+                android:textSize="17sp"
+                android:id="@+id/tvAddDecision"
+                android:textColor="#9b9b9b"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:00"
+                android:textSize="20sp"
+                android:id="@+id/tvAddDecisionTime"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/tvAddDecision"/>
+        </RelativeLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/bg_card"
+            android:layout_below="@+id/relativeAddDecisionTimer"
+            android:elevation="30dp"
+            android:text="Created Activity"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#9FC793"
+            android:textSize="20sp"
+            android:id="@+id/buttonCreateActivity"
+            android:layout_marginBottom="10dp"/>
+    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        android:indeterminateTint="@color/colorAccent"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone" />
+</RelativeLayout>
+</ScrollView>
