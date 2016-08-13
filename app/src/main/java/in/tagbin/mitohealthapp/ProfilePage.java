@@ -147,6 +147,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         dob = year + "-" + month + "-" + day;
+        customDialog();
         makeJsonObjReq();
         profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
         profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
@@ -189,7 +190,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             }
         });
         checkPermissions();
-        updateProfile();
+
         male_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,7 +213,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                 saveGender.commit();
             }
         });
-        customDialog();
+
         assert select_date != null;
         select_date.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.N)
@@ -705,6 +706,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
     private void makeJsonObjReq() {
 
+        showDialog();
         Map<String, String> postParam = new HashMap<String, String>();
         final SharedPreferences.Editor editor = login_details.edit();
         auth_key= login_details.getString("key","");
@@ -742,18 +744,32 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         Log.d("response", res.toString());
 
                         try {
+
+
+                            SharedPreferences.Editor editor= login_details.edit();
+
                             dismissDialog();
                             JSONObject obj = res.getJSONObject("user");
-                            username = obj.getString("username");
-                            first_name = obj.getString("first_name");
-                            last_name = obj.getString("last_name");
-                            email = obj.getString("email");
+                            String  username = obj.getString("username");
+                            String  first_name = obj.getString("first_name");
+                            String last_name = obj.getString("last_name");
+                            String   email = obj.getString("email");
                             JSONObject profile = res.getJSONObject("profile");
                             String dob = profile.getString("dob");
                             String gender = profile.getString("gender");
                             String height = profile.getString("height");
                             String weight = profile.getString("weight");
                             String waist = profile.getString("waist");
+
+                            editor.putString("user_username",username);
+                            editor.putString("dob",dob);
+                            editor.putInt("height",Integer.valueOf(height));
+                            editor.putString("gender",gender);
+                            editor.putString("user_first_name",first_name);
+                            editor.putString("user_last_name",last_name);
+                            editor.putInt("weight",Integer.valueOf(weight));
+                            editor.putInt("waist",Integer.valueOf(waist));
+                            editor.commit();
 
                             int wei = Integer.valueOf(weight);
                             int grams = wei % 1000;
@@ -767,11 +783,13 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
                             try {
 
+                                SharedPreferences.Editor editor1= login_details.edit();
 
-                                JSONObject images=     profile.getJSONObject("images");
-                                String master=   images.getString("master");
-                                editor.putString("master_image",master);
-                                new DownloadImage().execute(master);
+//
+//                                JSONObject images=     profile.getJSONObject("images");
+//                                String master=   images.getString("master");
+//                                editor1.putString("master_image",master);
+//                                new DownloadImage().execute(master);
 //
 
                                 JSONArray energy = res.getJSONArray("energy");
@@ -784,10 +802,10 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
                                     Log.d("energy val", energyi[i]);
                                 }
-                                editor.putString("water_amount", energyi[1]);
-                                editor.putString("food_cal", energyi[2]);
-                                editor.putString("calorie_burnt", energyi[3]);
-                                editor.putString("total_calorie_required", energyi[4]);
+                                editor1.putString("water_amount", energyi[1]);
+                                editor1.putString("food_cal", energyi[2]);
+                                editor1.putString("calorie_burnt", energyi[3]);
+                                editor1.putString("total_calorie_required", energyi[4]);
                                 Log.d("energy details", energyi[1] + "///" + energyi[2] + "///" + energyi[3] + "///" + energyi[4] + "///");
 
                                 JSONObject user = res.getJSONObject("user");
@@ -799,14 +817,14 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                                 first_name=user_first_name;
                                 last_name=user_last_name;
 
-                                editor.putString("user_username", user_username);
-                                editor.putString("user_first_name", user_first_name);
-                                editor.putString("user_last_name", user_last_name);
-                                editor.putString("user_email", user_email);
+                                editor1.putString("user_username", user_username);
+                                editor1.putString("user_first_name", user_first_name);
+                                editor1.putString("user_last_name", user_last_name);
+                                editor1.putString("user_email", user_email);
 
-                                editor.commit();
+                                editor1.commit();
                                 Log.d("all details", login_details.getAll().toString());
-
+                                updateProfile();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -933,6 +951,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     }
     public void updateProfile() {
 
+        showDialog();
      dob=   login_details.getString("dob","");
      gender=   login_details.getString("gender","");
      height=   login_details.getInt("height",0);
@@ -974,6 +993,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         }
 
 
+        dismissDialog();
 
 
 

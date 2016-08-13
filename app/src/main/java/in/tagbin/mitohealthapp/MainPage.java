@@ -383,6 +383,7 @@ showDialog();
         video_player_view.hideControls();
 
 
+
     }
 
     private void getIdToken() {
@@ -482,6 +483,9 @@ showDialog();
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response", response.toString());
+                        SharedPreferences.Editor editor1 = loginDetails.edit();
+                        editor1.clear();
+                        editor1.commit();
                         SharedPreferences.Editor editor = loginDetails.edit();
                         try {
                             editor.putString("user_id", response.getString("user_id"));
