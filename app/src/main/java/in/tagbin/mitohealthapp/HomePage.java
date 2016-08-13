@@ -113,7 +113,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     private void makeJsonObjGETReq() {
 
         Map<String, String> postParam = new HashMap<String, String>();
-        final SharedPreferences.Editor editor= login_details.edit();
+
 
         auth_key=   login_details.getString("key","");
         user_id=   login_details.getString("user_id","");
@@ -129,6 +129,8 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
 
                         try {
 
+                            SharedPreferences.Editor editor= login_details.edit();
+
                             dismissDialog();
                             JSONObject obj = res.getJSONObject("user");
                           String  username = obj.getString("username");
@@ -141,6 +143,9 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
                             String height = profile.getString("height");
                             String weight = profile.getString("weight");
                             String waist = profile.getString("waist");
+
+
+
 
 
                             int wei=Integer.valueOf(weight);
@@ -157,7 +162,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
 
 
 
-
+                                SharedPreferences.Editor editor1= login_details.edit();
 //                                JSONObject images=     res.getJSONObject("images");
 //                                String master=   images.getString("master");
 //                                editor.putString("master_image",master);
@@ -173,10 +178,10 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
 
                                     Log.d("energy val",energyi[i]);
                                 }
-                                editor.putString("water_amount",energyi[1]);
-                                editor.putString("food_cal",energyi[2]);
-                                editor.putString("calorie_burnt",energyi[3]);
-                                editor.putString("total_calorie_required",energyi[4]);
+                                editor1.putString("water_amount",energyi[1]);
+                                editor1.putString("food_cal",energyi[2]);
+                                editor1.putString("calorie_burnt",energyi[3]);
+                                editor1.putString("total_calorie_required",energyi[4]);
                                 Log.d("energy details",energyi[1]+"///"+energyi[2]+"///"+energyi[3]+"///"+energyi[4]+"///");
 
                                 JSONObject user =   res.getJSONObject("user");
@@ -185,12 +190,12 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
                                 String user_last_name=  user.getString("last_name");
                                 String user_email=   user.getString("email");
 
-                                editor.putString("user_username",user_username);
-                                editor.putString("user_first_name",user_first_name);
-                                editor.putString("user_last_name",user_last_name);
-                                editor.putString("user_email",user_email);
+                                editor1.putString("user_username",user_username);
+                                editor1.putString("user_first_name",user_first_name);
+                                editor1.putString("user_last_name",user_last_name);
+                                editor1.putString("user_email",user_email);
 
-                                editor.commit();
+                                editor1.commit();
                                 Log.d("all details",login_details.getAll().toString())   ;
 
                             } catch (JSONException e) {
