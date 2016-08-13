@@ -64,7 +64,10 @@ public class InterestsFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_interests, container, false);
+        View Intrvu = inflater.inflate(R.layout.fragment_interests, container, false);
+
+        return Intrvu;
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
