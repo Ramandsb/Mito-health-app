@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.graphics.Bitmap;
 import android.util.Base64;
 import android.util.Log;
 
@@ -12,11 +13,18 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.facebook.stetho.Stetho;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import org.joda.time.LocalDateTime;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import in.tagbin.mitohealthapp.app.Controller;
 
 
 public class AppController extends Application {
@@ -35,7 +43,8 @@ public class AppController extends Application {
 		super.onCreate();
 		mInstance = this;
 //        printKeyHash();
-
+        Controller.init(this);
+        initUIL();
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)
                         .enableDumpapp(Stetho.defaultDumperPluginsProvider(this))
@@ -44,7 +53,20 @@ public class AppController extends Application {
 
 
     }
+    private void initUIL() {
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true).cacheOnDisc(true)
+                .imageScaleType(ImageScaleType.IN_SAMPLE_POWER_OF_2)
+                .bitmapConfig(Bitmap.Config.RGB_565).build();
 
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
+                getBaseContext())
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .denyCacheImageMultipleSizesInMemory()
+                .defaultDisplayImageOptions(options).writeDebugLogs().build();
+
+        ImageLoader.getInstance().init(config);
+    }
 	public static synchronized AppController getInstance() {
 		return mInstance;
 	}

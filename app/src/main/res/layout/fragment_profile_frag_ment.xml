@@ -1,23 +1,32 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.tagbin.mitohealthapp.ProfileFragMent">
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.TabLayout
         android:id="@+id/ProfileTabs"
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+        app:tabMinWidth="25sp"
+        android:background="#ffffff"
+        android:dividerHeight="14.5sp"
+        app:tabPadding="10sp"
+        app:tabIndicatorHeight="3sp"
+        app:tabGravity="center"
+        app:tabPaddingStart="0sp"
+        app:tabPaddingEnd="0sp"
+        android:theme="@style/Theme1"
+        android:minHeight="?attr/actionBarSize">
 
     </android.support.design.widget.TabLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/ProfilePager"
-        android:layout_below="@id/ProfileTabs"
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v4.view.ViewPager>
+        android:layout_width="match_parent"
+        android:layout_weight="3"
+        android:layout_height="wrap_content"/>
 
 
-</RelativeLayout>
+</LinearLayout>
