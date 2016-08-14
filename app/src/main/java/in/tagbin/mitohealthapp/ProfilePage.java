@@ -66,6 +66,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -782,10 +783,10 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                                 SharedPreferences.Editor editor1= login_details.edit();
 
 //
-//                                JSONObject images=     profile.getJSONObject("images");
-//                                String master=   images.getString("master");
-//                                editor1.putString("master_image",master);
-//                                new DownloadImage().execute(master);
+                                JSONObject images=     profile.getJSONObject("images");
+                                String master=   images.getString("master");
+                                editor1.putString("master_image",master);
+                                new DownloadImage().execute(master);
 //
 
                                 JSONArray energy = res.getJSONArray("energy");

@@ -111,7 +111,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     }
 
     private void makeJsonObjGETReq() {
-
+showDialog();
         Map<String, String> postParam = new HashMap<String, String>();
 
 
@@ -248,7 +248,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.content_home_page,container,false);
         Calendar  calendar = Calendar.getInstance();
-
+        customDialog();
         int  year = calendar.get(Calendar.YEAR);
         int  month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -362,7 +362,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
             }
         });
 
-        customDialog();
+
         food_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -430,7 +430,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
 
     }
     private void makeJsonObjReq() {
-
+showDialog();
         auth_key=   login_details.getString("key", "");
         Map<String, String> postParam = new HashMap<String, String>();
         postParam.put("ltype", "water");
@@ -452,7 +452,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
                         Log.d("response", response.toString());
 
 
-
+dismissDialog();
 
 
 
@@ -465,7 +465,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("error", "Error: " + error.getMessage());
 
-
+displayErrors(error);
                 Log.d("error", error.toString());
             }
         }) {
@@ -503,7 +503,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         return timestamp;
     }
     private void makeJsonObjReq(String start,String end) {
-
+showDialog();
         auth_key=   login_details.getString("key", "");
         Map<String, String> postParam = new HashMap<String, String>();
 
@@ -528,7 +528,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
                         Log.d("response", response.toString());
 
 
-
+dismissDialog();
 
 
 
@@ -541,7 +541,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d("error", "Error: " + error.getMessage());
 
-
+displayErrors(error);
 
                 Log.d("error", error.toString()+"//////////"+error.getMessage());
             }

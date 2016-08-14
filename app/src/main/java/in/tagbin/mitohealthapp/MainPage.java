@@ -229,6 +229,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
 
     private void onFblogin() {
 
+        showDialog();
         callbackManager = CallbackManager.Factory.create();
 
         // Set permissions
@@ -252,10 +253,13 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
                     @Override
                     public void onCancel() {
 
+                       progressBar.setVisibility(View.GONE);
+                        messageView.setText("Check Internet Connection");
                     }
 
                     @Override
                     public void onError(FacebookException error) {
+                        Log.d("bhai eror h",error.toString());
 
                     }
                 });
@@ -344,7 +348,6 @@ showDialog();
                         profile_picture = data.getString("url");
                         Log.d("Details", profile_name + "\n" + link + "\n" + email + "\n" + profile_picture + "\n" + id);
                         Log.d("GraphResponse", response.toString());
-                        dismissDialog();
 //                        Intent intent = new Intent(MainPage.this, ProfilePage.class);
 //                        intent.putExtra("name", profile_name);
 //                        intent.putExtra("picture", profile_picture);
@@ -356,6 +359,8 @@ showDialog();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.d("some graph shit eeror",e.toString());
+
                 }
             }
         });
@@ -509,7 +514,6 @@ showDialog();
                             intent.putExtra("selection", 1);
                             startActivity(intent);
                             finish();
-                            dismissDialog();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

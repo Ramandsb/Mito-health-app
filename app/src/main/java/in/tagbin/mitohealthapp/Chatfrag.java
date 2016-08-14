@@ -93,13 +93,11 @@ public class Chatfrag extends Fragment {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        if (activeNetworkInfo==null){
-            Log.d("activeNetworkInfo","null bc"+"///");
-
-        }
 //       Log.d("is connected",activeNetworkInfo.isConnected()+"///");
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
+
+
     public void setConnection(XMPPConnection connection) {
         this.connection = connection;
         if (connection != null) {
