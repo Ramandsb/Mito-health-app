@@ -6,7 +6,7 @@ package in.tagbin.mitohealthapp.model;
 public class DataObject {
     public String title,location,etitle,timer,picture;
     public boolean all;
-    public int id,capacity;
+    public int id,capacity,total_request,total_approved;
     public EventType event_type;
 
     public DataObject(String title,String location,String etitle,int capsty,String tme) {
@@ -61,6 +61,12 @@ public class DataObject {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+    public int getTotal_request(){
+        return this.total_request;
+    }
+    public int getTotal_approved(){
+        return this.total_approved;
     }
     public String getPicture(){
         return this.picture;

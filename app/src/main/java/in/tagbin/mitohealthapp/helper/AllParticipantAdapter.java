@@ -1,6 +1,7 @@
 package in.tagbin.mitohealthapp.helper;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +13,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.List;
 
@@ -73,7 +78,33 @@ public class AllParticipantAdapter extends RecyclerView.Adapter<AllParticipantAd
         public void populateData(ParticipantModel pModel, Context pContext, final List<ParticipantModel> data, final FragmentManager pFragment, final FrameLayout mFrameLayout, final String dataObj, final int position){
             mModel = pModel;
             mContext = pContext;
-            imageView.setImageResource(mModel.getUser().getDrawable());
+            if (mModel.getUser().getProfile().getImages() != null && mModel.getUser().getProfile().getImages().size() >0){
+                ImageLoader.getInstance().loadImage(mModel.getUser().getProfile().getImages().get(0), new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        imageView.setImageBitmap(loadedImage);
+                    }
+                });
+            }else{
+                imageView.setImageResource(R.drawable.hotel);
+            }
+
+
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

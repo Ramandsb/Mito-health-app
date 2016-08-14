@@ -173,8 +173,8 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
                 break;
             case 1:
                 toolbar.setTitle("Profile");
-                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 fra = new ProfileFragMent();
+                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
                 toolbar.setTitle("Mito");

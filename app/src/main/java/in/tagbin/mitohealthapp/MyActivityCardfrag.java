@@ -84,6 +84,9 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         time.setText(MyUtils.getValidTime(data.getTime()));
         location.setText(MyUtils.getCityName(getContext(),data.getLocation()));
         people.setText(""+data.getCapacity());
+        interested.setText(""+data.getTotal_request());
+        approved.setText(""+data.getTotal_approved());
+        left.setText(""+(data.getCapacity()-data.getTotal_approved()));
         if (data.getPicture() != null){
 
             ImageLoader.getInstance().loadImage(data.getPicture(), new ImageLoadingListener() {
@@ -116,20 +119,20 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         }
         mylayoutmanager = new StaggeredGridLayoutManager(4, 1);
         mModel = new ArrayList<ParticipantModel>();
-        mModel.add(new ParticipantModel(1,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",25,1));
-        mModel.add(new ParticipantModel(2,R.drawable.hotel,"Varun Dhawan","Indian Actor","Swimming Watching movies",23,2));
-        mModel.add(new ParticipantModel(3,R.drawable.hotel,"Varun Dhawan","Australia Actor","Swimming Watching movies",24,3));
-        mModel.add(new ParticipantModel(4,R.drawable.hotel,"Aasaqt","Engineer","Swimming Watching movies",26,4));
-        mModel.add(new ParticipantModel(5,R.drawable.hotel,"Chetan","IT Head","Swimming Watching movies",27,5));
-        mModel.add(new ParticipantModel(6,R.drawable.hotel,"Arun Jaitley","Minister","Swimming Watching movies",22,6));
-        mModel.add(new ParticipantModel(7,R.drawable.hotel,"Narendra Modi","PM","Swimming Watching movies",24,7));
-        mModel.add(new ParticipantModel(8,R.drawable.hotel,"Pranab Mukherjee","President","Swimming Watching movies",26,8));
-        mModel.add(new ParticipantModel(9,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",29,9));
-        mModel.add(new ParticipantModel(10,R.drawable.hotel,"Akshay","Actor","Swimming Watching movies",20,10));
-        mModel.add(new ParticipantModel(11,R.drawable.hotel,"Sonakshi","Indian Actress","Swimming Watching movies",21,11));
-        mModel.add(new ParticipantModel(12,R.drawable.hotel,"Brad Pitt","Actor","Swimming Watching movies",23,12));
-        mModel.add(new ParticipantModel(13,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",26,13));
-        mModel.add(new ParticipantModel(14,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",25,14));
+//        mModel.add(new ParticipantModel(1,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",25,1));
+//        mModel.add(new ParticipantModel(2,R.drawable.hotel,"Varun Dhawan","Indian Actor","Swimming Watching movies",23,2));
+//        mModel.add(new ParticipantModel(3,R.drawable.hotel,"Varun Dhawan","Australia Actor","Swimming Watching movies",24,3));
+//        mModel.add(new ParticipantModel(4,R.drawable.hotel,"Aasaqt","Engineer","Swimming Watching movies",26,4));
+//        mModel.add(new ParticipantModel(5,R.drawable.hotel,"Chetan","IT Head","Swimming Watching movies",27,5));
+//        mModel.add(new ParticipantModel(6,R.drawable.hotel,"Arun Jaitley","Minister","Swimming Watching movies",22,6));
+//        mModel.add(new ParticipantModel(7,R.drawable.hotel,"Narendra Modi","PM","Swimming Watching movies",24,7));
+//        mModel.add(new ParticipantModel(8,R.drawable.hotel,"Pranab Mukherjee","President","Swimming Watching movies",26,8));
+//        mModel.add(new ParticipantModel(9,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",29,9));
+//        mModel.add(new ParticipantModel(10,R.drawable.hotel,"Akshay","Actor","Swimming Watching movies",20,10));
+//        mModel.add(new ParticipantModel(11,R.drawable.hotel,"Sonakshi","Indian Actress","Swimming Watching movies",21,11));
+//        mModel.add(new ParticipantModel(12,R.drawable.hotel,"Brad Pitt","Actor","Swimming Watching movies",23,12));
+//        mModel.add(new ParticipantModel(13,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",26,13));
+//        mModel.add(new ParticipantModel(14,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",25,14));
 
         mAdapter = new ParticipantAdapter(getContext(),mModel,getActivity().getSupportFragmentManager(),frameLayout,dataobject);
         recyclerView.setLayoutManager(this.mylayoutmanager);
@@ -169,6 +172,15 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             }.getType();
             da = (List<ParticipantModel>) new Gson()
                     .fromJson(responseObject.toString(), collectionType);
+            for (int i=0;i<da.size();i++){
+                mModel.add(da.get(i));
+            }
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
         }
 
         @Override

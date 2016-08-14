@@ -1,63 +1,30 @@
 package in.tagbin.mitohealthapp;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragMent#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class ProfileFragMent extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
+public class ProfileFragMent extends Fragment implements TabLayout.OnTabSelectedListener {
+
     private TabLayout tablayout;
     private ViewPager vPager;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    TextView tabOne,tabTwo;
 
+    ProfilePagerAdapter adapter;
 
-    public ProfileFragMent() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragMent.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragMent newInstance(String param1, String param2) {
-        ProfileFragMent fragment = new ProfileFragMent();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
+    @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -66,12 +33,64 @@ public class ProfileFragMent extends Fragment {
 
         tablayout = (TabLayout) ProfileView.findViewById(R.id.ProfileTabs);
         vPager = (ViewPager) ProfileView.findViewById(R.id.ProfilePager);
-        vPager.setAdapter(new ProfilePagerAdapter(getActivity().getSupportFragmentManager()));
+        adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager());
+        vPager.setAdapter(adapter);
         tablayout.setupWithViewPager(vPager);
+        tablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        
+        vPager.setCurrentItem(0,true);
+        tablayout.setOnTabSelectedListener(this);
+        tablayout.setTabsFromPagerAdapter(adapter);
+        tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        vPager.setOffscreenPageLimit(2);
 
+        setupTab();
 
 
         return ProfileView;
     }
+    private void setupTab() {
+        try {
+            RelativeLayout relativeLayout = (RelativeLayout)
+                    LayoutInflater.from(getActivity()).inflate(R.layout.tab, tablayout, false);
 
+
+            relativeLayout.setGravity(RelativeLayout.CENTER_HORIZONTAL);
+
+            tabOne = (TextView) relativeLayout.findViewById(R.id.tabtext);
+            tabOne.setText("Health");
+            tabOne.setTextColor(Color.parseColor("#4c516d"));
+            tabOne.setGravity(Gravity.CENTER);
+            tablayout.getTabAt(0).setCustomView(relativeLayout);
+
+            RelativeLayout relativeLayout1 = (RelativeLayout)
+                    LayoutInflater.from(getActivity()).inflate(R.layout.tab, tablayout, false);
+
+
+            tabTwo = (TextView) relativeLayout1.findViewById(R.id.tabtext);
+            tabTwo.setText("Partner Connect");
+            tabTwo.setTextColor(Color.parseColor("#4c516d"));
+            tabTwo.setGravity(Gravity.CENTER);
+
+            tablayout.getTabAt(1).setCustomView(relativeLayout1);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
 }

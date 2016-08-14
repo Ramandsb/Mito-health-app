@@ -8,8 +8,80 @@
     <com.wenchao.cardstack.CardStack
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="200dp"
         android:clipChildren="false"
         android:clipToPadding="false" />
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/container"
+        android:textSize="22sp"
+        android:id="@+id/tvExploreName"
+        android:textColor="#9b9b9b"
+        android:text="Melenia Eglasius"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvExploreName"
+        android:textSize="20sp"
+        android:id="@+id/tvExploreAge"
+        android:textColor="#9b9b9b"
+        android:text="23, Female"/>
+    <View
+        android:layout_width="150dp"
+        android:layout_height="1dp"
+        android:background="#9b9b9b"
+        android:id="@+id/viewSperator"
+        android:layout_marginTop="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvExploreAge"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/viewSperator"
+        android:textSize="17sp"
+        android:id="@+id/tvExploreDistance"
+        android:textColor="#9b9b9b"
+        android:text="less 2 kms away"/>
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvExploreDistance"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/action"
+        android:id="@+id/ivExploreSubmit"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/ivExploreSubmit"
+        android:textSize="40sp"
+        android:id="@+id/tvExploreArrow"
+        android:layout_marginRight="10dp"
+        android:textColor="#9b9b9b"
+        android:text="^"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#9b9b9b"
+        android:id="@+id/viewSperator1"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="8dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvExploreArrow"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/viewSperator1"
+        android:textSize="17sp"
+        android:layout_marginLeft="12dp"
+        android:id="@+id/tvExploreInterests"
+        android:textColor="#9b9b9b"
+        android:text="2 Common Interests"/>
 </RelativeLayout>

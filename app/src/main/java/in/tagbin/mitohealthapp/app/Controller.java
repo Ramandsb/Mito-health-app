@@ -197,8 +197,8 @@ public class Controller {
         url = url+event_id+"/users/";
         ConfirmParticipantModel confirmParticipantModel = new ConfirmParticipantModel();
         confirmParticipantModel.setId(partipant_id);
-        confirmParticipantModel.setConfirm("0");
-        confirmParticipantModel.setDecline("1");
+        confirmParticipantModel.setConfirm("1");
+        confirmParticipantModel.setDecline("0");
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.PUT, confirmParticipantModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);

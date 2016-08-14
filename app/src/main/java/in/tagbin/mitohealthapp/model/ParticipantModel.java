@@ -1,5 +1,9 @@
 package in.tagbin.mitohealthapp.model;
 
+import java.util.ArrayList;
+
+import in.tagbin.mitohealthapp.Fragments.Profile;
+
 /**
  * Created by aasaqt on 9/8/16.
  */
@@ -8,9 +12,11 @@ public class ParticipantModel {
     int id;
     boolean confirm,decline;
     UserModel user;
+
     public ParticipantModel(int id,int drawable,String name,String profession,String hobbies,int age,int user_id){
         this.id = id;
-        user =new UserModel(drawable,name,profession,hobbies,age,user_id);
+        user = new UserModel();
+
     }
     public int getId(){
         return this.id;
@@ -20,31 +26,18 @@ public class ParticipantModel {
     }
 
     public class UserModel{
-
-        int id,drawable,age;
+        public UserModel(){
+            profile = new ProfileModel();
+        }
+        ProfileModel profile;
+        int id;
+        ArrayList<String> interests;
+        public ArrayList<String> getInterests(){
+            return this.interests;
+        }
         String first_name,last_name,email,username,profession,hobbies;
-        public UserModel(int drawable,String name,String profession,String hobbies,int age,int user_id){
-            this.drawable = drawable;
-            this.first_name = name;
-            this.profession = profession;
-            this.hobbies = hobbies;
-            this.age = age;
-            this.id = user_id;
-        }
-        public int getDrawable(){
-            return this.drawable;
-        }
         public String getFirst_name(){
             return this.first_name;
-        }
-        public String getProfession(){
-            return this.profession;
-        }
-        public String getHobbies(){
-            return this.hobbies;
-        }
-        public int getAge(){
-            return this.age;
         }
         public String getLast_name(){
             return this.last_name;
@@ -57,6 +50,27 @@ public class ParticipantModel {
         }
         public int getId(){
             return this.id;
+        }
+        public ProfileModel getProfile(){
+            return this.profile;
+        }
+    }
+    public class ProfileModel{
+        String gender;
+        ArrayList<String> images;
+        String location;
+        int age;
+        public int getAge(){
+            return this.age;
+        }
+        public String getLocation(){
+            return this.location;
+        }
+        public ArrayList<String> getImages(){
+            return this.images;
+        }
+        public String getGender(){
+            return this.gender;
         }
     }
 }

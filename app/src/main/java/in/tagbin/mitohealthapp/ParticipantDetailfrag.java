@@ -85,17 +85,24 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
         location.setText(MyUtils.getCityName(getContext(),dataObject.getLocation()));
         people.setText(""+dataObject.getCapacity());
         if (data.getUser().getLast_name() != null) {
-            name.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name()+", "+data.getUser().getAge());
+            name.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name()+", "+data.getUser().getProfile().getAge());
         }else{
-            name.setText(data.getUser().getFirst_name()+", "+data.getUser().getAge());
+            name.setText(data.getUser().getFirst_name()+", "+data.getUser().getProfile().getAge());
         }
         if (dataObject.isAll()){
             addParticipant.setVisibility(View.VISIBLE);
         }else{
             addParticipant.setVisibility(View.GONE);
         }
-        profession.setText(data.getUser().getProfession());
-        hobbies.setText(data.getUser().getHobbies());
+        //profession.setText(data.getUser().getProfession());
+        if (data.getUser().getInterests() != null && data.getUser().getInterests().size() >0) {
+            String finalInterests = "";
+            for (int i=0;i<data.getUser().getInterests().size();i++){
+                finalInterests.concat(data.getUser().getInterests().get(i)+", ");
+            }
+            hobbies.setText(finalInterests);
+
+        }
         mAdapter = new ViewPagerAdapter(getActivity(), mImageResources);
         intro_images.setAdapter(mAdapter);
         intro_images.setCurrentItem(0);
@@ -176,7 +183,7 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),"Participant approved",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),"Participant approved succesfully",Toast.LENGTH_LONG).show();
                 }
             });
         }
