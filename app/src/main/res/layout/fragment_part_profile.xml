@@ -26,6 +26,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
+                    android:id="@+id/userPic1"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -62,6 +63,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
+                    android:id="@+id/userPic2"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -76,6 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
+                    android:id="@+id/userPic3"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -88,6 +91,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
+                    android:id="@+id/userPic4"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -109,6 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
+                    android:id="@+id/userPic5"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -123,6 +128,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
+                    android:id="@+id/userPic6"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -135,6 +141,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
+                    android:id="@+id/userPic7"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -146,17 +153,20 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"/>
+        android:hint="Name"
+        android:id="@+id/etPartnerName"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Gender"/>
+        android:hint="Gender"
+        android:id="@+id/etPartnerGender"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Connect Preferences"/>
+        android:hint="Connect Preferences"
+        android:id="@+id/etPartnerConnectPrefrences"/>
 
 
 </LinearLayout>

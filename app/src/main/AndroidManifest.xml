@@ -23,6 +23,11 @@
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
 
         </activity>
         <activity
@@ -95,11 +100,6 @@
             android:name=".BinderActivity"
             android:label="@string/title_activity_binder"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
 
         </activity>
         <activity android:name=".ProfileActivity"

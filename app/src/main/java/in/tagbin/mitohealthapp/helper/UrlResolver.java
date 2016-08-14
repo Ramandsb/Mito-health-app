@@ -20,11 +20,13 @@ public class UrlResolver {
         endPointMapper = new SparseArray<String>();
         endPointMapper.put(EndPoints.EVENTS, "v1/events/");
         endPointMapper.put(EndPoints.USERS,"v1/users/");
+        endPointMapper.put(EndPoints.CONNECT_PROFILE,"v1/connect/profile/");
     }
 
     public interface EndPoints {
         int NONE = -1;
         int EVENTS = 0;
         int USERS = 1;
+        int CONNECT_PROFILE = 2;
     }
 }

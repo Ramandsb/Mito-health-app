@@ -1,6 +1,7 @@
 package in.tagbin.mitohealthapp.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Interfaces.VolleyErrorListener;
+import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.NetworkUtils;
 import in.tagbin.mitohealthapp.helper.UrlResolver;
@@ -30,6 +32,7 @@ import in.tagbin.mitohealthapp.model.JoinEventModel;
  */
 public class Controller {
     private static Context mContext;
+    static SharedPreferences loginDetails;
     private static final RetryPolicy DEFAULT_RETRY_POLICY = new RetryPolicy() {
         @Override
         public void retry(VolleyError error) throws VolleyError {
@@ -96,7 +99,9 @@ public class Controller {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
-                headers.put("Authorization","JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5haXJpdHlhMUB0YWdiaW4uaW4iLCJ1c2VyX2lkIjo4MywiZW1haWwiOiJuYWlyaXR5YTFAdGFnYmluLmluIiwiZXhwIjoxNDczODQ3MjE4fQ.tUHbZJsJtb53R8faHKtwclhNSxY9cqSDCcKWhnnEPtg");
+                loginDetails= context.getSharedPreferences(MainPage.LOGIN_DETAILS,0);
+                String key = loginDetails.getString("key",null);
+                headers.put("Authorization","JWT "+key);
                 return headers;
             }
 
@@ -209,6 +214,15 @@ public class Controller {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.USERS);
         url = url+"nearby/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getConnectProfile(Context context,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.CONNECT_PROFILE);
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
