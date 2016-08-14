@@ -106,10 +106,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     View female_view;
     //////////////////////
 
-    TextView messageView;
-    ProgressBar progressBar;
-    android.app.AlertDialog alert;
-
     public static final String TEMP_PHOTO_FILE_NAME = "temp_photo.jpg";
     public static final int REQUEST_CODE_UPDATE_PIC = 0x1;
 
@@ -908,6 +904,12 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             mProgressDialog.dismiss();
         }
     }
+
+
+    TextView messageView;
+    ProgressBar progressBar;
+    android.app.AlertDialog alert;
+
 
     public void customDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());

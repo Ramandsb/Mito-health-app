@@ -113,7 +113,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/check"/>
+                    android:src="@drawable/check_black"/>
 
                 <ImageView
                     android:id="@+id/cross"
