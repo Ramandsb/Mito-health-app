@@ -3,10 +3,13 @@
     android:layout_width="wrap_content" android:layout_height="40dp"
     android:textOff="Horse Riding"
     android:drawableRight="@drawable/solid_cicle"
-    android:textSize="20dp"
+    android:textSize="17sp"
     android:drawablePadding="10dp"
-    android:padding="10dp"
-    android:background="@drawable/back">
+    android:padding="8dp"
+    android:layout_gravity="center"
+    android:layout_margin="10dp"
+    android:background="@drawable/back"
+    android:id="@+id/toggleButton">
 
 
 

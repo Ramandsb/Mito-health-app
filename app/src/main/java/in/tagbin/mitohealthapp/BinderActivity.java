@@ -27,24 +27,13 @@ import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter1;
 
-public class BinderActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class BinderActivity extends AppCompatActivity{
 
     static Fragment fra;
     FragmentTransaction fraTra;
     Toolbar toolbar;
     public AHBottomNavigation bottomNavigation;
-    private ViewPagerAdapter1 mAdapter;
-    private int dotsCount;
-    private ImageView[] dots;
-    private LinearLayout pager_indicator;
-    private ViewPager intro_images;
-    RelativeLayout pager;
-    private int[] mImageResources = {
-            R.drawable.profile_intro1,
-            R.drawable.profile_intro2,
-            R.drawable.profile_intro3,
-            R.drawable.profile_intro4/*,
-            R.drawable.intro4*/};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +41,12 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
         setContentView(R.layout.activity_binder);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        pager = (RelativeLayout) findViewById(R.id.relativeProfileIntro);
-//        intro_images = (ViewPager) findViewById(R.id.pagerProfileIntro);
-//        pager_indicator = (LinearLayout) findViewById(R.id.viewPagerCountDots);
-//        mAdapter = new ViewPagerAdapter1(this, mImageResources,getSupportFragmentManager());
-//        intro_images.setAdapter(mAdapter);
-//        intro_images.setCurrentItem(0);
-//        intro_images.setOnPageChangeListener(this);
-//        setUiPageViewController();
+
         toolbar.setTitle("Profile");
-        fra = new ProfileFragMent();
+
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
 
-        fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
-        fraTra.commit();
+
 
 // Create items
 
@@ -103,7 +84,15 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
         bottomNavigation.setColored(false);
 
 // Set current item programmatically
-        bottomNavigation.setCurrentItem(1);
+        if (getIntent().getStringExtra("interests") != null){
+            fra = new PartnerFrag();
+            bottomNavigation.setCurrentItem(0);
+        }else {
+            fra = new ProfileFragMent();
+            bottomNavigation.setCurrentItem(1);
+        }
+        fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
+        fraTra.commit();
 
 // Customize notification (title, background, typeface)
         bottomNavigation.setNotificationBackgroundColor(getResources().getColor(R.color.bottombar));
@@ -121,6 +110,7 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
             }
         }
 
+
 // Set listeners
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
@@ -136,31 +126,14 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
             }
         });
     }
-    private void setUiPageViewController() {
-        dotsCount = mAdapter.getCount();
-        dots = new ImageView[dotsCount];
 
-        for (int i = 0; i < dotsCount; i++) {
-            dots[i] = new ImageView(this);
-            dots[i].setImageDrawable(getResources().getDrawable(R.drawable.pointer_page_unactive));
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            );
-
-            params.setMargins(4, 0, 4, 0);
-
-            pager_indicator.addView(dots[i], params);
-        }
-        dots[0].setImageDrawable(getResources().getDrawable(R.drawable.pointer_page_active));
-    }
 
     public void change (int position){
 
         switch (position){
             case 0:
                 PrefManager pref = new PrefManager(this);
+
 //                if (!pref.isTutorialShown()){
 //                    pref.setTutorial(true);
 //                    pager.setVisibility(View.VISIBLE);
@@ -168,7 +141,17 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
 //                    pager.setVisibility(View.GONE);
 //                    fra = new PartnerFrag();
 //                }
-                fra = new PartnerFrag();
+                if (!pref.isTutorialShown()) {
+                    pref.setTutorial(true);
+                    fra = new ProfileFragMent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("profile_connect", "profile");
+                    fra.setArguments(bundle);
+                }else{
+                    fra = new PartnerFrag();
+                }
+
+                //fra = new PartnerFrag();
                 Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
@@ -185,7 +168,11 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
                 Toast.makeText(BinderActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
                 break;
             default:
-                fra = new ProfilePage();
+                if (getIntent().getStringExtra("interests") != null){
+                    fra = new PartnerFrag();
+                }else {
+                    fra = new ProfilePage();
+                }
                 break;
 
         }
@@ -214,22 +201,5 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
 
     }
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        for (int i = 0; i < dotsCount; i++) {
-            dots[i].setImageDrawable(getResources().getDrawable(R.drawable.pointer_page_unactive));
-        }
-
-        dots[position].setImageDrawable(getResources().getDrawable(R.drawable.pointer_page_active));
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
 }

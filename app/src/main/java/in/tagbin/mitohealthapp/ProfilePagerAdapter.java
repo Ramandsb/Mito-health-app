@@ -1,5 +1,6 @@
 package in.tagbin.mitohealthapp;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,9 +11,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
  */
 
 public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
+    String profile;
 
-    public ProfilePagerAdapter(FragmentManager fm) {
+    public ProfilePagerAdapter(FragmentManager fm,String profile_connect) {
         super(fm);
+        this.profile = profile_connect;
     }
 
     @Override
@@ -27,6 +30,11 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
                     return tab1;
                 case 1:
                     PartProfile tab2 = new PartProfile();
+                    if (!profile.equals("") || !profile.isEmpty() || profile != null){
+                        Bundle bundle = new Bundle();
+                        bundle.putString("profile_connect","profile");
+                        tab2.setArguments(bundle);
+                    }
                     return tab2;
                 default:
             }

@@ -21,6 +21,7 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.EVENTS, "v1/events/");
         endPointMapper.put(EndPoints.USERS,"v1/users/");
         endPointMapper.put(EndPoints.CONNECT_PROFILE,"v1/connect/profile/");
+        endPointMapper.put(EndPoints.INTEREST,"v1/interest/list");
     }
 
     public interface EndPoints {
@@ -28,5 +29,6 @@ public class UrlResolver {
         int EVENTS = 0;
         int USERS = 1;
         int CONNECT_PROFILE = 2;
+        int INTEREST= 3;
     }
 }
