@@ -48,6 +48,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -62,7 +63,6 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         img5 = (ImageView) layout.findViewById(R.id.userPic5);
         img6 = (ImageView) layout.findViewById(R.id.userPic6);
         img7 = (ImageView) layout.findViewById(R.id.userPic7);
-        save = (Button) layout.findViewById(R.id.partnerConnectSave);
         img1.setOnClickListener(this);
         img2.setOnClickListener(this);
         img3.setOnClickListener(this);
@@ -70,7 +70,6 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         img5.setOnClickListener(this);
         img6.setOnClickListener(this);
         img7.setOnClickListener(this);
-        save.setOnClickListener(this);
         etLocation = (EditText) layout.findViewById(R.id.etPartnerLocation);
         etOccupation = (EditText) layout.findViewById(R.id.etPartnerOccupation);
         etGender = (EditText) layout.findViewById(R.id.etPartnerGender);
@@ -328,8 +327,11 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         }
         //InitActivity i = (InitActivity) getActivity();
         //i.getActionBar().setTitle("Profile");
-        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(true);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -341,8 +343,11 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
-
+        if (id == R.id.action_next) {
+            SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
+            setConnectProfileModel.setGender(etGender.getText().toString());
+            Log.d("profile",JsonUtils.jsonify(setConnectProfileModel));
+            Controller.setConnectProfile(getContext(),setConnectProfileModel,msetProfileListener);
 //            InitActivity.change(2);
 
 
@@ -393,12 +398,6 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 Intent i7 = new Intent(Intent.ACTION_PICK,
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i7, SELECT_PICTURE7);
-                break;
-            case R.id.partnerConnectSave:
-                SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
-                setConnectProfileModel.setGender(etGender.getText().toString());
-                Log.d("profile",JsonUtils.jsonify(setConnectProfileModel));
-                Controller.setConnectProfile(getContext(),setConnectProfileModel,msetProfileListener);
                 break;
         }
     }

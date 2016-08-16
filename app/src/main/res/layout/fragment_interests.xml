@@ -39,7 +39,12 @@
             android:textColor="#ffffff"
             android:textSize="20sp" />
     </LinearLayout>
-
+    <android.support.v7.widget.SearchView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/svInterests"
+        android:queryHint="What interests you?">
+    </android.support.v7.widget.SearchView>
     <in.tagbin.mitohealthapp.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -47,15 +52,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_margin="10dp"
         app:horizontalSpacing="10dp"
         app:verticalSpacing="10dp">
-
-        <SearchView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </SearchView>
-
 
     </in.tagbin.mitohealthapp.FlowLayout>
 </LinearLayout>

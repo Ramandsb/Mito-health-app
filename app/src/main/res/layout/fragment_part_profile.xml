@@ -179,13 +179,5 @@
         android:hint="Male"
         android:id="@+id/etPartnerGender"
         />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/partnerConnectSave"
-        android:layout_gravity="center"
-        android:layout_marginBottom="40dp"/>
-
 </LinearLayout>
 </ScrollView>
