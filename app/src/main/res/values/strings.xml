@@ -27,5 +27,6 @@
     <string name="update_profile_picture">Update Picture</string>
     <string name="save">Save</string>
     <string name="title_activity_binder">Profle</string>
+    <string name="title_activity_chat">Chat</string>
 
 </resources>

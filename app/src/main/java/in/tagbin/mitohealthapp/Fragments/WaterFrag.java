@@ -65,6 +65,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     int i = 0;
     int mBgColor=0;
     DatabaseOperations dop;
+    int jugcount=0;
     public WaterFrag() {
         // Required empty public constructor
     }
@@ -181,6 +182,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     water1.setBeerProgress(0);
                     boo1=false;
                     count--;
+                    water9.setBeerProgress(Returnjug(count));
+                    jugcount=Returnjug(count);
                     Log.d("cancel","tr");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
@@ -190,7 +193,9 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.execute(true);
                     boo1=true;
                     count++;
-                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,8,0);
+
+                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
+                    jugcount=Returnjug(count);
                     Task.execute(true);
                     Log.d("else","tr");
                     Log.d("count",count+"");
@@ -210,16 +215,20 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     water2.setBeerProgress(0);
                     boo2=false;
                     count--;
+                    water9.setBeerProgress(Returnjug(count));
+                    jugcount=Returnjug(count);
                     Log.d("cancel","tr");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
-                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,16,8);
+                    count++;
+                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
+                    jugcount=Returnjug(count);
                     Task.execute(true);
                     boo2=true;
-                    count++;
-                    Log.d("else","tr");
+
+                    Log.d("jug",jugcount+"///");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
 
@@ -237,16 +246,20 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     water3.setBeerProgress(0);
                     boo3=false;
                     count--;
+                    water9.setBeerProgress(Returnjug(count));
+                    jugcount=Returnjug(count);
                     Log.d("cancel","tr");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
-                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,24,16);
+                    count++;
+                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
+                    jugcount=Returnjug(count);
                     Task.execute(true);
                     boo3=true;
-                    count++;
-                    Log.d("else","tr");
+
+                    Log.d("jug",jugcount+"///");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
 
@@ -262,16 +275,21 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     water4.setBeerProgress(0);
                     boo4=false;
                     count--;
+                    water9.setBeerProgress(Returnjug(count));
+                    jugcount=Returnjug(count);
                     Log.d("cancel","tr");
                     Log.d("count",count+"");
                 }else {
                     pourBeerTask.execute(true);
-                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,32,24);
+                    count++;
+                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
+                    jugcount=Returnjug(count);
                     Task.execute(true);
                     boo4=true;
-                    count++;
-                    Log.d("else","tr");
+
+                    Log.d("jug",jugcount+"///");
                     Log.d("count",count+"");
+                    UpdateDataBase(String.valueOf(count));
 
                 }            }
         });
@@ -287,17 +305,21 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.cancel(true);
                     water5.setBeerProgress(0);
                     count--;
+                    water9.setBeerProgress(Returnjug(count));
+                    jugcount=Returnjug(count);
                     boo5=false;
                     Log.d("cancel","tr");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
-                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,40,32);
+                    count++;
+                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
+                    jugcount=Returnjug(count);
                     Task.execute(true);
                     boo5=true;
-                    count++;
-                    Log.d("else","tr");
+
+                    Log.d("jug",jugcount+"///");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
 
@@ -311,17 +333,21 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.cancel(true);
                     water6.setBeerProgress(0);
                     count--;
+                    water9.setBeerProgress(Returnjug(count));
+                    jugcount=Returnjug(count);
                     boo6=false;
                     Log.d("cancel","tr");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
-                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,50,40);
+                    count++;
+                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
+                    jugcount=Returnjug(count);
                     Task.execute(true);
                     boo6=true;
-                    count++;
-                    Log.d("else","tr");
+
+                    Log.d("jug",jugcount+"///");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
 
@@ -336,16 +362,20 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     water7.setBeerProgress(0);
                     boo7=false;
                     count--;
+                    water9.setBeerProgress(Returnjug(count));
+                    jugcount=Returnjug(count);
                     Log.d("cancel","tr");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
                 }else {
                     pourBeerTask.execute(true);
-                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,60,50);
+                    count++;
+                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
+                    jugcount=Returnjug(count);
                     Task.execute(true);
                     boo7=true;
-                    count++;
-                    Log.d("else","tr");
+
+                    Log.d("jug",jugcount+"///");
                     Log.d("count",count+"");
                     UpdateDataBase(String.valueOf(count));
 
@@ -359,6 +389,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     pourBeerTask.cancel(true);
                     water8.setBeerProgress(0);
                     count--;
+                    water9.setBeerProgress(Returnjug(count));
+                    jugcount=Returnjug(count);
                     Log.d("count",count+"");
                     boo8=false;
                     Log.d("cancel","tr");
@@ -368,9 +400,11 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                     boo8=true;
                     count++;
                     Log.d("else","tr");
-                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,70,60);
+                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
+                    jugcount=Returnjug(count);
                     Task.execute(true);
                     Log.d("count",count+"");
+                    Log.d("jug",jugcount+"///");
                     UpdateDataBase(String.valueOf(count));
 
                 }
@@ -432,9 +466,11 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                 }else if (source.equals("click")){
                     ReturnImageView(j).setBeerProgress(80);
 
+
                 }
-
-
+                PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(i),jugcount);
+                jugcount=Returnjug(i);
+                Task.execute(true);
             }
         }
 
@@ -481,6 +517,39 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
         }
 
         return currentView;
+    }
+    public int Returnjug(int i){
+
+        int value=00;
+        switch (i){
+            case 1:
+                value=8;
+                break;
+            case 2:
+                value=16;
+                break;
+            case 3:
+                value=24;
+                break;
+            case 4:
+                value=35;
+                break;
+            case 5:
+                value=45;
+                break;
+            case 6:
+                value=55;
+                break;
+            case 7:
+                value=65;;
+                break;
+            case 8:
+                value=70;
+                break;
+
+        }
+
+        return value;
     }
 
 

@@ -66,6 +66,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -105,10 +106,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     View male_view;
     View female_view;
     //////////////////////
-
-    TextView messageView;
-    ProgressBar progressBar;
-    android.app.AlertDialog alert;
 
     public static final String TEMP_PHOTO_FILE_NAME = "temp_photo.jpg";
     public static final int REQUEST_CODE_UPDATE_PIC = 0x1;
@@ -786,10 +783,10 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                                 SharedPreferences.Editor editor1= login_details.edit();
 
 //
-//                                JSONObject images=     profile.getJSONObject("images");
-//                                String master=   images.getString("master");
-//                                editor1.putString("master_image",master);
-//                                new DownloadImage().execute(master);
+                                JSONObject images=     profile.getJSONObject("images");
+                                String master=   images.getString("master");
+                                editor1.putString("master_image",master);
+                                new DownloadImage().execute(master);
 //
 
                                 JSONArray energy = res.getJSONArray("energy");
@@ -908,6 +905,12 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             mProgressDialog.dismiss();
         }
     }
+
+
+    TextView messageView;
+    ProgressBar progressBar;
+    android.app.AlertDialog alert;
+
 
     public void customDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());

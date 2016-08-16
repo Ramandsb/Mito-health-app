@@ -63,7 +63,7 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -135,15 +135,15 @@
 
                 <LinearLayout
                     android:id="@+id/male_view"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="45dp"
+                    android:layout_height="20dp"
                     android:layout_marginRight="5dp"
                     android:background="@drawable/grey_m"
                     android:orientation="horizontal"/>
                 <LinearLayout
                     android:id="@+id/female_view"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="45dp"
+                    android:layout_height="20dp"
                     android:layout_marginLeft="5dp"
                     android:background="@drawable/grey_f"
                     android:orientation="horizontal"/>
