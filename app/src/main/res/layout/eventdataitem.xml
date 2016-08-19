@@ -83,13 +83,23 @@
                 android:src="@drawable/edit" />
 
         </RelativeLayout>
+        <ImageView
+            android:id="@+id/ivConfirm"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:layout_above="@+id/relativeBottomBar"
+            android:src="@drawable/commnet_right_icon"
+            android:layout_alignParentRight="true"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/setimage"
             android:background="#bf4c516d"
-            android:padding="6dp"
+            android:padding="4dp"
+            android:id="@+id/relativeBottomBar"
             android:weightSum="2">
 
             <TextView
@@ -101,23 +111,12 @@
                 android:padding="2dp"
                 android:text="Time"
                 android:textColor="#FFF"
-                android:textSize="11sp"
+                android:textSize="9sp"
                 android:textStyle="bold" />
-
-
-            <ImageView
-                android:id="@+id/ivConfirm"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_margin="5dp"
-                android:layout_toRightOf="@+id/time"
-                android:src="@drawable/commnet_right_icon"
-                android:visibility="gone" />
-
             <ImageView
                 android:id="@+id/ivPeople"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/personwhite" />
 
@@ -127,14 +126,16 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/ivPeople"
                 android:background="@drawable/bg_people"
-                android:padding="6dp"
+                android:padding="3dp"
                 android:text="5"
+                android:layout_marginTop="2dp"
+                android:textSize="9sp"
                 android:textColor="#ffffff" />
 
             <View
                 android:id="@+id/viewSperator1"
                 android:layout_width="2dp"
-                android:layout_height="30dp"
+                android:layout_height="20dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_toLeftOf="@+id/capacity"
@@ -148,7 +149,7 @@
                 android:layout_toLeftOf="@+id/viewSperator1"
                 android:text="Location"
                 android:textColor="#FFF"
-                android:textSize="9sp"
+                android:textSize="6sp"
                 android:textStyle="bold" />
 
 
