@@ -23,6 +23,8 @@ import android.widget.DatePicker;
 
 import com.github.fabtransitionactivity.SheetLayout;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -143,14 +145,16 @@ public FoodInterface foodInterface;
         mChart.setDrawGridBackground(false);
         mChart.setDescription("");
         mChart.setDrawBorders(false);
-
-        mChart.getAxisLeft().setEnabled(false);
+        mChart.getAxisLeft().setEnabled(true);
         mChart.getAxisRight().setDrawAxisLine(false);
         mChart.getAxisRight().setDrawGridLines(false);
         mChart.getXAxis().setDrawAxisLine(false);
         mChart.getXAxis().setDrawGridLines(false);
         mChart.getXAxis().setTextColor(Color.parseColor("#ffffff"));
         mChart.setDescriptionColor(Color.parseColor("#ffffff"));
+        mChart.getAxisLeft().setTextColor(Color.parseColor("#ffffff"));
+        mChart.getAxisRight().setTextColor(Color.parseColor("#ffffff"));
+        mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
 
         // enable touch gestures
         mChart.setTouchEnabled(true);
@@ -158,9 +162,9 @@ public FoodInterface foodInterface;
         // enable scaling and dragging
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        mChart.setPinchZoom(false);
-//        Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
-//        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+        mChart.setPinchZoom(true);
+        Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
+        l.setPosition(Legend.LegendPosition.LEFT_OF_CHART_INSIDE);
         addData();
 
         mSheetLayout.setFab(fab);
@@ -377,27 +381,56 @@ public FoodInterface foodInterface;
 
         for (int z = 0; z < 2; z++) {
 
-            ArrayList<Entry> values = new ArrayList<Entry>();
 
+            ArrayList<Entry> values = new ArrayList<Entry>();
             for (int i = 0; i < 10; i++) {
                 double val = (Math.random() * 100) + 3;
                 values.add(new Entry(i, (float) val));
             }
 
-            LineDataSet d = new LineDataSet(values, "DataSet " + (z + 1));
-            d.setLineWidth(2.5f);
-            d.setCircleRadius(4f);
 
-            int color = mColors[z % mColors.length];
-            d.setColor(color);
-            d.setCircleColor(color);
-            dataSets.add(d);
+
+
         }
 
+        ArrayList<Entry> values = new ArrayList<Entry>();
+        values.add(new Entry(0, (float) 30));
+        values.add(new Entry(1, (float) 40));
+        values.add(new Entry(2, (float) 70));
+        values.add(new Entry(3, (float) 20));
+        values.add(new Entry(4, (float) 100));
+        values.add(new Entry(5, (float) 10));
+        values.add(new Entry(6, (float) 150));
+
+        ArrayList<Entry> values2 = new ArrayList<Entry>();
+        values2.add(new Entry(0, (float) 40));
+        values2.add(new Entry(1, (float) 50));
+        values2.add(new Entry(2, (float) 80));
+        values2.add(new Entry(3, (float) 10));
+        values2.add(new Entry(4, (float) 120));
+        values2.add(new Entry(5, (float) 30));
+        values2.add(new Entry(6, (float) 50));
+        LineDataSet d = new LineDataSet(values, "Required");
+        d.setLineWidth(2.5f);
+        d.setCircleRadius(4f);
+        LineDataSet d1 = new LineDataSet(values2, "Consumed");
+        d1.setLineWidth(2.5f);
+        d1.setCircleRadius(4f);
+
+//        int color = mColors[z % mColors.length];
+//        d.setColor(getResources().getColor(R.color.red));
+//        d.setCircleColor(getResources().getColor(R.color.red));
+        dataSets.add(d);
+        dataSets.add(d1);
+        int col_consumed=getResources().getColor(R.color.white);
+        int col_reql=getResources().getColor(R.color.red);
         // make the first DataSet dashed
-        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
-        ((LineDataSet) dataSets.get(0)).setColors(ColorTemplate.VORDIPLOM_COLORS);
-        ((LineDataSet) dataSets.get(0)).setCircleColors(ColorTemplate.VORDIPLOM_COLORS);
+//        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
+        ((LineDataSet) dataSets.get(0)).setColors(new int[]{col_consumed});
+        ((LineDataSet) dataSets.get(0)).setCircleColors(new int[]{col_consumed});
+
+        ((LineDataSet) dataSets.get(1)).setColors(new int[]{col_reql});
+        ((LineDataSet) dataSets.get(1)).setCircleColors(new int[]{col_reql});
 
         LineData data = new LineData(dataSets);
         mChart.setData(data);

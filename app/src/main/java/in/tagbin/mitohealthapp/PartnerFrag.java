@@ -5,8 +5,11 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -20,6 +23,29 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
     private ViewPager viewPager;
     TextView tabOne,tabTwo,tabThree;
 
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Log.d("PREPDUG","Setting options true");
+        BinderActivity i = (BinderActivity) getActivity();
+        setHasOptionsMenu(true);
+        i.invalidateOptionsMenu();
+
+    }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("par cone", "hereHOME");
+        for (int i=0;i< menu.size();i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setVisible(false);
+        }
+//        menu.findItem(R.id.action_done).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+//                .setVisible(true);
+        super.onPrepareOptionsMenu(menu);
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

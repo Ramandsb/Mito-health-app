@@ -2,6 +2,7 @@ package in.tagbin.mitohealthapp.Fragments;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import in.tagbin.mitohealthapp.AppController;
+import in.tagbin.mitohealthapp.FoodDetails;
 import in.tagbin.mitohealthapp.Interfaces.ExerciseInterface;
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.CollapsableLogging;
@@ -160,7 +162,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
 
-//                startActivity(new Intent(getActivity(), FoodDetails.class));
+                startActivity(new Intent(getActivity(), FoodDetails.class));
 //
 // akshayluthra12@
 

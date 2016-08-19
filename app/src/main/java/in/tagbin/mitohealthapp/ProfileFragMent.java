@@ -36,7 +36,6 @@ public class ProfileFragMent extends Fragment implements TabLayout.OnTabSelected
         adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager());
         vPager.setAdapter(adapter);
         tablayout.setupWithViewPager(vPager);
-        tablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         
         vPager.setCurrentItem(0,true);
         tablayout.setOnTabSelectedListener(this);

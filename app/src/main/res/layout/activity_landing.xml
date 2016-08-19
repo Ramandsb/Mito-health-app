@@ -10,10 +10,10 @@
     <include layout="@layout/content_landing" />
 
     <ImageView
-        android:layout_width="200dp"
-        android:layout_height="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@drawable/logo"
+        android:src="@drawable/w_mito_logo_new"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="155dp" />
@@ -26,7 +26,7 @@
         android:textColor="#ffffff"
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="96dp" />
+        android:layout_marginTop="56dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -77,8 +77,7 @@
         android:textColor="#ffffff"
         android:id="@+id/singup"
         android:layout_alignTop="@+id/login"
-        android:layout_alignRight="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView" />
+        android:layout_toEndOf="@+id/textView" />
 
 
 </RelativeLayout>

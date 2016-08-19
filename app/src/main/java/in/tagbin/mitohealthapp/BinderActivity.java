@@ -168,21 +168,22 @@ public class BinderActivity extends AppCompatActivity implements ViewPager.OnPag
 //                    pager.setVisibility(View.GONE);
 //                    fra = new PartnerFrag();
 //                }
+                toolbar.setTitle("Partner Connect");
                 fra = new PartnerFrag();
-                Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
                 break;
             case 1:
                 toolbar.setTitle("Profile");
                 fra = new ProfileFragMent();
-                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
                 toolbar.setTitle("Mito");
                 fra = new HomePage();
-                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
-                Toast.makeText(BinderActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(BinderActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 fra = new ProfilePage();

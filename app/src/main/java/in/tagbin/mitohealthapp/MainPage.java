@@ -71,7 +71,7 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.newrelic.agent.android.NewRelic;
+//import com.newrelic.agent.android.NewRelic;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
@@ -147,10 +147,10 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_landing);
-        NewRelic.withApplicationToken(
-
-                "AAab8a197df22ed375a8ad6f54fcb1c736ae09e5f2"
-        ).start(this.getApplication());
+//        NewRelic.withApplicationToken(
+//
+//                "AAab8a197df22ed375a8ad6f54fcb1c736ae09e5f2"
+//        ).start(this.getApplication());
         UXCam.startWithKey("075a1785b64ccb2");
         customDialog();
         validateServerClientID();

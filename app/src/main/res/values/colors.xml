@@ -15,4 +15,8 @@
     <color name="ultra_dark">#29303F</color>
     <color name="dark">#696E79</color>
     <color name="ultra_dark_overlay">#0D29303F</color>
+    <color name="red">#FFFF0000</color>
+    <color name="cyan">#00ddff</color>
+    <color name="blue">#FF2D42FA</color>
+    <color name="orange">#ff8800</color>
 </resources>

@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:showIn="@layout/activity_landing"
      tools:context=".MainPage"
+    android:background="#111111"
     android:layout_gravity="center"
     android:gravity="center"
     >

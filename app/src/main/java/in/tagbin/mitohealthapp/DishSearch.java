@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -22,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -83,6 +85,7 @@ public class DishSearch extends AppCompatActivity {
     TextView messageView;
     ProgressBar progressBar;
     android.app.AlertDialog alert;
+    ImageView search_icon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +102,8 @@ public class DishSearch extends AppCompatActivity {
         add_dish = new ArrayList<String>();
         login_details = getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
         auto_tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
-
+        search_icon = (ImageView) findViewById(R.id.search_icon);
+        search_icon.setColorFilter(Color.parseColor("#cecece"));
         auto_tv.setThreshold(1);
         auto_tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -118,7 +122,11 @@ public class DishSearch extends AppCompatActivity {
                 if (back.equals("food")) {
                     Timepick();
                 } else if (back.equals("exercise")) {
-                    WheelDialog("Select Weight");
+//                    WheelDialog("Select Weight");
+                    dop.putExerciseInformation(dop, unique_id, food_id, dishName, ExerciseFrag.selectedDate, weight, sets, reps);
+//                    makeJsonObjReq(food_id,"");
+                    Snackbar.make(layout, "Exercise Logged Successfuly", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
 
                 }
 
@@ -500,8 +508,7 @@ public class DishSearch extends AppCompatActivity {
                             ContentValues contentValues = new ContentValues();
                             contentValues.put(TableData.Tableinfo.REPS, reps);
 //                            dop.updateExerRow(dop, contentValues, currentId);
-                            dop.putExerciseInformation(dop, unique_id, food_id, dishName, ExerciseFrag.selectedDate, weight, sets, reps);
-                            makeJsonObjReq(food_id,"");
+
 
 
                         }

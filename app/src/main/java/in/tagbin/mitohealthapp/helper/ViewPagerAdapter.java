@@ -1,6 +1,7 @@
 package in.tagbin.mitohealthapp.helper;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,9 @@ public class ViewPagerAdapter extends PagerAdapter {
     public ViewPagerAdapter(Context mContext, int[] mResources) {
         this.mContext = mContext;
         this.mResources = mResources;
+    }
+
+    public ViewPagerAdapter(FragmentManager supportFragmentManager) {
     }
 
     @Override
