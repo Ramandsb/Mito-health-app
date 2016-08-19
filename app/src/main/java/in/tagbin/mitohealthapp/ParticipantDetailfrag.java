@@ -90,9 +90,9 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
             name.setText(data.getUser().getFirst_name()+", "+data.getUser().getProfile().getAge());
         }
         if (dataObject.isAll()){
-            addParticipant.setVisibility(View.VISIBLE);
-        }else{
             addParticipant.setVisibility(View.GONE);
+        }else{
+            addParticipant.setVisibility(View.VISIBLE);
         }
         //profession.setText(data.getUser().getProfession());
         if (data.getUser().getInterests() != null && data.getUser().getInterests().size() >0) {

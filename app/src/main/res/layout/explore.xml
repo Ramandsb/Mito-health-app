@@ -47,12 +47,12 @@
         android:textColor="#9b9b9b"
         android:text="less 2 kms away"/>
     <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/tvExploreDistance"
         android:layout_marginTop="10dp"
-        android:src="@drawable/action"
+        android:src="@drawable/mito_click"
         android:id="@+id/ivExploreSubmit"/>
     <TextView
         android:layout_width="wrap_content"

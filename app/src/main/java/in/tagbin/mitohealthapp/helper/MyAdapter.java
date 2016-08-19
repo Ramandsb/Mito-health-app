@@ -55,7 +55,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.title.setText(newlist.get(position).getTitle());
         holder.time.setText(MyUtils.getValidTime(newlist.get(position).getTime()));
         holder.capacity.setText(""+newlist.get(position).getCapacity());
-        holder.location.setText("");
+        holder.location.setText(MyUtils.getCityName(mycontext,newlist.get(position).getLocation()));
         if (newlist.get(position).isAll()){
             holder.confirm.setVisibility(View.VISIBLE);
             holder.date.setVisibility(View.VISIBLE);

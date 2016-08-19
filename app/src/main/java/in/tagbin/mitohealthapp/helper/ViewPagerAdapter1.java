@@ -1,6 +1,8 @@
 package in.tagbin.mitohealthapp.helper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import in.tagbin.mitohealthapp.BinderActivity;
 import in.tagbin.mitohealthapp.PartnerFrag;
 import in.tagbin.mitohealthapp.R;
 
@@ -49,9 +52,10 @@ public class ViewPagerAdapter1 extends PagerAdapter {
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Fragment fra = new PartnerFrag();
-                    FragmentTransaction fraTra = fragmentManager.beginTransaction().replace(R.id.fragmentnew,fra);
-                    fraTra.commit();
+                    Intent i = new Intent(mContext,BinderActivity.class);
+                    i.putExtra("interests","interests");
+                    mContext.startActivity(i);
+                    ((Activity) mContext).finish();
                 }
             });
         }

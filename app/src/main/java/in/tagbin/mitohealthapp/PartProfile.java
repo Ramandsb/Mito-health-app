@@ -2,74 +2,53 @@ package in.tagbin.mitohealthapp;
 
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import java.io.File;
+import java.io.IOException;
+
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.model.ConnectProfileModel;
+import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
 
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PartProfile#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class PartProfile extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class PartProfile extends Fragment implements View.OnClickListener {
     ImageView img1,img2,img3,img4,img5,img6,img7;
-    EditText etName,etGender,etConnect;
+    EditText etLocation,etGender,etOccupation;
+    TextView name;
     ConnectProfileModel connectProfileModel;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
-    public PartProfile() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PartProfile.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PartProfile newInstance(String param1, String param2) {
-        PartProfile fragment = new PartProfile();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    Button save;
+    int SELECT_PICTURE1 =0,SELECT_PICTURE2 =1,SELECT_PICTURE3 =2,SELECT_PICTURE4 =3,SELECT_PICTURE5 =4,SELECT_PICTURE6 =5,SELECT_PICTURE7 =6;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -84,9 +63,17 @@ public class PartProfile extends Fragment {
         img5 = (ImageView) layout.findViewById(R.id.userPic5);
         img6 = (ImageView) layout.findViewById(R.id.userPic6);
         img7 = (ImageView) layout.findViewById(R.id.userPic7);
-        etName = (EditText) layout.findViewById(R.id.etPartnerName);
+        img1.setOnClickListener(this);
+        img2.setOnClickListener(this);
+        img3.setOnClickListener(this);
+        img4.setOnClickListener(this);
+        img5.setOnClickListener(this);
+        img6.setOnClickListener(this);
+        img7.setOnClickListener(this);
+        etLocation = (EditText) layout.findViewById(R.id.etPartnerLocation);
+        etOccupation = (EditText) layout.findViewById(R.id.etPartnerOccupation);
         etGender = (EditText) layout.findViewById(R.id.etPartnerGender);
-        etConnect = (EditText) layout.findViewById(R.id.etPartnerConnectPrefrences);
+        name = (TextView) layout.findViewById(R.id.tvPartnerName);
         Controller.getConnectProfile(getContext(),mConnectListener);
         return layout;
     }
@@ -309,21 +296,270 @@ public class PartProfile extends Fragment {
             if (data.getUser() != null){
                 if (data.getUser().getFirst_name() != null){
                     if (data.getUser().getLast_name() != null){
-                        etName.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name());
+                        if (data.getAge() > 0 )
+                            name.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name()+", "+data.getAge());
+                        else
+                            name.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name());
                     }else {
-                        etName.setText(data.getUser().getFirst_name());
+                        if (data.getAge() > 0)
+                            name.setText(data.getUser().getFirst_name()+", "+data.getAge());
+                        else
+                            name.setText(data.getUser().getFirst_name());
                     }
                 }
                 if (data.getGender() != null){
-                    if (data.getGender().equals("M")){
-                        etGender.setText("Male");
+                    if (data.getGender().toLowerCase().equals("m") || data.getGender().toLowerCase().equals("male")){
+                        etGender.setText("M");
                     }else{
-                        etGender.setText("Female");
+                        etGender.setText("F");
                     }
                 }
             }
         }
 
     }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("PREPDUG", "hereProfile");
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setVisible(false);
+        }
+        //InitActivity i = (InitActivity) getActivity();
+        //i.getActionBar().setTitle("Profile");
+        menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(true);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
 
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_next) {
+            SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
+            setConnectProfileModel.setGender(etGender.getText().toString());
+            Log.d("profile",JsonUtils.jsonify(setConnectProfileModel));
+            Controller.setConnectProfile(getContext(),setConnectProfileModel,msetProfileListener);
+//            InitActivity.change(2);
+
+
+            //i.change(2);
+
+//            getFragmentManager().beginTransaction().replace(R.id.fragmentnew,new HomePage()).commit();
+            //finish();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.userPic1:
+                Intent i = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i, SELECT_PICTURE1);
+                break;
+            case R.id.userPic2:
+                Intent i1 = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i1, SELECT_PICTURE2);
+                break;
+            case R.id.userPic3:
+                Intent i3 = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i3, SELECT_PICTURE3);
+                break;
+            case R.id.userPic4:
+                Intent i4 = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i4, SELECT_PICTURE4);
+                break;
+            case R.id.userPic5:
+                Intent i5 = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i5, SELECT_PICTURE5);
+                break;
+            case R.id.userPic6:
+                Intent i6 = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i6, SELECT_PICTURE6);
+                break;
+            case R.id.userPic7:
+                Intent i7 = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(i7, SELECT_PICTURE7);
+                break;
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SELECT_PICTURE1 ) {
+            if (data != null) {
+                Uri uri = data.getData();
+                File myFile = new File(uri.getPath());
+                Uri selectedImage=getImageContentUri(getContext(),myFile);
+                try {
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
+                    img1.setImageBitmap(mBitmap);
+                }catch(IOException ex) {
+                }
+            } else {
+                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+            }
+
+        }else if (requestCode == SELECT_PICTURE2 ) {
+            if (data != null) {
+                Uri uri = data.getData();
+                File myFile = new File(uri.getPath());
+                Uri selectedImage=getImageContentUri(getContext(),myFile);
+                try {
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
+                    img2.setImageBitmap(mBitmap);
+                }catch(IOException ex) {
+                }
+            } else {
+                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+            }
+
+        }else if (requestCode == SELECT_PICTURE3 ) {
+            if (data != null) {
+                Uri uri = data.getData();
+                File myFile = new File(uri.getPath());
+                Uri selectedImage=getImageContentUri(getContext(),myFile);
+                try {
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
+                    img3.setImageBitmap(mBitmap);
+                }catch(IOException ex) {
+                }
+            } else {
+                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+            }
+
+        }else if (requestCode == SELECT_PICTURE4 ) {
+            if (data != null) {
+                Uri uri = data.getData();
+                File myFile = new File(uri.getPath());
+                Uri selectedImage=getImageContentUri(getContext(),myFile);
+                try {
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
+                    img4.setImageBitmap(mBitmap);
+                }catch(IOException ex) {
+                }
+            } else {
+                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+            }
+
+        }else if (requestCode == SELECT_PICTURE5 ) {
+            if (data != null) {
+                Uri uri = data.getData();
+                File myFile = new File(uri.getPath());
+                Uri selectedImage=getImageContentUri(getContext(),myFile);
+                try {
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
+                    img5.setImageBitmap(mBitmap);
+                }catch(IOException ex) {
+                }
+            } else {
+                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+            }
+
+        }else if (requestCode == SELECT_PICTURE6 ) {
+            if (data != null) {
+                Uri uri = data.getData();
+                File myFile = new File(uri.getPath());
+                Uri selectedImage=getImageContentUri(getContext(),myFile);
+                try {
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
+                    img6.setImageBitmap(mBitmap);
+                }catch(IOException ex) {
+                }
+            } else {
+                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+            }
+
+        }else if (requestCode == SELECT_PICTURE7 ) {
+            if (data != null) {
+                Uri uri = data.getData();
+                File myFile = new File(uri.getPath());
+                Uri selectedImage=getImageContentUri(getContext(),myFile);
+                try {
+                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
+                    img7.setImageBitmap(mBitmap);
+                }catch(IOException ex) {
+                }
+            } else {
+                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+
+    }
+    public static Uri getImageContentUri(Context context, File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Images.Media._ID },
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[] { filePath }, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor
+                    .getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }}
+    RequestListener msetProfileListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("partner connect",responseObject.toString());
+
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("erroe",message);
+            if (message.equals("Error object is null")){
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(),"Profile submitted succesfully",Toast.LENGTH_LONG).show();
+                    }
+                });
+                if (getArguments() != null && getArguments().getString("profile_connect") != null){
+                    Intent i = new Intent(getContext(),InterestActivity.class);
+                    startActivity(i);
+                }else {
+                    BinderActivity i = (BinderActivity) getActivity();
+                    i.bottomNavigation.setCurrentItem(2);
+                }
+            }
+        }
+    };
 }

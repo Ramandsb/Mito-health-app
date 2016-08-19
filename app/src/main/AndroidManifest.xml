@@ -75,11 +75,15 @@
             android:label="@string/title_activity_collapsable_logging"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
+<!--<<<<<<< HEAD-->
+            <!--<intent-filter>-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
 
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
+                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--</intent-filter>-->
+<!--=======-->
+
+<!--&gt;>>>>>> 740f03d59aa7e79487e8fa2b64a4aea0e65f5865-->
         </activity>
         <activity
             android:name=".FoodDetails"
@@ -98,11 +102,23 @@
         <activity
             android:name=".BinderActivity"
             android:label="@string/title_activity_binder"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
         <activity
             android:name=".ProfileActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".InterestActivity"
+            android:label="Interests"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity android:name=".SliderActivity"
+            android:label="Interests"
+            android:screenOrientation="portrait">
+        </activity>
         <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"

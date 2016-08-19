@@ -33,11 +33,29 @@ public class ProfileFragMent extends Fragment implements TabLayout.OnTabSelected
 
         tablayout = (TabLayout) ProfileView.findViewById(R.id.ProfileTabs);
         vPager = (ViewPager) ProfileView.findViewById(R.id.ProfilePager);
-        adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager());
-        vPager.setAdapter(adapter);
-        tablayout.setupWithViewPager(vPager);
-        
-        vPager.setCurrentItem(0,true);
+//<<<<<<< HEAD
+//        adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager());
+//        vPager.setAdapter(adapter);
+//        tablayout.setupWithViewPager(vPager);
+//
+//        vPager.setCurrentItem(0,true);
+//=======
+        if ( getArguments() !=null && getArguments().getString("profile_connect") != null){
+            adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager(),"profile_connect");
+            vPager.setAdapter(adapter);
+            tablayout.setupWithViewPager(vPager);
+            tablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+            vPager.setCurrentItem(1,true);
+        }else{
+            adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager(),"");
+            vPager.setAdapter(adapter);
+            tablayout.setupWithViewPager(vPager);
+            tablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+            vPager.setCurrentItem(0,true);
+        }
+//>>>>>>> 740f03d59aa7e79487e8fa2b64a4aea0e65f5865
         tablayout.setOnTabSelectedListener(this);
         tablayout.setTabsFromPagerAdapter(adapter);
         tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
