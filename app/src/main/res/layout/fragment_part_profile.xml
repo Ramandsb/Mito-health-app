@@ -38,10 +38,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
-                android:textSize="20dp"
+                android:layout_marginTop="30dp"
+                android:textSize="16sp"
+                android:textColor="#000000"
                 android:id="@+id/tvPartnerName"
-                android:text=""/>
+                android:text="Hugh Jackman, 21"/>
 
 
         </LinearLayout>
@@ -152,31 +153,54 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Location"
-        android:textSize="20sp"/>
+        android:textColor="#000000"
+        android:layout_marginLeft="10dp"
+        android:textSize="18sp"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Australia"
+        android:textSize="16sp"
+        android:textColor="#9b9b9b"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/etPartnerLocation"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Occupation"
-        android:textSize="20sp"/>
+        android:textColor="#000000"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="18sp"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Model"
+        android:textSize="16sp"
+        android:textColor="#9b9b9b"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/etPartnerOccupation"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Gender"
-        android:textSize="20sp"/>
+        android:textColor="#000000"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="18sp"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Male"
+        android:textColor="#9b9b9b"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
         android:id="@+id/etPartnerGender"
         />
 </LinearLayout>

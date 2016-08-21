@@ -78,8 +78,8 @@ public class AllParticipantAdapter extends RecyclerView.Adapter<AllParticipantAd
         public void populateData(ParticipantModel pModel, Context pContext, final List<ParticipantModel> data, final FragmentManager pFragment, final FrameLayout mFrameLayout, final String dataObj, final int position){
             mModel = pModel;
             mContext = pContext;
-            if (mModel.getUser().getProfile().getImages() != null && mModel.getUser().getProfile().getImages().size() >0){
-                ImageLoader.getInstance().loadImage(mModel.getUser().getProfile().getImages().get(0), new ImageLoadingListener() {
+            if (mModel.getUser().getProfile().getImages() != null && mModel.getUser().getProfile().getImages().getMaster() !=null){
+                ImageLoader.getInstance().loadImage(mModel.getUser().getProfile().getImages().getMaster(), new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
 

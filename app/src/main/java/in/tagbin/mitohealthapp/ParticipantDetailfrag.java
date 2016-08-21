@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
@@ -46,11 +47,7 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
     private ImageView[] dots;
     private LinearLayout pager_indicator;
     private ViewPager intro_images;
-    private int[] mImageResources = {
-            R.drawable.hotel,
-            R.drawable.hotel,
-            R.drawable.hotel/*,
-            R.drawable.intro4*/};
+    private ArrayList<String> mImageResources;
     LinearLayoutManager mLayoutManager;
     RecyclerView rvAllParticipants;
     AllParticipantAdapter allAdapter;
@@ -102,6 +99,18 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
             }
             hobbies.setText(finalInterests);
 
+        }
+        mImageResources = new ArrayList<String>();
+        if (data.getUser().getProfile().getImages() != null){
+            if (data.getUser().getProfile().getImages().getMaster() != null)
+                mImageResources.add(data.getUser().getProfile().getImages().getMaster());
+            if (data.getUser().getProfile().getImages().getOthers() != null && data.getUser().getProfile().getImages().getOthers().length >0){
+                for (int i= 0;i<data.getUser().getProfile().getImages().getOthers().length;i++){
+                    mImageResources.add(data.getUser().getProfile().getImages().getOthers()[i]);
+                }
+            }
+        }else{
+            mImageResources.add(null);
         }
         mAdapter = new ViewPagerAdapter(getActivity(), mImageResources);
         intro_images.setAdapter(mAdapter);

@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:id="@+id/linearUpperInterests"
         android:weightSum="2">
 
         <android.support.design.widget.AppBarLayout
@@ -39,12 +40,16 @@
             android:textColor="#ffffff"
             android:textSize="20sp" />
     </LinearLayout>
-    <android.support.v7.widget.SearchView
+    <SearchView
+        android:id="@+id/searchView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/svInterests"
-        android:queryHint="What interests you?">
-    </android.support.v7.widget.SearchView>
+        android:elevation="2dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:queryHint="What interest you?"
+        android:layout_below="@+id/linearUpperInterests"
+        android:layout_height="wrap_content">
+    </SearchView>
     <in.tagbin.mitohealthapp.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -52,9 +57,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="10dp"
-        app:horizontalSpacing="10dp"
-        app:verticalSpacing="10dp">
+        android:layout_margin="20dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/searchView"
+        android:layout_centerHorizontal="true"
+        app:horizontalSpacing="3dp"
+        app:verticalSpacing="2dp">
 
     </in.tagbin.mitohealthapp.FlowLayout>
-</LinearLayout>
+</RelativeLayout>

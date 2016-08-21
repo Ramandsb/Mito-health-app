@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -31,10 +32,17 @@ import java.io.File;
 import java.io.IOException;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
+import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
+import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.model.ConnectProfileModel;
+import in.tagbin.mitohealthapp.model.InterestModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 public class PartProfile extends Fragment implements View.OnClickListener {
     ImageView img1,img2,img3,img4,img5,img6,img7;
@@ -365,171 +373,107 @@ public class PartProfile extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.userPic1:
-                Intent i = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i, SELECT_PICTURE1);
+                showAddProfilePicDialog1(SELECT_PICTURE1);
                 break;
             case R.id.userPic2:
-                Intent i1 = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i1, SELECT_PICTURE2);
+                showAddProfilePicDialog1(SELECT_PICTURE2);
                 break;
             case R.id.userPic3:
-                Intent i3 = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i3, SELECT_PICTURE3);
+                showAddProfilePicDialog1(SELECT_PICTURE3);
                 break;
             case R.id.userPic4:
-                Intent i4 = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i4, SELECT_PICTURE4);
+                showAddProfilePicDialog1(SELECT_PICTURE4);
                 break;
             case R.id.userPic5:
-                Intent i5 = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i5, SELECT_PICTURE5);
+                showAddProfilePicDialog1(SELECT_PICTURE5);
                 break;
             case R.id.userPic6:
-                Intent i6 = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i6, SELECT_PICTURE6);
+                showAddProfilePicDialog1(SELECT_PICTURE6);
                 break;
             case R.id.userPic7:
-                Intent i7 = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(i7, SELECT_PICTURE7);
+                showAddProfilePicDialog1(SELECT_PICTURE7);
                 break;
         }
     }
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
+    public void onActivityResult(int requestCode, int resultCode, Intent result) {
         if (requestCode == SELECT_PICTURE1 ) {
-            if (data != null) {
-                Uri uri = data.getData();
-                File myFile = new File(uri.getPath());
-                Uri selectedImage=getImageContentUri(getContext(),myFile);
-                try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
-                    img1.setImageBitmap(mBitmap);
-                }catch(IOException ex) {
-                }
+            if (resultCode == RESULT_OK) {
+                String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                img1.setImageBitmap(showCroppedImage(imagePath));
+            } else if (resultCode == RESULT_CANCELED) {
+                //TODO : Handle case
             } else {
-                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+                String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
 
         }else if (requestCode == SELECT_PICTURE2 ) {
-            if (data != null) {
-                Uri uri = data.getData();
-                File myFile = new File(uri.getPath());
-                Uri selectedImage=getImageContentUri(getContext(),myFile);
-                try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
-                    img2.setImageBitmap(mBitmap);
-                }catch(IOException ex) {
-                }
+            if (resultCode == RESULT_OK) {
+                String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                img2.setImageBitmap(showCroppedImage(imagePath));
+            } else if (resultCode == RESULT_CANCELED) {
+                //TODO : Handle case
             } else {
-                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+                String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
 
         }else if (requestCode == SELECT_PICTURE3 ) {
-            if (data != null) {
-                Uri uri = data.getData();
-                File myFile = new File(uri.getPath());
-                Uri selectedImage=getImageContentUri(getContext(),myFile);
-                try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
-                    img3.setImageBitmap(mBitmap);
-                }catch(IOException ex) {
-                }
+            if (resultCode == RESULT_OK) {
+                String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                img3.setImageBitmap(showCroppedImage(imagePath));
+            } else if (resultCode == RESULT_CANCELED) {
+                //TODO : Handle case
             } else {
-                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+                String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
-
         }else if (requestCode == SELECT_PICTURE4 ) {
-            if (data != null) {
-                Uri uri = data.getData();
-                File myFile = new File(uri.getPath());
-                Uri selectedImage=getImageContentUri(getContext(),myFile);
-                try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
-                    img4.setImageBitmap(mBitmap);
-                }catch(IOException ex) {
-                }
+            if (resultCode == RESULT_OK) {
+                String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                img4.setImageBitmap(showCroppedImage(imagePath));
+            } else if (resultCode == RESULT_CANCELED) {
+                //TODO : Handle case
             } else {
-                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+                String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
-
         }else if (requestCode == SELECT_PICTURE5 ) {
-            if (data != null) {
-                Uri uri = data.getData();
-                File myFile = new File(uri.getPath());
-                Uri selectedImage=getImageContentUri(getContext(),myFile);
-                try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
-                    img5.setImageBitmap(mBitmap);
-                }catch(IOException ex) {
-                }
+            if (resultCode == RESULT_OK) {
+                String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                img5.setImageBitmap(showCroppedImage(imagePath));
+            } else if (resultCode == RESULT_CANCELED) {
+                //TODO : Handle case
             } else {
-                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+                String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
-
         }else if (requestCode == SELECT_PICTURE6 ) {
-            if (data != null) {
-                Uri uri = data.getData();
-                File myFile = new File(uri.getPath());
-                Uri selectedImage=getImageContentUri(getContext(),myFile);
-                try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
-                    img6.setImageBitmap(mBitmap);
-                }catch(IOException ex) {
-                }
+            if (resultCode == RESULT_OK) {
+                String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                img6.setImageBitmap(showCroppedImage(imagePath));
+            } else if (resultCode == RESULT_CANCELED) {
+                //TODO : Handle case
             } else {
-                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+                String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
-
         }else if (requestCode == SELECT_PICTURE7 ) {
-            if (data != null) {
-                Uri uri = data.getData();
-                File myFile = new File(uri.getPath());
-                Uri selectedImage=getImageContentUri(getContext(),myFile);
-                try {
-                    Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
-                    img7.setImageBitmap(mBitmap);
-                }catch(IOException ex) {
-                }
+            if (resultCode == RESULT_OK) {
+                String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                img7.setImageBitmap(showCroppedImage(imagePath));
+            } else if (resultCode == RESULT_CANCELED) {
+                //TODO : Handle case
             } else {
-                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT).show();
+                String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
-
         }
 
 
     }
-    public static Uri getImageContentUri(Context context, File imageFile) {
-        String filePath = imageFile.getAbsolutePath();
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[] { MediaStore.Images.Media._ID },
-                MediaStore.Images.Media.DATA + "=? ",
-                new String[] { filePath }, null);
 
-        if (cursor != null && cursor.moveToFirst()) {
-            int id = cursor.getInt(cursor
-                    .getColumnIndex(MediaStore.MediaColumns._ID));
-            Uri baseUri = Uri.parse("content://media/external/images/media");
-            return Uri.withAppendedPath(baseUri, "" + id);
-        } else {
-            if (imageFile.exists()) {
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DATA, filePath);
-                return context.getContentResolver().insert(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            } else {
-                return null;
-            }
-        }}
     RequestListener msetProfileListener = new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -553,13 +497,59 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     }
                 });
                 if (getArguments() != null && getArguments().getString("profile_connect") != null){
-                    Intent i = new Intent(getContext(),InterestActivity.class);
-                    startActivity(i);
+                    Controller.getInterests(getContext(),mInterestListener);
+
                 }else {
                     BinderActivity i = (BinderActivity) getActivity();
                     i.bottomNavigation.setCurrentItem(2);
                 }
             }
+        }
+    };
+    private void showAddProfilePicDialog1(final int select_picture) {
+        PicModeSelectDialogFragment dialogFragment = new PicModeSelectDialogFragment();
+        dialogFragment.setiPicModeSelectListener(new PicModeSelectDialogFragment.IPicModeSelectListener() {
+            @Override
+            public void onPicModeSelected(String mode) {
+                String action = mode.equalsIgnoreCase(GOTOConstants.PicModes.CAMERA) ? GOTOConstants.IntentExtras.ACTION_CAMERA : GOTOConstants.IntentExtras.ACTION_GALLERY;
+                Intent intent = new Intent(getActivity(), ImageCropActivity.class);
+                intent.putExtra("ACTION", action);
+                startActivityForResult(intent, select_picture);
+            }
+        });
+        dialogFragment.show(getActivity().getFragmentManager(), "picModeSelector");
+    }
+    private Bitmap showCroppedImage(String mImagePath) {
+        if (mImagePath != null) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(mImagePath);
+            return myBitmap;
+
+        }
+        return null;
+    }
+    RequestListener mInterestListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+//            interestModel = JsonUtils.objectify(responseObject.toString(),InterestModel.class);
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    setToggleButtons(interestModel);
+//                }
+//            });
+            Intent i = new Intent(getContext(),InterestActivity.class);
+            i.putExtra("response",responseObject.toString());
+            startActivity(i);
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+
         }
     };
 }

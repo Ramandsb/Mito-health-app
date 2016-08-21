@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -44,9 +45,15 @@ import java.util.Calendar;
 import java.util.Date;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
+import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
+import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by aasaqt on 9/8/16.
@@ -117,13 +124,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
 
                 break;
             case R.id.fabAddImage:
-                if (hasLocationPermissionGranted()) {
-                    Intent i = new Intent(Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, SELECT_PICTURE);
-                }else{
-                    requestLocationPermission();
-                }
+                showAddProfilePicDialog1();
                 break;
             case R.id.relativeAddDecisionTimer:
                 Calendar calendar = Calendar.getInstance();
@@ -176,49 +177,40 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == SELECT_PICTURE ) {
-            if (data != null) {
-                Uri uri = data.getData();
-                File myFile = new File(uri.getPath());
-                Uri selectedImage=getImageContentUri(getContext(),myFile);
-                try {
-                   Bitmap mBitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(),selectedImage);
-                    addImage.setImageBitmap(mBitmap);
-                }catch(IOException ex) {
-                    //Do something witht the exception
-                }
-
+            if (resultCode == RESULT_OK) {
+                String imagePath = data.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                addImage.setImageBitmap(showCroppedImage(imagePath));
+            } else if (resultCode == RESULT_CANCELED) {
+                //TODO : Handle case
             } else {
-                Toast.makeText(getActivity(), "Try Again!!", Toast.LENGTH_SHORT)
-                        .show();
+                String errorMsg = data.getStringExtra(ImageCropActivity.ERROR_MSG);
+                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
-
         }
 
 
     }
-    public static Uri getImageContentUri(Context context, File imageFile) {
-        String filePath = imageFile.getAbsolutePath();
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[] { MediaStore.Images.Media._ID },
-                MediaStore.Images.Media.DATA + "=? ",
-                new String[] { filePath }, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int id = cursor.getInt(cursor
-                    .getColumnIndex(MediaStore.MediaColumns._ID));
-            Uri baseUri = Uri.parse("content://media/external/images/media");
-            return Uri.withAppendedPath(baseUri, "" + id);
-        } else {
-            if (imageFile.exists()) {
-                ContentValues values = new ContentValues();
-                values.put(MediaStore.Images.Media.DATA, filePath);
-                return context.getContentResolver().insert(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            } else {
-                return null;
+    private void showAddProfilePicDialog1() {
+        PicModeSelectDialogFragment dialogFragment = new PicModeSelectDialogFragment();
+        dialogFragment.setiPicModeSelectListener(new PicModeSelectDialogFragment.IPicModeSelectListener() {
+            @Override
+            public void onPicModeSelected(String mode) {
+                String action = mode.equalsIgnoreCase(GOTOConstants.PicModes.CAMERA) ? GOTOConstants.IntentExtras.ACTION_CAMERA : GOTOConstants.IntentExtras.ACTION_GALLERY;
+                Intent intent = new Intent(getActivity(), ImageCropActivity.class);
+                intent.putExtra("ACTION", action);
+                startActivityForResult(intent, SELECT_PICTURE);
             }
-        }}
+        });
+        dialogFragment.show(getActivity().getFragmentManager(), "picModeSelector");
+    }
+    private Bitmap showCroppedImage(String mImagePath) {
+        if (mImagePath != null) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(mImagePath);
+            return myBitmap;
+
+        }
+        return null;
+    }
     public boolean hasLocationPermissionGranted(){
         return  ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }

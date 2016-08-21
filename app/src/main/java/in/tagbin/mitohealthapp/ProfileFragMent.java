@@ -44,21 +44,18 @@ public class ProfileFragMent extends Fragment implements TabLayout.OnTabSelected
             adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager(),"profile_connect");
             vPager.setAdapter(adapter);
             tablayout.setupWithViewPager(vPager);
-            tablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
             vPager.setCurrentItem(1,true);
         }else{
             adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager(),"");
             vPager.setAdapter(adapter);
             tablayout.setupWithViewPager(vPager);
-            tablayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
             vPager.setCurrentItem(0,true);
         }
 //>>>>>>> 740f03d59aa7e79487e8fa2b64a4aea0e65f5865
         tablayout.setOnTabSelectedListener(this);
         tablayout.setTabsFromPagerAdapter(adapter);
-        tablayout.setTabGravity(TabLayout.GRAVITY_FILL);
         vPager.setOffscreenPageLimit(2);
 
         setupTab();
@@ -70,9 +67,6 @@ public class ProfileFragMent extends Fragment implements TabLayout.OnTabSelected
         try {
             RelativeLayout relativeLayout = (RelativeLayout)
                     LayoutInflater.from(getActivity()).inflate(R.layout.tab, tablayout, false);
-
-
-            relativeLayout.setGravity(RelativeLayout.CENTER_HORIZONTAL);
 
             tabOne = (TextView) relativeLayout.findViewById(R.id.tabtext);
             tabOne.setText("Health");

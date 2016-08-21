@@ -51,8 +51,8 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         distance = (TextView) findViewById(R.id.tvProfileDistance);
         time = (TextView) findViewById(R.id.tvProfileTime);
         gridLayout = (GridLayout) findViewById(R.id.gridProfileHobbies);
-        mAdapter = new ViewPagerAdapter(this, mImageResources);
-        intro_images.setAdapter(mAdapter);
+        //mAdapter = new ViewPagerAdapter(this, mImageResources);
+        //intro_images.setAdapter(mAdapter);
         intro_images.setCurrentItem(0);
         intro_images.setOnPageChangeListener(this);
         setUiPageViewController();

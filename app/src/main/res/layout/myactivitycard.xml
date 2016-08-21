@@ -204,7 +204,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="25dp"
-                    android:src="@drawable/join_click"
+                    android:src="@drawable/action_invite"
                     android:layout_centerHorizontal="true"
                     android:id="@+id/tvInviteFriends"
                     android:textSize="18sp"/>

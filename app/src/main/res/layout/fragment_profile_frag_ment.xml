@@ -9,14 +9,11 @@
         android:id="@+id/ProfileTabs"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        app:tabMinWidth="25sp"
         android:background="#ffffff"
-        android:dividerHeight="14.5sp"
         app:tabPadding="10sp"
         app:tabIndicatorHeight="3sp"
-        app:tabGravity="center"
-        app:tabPaddingStart="0sp"
-        app:tabPaddingEnd="0sp"
+        app:tabGravity="fill"
+        app:tabMode="fixed"
         android:theme="@style/Theme1"
         android:minHeight="?attr/actionBarSize">
 

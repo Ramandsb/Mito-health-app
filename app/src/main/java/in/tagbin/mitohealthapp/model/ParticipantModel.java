@@ -57,7 +57,7 @@ public class ParticipantModel {
     }
     public class ProfileModel{
         String gender;
-        ArrayList<String> images;
+        Images2Model images;
         String location;
         int age;
         public int getAge(){
@@ -66,11 +66,21 @@ public class ParticipantModel {
         public String getLocation(){
             return this.location;
         }
-        public ArrayList<String> getImages(){
+        public Images2Model getImages(){
             return this.images;
         }
         public String getGender(){
             return this.gender;
+        }
+        public class Images2Model{
+            String master;
+            public String getMaster(){
+                return this.master;
+            }
+            String[] others;
+            public String[] getOthers(){
+                return this.others;
+            }
         }
     }
 }
