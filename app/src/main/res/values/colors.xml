@@ -19,4 +19,17 @@
     <color name="cyan">#00ddff</color>
     <color name="blue">#FF2D42FA</color>
     <color name="orange">#ff8800</color>
+
+    <color name="cyan_primary">#00BCD4</color>
+    <color name="cyan_accent">#0097A7</color>
+    <color name="amber_pri">#CDDC39</color>
+    <color name="amber_acc">#AFB42B</color>
+    <color name="purple_pri">#9C27B0</color>
+    <color name="purple_acc">#7B1FA2</color>
+    <color name="bluegrey_pri">#607D8B</color>
+    <color name="bluegrey_acc">#455A64</color>
+    <color name="grey_pri">#9E9E9E</color>
+    <color name="grey_acc">#616161</color>
+
+
 </resources>

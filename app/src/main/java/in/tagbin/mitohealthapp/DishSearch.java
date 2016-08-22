@@ -17,6 +17,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -104,8 +105,27 @@ public class DishSearch extends AppCompatActivity {
         add_dish = new ArrayList<String>();
         login_details = getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
         auto_tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
-        search_icon = (ImageView) findViewById(R.id.search_icon);
-        search_icon.setColorFilter(Color.parseColor("#cecece"));
+//        search_icon = (ImageView) findViewById(R.id.search_icon);
+//        search_icon.setColorFilter(Color.parseColor("#cecece"));
+
+        auto_tv.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getRawX() >= (auto_tv.getRight() - auto_tv.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                        auto_tv.setText("");
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         auto_tv.setThreshold(1);
         auto_tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

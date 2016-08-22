@@ -4,7 +4,10 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,6 +22,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.DatePicker;
 
 import com.github.fabtransitionactivity.SheetLayout;
@@ -69,6 +74,7 @@ public FoodInterface foodInterface;
     public SleepInterface sleepInterface;
     public static String selectedDate="";
 
+    CollapsingToolbarLayout appBarLayout;
     int a=0,b=0,c=0;
     int i = 0;
     int mBgColor=0;
@@ -90,8 +96,11 @@ public FoodInterface foodInterface;
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+        appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         dop = new DatabaseOperations(this);
         sendDate=new Intent(SENDDATE);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
@@ -106,15 +115,50 @@ public FoodInterface foodInterface;
                 currentFrag = position;
                 if (position==1){
                     fab.hide();
+                    appBarLayout.setBackgroundResource(R.color.bluegrey_pri);
+                    tabLayout.setBackgroundResource(R.color.bluegrey_pri);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getWindow();
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        window.setStatusBarColor(getResources().getColor(R.color.bluegrey_acc));
+
+                    }
+
+
                 }
                 if (position==0){
                     fab.show();
+                    appBarLayout.setBackgroundResource(R.color.colorPrimary);
+                    tabLayout.setBackgroundResource(R.color.colorPrimary);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getWindow();
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+
+                    }
+
                 }
                 if (position==2){
                     fab.show();
+                    appBarLayout.setBackgroundResource(R.color.mdtp_red);
+                    tabLayout.setBackgroundResource(R.color.mdtp_red);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getWindow();
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        window.setStatusBarColor(getResources().getColor(R.color.mdtp_red_focused));
+                    }
+
                 }
                 if (position==3){
                     fab.hide();
+
+                    appBarLayout.setBackgroundResource(R.color.grey_pri);
+                    tabLayout.setBackgroundResource(R.color.grey_pri);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getWindow();
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        window.setStatusBarColor(getResources().getColor(R.color.grey_acc));
+                    }
                 }
 
 
@@ -131,8 +175,7 @@ public FoodInterface foodInterface;
         viewPager.setCurrentItem(i);
 
 //        calenderTrans();
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
