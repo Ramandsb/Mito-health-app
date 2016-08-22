@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     android:background="#ffffff">
 
-    <com.wenchao.cardstack.CardStack
+    <link.fls.swipestack.SwipeStack
         android:id="@+id/container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:clipChildren="false"
         android:clipToPadding="false" />
