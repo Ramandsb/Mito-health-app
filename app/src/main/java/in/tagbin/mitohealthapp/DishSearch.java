@@ -94,8 +94,10 @@ public class DishSearch extends AppCompatActivity {
         setContentView(R.layout.activity_dish_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        customDialog();
+
         back = getIntent().getStringExtra("back");
-        Log.d("intent", back);
+//        Log.d("intent", back);
         layout = findViewById(R.id.layout);
         names = new ArrayList<String>();
         sql_ids = new ArrayList<String>();
@@ -120,7 +122,8 @@ public class DishSearch extends AppCompatActivity {
                 dop = new DatabaseOperations(DishSearch.this);
 
                 if (back.equals("food")) {
-                    Timepick();
+//                    Timepick();
+                    startActivity(new Intent(DishSearch.this,FoodDetails.class).putExtra("food_id",food_id).putExtra("source","dish_search"));
                 } else if (back.equals("exercise")) {
 //                    WheelDialog("Select Weight");
                     dop.putExerciseInformation(dop, unique_id, food_id, dishName, ExerciseFrag.selectedDate, weight, sets, reps);
@@ -130,7 +133,6 @@ public class DishSearch extends AppCompatActivity {
 
                 }
 
-                customDialog();
 
 
             }

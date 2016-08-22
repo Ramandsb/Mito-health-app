@@ -197,6 +197,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
             intent.putExtra("name", profile_name);
             intent.putExtra("picture", profile_picture);
             intent.putExtra("selection", 1);
+            intent.putExtra("source","indirect");
             startActivity(intent);
             finish();
         }
@@ -276,7 +277,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
         params.height = metrics.heightPixels;
         video_player_view.setLayoutParams(params);
         video_player_view.hideControls();
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.lytblue);
+        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.working);
         video_player_view.setVideoURI(uri);
         video_player_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -374,6 +375,15 @@ showDialog();
     @Override
     protected void onStart() {
         super.onStart();
+
+       if (loginDetails.getString("key","").equals("")){
+
+
+
+        }else {
+           startActivity(new Intent(MainPage.this,BinderActivity.class).putExtra("source","direct"));
+           finish();
+       }
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client2.connect();
@@ -512,6 +522,7 @@ showDialog();
                             intent.putExtra("name", profile_name);
                             intent.putExtra("picture", profile_picture);
                             intent.putExtra("selection", 1);
+                            intent.putExtra("source","indirect");
                             startActivity(intent);
                             finish();
                         } catch (JSONException e) {

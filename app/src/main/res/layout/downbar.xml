@@ -82,7 +82,7 @@
             android:layout_width="match_parent"
             android:padding="10dp"
             android:id="@+id/icon4"
-            android:src="@drawable/cart"
+            android:src="@drawable/cart_final"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
         </LinearLayout>

@@ -76,7 +76,7 @@ public class SignupActivity extends AppCompatActivity {
                 showDialog();
 
                 if (pass_str.equals(con_pass_str)){
-                    makeJsonObjReq(pass_str,email_str,first_name,last_name);
+                    makeServerStatusRequestObject(pass_str,email_str,first_name,last_name);
                 }
 
 
@@ -172,6 +172,65 @@ Toast.makeText(SignupActivity.this,"Sign up Success",Toast.LENGTH_LONG).show();
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
+
+    public void makeServerStatusRequestObject(String password,String email,String first_name, String last_name){
+        showDialog();
+        Map<String, String> postParam = new HashMap<String, String>();
+        postParam.put("password", password);
+        postParam.put("first_name", first_name);
+        postParam.put("last_name", last_name);
+        postParam.put("email", email);
+        postParam.put("phone_number", "");
+
+        JSONObject o= new JSONObject(postParam);
+        Log.d("postparam",o.toString());
+        ServerStatusRequestObject requestObject = new ServerStatusRequestObject(Request.Method.POST, Config.url+"users/", null, o.toString(), new Response.Listener() {
+            @Override
+            public void onResponse(Object o) {
+                Log.d("response",o.toString());
+                showDialog();
+                progressBar.setVisibility(View.GONE);
+
+                messageView.setText("Sign up Success");
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+
+                showDialog();
+                displayErrors(volleyError);
+                Log.d("response",volleyError.toString());
+
+
+
+            }
+        }){
+
+            @Override
+            protected Response parseNetworkResponse(NetworkResponse response) {
+                int statusCode = response.statusCode;
+                Log.d("status Code",statusCode+"/////");
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            protected void deliverResponse(Integer statusCode) {
+                Log.d("deliverResponse Code",statusCode+"/////");
+                showDialog();
+                progressBar.setVisibility(View.GONE);
+
+                messageView.setText(statusCode+"/////");
+                super.deliverResponse(statusCode);
+            }
+        };
+
+        AppController.getInstance().addToRequestQueue(requestObject);
+
+    }
+
     TextView messageView;
     ProgressBar progressBar;
     AlertDialog alert;

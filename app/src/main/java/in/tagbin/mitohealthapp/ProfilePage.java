@@ -38,10 +38,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -63,13 +67,17 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import in.tagbin.mitohealthapp.Database.TableData;
@@ -86,7 +94,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     private int year, month, day;
     private DatePicker datePicker;
     private Calendar calendar;
-    TextView dob_tv, height_tv, weight_tv, waist_tv;
+    TextView dob_tv, height_tv, weight_tv, waist_tv,goal_weight_tv;
     String feet_val, inches_val, unit_val;
     String gender;
     String url = "", name = "default";
@@ -95,7 +103,14 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     SharedPreferences login_details;
     String user_id, auth_key;
     String dob = "";
-   static int height=0, weight=0, waist=0;
+   static int height=0, weight=0, waist=0,goal_weight=0;
+    String height_new="";
+    String height_unit="";
+    String weight_new="";
+    String goal_weight_new="";
+    String weight_unit="";
+    String waist_new="";
+    String waist_unit="";
     Button choose_image;
     public static String myurl = "";
     public static Bitmap profileImage;
@@ -174,19 +189,22 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         View select_height = Fragview.findViewById(R.id.select_height);
         View select_weight = Fragview.findViewById(R.id.select_weight);
         View select_waist = Fragview.findViewById(R.id.select_waist);
+        View select_goal_weight = Fragview.findViewById(R.id.select_goal_weight);
         final View male_view = Fragview.findViewById(R.id.male_view);
         final View female_view = Fragview.findViewById(R.id.female_view);
         dob_tv = (TextView) Fragview.findViewById(R.id.dob);
         height_tv = (TextView) Fragview.findViewById(R.id.height_tv);
         weight_tv = (TextView) Fragview.findViewById(R.id.weight_tv);
+        goal_weight_tv = (TextView) Fragview.findViewById(R.id.goal_weight_tv);
         waist_tv = (TextView) Fragview.findViewById(R.id.waist_tv);
+        checkPermissions();
         choose_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAddProfilePicDialog();
             }
         });
-        checkPermissions();
+
 
         male_view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -205,6 +223,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                 male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_m));
                 female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_));
                 gender = "F";
+
                 SharedPreferences.Editor saveGender= login_details.edit();
                 saveGender.putString("gender",gender);
                 saveGender.commit();
@@ -266,19 +285,29 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         select_weight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WheelDialog("weight","select");
+//                WheelDialog("weight","select");
+                showWeightDialog();
+            }
+        });
+        select_goal_weight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                WheelDialog("weight","select");
+                showGoal_WeightDialog();
             }
         });
         select_height.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WheelDialog("height","select");
+//                WheelDialog("height","select");
+                showHeightDialog();
             }
         });
         select_waist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WheelDialog("waist","select");
+//                WheelDialog("waist","select");
+                showWaistDialog();
             }
         });
         return Fragview;
@@ -296,7 +325,9 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                 String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
                 Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
+
         }
+
     }
 
 
@@ -345,224 +376,224 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     }
 
 
-    public void WheelDialog(String source, final String init) {
-
-        String[] feets = null, inches = null, unit = null;
-        if (source.equals("weight")) {
-            feets = new String[101];
-            inches = new String[11];
-            unit = new String[]{"Kg"};
-            for (int i = 0; i <= 100; i++) {
-                feets[i] = "" + (i + 35);
-            }
-            for (int i = 0; i <= 9; i++) {
-                inches[i] = "" + (i + 1);
-            }
-
-            feet_val = "38";
-            inches_val = "4";
-            unit_val = "Kg";
-
-
-        } else if (source.equals("height")) {
-            feets = new String[]{"3", "4", "5", "6", "7", "8"};
-            inches = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
-            unit = new String[]{"feets"};
-            feet_val = "6";
-            inches_val = "4";
-            unit_val = "feets";
-        } else if (source.equals("waist")) {
-
-            inches = new String[]{"24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"};
-            unit = new String[]{"inches"};
-
-            inches_val = "27";
-            unit_val = "inches";
-
-        }
-
-
-        View outerView = View.inflate(getActivity(), R.layout.wheel_view, null);
-        if (source.equals("waist")) {
-
-
-        } else {
-            WheelView wv1 = (WheelView) outerView.findViewById(R.id.wheel_view_wv1);
-            wv1.setOffset(2);
-            wv1.setVisibility(View.VISIBLE);
-            wv1.setItems(Arrays.asList(feets));
-            wv1.setSeletion(3);
-            wv1.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
-                @Override
-                public void onSelected(int selectedIndex, String item) {
-                    Log.d("feet", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-                    feet_val = item;
-                }
-            });
-        }
-        WheelView wv2 = (WheelView) outerView.findViewById(R.id.wheel_view_wv2);
-        wv2.setOffset(2);
-        wv2.setVisibility(View.VISIBLE);
-        wv2.setItems(Arrays.asList(inches));
-        wv2.setSeletion(3);
-        wv2.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
-            @Override
-            public void onSelected(int selectedIndex, String item) {
-                Log.d("inches", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-
-                inches_val = item;
-
-            }
-        });
-        WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_view_wv3);
-        wv.setOffset(2);
-        wv.setItems(Arrays.asList(unit));
-        wv.setSeletion(3);
-        wv.setVisibility(View.VISIBLE);
-        wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
-            @Override
-            public void onSelected(int selectedIndex, String item) {
-                Log.d("Tag", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-
-                unit_val = item;
-            }
-        });
-
-        if (source.equals("weight")) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Weight Tracker")
-                    .setView(outerView)
-                    .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-//                        phyEd.setText(""+Sfeet+"."+Sinches+"  feets");
-                            weight_tv.setText(feet_val + "." + inches_val + " " + unit_val);
-                            weight = (Integer.valueOf(feet_val) * 1000) + Integer.valueOf(inches_val);
-                            final SharedPreferences.Editor saveDetails=login_details.edit();
-                            saveDetails.putInt("weight",weight);
-                            saveDetails.commit();
-                            if (height==0 || waist==0 || weight==0 ){
-
-                                if (height==0){
-                                    WheelDialog("height",init);
-
-                                }else if(weight==0){
-                                    WheelDialog("weight",init);
-                                }else if(waist==0){
-                                    WheelDialog("waist",init);
-                                }
-
-                            }else {
-
-                                if (init.equals("save")){
-                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
-
-                                }else {
-
-                                }
-
-                            }
-
-
-                        }
-                    })
-                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .show();
-        } else if (source.equals("height")) {
-            new AlertDialog.Builder(getActivity())
-
-                    .setTitle("Height Tracker")
-                    .setView(outerView)
-                    .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            height_tv.setText(feet_val + "'" + inches_val + "''");
-                            height = (Integer.valueOf(feet_val) * 12) + Integer.valueOf(inches_val);
-                            final SharedPreferences.Editor saveDetails=login_details.edit();
-                            saveDetails.putInt("height",height);
-                            saveDetails.commit();
-                            if (height==0 || waist==0 || weight==0 ){
-
-
-                                if (height==0){
-                                    WheelDialog("height",init);
-
-                                }else if(weight==0){
-                                    WheelDialog("weight",init);
-                                }else if(waist==0){
-                                    WheelDialog("waist",init);
-                                }
-
-                            }else {
-                                if (init.equals("save")){
-                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
-
-                                }else {
-
-                                }
-                            }
-
-
-                        }
-                    })
-                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .show();
-        } else if (source.equals("waist")) {
-            new AlertDialog.Builder(getActivity())
-                    .setTitle("Waist Tracker")
-                    .setView(outerView)
-                    .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-//                        phyEd.setText(""+Sfeet+"."+Sinches+"  feets");
-                            waist_tv.setText(inches_val + "''");
-                            waist = Integer.valueOf(inches_val);
-                            final SharedPreferences.Editor saveDetails=login_details.edit();
-                            saveDetails.putInt("waist",waist);
-                            saveDetails.commit();
-                            if (height==0 || waist==0 || weight==0 ){
-
-                                if (height==0){
-                                    WheelDialog("height",init);
-
-                                }else if(weight==0){
-                                    WheelDialog("weight",init);
-                                }else if(waist==0){
-                                    WheelDialog("waist",init);
-                                }
-
-                            }else {
-                                if (init.equals("save")){
-                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
-
-                                }else {
-
-                                }
-                            }
-
-                        }
-                    })
-                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .show();
-        }
-
-
-    }
+//    public void WheelDialog(String source, final String init) {
+//
+//        String[] feets = null, inches = null, unit = null;
+//        if (source.equals("weight")) {
+//            feets = new String[101];
+//            inches = new String[11];
+//            unit = new String[]{"Kg"};
+//            for (int i = 0; i <= 100; i++) {
+//                feets[i] = "" + (i + 35);
+//            }
+//            for (int i = 0; i <= 9; i++) {
+//                inches[i] = "" + (i + 1);
+//            }
+//
+//            feet_val = "38";
+//            inches_val = "4";
+//            unit_val = "Kg";
+//
+//
+//        } else if (source.equals("height")) {
+//            feets = new String[]{"3", "4", "5", "6", "7", "8"};
+//            inches = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"};
+//            unit = new String[]{"feets"};
+//            feet_val = "6";
+//            inches_val = "4";
+//            unit_val = "feets";
+//        } else if (source.equals("waist")) {
+//
+//            inches = new String[]{"24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"};
+//            unit = new String[]{"inches"};
+//
+//            inches_val = "27";
+//            unit_val = "inches";
+//
+//        }
+//
+//
+//        View outerView = View.inflate(getActivity(), R.layout.wheel_view, null);
+//        if (source.equals("waist")) {
+//
+//
+//        } else {
+//            WheelView wv1 = (WheelView) outerView.findViewById(R.id.wheel_view_wv1);
+//            wv1.setOffset(2);
+//            wv1.setVisibility(View.VISIBLE);
+//            wv1.setItems(Arrays.asList(feets));
+//            wv1.setSeletion(3);
+//            wv1.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+//                @Override
+//                public void onSelected(int selectedIndex, String item) {
+//                    Log.d("feet", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+//                    feet_val = item;
+//                }
+//            });
+//        }
+//        WheelView wv2 = (WheelView) outerView.findViewById(R.id.wheel_view_wv2);
+//        wv2.setOffset(2);
+//        wv2.setVisibility(View.VISIBLE);
+//        wv2.setItems(Arrays.asList(inches));
+//        wv2.setSeletion(3);
+//        wv2.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+//            @Override
+//            public void onSelected(int selectedIndex, String item) {
+//                Log.d("inches", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+//
+//                inches_val = item;
+//
+//            }
+//        });
+//        WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_view_wv3);
+//        wv.setOffset(2);
+//        wv.setItems(Arrays.asList(unit));
+//        wv.setSeletion(3);
+//        wv.setVisibility(View.VISIBLE);
+//        wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
+//            @Override
+//            public void onSelected(int selectedIndex, String item) {
+//                Log.d("Tag", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
+//
+//                unit_val = item;
+//            }
+//        });
+//
+//        if (source.equals("weight")) {
+//            new AlertDialog.Builder(getActivity())
+//                    .setTitle("Weight Tracker")
+//                    .setView(outerView)
+//                    .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+////                        phyEd.setText(""+Sfeet+"."+Sinches+"  feets");
+//                            weight_tv.setText(feet_val + "." + inches_val + " " + unit_val);
+//                            weight = (Integer.valueOf(feet_val) * 1000) + Integer.valueOf(inches_val);
+//                            final SharedPreferences.Editor saveDetails=login_details.edit();
+//                            saveDetails.putInt("weight",weight);
+//                            saveDetails.commit();
+//                            if (height==0 || waist==0 || weight==0 ){
+//
+//                                if (height==0){
+//                                    WheelDialog("height",init);
+//
+//                                }else if(weight==0){
+//                                    WheelDialog("weight",init);
+//                                }else if(waist==0){
+//                                    WheelDialog("waist",init);
+//                                }
+//
+//                            }else {
+//
+//                                if (init.equals("save")){
+//                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+//
+//                                }else {
+//
+//                                }
+//
+//                            }
+//
+//
+//                        }
+//                    })
+//                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                        }
+//                    })
+//                    .show();
+//        } else if (source.equals("height")) {
+//            new AlertDialog.Builder(getActivity())
+//
+//                    .setTitle("Height Tracker")
+//                    .setView(outerView)
+//                    .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            height_tv.setText(feet_val + "'" + inches_val + "''");
+//                            height = (Integer.valueOf(feet_val) * 12) + Integer.valueOf(inches_val);
+//                            final SharedPreferences.Editor saveDetails=login_details.edit();
+//                            saveDetails.putInt("height",height);
+//                            saveDetails.commit();
+//                            if (height==0 || waist==0 || weight==0 ){
+//
+//
+//                                if (height==0){
+//                                    WheelDialog("height",init);
+//
+//                                }else if(weight==0){
+//                                    WheelDialog("weight",init);
+//                                }else if(waist==0){
+//                                    WheelDialog("waist",init);
+//                                }
+//
+//                            }else {
+//                                if (init.equals("save")){
+//                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+//
+//                                }else {
+//
+//                                }
+//                            }
+//
+//
+//                        }
+//                    })
+//                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                        }
+//                    })
+//                    .show();
+//        } else if (source.equals("waist")) {
+//            new AlertDialog.Builder(getActivity())
+//                    .setTitle("Waist Tracker")
+//                    .setView(outerView)
+//                    .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+////                        phyEd.setText(""+Sfeet+"."+Sinches+"  feets");
+//                            waist_tv.setText(inches_val + "''");
+//                            waist = Integer.valueOf(inches_val);
+//                            final SharedPreferences.Editor saveDetails=login_details.edit();
+//                            saveDetails.putInt("waist",waist);
+//                            saveDetails.commit();
+//                            if (height==0 || waist==0 || weight==0 ){
+//
+//                                if (height==0){
+//                                    WheelDialog("height",init);
+//
+//                                }else if(weight==0){
+//                                    WheelDialog("weight",init);
+//                                }else if(waist==0){
+//                                    WheelDialog("waist",init);
+//                                }
+//
+//                            }else {
+//                                if (init.equals("save")){
+//                                    makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+//
+//                                }else {
+//
+//                                }
+//                            }
+//
+//                        }
+//                    })
+//                    .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                        }
+//                    })
+//                    .show();
+//        }
+//
+//
+//    }
 
 
 
@@ -594,25 +625,21 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             if (height==0 || waist==0 || weight==0 ){
 
                 if (height==0){
-                    WheelDialog("height","save");
+                    showHeightDialog();
 
                 }else if(weight==0){
-                    WheelDialog("weight","save");
+                    showWeightDialog();
                 }else if(waist==0){
-                    WheelDialog("waist","save");
+                    showWaistDialog();
+                }else if(goal_weight==0){
+                    showGoal_WeightDialog();
                 }
 
             }else {
 
-                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight));
+                makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight),String.valueOf(goal_weight));
             }
-//            InitActivity.change(2);
 
-
-            //i.change(2);
-
-//            getFragmentManager().beginTransaction().replace(R.id.fragmentnew,new HomePage()).commit();
-            //finish();
             return true;
         }
 
@@ -620,33 +647,25 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     }
 
 
-    private void makeJsonObjReq(String name, String sex, String dob, String height, String waist, String weight) {
+    private void makeJsonObjReq(String name, String sex, String dob, String height, String waist, String weight,String goal_weight) {
         showDialog();
         Map<String, String> postParam = new HashMap<String, String>();
         auth_key=login_details.getString("key","");
         user_id=login_details.getString("user_id","");
 
         Log.d("details", user_id + "//" + auth_key);
-        /**
-         *  "first_name": "Nairitya",
-         "last_name": "Khilari",
-         "email": "nairitya@gmail.com",
-         "phone_number": "4512356578",
-         "weight": 66,
-         "waist": 35,
-         "height": 179,
-         "dob": "1994-12-18"
-         */
+
 
 
         postParam.put("first_name", first_name);
         postParam.put("last_name", last_name);
         postParam.put("email", email);
         postParam.put("dob", dob);
-        postParam.put("gender", gender);
+        postParam.put("gender", sex);
         postParam.put("height", height);
         postParam.put("waist", waist);
         postParam.put("weight", weight);
+        postParam.put("goal_weight", goal_weight);
 
 
         JSONObject jsonObject = new JSONObject(postParam);
@@ -701,6 +720,523 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
+  public void  showHeightDialog(){
+
+      final Dialog dialog = new Dialog(getActivity());
+      dialog.setContentView(R.layout.height_dialog);
+      final List<String> measuring_units = new ArrayList<>();
+      measuring_units.add("Feets");
+      measuring_units.add("Inches");
+      measuring_units.add("Centimeters");
+      measuring_units.add("Meters");
+
+
+      Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
+      final TextView value = (TextView) dialog.findViewById(R.id.height_value);
+      final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
+      dialog_name.setText("Height");
+      final SeekBar seekBar = (SeekBar) dialog.findViewById(R.id.height_seekbar);
+      View done = dialog.findViewById(R.id.height_done);
+      done.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View view) {
+
+              height_tv.setText(height_new);
+              Log.d("height value",height_new);
+              if (height==0 || waist==0 || weight==0 ){
+
+
+                  if (height==0){
+                      dialog.dismiss();
+                      showHeightDialog();
+
+                  }else if(weight==0){
+                      dialog.dismiss();
+                      showWeightDialog();
+                  }else if(waist==0){
+                      dialog.dismiss();
+                      showWaistDialog();
+                  }else if(goal_weight==0){
+                      dialog.dismiss();
+                      showGoal_WeightDialog();
+                  }
+
+              }else {
+
+                  dialog.dismiss();
+              }
+
+          }
+      });
+      final String[] unit = {"Feets"};
+
+      ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,measuring_units);
+      adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      spinner.setAdapter(adapter);
+      spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+          @Override
+          public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+              Log.d("item selected",measuring_units.get(i));
+
+              unit[0] =measuring_units.get(i);
+
+              if(unit[0].equals("Feets")){
+
+                  seekBar.setProgress(0);
+                 value.setText("0.0 Feets");
+
+              }else if(unit[0].equals("Inches")){
+
+                  seekBar.setProgress(0);
+                  value.setText("0.0 Inches");
+              }else if(unit[0].equals("Centimeters")){
+
+                  seekBar.setProgress(0);
+                  value.setText("0.0 Centimeters");
+              }else if(unit[0].equals("Meters")){
+                  seekBar.setProgress(0);
+                  value.setText("0.0 Meters");
+
+              }
+
+
+          }
+
+          @Override
+          public void onNothingSelected(AdapterView<?> adapterView) {
+
+          }
+      });
+      seekBar.setMax(200);
+      seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+          @Override
+          public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+              height=i;
+             if(unit[0].equals("Feets")){
+                 double feet = i*0.083;
+                 DecimalFormat df = new DecimalFormat("#.##");
+              String val   =  df.format(feet);
+                 value.setText(val+" Feets");
+                 height_new=val+" Feets";
+
+             }else if(unit[0].equals("Inches")){
+                 double inches=i;
+                 height_new=inches+" Inches";
+                 value.setText(inches+" Inches");
+
+             }else if(unit[0].equals("Centimeters")){
+
+
+                 double cm= i*2.53;
+                 DecimalFormat df = new DecimalFormat("#.##");
+                 String val   =  df.format(cm);
+                 height_new=val+" Centimeters";
+
+                 value.setText(val+" Centimeters");
+
+
+             }else if(unit[0].equals("Meters")){
+
+                 double meters= i*0.025;
+
+                 DecimalFormat df = new DecimalFormat("#.##");
+                 String val   =  df.format(meters);
+                 height_new=val+" Meters";
+                 value.setText(val+" Meters");
+
+
+             }
+          }
+
+          @Override
+          public void onStartTrackingTouch(SeekBar seekBar) {
+
+          }
+
+          @Override
+          public void onStopTrackingTouch(SeekBar seekBar) {
+
+          }
+      });
+
+
+
+
+
+
+      dialog.show();
+
+
+    }
+    public void  showWeightDialog(){
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.height_dialog);
+        final List<String> measuring_units = new ArrayList<>();
+        measuring_units.add("Kg");
+        measuring_units.add("Pounds");
+
+
+        Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
+        final TextView value = (TextView) dialog.findViewById(R.id.height_value);
+        final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
+        dialog_name.setText("Weight");
+        final SeekBar seekBar = (SeekBar) dialog.findViewById(R.id.height_seekbar);
+        View done = dialog.findViewById(R.id.height_done);
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("weight value",weight_new);
+                weight_tv.setText(weight_new);
+                if (height==0 || waist==0 || weight==0 ){
+
+
+                    if (height==0){
+                        dialog.dismiss();
+                       showHeightDialog();
+
+                    }else if(weight==0){
+                        dialog.dismiss();
+                        showWeightDialog();
+                    }else if(waist==0){
+                        dialog.dismiss();
+                       showWaistDialog();
+                    }else if(goal_weight==0){
+                        dialog.dismiss();
+                        showGoal_WeightDialog();
+                    }
+
+                }else {
+                    dialog.dismiss();
+                }
+
+            }
+        });
+        final String[] unit = {"Kg"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,measuring_units);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("item selected",measuring_units.get(i));
+                unit[0] =measuring_units.get(i);
+
+                if(unit[0].equals("Kg")){
+
+                    seekBar.setProgress(0);
+                    value.setText("0.0 Kg");
+
+                }else if(unit[0].equals("Pounds")){
+
+                    seekBar.setProgress(0);
+                    value.setText("0.0 Pounds");
+                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        seekBar.setMax(200000);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                weight =i;
+
+                if(unit[0].equals("Kg")){
+
+                    double kg = i*0.001;
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    String val   =  df.format(kg);
+                    weight_new=val+" Kg";
+                    value.setText(val+" Kg");
+
+                }else if(unit[0].equals("Pounds")){
+
+                    double meters= i*0.00220462;
+
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    String val   =  df.format(meters);
+                    weight_new=val+" Pounds";
+                    value.setText(val+" Pounds");
+
+                }
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+
+
+
+
+        dialog.show();
+
+
+    }
+    public void  showGoal_WeightDialog(){
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.height_dialog);
+        final List<String> measuring_units = new ArrayList<>();
+        measuring_units.add("Kg");
+        measuring_units.add("Pounds");
+
+
+        Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
+        final TextView value = (TextView) dialog.findViewById(R.id.height_value);
+        final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
+        dialog_name.setText("Goal Weight");
+        final SeekBar seekBar = (SeekBar) dialog.findViewById(R.id.height_seekbar);
+        View done = dialog.findViewById(R.id.height_done);
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("weight value",goal_weight_new);
+                goal_weight_tv.setText(goal_weight_new);
+                if (height==0 || waist==0 || weight==0 ){
+
+
+                    if (height==0){
+                        dialog.dismiss();
+                        showHeightDialog();
+
+                    }else if(weight==0){
+                        dialog.dismiss();
+                        showWeightDialog();
+                    }else if(waist==0){
+                        dialog.dismiss();
+                        showWaistDialog();
+                    }else if(goal_weight==0){
+                        dialog.dismiss();
+                        showGoal_WeightDialog();
+                    }
+
+                }else {
+                    dialog.dismiss();
+                }
+
+            }
+        });
+        final String[] unit = {"Kg"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,measuring_units);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("item selected",measuring_units.get(i));
+                unit[0] =measuring_units.get(i);
+
+                if(unit[0].equals("Kg")){
+
+                    seekBar.setProgress(0);
+                    value.setText("0.0 Kg");
+
+                }else if(unit[0].equals("Pounds")){
+
+                    seekBar.setProgress(0);
+                    value.setText("0.0 Pounds");
+                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        seekBar.setMax(200000);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                goal_weight =i;
+
+                if(unit[0].equals("Kg")){
+
+                    double kg = i*0.001;
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    String val   =  df.format(kg);
+                    goal_weight_new=val+" Kg";
+                    value.setText(val+" Kg");
+
+                }else if(unit[0].equals("Pounds")){
+
+                    double meters= i*0.00220462;
+
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    String val   =  df.format(meters);
+                    goal_weight_new=val+" Pounds";
+                    value.setText(val+" Pounds");
+
+                }
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+
+
+
+
+        dialog.show();
+
+
+    }
+
+    public void  showWaistDialog(){
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.height_dialog);
+        final List<String> measuring_units = new ArrayList<>();
+        measuring_units.add("Inches");
+        measuring_units.add("Centimeters");
+
+
+        Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
+        final TextView value = (TextView) dialog.findViewById(R.id.height_value);
+        final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
+        dialog_name.setText("Waist");
+        final SeekBar seekBar = (SeekBar) dialog.findViewById(R.id.height_seekbar);
+        View done = dialog.findViewById(R.id.height_done);
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("waist value",waist_new);
+                waist_tv.setText(waist_new);
+                if (height==0 || waist==0 || weight==0 ){
+
+
+                    if (height==0){
+                        dialog.dismiss();
+                        showHeightDialog();
+
+                    }else if(weight==0){
+                        dialog.dismiss();
+                        showWeightDialog();
+                    }else if(waist==0){
+                        dialog.dismiss();
+                        showWaistDialog();
+                    }else if(goal_weight==0){
+                        dialog.dismiss();
+                        showGoal_WeightDialog();
+                    }
+
+                }else {
+
+                    dialog.dismiss();
+                }
+
+            }
+        });
+        final String[] unit = {"Inches"};
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item,measuring_units);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d("item selected",measuring_units.get(i));
+                unit[0] =measuring_units.get(i);
+
+
+                if(unit[0].equals("Inches")){
+
+                    seekBar.setProgress(0);
+                    value.setText("0.0 Inches");
+
+                }else if(unit[0].equals("Centimeters")){
+
+                    seekBar.setProgress(0);
+                    value.setText("0.0 Centimeters");
+                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        seekBar.setMax(55);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+
+                 waist = i;
+
+                if(unit[0].equals("Inches")){
+
+
+                    value.setText(i+" Inches");
+                    waist_new=i+" Inches";
+
+                }else if(unit[0].equals("Centimeters")){
+
+                    double meters= i*2.54;
+
+                    DecimalFormat df = new DecimalFormat("#.##");
+                    String val   =  df.format(meters);
+                    waist_new=val+" Centimeters";
+                    value.setText(val+" Centimeters");
+
+                }
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+
+
+
+
+
+        dialog.show();
+
+
+    }
+
     private void makeJsonObjReq() {
 
         showDialog();
@@ -709,29 +1245,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         auth_key= login_details.getString("key","");
         user_id= login_details.getString("user_id","");
         Log.d("details", user_id + "//" + auth_key);
-//        /**
-//         *  "first_name": "Nairitya",
-//         "last_name": "Khilari",
-//         "email": "nairitya@gmail.com",
-//         "phone_number": "4512356578",
-//         "weight": 66,
-//         "waist": 35,
-//         "height": 179,
-//         "dob": "1994-12-18"
-//         */
-//
-////
-////        postParam.put("gender", sex);
-////        postParam.put("dob", dob);
-////        postParam.put("height", height);
-////        postParam.put("waist", waist);
-////        postParam.put("weight", weight);
-//
-////
-////        JSONObject jsonObject = new JSONObject(postParam);
-////        Log.d("postpar", jsonObject.toString());
-////
-
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
                 Config.url + "users/" + user_id + "/", null,
                 new Response.Listener<JSONObject>() {
@@ -756,6 +1269,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                             String gender = profile.getString("gender");
                             String height = profile.getString("height");
                             String weight = profile.getString("weight");
+                            String goal_weight = profile.getString("goal_weight");
                             String waist = profile.getString("waist");
 
                             editor.putString("user_username",username);
@@ -765,6 +1279,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                             editor.putString("user_first_name",first_name);
                             editor.putString("user_last_name",last_name);
                             editor.putInt("weight",Integer.valueOf(weight));
+                            editor.putInt("goal_weight",Integer.valueOf(goal_weight));
                             editor.putInt("waist",Integer.valueOf(waist));
                             editor.commit();
 
@@ -783,11 +1298,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                                 SharedPreferences.Editor editor1= login_details.edit();
 
 //
-                                JSONObject images=     profile.getJSONObject("images");
-                                String master=   images.getString("master");
-                                editor1.putString("master_image",master);
-                                new DownloadImage().execute(master);
-//
+
 
                                 JSONArray energy = res.getJSONArray("energy");
                                 Log.d("energy details", energy.toString());
@@ -819,7 +1330,29 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                                 editor1.putString("user_last_name", user_last_name);
                                 editor1.putString("user_email", user_email);
 
+
                                 editor1.commit();
+
+
+                                SharedPreferences.Editor editor2= login_details.edit();
+
+                                try {
+                                    Log.d("console",profile.get("images")+"/////");
+                                    if(profile.get("images")==null){
+
+
+                                    }else {
+                                        JSONObject images = profile.getJSONObject("images");
+                                        String master = images.getString("master");
+                                        editor2.putString("master_image", master);
+                                        new DownloadImage().execute(master);
+                                        editor2.commit();
+                                    }
+                                }catch (Exception e){
+                                    Log.d("Images error",e.toString()+"/////");
+                                }
+
+//
                                 Log.d("all details", login_details.getAll().toString());
                                 updateProfile();
                             } catch (JSONException e) {
@@ -959,6 +1492,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
      gender=   login_details.getString("gender","");
      height=   login_details.getInt("height",0);
      weight=   login_details.getInt("weight",0);
+     goal_weight=   login_details.getInt("goal_weight",0);
      waist=   login_details.getInt("waist",0);
 
         dob_tv.setText(dob);
@@ -986,6 +1520,13 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             int grams = weight % 1000;
             int kg = weight / 1000;
             weight_tv.setText(kg+"."+grams+" Kg");
+        }
+        if (goal_weight==0){
+            goal_weight_tv.setText("Set Weight");
+        }else {
+            int grams = goal_weight % 1000;
+            int kg = goal_weight / 1000;
+            goal_weight_tv.setText(kg+"."+grams+" Kg");
         }
         if (waist==0){
             waist_tv.setText("Set Waist");

@@ -1,0 +1,29 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="in.tagbin.mitohealthapp.Fragments.Settings_frag">
+
+
+
+    <LinearLayout
+        android:id="@+id/logout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/ab_gradient_purple"
+        android:gravity="center_vertical"
+        android:layout_margin="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
+            android:layout_margin="10dp"
+            android:textColor="#ffffff"
+            android:textSize="25sp"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>

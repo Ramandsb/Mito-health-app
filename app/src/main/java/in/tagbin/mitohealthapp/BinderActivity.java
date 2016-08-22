@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
+import in.tagbin.mitohealthapp.Fragments.CartFrag;
+import in.tagbin.mitohealthapp.Fragments.Settings_frag;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter1;
@@ -50,16 +52,18 @@ public class BinderActivity extends AppCompatActivity{
 
 // Create items
 
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.big_partner);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.big_profile);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.partnet_final);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.profile_final);
         AHBottomNavigationItem item3 = new AHBottomNavigationItem("", R.drawable.big_mito);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.big_cart);
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.cart_final);
+        AHBottomNavigationItem item5 = new AHBottomNavigationItem("", R.drawable.settings_final);
 
 // Add itemsF63D2B
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
         bottomNavigation.addItem(item3);
         bottomNavigation.addItem(item4);
+        bottomNavigation.addItem(item5);
 
 // Set background color
         bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#ffffff"));
@@ -87,6 +91,12 @@ public class BinderActivity extends AppCompatActivity{
         if (getIntent().getStringExtra("interests") != null){
             fra = new PartnerFrag();
             bottomNavigation.setCurrentItem(0);
+        }else if (getIntent().getStringExtra("source").equals("direct")) {
+
+            fra = new HomePage();
+            bottomNavigation.setCurrentItem(2);
+
+
         }else {
             fra = new ProfileFragMent();
             bottomNavigation.setCurrentItem(1);
@@ -134,18 +144,6 @@ public class BinderActivity extends AppCompatActivity{
             case 0:
                 PrefManager pref = new PrefManager(this);
 
-//                if (!pref.isTutorialShown()){
-//                    pref.setTutorial(true);
-//                    pager.setVisibility(View.VISIBLE);
-//                }else{
-//                    pager.setVisibility(View.GONE);
-//                    fra = new PartnerFrag();
-//                }
-//<<<<<<< HEAD
-//                toolbar.setTitle("Partner Connect");
-//                fra = new PartnerFrag();
-////                Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
-//=======
                 if (!pref.isTutorialShown()) {
                     pref.setTutorial(true);
                     fra = new ProfileFragMent();
@@ -158,20 +156,30 @@ public class BinderActivity extends AppCompatActivity{
 
                 //fra = new PartnerFrag();
                 Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
-//>>>>>>> 740f03d59aa7e79487e8fa2b64a4aea0e65f5865
+
                 break;
             case 1:
                 toolbar.setTitle("Profile");
                 fra = new ProfileFragMent();
+                bottomNavigation.setCurrentItem(1);
 //                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
                 toolbar.setTitle("Mito");
                 fra = new HomePage();
+                bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
-//                Toast.makeText(BinderActivity.this, "clicked 4", Toast.LENGTH_SHORT).show();
+
+                toolbar.setTitle("Cart");
+                fra = new CartFrag();
+                bottomNavigation.setCurrentItem(3);
+                break;
+            case 4:
+                toolbar.setTitle("Settings");
+                fra = new Settings_frag();
+                bottomNavigation.setCurrentItem(4);
                 break;
             default:
                 if (getIntent().getStringExtra("interests") != null){

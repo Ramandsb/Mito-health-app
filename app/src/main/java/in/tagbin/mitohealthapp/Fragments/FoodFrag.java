@@ -81,6 +81,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
 
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,7 +163,10 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
 
-                startActivity(new Intent(getActivity(), FoodDetails.class));
+             DataItems dataItems=   dop.getInformation(dop,selectedDate).get(position);
+                startActivity(new Intent(getActivity(), FoodDetails.class).putExtra("food_id",dataItems.getFood_id()).putExtra("source","food_frag"));
+
+
 //
 // akshayluthra12@
 
@@ -177,6 +181,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
 
         return fragView;
     }
+
 
 
     @Override

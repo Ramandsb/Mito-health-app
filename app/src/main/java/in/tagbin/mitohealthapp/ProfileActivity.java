@@ -66,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
             textView.setBackgroundResource(R.drawable.bg_hobby);
             int padding = MyUtils.dpToPx(this,5);
             int padding1 = MyUtils.dpToPx(this,10);
-            textView.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.close,0);
+            textView.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.cross_svg,0);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new GridLayoutManager.LayoutParams(GridLayoutManager.LayoutParams.WRAP_CONTENT, GridLayoutManager.LayoutParams.WRAP_CONTENT));
             params.setMargins(padding,padding,padding,padding);
             textView.setLayoutParams(params);

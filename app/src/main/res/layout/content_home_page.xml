@@ -42,7 +42,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="155dp"
         android:orientation="horizontal"
         android:gravity="center">
         <LinearLayout
@@ -60,24 +60,25 @@
                 android:text="890"
                 android:textColor="@color/bottombar"
                 android:id="@+id/cal_consumed"
-                android:textSize="25sp" />
+                android:textSize="22sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Consumed"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 android:id="@+id/textView5" />
         </LinearLayout>
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="135dp"
+            android:layout_height="145dp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/circle"
+            android:background="@drawable/home_circle"
             android:layout_weight="1"
+            android:elevation="5dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:gravity="center">
@@ -127,13 +128,13 @@
                 android:text="248"
                 android:textColor="@color/bottombar"
                 android:id="@+id/cal_burned"
-                android:textSize="25sp" />
+                android:textSize="22sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Burned"
-                android:textSize="17sp"
+                android:textSize="15sp"
                 android:id="@+id/textView6" />
         </LinearLayout>
 
@@ -274,7 +275,6 @@
                         <Button
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:background="@drawable/minus_butt"
                             android:layout_gravity="left"
                             android:gravity="left"
                             android:id="@+id/minus_but"
@@ -308,7 +308,6 @@
                         <Button
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:background="@drawable/pus_butt"
                             android:layout_gravity="right"
                             android:gravity="right"
                             android:visibility="gone"

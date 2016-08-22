@@ -130,7 +130,6 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
             @Override
             public void onClick(View v) {
                 quantity_dialog(dataItems.getId());
-
                 notifyDataSetChanged();
             }
         });
@@ -183,7 +182,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
         holder.reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context,"reset"+dataItems.getFood_name(),Toast.LENGTH_LONG).show();
+                makeResetJsonObjReq(dataItems.getFood_id(),dataItems.getId());
             }
         });
 
@@ -374,6 +373,84 @@ static class MyviewHolder extends AnimateViewHolder {
         }) {
 
 //
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put( "charset", "utf-8");
+                headers.put("Authorization","JWT "+auth_key);
+                return headers;
+            }
+
+
+
+        };
+
+
+
+        // Adding request to request queue
+        AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+    private void makeResetJsonObjReq(String food_id, final String uniqueid) {
+
+        showDialog();
+        auth_key=   login_details.getString("key", "");
+//        Map<String, String> postParam = new HashMap<String, String>();
+//        postParam.put("ltype", "food");
+//        postParam.put("c_id", food_id);
+//        postParam.put("time_consumed", time_stamp);
+//        postParam.put("amount", amount);
+
+
+
+//        JSONObject jsonObject = new JSONObject(postParam);
+//        Log.d("postpar", jsonObject.toString());
+//http://api.mitoapp.com/v1/food/65/
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+                Config.url+"automation/getdiet/replace/?id="+food_id, null,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response", response.toString());
+
+                        try {
+                            String new_id=response.getString("id");
+                            String new_name=response.getString("name");
+                            ContentValues cv = new ContentValues();
+                            cv.put(TableData.Tableinfo.FOOD_NAME,new_name);
+                            cv.put(TableData.Tableinfo.FOOD_ID,new_id);
+                            dop.updateRow(dop,cv,uniqueid);
+                            setData(dop.getInformation(dop,FoodFrag.selectedDate));
+                            dismissDialog();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+
+
+
+
+
+
+                    }
+
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.d("error", "Error: " + error.getMessage());
+
+                displayErrors(error);
+
+                Log.d("error", error.toString());
+            }
+        }) {
+
+            //
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();

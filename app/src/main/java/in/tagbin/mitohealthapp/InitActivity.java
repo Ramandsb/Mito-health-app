@@ -57,10 +57,10 @@ public class InitActivity extends AppCompatActivity {
 
 // Create items
 
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.big_partner);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.big_profile);
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.partnet_final);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.profile_final);
         AHBottomNavigationItem item3 = new AHBottomNavigationItem("", R.drawable.big_mito);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.big_cart);
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.cart_final);
 
 // Add itemsF63D2B
         bottomNavigation.addItem(item1);

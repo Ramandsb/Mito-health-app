@@ -9,6 +9,14 @@
     android:orientation="vertical">
 
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,7 +38,6 @@
             android:src="#111111"/>
 
             <RelativeLayout
-
                 android:layout_width="103dp"
                 android:layout_height="103dp"
                 android:layout_alignParentBottom="true"
@@ -106,9 +113,9 @@
                  />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/edit"/>
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/edit_svg"/>
             </LinearLayout>
 
         </RelativeLayout>
@@ -196,9 +203,9 @@
                     />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/edit"/>
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/edit_svg"/>
             </LinearLayout>
 
         </RelativeLayout>
@@ -232,9 +239,9 @@
                     />
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/edit"/>
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/edit_svg"/>
             </LinearLayout>
 
         </RelativeLayout>
@@ -267,13 +274,63 @@
                     />
 
                 <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/edit_svg"/>
+            </LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#666666"
+                android:text="Goal weight" />
+            <LinearLayout
+                android:id="@+id/select_goal_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/goal_weight_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/edit"/>
+                    android:text="36''"
+                    android:textColor="#999999"
+                    android:drawableRight="@drawable/sm1"
+                    />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:src="@drawable/edit_svg"/>
             </LinearLayout>
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp"
+
+            android:layout_marginTop="20dp">
+
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </RelativeLayout>
     </LinearLayout>
 
 
+    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

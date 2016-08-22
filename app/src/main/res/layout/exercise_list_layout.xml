@@ -118,7 +118,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:layout_marginLeft="10dp"
-                            android:src="@drawable/delet"/>
+                            android:src="@drawable/delete_svg"/>
 
                     </LinearLayout>
                 </LinearLayout>

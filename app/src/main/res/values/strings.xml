@@ -28,5 +28,7 @@
     <string name="save">Save</string>
     <string name="title_activity_binder">Profle</string>
     <string name="title_activity_chat">Chat</string>
+    <string name="title_activity_forgot_password">ForgotPassword</string>
+
 
 </resources>

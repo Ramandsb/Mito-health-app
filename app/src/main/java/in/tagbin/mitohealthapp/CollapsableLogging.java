@@ -203,7 +203,7 @@ public FoodInterface foodInterface;
                 break;
             }
             case android.R.id.home: {
-                startActivity(new Intent(CollapsableLogging.this,BinderActivity.class).putExtra("selection",2));
+                startActivity(new Intent(CollapsableLogging.this,BinderActivity.class).putExtra("selection",2).putExtra("source","indirect"));
                 finish();
                 break;
             }
@@ -320,6 +320,13 @@ public FoodInterface foodInterface;
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(CollapsableLogging.this,BinderActivity.class).putExtra("selection",2).putExtra("source","indirect"));
+        finish();
+        super.onBackPressed();
+
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

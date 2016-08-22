@@ -101,5 +101,17 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="52dp" />
 
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Forgot Password?"
+        android:id="@+id/forgotpassword"
+        android:textColor="#ffffff"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_toEndOf="@+id/textView2" />
+
 
 </RelativeLayout>

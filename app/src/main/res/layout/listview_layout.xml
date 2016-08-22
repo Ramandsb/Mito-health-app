@@ -76,7 +76,7 @@
                             <ImageView
                                 android:layout_width="15dp"
                                 android:layout_height="15dp"
-                                android:src="@drawable/clock" />
+                                android:src="@drawable/clock_svg" />
 
                             <TextView
                                 android:id="@+id/time_tv"
@@ -113,21 +113,21 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/check_black"/>
+                    android:src="@drawable/check_svg"/>
 
                 <ImageView
                     android:id="@+id/cross"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/close"/>
+                    android:src="@drawable/cross_svg"/>
 
                 <ImageView
                     android:id="@+id/reset"
                     android:layout_width="20dp"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:src="@drawable/sync"/>
+                    android:src="@drawable/reset_svg"/>
             </LinearLayout>
 
         </LinearLayout>

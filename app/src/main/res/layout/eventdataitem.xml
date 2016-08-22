@@ -72,7 +72,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/delete" />
+                android:src="@drawable/delete_svg" />
 
             <ImageView
                 android:layout_width="20dp"
@@ -80,7 +80,7 @@
                 android:layout_gravity="end"
                 android:id="@+id/ivEdit"
                 android:layout_toLeftOf="@+id/ivBin"
-                android:src="@drawable/edit" />
+                android:src="@drawable/edit_svg" />
 
         </RelativeLayout>
         <ImageView
