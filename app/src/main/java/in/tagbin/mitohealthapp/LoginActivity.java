@@ -48,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     String username_str,password_str;
     SharedPreferences loginDetails;
     TextView forgotPassword;
+    boolean signup=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +56,13 @@ public class LoginActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login2);
+        View view = findViewById(R.id.loginCont);
         customDialog();
+      signup= getIntent().getBooleanExtra("signup",false);
+        if (signup){
+            Snackbar.make(view,"Sign up Success",Snackbar.LENGTH_LONG).show();
+
+        }
         loginDetails= getSharedPreferences(MainPage.LOGIN_DETAILS,MODE_PRIVATE);
         username_ed= (EditText) findViewById(R.id.username);
         password_ed= (EditText) findViewById(R.id.login_password);
@@ -172,16 +179,40 @@ showDialog();
                 }, new Response.ErrorListener() {
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
+            public void onErrorResponse(VolleyError volleyError) {
+                VolleyLog.d("error", "Error: " + volleyError.getMessage());
 
-                progressBar.setVisibility(View.GONE);
+                VolleyError error = null;
+                if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
+                    error = new VolleyError(new String(volleyError.networkResponse.data));
+                  Log.d("parsed volley error", error.getMessage());
+                    try {
+                        JSONObject object= new JSONObject(error.getMessage());
+                        String finalerror=   object.getString("message");
+                        Log.d("final error", finalerror);
+                        progressBar.setVisibility(View.GONE);
+                        messageView.setText(finalerror);
 
-                messageView.setText("Check Email to change password");
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+                    Log.d("else error", volleyError.toString());
+                }
+
+                displayErrors(volleyError);
+//                progressBar.setVisibility(View.GONE);
+//
+//                messageView.setText(error.toString());
 
 //                displayErrors(error);
 
-                Log.d("error", error.toString());
+
+
+
+
             }
         }) {
 

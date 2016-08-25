@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import in.tagbin.mitohealthapp.Pojo.DataItems;
+import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 
 /**
  * Created by admin pc on 15-07-2016.
@@ -27,6 +28,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public String CREATE_SLEEP_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_SLEEP + "(" + TableData.Tableinfo.SLEEP_UNIQUE_ID + " TEXT," + TableData.Tableinfo.START_TIME + " TEXT," + TableData.Tableinfo.END_TIME + " TEXT," + TableData.Tableinfo.SLEEP_DATE + " TEXT," + TableData.Tableinfo.SLEEP_HOURS + " TEXT," + TableData.Tableinfo.SLEEP_QUALITY + " TEXT)";
     public String CREATE_EXERCISE_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_EXERCISE + "(" + TableData.Tableinfo.EXER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.EXER_NAME + " TEXT," + TableData.Tableinfo.WEIGHT + " TEXT," + TableData.Tableinfo.SETS + " TEXT," + TableData.Tableinfo.REPS + " TEXT," + TableData.Tableinfo.EXER_ID + " TEXT," + TableData.Tableinfo.EXER_DATE + " TEXT)";
     public String CREATE_WATER_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_WATER + "(" + TableData.Tableinfo.WATER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.WATER_DATE + " TEXT," + TableData.Tableinfo.GLASSES + " TEXT," + TableData.Tableinfo.ML + " TEXT," + TableData.Tableinfo.GLASS_SIZE + " TEXT," + TableData.Tableinfo.WATER_SYNCED + " TEXT)";
+    public String CREATE_CHART_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_CHART + "(" + TableData.Tableinfo.CHART_DATE + " TEXT," + TableData.Tableinfo.CHART_TIMESTAMP + " TEXT," + TableData.Tableinfo.CHART_FOODCAL_REQ + " TEXT," + TableData.Tableinfo.CHART_FOODCAL_CONSUMED + " TEXT," + TableData.Tableinfo.CHART_WATER_REQ + " TEXT," + TableData.Tableinfo.CHART_WATER_CONSUMED + " TEXT," + TableData.Tableinfo.CHART_EXERCAL_REQ + " TEXT," + TableData.Tableinfo.CHART_EXERCAL_BURNED + " TEXT," + TableData.Tableinfo.CHART_SLEEP_REQ + " TEXT," + TableData.Tableinfo.CHART_SLEEP_CONSUMED + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase sdb) {
@@ -34,6 +36,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         sdb.execSQL(CREATE_SLEEP_TABLE);
         sdb.execSQL(CREATE_EXERCISE_TABLE);
         sdb.execSQL(CREATE_WATER_TABLE);
+        sdb.execSQL(CREATE_CHART_TABLE);
 
         Log.d("Database operations", "Table created");
     }
@@ -55,6 +58,23 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         cv.put(TableData.Tableinfo.DATE, date);
         cv.put(TableData.Tableinfo.SYNCED, synced);
         long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_FOOD, null, cv);
+        Log.d("Database Created", "true");
+
+    }
+    public void putChartInformation(DatabaseOperations dop, String date, String timestamp, String fcal_req,String fcal_con,String wat_req,String water_con,String exer_req,String exer_con,String sleep_req,String sleep_con) {
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(TableData.Tableinfo.CHART_DATE, date);
+        cv.put(TableData.Tableinfo.CHART_TIMESTAMP, timestamp);
+        cv.put(TableData.Tableinfo.CHART_FOODCAL_REQ, fcal_req);
+        cv.put(TableData.Tableinfo.CHART_FOODCAL_CONSUMED, fcal_con);
+        cv.put(TableData.Tableinfo.CHART_WATER_REQ, wat_req);
+        cv.put(TableData.Tableinfo.CHART_WATER_CONSUMED, water_con);
+        cv.put(TableData.Tableinfo.CHART_EXERCAL_REQ, exer_req);
+        cv.put(TableData.Tableinfo.CHART_EXERCAL_BURNED, exer_con);
+        cv.put(TableData.Tableinfo.CHART_SLEEP_REQ, sleep_req);
+        cv.put(TableData.Tableinfo.CHART_SLEEP_CONSUMED, sleep_con);
+        long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_CHART, null, cv);
         Log.d("Database Created", "true");
 
     }
@@ -115,6 +135,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor getCompleteWaterInformation(DatabaseOperations dop){
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_WATER, null);
+
+        return cursor;
+    }
+
     public ArrayList<DataItems> getInformation(DatabaseOperations dop,String date){
         ArrayList<DataItems> listData = new ArrayList<>();
 
@@ -144,6 +172,43 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         return listData;
 
     }
+
+
+    public ArrayList<DateRangeDataModel> getChartInformation(DatabaseOperations dop, String date){
+        ArrayList<DateRangeDataModel> listData = new ArrayList<>();
+String da="2016-08-23 00:00:00";
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+        Log.d("DatabasRead", "is it null  //  "+da);
+//        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CHART + " WHERE " + TableData.Tableinfo.CHART_DATE + "='" + da + "'", null);
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CHART , null,null);
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
+
+//        String[] coloumns = {TableData.Tableinfo.DISH, TableData.Tableinfo.DATE,TableData.Tableinfo.TIME,TableData.Tableinfo.DISH_ID,};
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+                DateRangeDataModel item = new DateRangeDataModel();
+                item.setDate(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_DATE)));
+                item.setTimestamp(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_TIMESTAMP)));
+                item.setFood_req(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_REQ)));
+                item.setFood_con(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_CONSUMED)));
+                item.setWater_req(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_WATER_REQ)));
+                item.setWater_con(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_WATER_CONSUMED)));
+                item.setExer_req(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_EXERCAL_REQ)));
+                item.setExer_con(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_EXERCAL_BURNED)));
+                item.setSleep_req(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_SLEEP_REQ)));
+                item.setSleep_con(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_SLEEP_CONSUMED)));
+                Log.d("Database read", listData.toString());
+                listData.add(item);
+
+            }
+            while (cursor.moveToNext());
+        }
+        return listData;
+
+    }
+
     public ArrayList<DataItems> getExerciseInformation(DatabaseOperations dop,String date){
         ArrayList<DataItems> listData = new ArrayList<>();
 
@@ -206,6 +271,13 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public int getProfilesCount(DatabaseOperations dop,String id) {
         SQLiteDatabase SQ = dop.getReadableDatabase();
         Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_SLEEP + " WHERE " + TableData.Tableinfo.SLEEP_UNIQUE_ID + "='" + id + "'", null);
+        int cnt = cursor.getCount();
+        cursor.close();
+        return cnt;
+    }
+    public int getCount(DatabaseOperations dop,String table_name,String unique_column,String id) {
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + table_name + " WHERE " + unique_column + "='" + id + "'", null);
         int cnt = cursor.getCount();
         cursor.close();
         return cnt;

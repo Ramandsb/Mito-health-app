@@ -18,6 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -26,6 +28,7 @@ import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -35,6 +38,9 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.github.ivbaranov.mfb.MaterialFavoriteButton;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -75,14 +81,37 @@ public class FoodDetails extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         customDialog();
+
+
         login_details = getSharedPreferences(MainPage.LOGIN_DETAILS,MODE_PRIVATE);
+        auth_key=   login_details.getString("key", "");
         food_id=  getIntent().getStringExtra("food_id");
         source=  getIntent().getStringExtra("source");
-dop= new DatabaseOperations(this);
+        dop= new DatabaseOperations(this);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.addTab(tabLayout.newTab().setText("Nutrition Value"));
         tabLayout.addTab(tabLayout.newTab().setText("Recipe"));
         viewPager = (ViewPager) findViewById(R.id.pager);
+        MaterialFavoriteButton toolbarFavorite = (MaterialFavoriteButton) toolbar.findViewById(R.id.favorite_nice); //
+        toolbarFavorite.setOnFavoriteChangeListener(
+                new MaterialFavoriteButton.OnFavoriteChangeListener() {
+                    @Override
+                    public void onFavoriteChanged(MaterialFavoriteButton buttonView, boolean favorite) {
+
+                        if (favorite){
+                            makeServerStatusRequestObject(food_id,"like");
+
+                            Snackbar.make(buttonView, "Dish added to your Favorites",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }else {
+                            makeServerStatusRequestObject(food_id,"unlike");
+                            Snackbar.make(buttonView, "Dish Removed from your Favorites",
+                                    Snackbar.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
 
 //        makeResetJsonObjReq(food_id);
         setupViewPager(viewPager);
@@ -160,11 +189,92 @@ dop= new DatabaseOperations(this);
             }
         });
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_food_details, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+        }
+
+        return true;
+    }
+    public void makeServerStatusRequestObject(String recipe_id,String like){
+
+        String local_url=Config.url+"recipe/"+like;
+        Map<String, String> postParam = new HashMap<String, String>();
+        postParam.put("recipe_id", recipe_id);
+        JSONObject o= new JSONObject(postParam);
+        Log.d("postparam",o.toString());
+
+            HashMap<String, String> headers = new HashMap<String, String>();
+            headers.put("Content-Type", "application/json");
+            headers.put("charset", "utf-8");
+            headers.put("Authorization", "JWT " + auth_key);
+
+        ServerStatusRequestObject requestObject = new ServerStatusRequestObject(Request.Method.POST, local_url, headers, o.toString(), new Response.Listener() {
+            @Override
+            public void onResponse(Object o) {
+                Log.d("response",o.toString());
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+
+                VolleyError error = null;
+                if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
+                    error = new VolleyError(new String(volleyError.networkResponse.data));
+                    Log.d("parsed volley error", error.getMessage());
+                    try {
+                        JSONObject object= new JSONObject(error.getMessage());
+                        String finalerror=   object.getString("message");
+                        Log.d("final error", finalerror);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+                    Log.d("normal errors", volleyError.getMessage());
+                }
+
+
+            }
+        }){
+
+            @Override
+            protected Response parseNetworkResponse(NetworkResponse response) {
+                int statusCode = response.statusCode;
+                Log.d("status Code",statusCode+"/////");
+                return super.parseNetworkResponse(response);
+            }
+
+            @Override
+            protected void deliverResponse(Integer statusCode) {
+                Log.d("deliverResponse Code",statusCode+"/////");
+                super.deliverResponse(statusCode);
+            }
+
+        };
+
+
+
+        AppController.getInstance().addToRequestQueue(requestObject);
+
+    }
+
+
+
     private void makeJsonObjReq(String food_id,String time_stamp,String amount) {
 
         showDialog();
 
-       auth_key=   login_details.getString("key", "");
         Map<String, String> postParam = new HashMap<String, String>();
         postParam.put("ltype", "food");
         postParam.put("c_id", food_id);
@@ -266,58 +376,58 @@ dop= new DatabaseOperations(this);
         }
     }
 
-    private void makeResetJsonObjReq(String food_id) {
-
-        showDialog();
+//    private void makeResetJsonObjReq(String food_id) {
 //
-//http://api.mitoapp.com/v1/food/65/
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                Config.url+"food/"+food_id, null,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
-
-
-
-
-
-
-                    }
-
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-                displayErrors(error);
-
-                Log.d("error", error.toString());
-            }
-        }) {
-
-            //
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put( "charset", "utf-8");
-//                headers.put("Authorization","JWT "+auth_key);
-                return headers;
-            }
-
-
-
-        };
-
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
+//        showDialog();
+////
+////http://api.mitoapp.com/v1/food/65/
+//
+//        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
+//                Config.url+"food/"+food_id, null,
+//                new Response.Listener<JSONObject>() {
+//
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        Log.d("response", response.toString());
+//
+//
+//
+//
+//
+//
+//                    }
+//
+//                }, new Response.ErrorListener() {
+//
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                VolleyLog.d("error", "Error: " + error.getMessage());
+//
+//                displayErrors(error);
+//
+//                Log.d("error", error.toString());
+//            }
+//        }) {
+//
+//            //
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers = new HashMap<String, String>();
+//                headers.put("Content-Type", "application/json");
+//                headers.put( "charset", "utf-8");
+////                headers.put("Authorization","JWT "+auth_key);
+//                return headers;
+//            }
+//
+//
+//
+//        };
+//
+//
+//
+//        // Adding request to request queue
+//        AppController.getInstance().addToRequestQueue(jsonObjReq);
+//    }
 
     TextView messageView;
     ProgressBar progressBar;

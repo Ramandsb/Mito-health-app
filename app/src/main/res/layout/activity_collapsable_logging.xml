@@ -23,7 +23,6 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                app:contentScrim="?attr/colorPrimary"
                 app:layout_scrollFlags="scroll">
 
 

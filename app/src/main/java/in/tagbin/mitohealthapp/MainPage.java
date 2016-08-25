@@ -522,7 +522,6 @@ showDialog();
                             intent.putExtra("name", profile_name);
                             intent.putExtra("picture", profile_picture);
                             intent.putExtra("selection", 1);
-                            intent.putExtra("source","indirect");
                             startActivity(intent);
                             finish();
                         } catch (JSONException e) {
@@ -533,14 +532,23 @@ showDialog();
                 }, new Response.ErrorListener() {
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
+            public void onErrorResponse(VolleyError volleyError) {
+                VolleyLog.d("error", "Error: " + volleyError.getMessage());
+                VolleyError error = null;
+                if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
+                    error = new VolleyError(new String(volleyError.networkResponse.data));
+                    volleyError = error;
 
+                    Log.d("error", error.toString());
+
+                }
 
                 displayErrors(error);
-                Log.d("error", error.toString());
             }
         }) {
+
+
+
 
 //
 //            @Override

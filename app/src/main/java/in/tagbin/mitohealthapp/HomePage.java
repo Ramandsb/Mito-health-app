@@ -67,7 +67,13 @@ import in.tagbin.mitohealthapp.CalenderView.CalUtil;
 import in.tagbin.mitohealthapp.CalenderView.CalenderListener;
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.CalenderView.WeekFragment;
+import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.Database.TableData;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
+import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 
 public class HomePage extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
@@ -83,6 +89,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     TextView messageView;
     ProgressBar progressBar;
     android.app.AlertDialog alert;
+    String PreviousrangeDate="";
     String myurl=Config.url + "logger/history/dates/";
 
     int a = 0, b = 0, c = 0;
@@ -96,6 +103,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     Button plus_button,minus_button;
     TextView glasses,foodcard_recom,exercard_burnt;
     int j =4;
+    DatabaseOperations dop;
 
 
 
@@ -107,6 +115,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         BinderActivity i = (BinderActivity) getActivity();
         setHasOptionsMenu(true);
         i.invalidateOptionsMenu();
+        dop=new DatabaseOperations(getActivity());
 
     }
 
@@ -258,15 +267,18 @@ showDialog();
             Log.d("date",selectedDate);
         }else  if (month<=9 && day >9){
             selectedDate = year + "-" + "0"+month + "-" + day;
+            PreviousrangeDate=year + "-" + "0"+month + "-" + (day-7);
             Log.d("date",selectedDate);
         }else  if (day <=9 && month >9){
             selectedDate = year + "-" +month + "-" + "0"+day;
             Log.d("date",selectedDate);
         }else if (day >9 && month >9){
             selectedDate = year + "-" + month + "-" + day;
+            PreviousrangeDate=year + "-" + "0"+month + "-" + (day-7);
             Log.d("date", selectedDate);
 
         }
+        Controller.getDateRangeData(getActivity(),PreviousrangeDate,selectedDate,mDateRangelistener);
         widget= (MaterialCalendarView) v.findViewById(R.id.calendarView);
         // Add a decorator to disable prime numbered days
 
@@ -302,7 +314,6 @@ showDialog();
         login_details=getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
 
         makeJsonObjGETReq();
-
             String water_amount=   login_details.getString("water_amount","");
             String food_cal=   login_details.getString("food_cal","");
             String calorie_burnt=   login_details.getString("calorie_burnt","");
@@ -403,6 +414,60 @@ showDialog();
         return v;
     }
 
+    RequestListener mDateRangelistener= new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("dateRange Request",responseObject.toString());
+
+//            DateRangeDataModel dateRangeDataModel = JsonUtils.objectify(responseObject.toString(),DateRangeDataModel.class);
+
+//            dateRangeDataModel.getChart().get(0).
+
+            try {
+
+
+                JSONObject object = new JSONObject(responseObject.toString());
+                JSONArray chart = object.getJSONArray("chart");
+                for (int i = 0; i < chart.length(); i++) {
+                    JSONObject obj = chart.getJSONObject(i);
+                    String water = obj.getString("water");
+                    String date = obj.getString("date");
+                    String fcal_con = obj.getString("calorie_consumed");
+                    String fcal_req = obj.getString("calorie_required");
+                    String exer_bur = obj.getString("calorie_burnt");
+                    String  time=convertTimestamp(date);
+
+                    Log.d("check response prob",water+date+""+fcal_con+fcal_req+exer_bur);
+                    int count =dop.getCount(dop, TableData.Tableinfo.TABLE_NAME_CHART, TableData.Tableinfo.CHART_DATE,selectedDate+" 00:00:00");
+
+                  if (count==0){
+                      dop.putChartInformation(dop, date, time, fcal_req, fcal_con, "8", water, "100", exer_bur, "8", "6");
+                      Log.d("count with put",count+"/////");
+                  }else {
+                      Log.d("count",count+"///  count without");
+                  }
+
+                }
+            }catch (Exception e){
+
+                Log.d("exception",e.toString());
+
+            }
+
+
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+
+        }
+    };
+
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         Log.d("PREPDUG", "hereHOME");
@@ -494,8 +559,8 @@ displayErrors(error);
 
         String str_date="2016-08-04 15:15:15";
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date date = (Date)formatter.parse(selectedDate+" 15:15:15");
-       String timestamp=String.valueOf(date.getTime()/1000);
+        Date date = (Date)formatter.parse(selectedDate+" 00:00:00");
+       String timestamp=String.valueOf(date.getTime());
         Log.d("converted date",timestamp);
 
 

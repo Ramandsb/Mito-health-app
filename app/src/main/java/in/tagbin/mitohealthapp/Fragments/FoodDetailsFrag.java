@@ -3,6 +3,8 @@ package in.tagbin.mitohealthapp.Fragments;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -63,6 +65,8 @@ public class FoodDetailsFrag extends Fragment {
 
     EditText quantity_ed;
     TextView set_time,set_ampm,set_protien,set_fat,set_carbo,set_energy,set_unit;
+    Intent  sendDishData;
+      static  String Broadcastsend="senddishdetails";
 
 
     public FoodDetailsFrag() {
@@ -96,6 +100,7 @@ public class FoodDetailsFrag extends Fragment {
             customDialog();
 
         }
+        sendDishData= new Intent(Broadcastsend);
 
 
     }
@@ -181,6 +186,9 @@ public class FoodDetailsFrag extends Fragment {
                          JSONObject serving_type  = response.getJSONObject("serving_type");
                             String serving_=serving_type.getString("serving_type");
                             set_unit.setText(serving_);
+                         recipe= response.getString("recipe");
+                            sendDishData.putExtra("recipe",recipe);
+                            getActivity().sendBroadcast(sendDishData);
 
                             DecimalFormat df = new DecimalFormat("#.##");
                            dishName=response.getString( "name");
@@ -196,6 +204,7 @@ public class FoodDetailsFrag extends Fragment {
                             set_fat.setText(fat);
                             set_carbo.setText(carbohydrate);
                             set_energy.setText(energy);
+
                             dismissDialog();
 
                         } catch (JSONException e) {
@@ -284,7 +293,7 @@ public class FoodDetailsFrag extends Fragment {
         }
     }
     private static int hour = 0, min = 0, day = 0;
-   public static String dishName = "", time = "", quantity = "";
+   public static String dishName = "", time = "", quantity = "",recipe="";
     public void Timepick() {
 
         quantity = quantity_ed.getText().toString();

@@ -73,7 +73,7 @@ public class SignupActivity extends AppCompatActivity {
                 email_str=email.getText().toString();
                 pass_str=pass.getText().toString();
                 con_pass_str=conPass.getText().toString();
-                showDialog();
+
 
                 if (pass_str.equals(con_pass_str)){
                     makeServerStatusRequestObject(pass_str,email_str,first_name,last_name);
@@ -188,22 +188,36 @@ Toast.makeText(SignupActivity.this,"Sign up Success",Toast.LENGTH_LONG).show();
             @Override
             public void onResponse(Object o) {
                 Log.d("response",o.toString());
-                showDialog();
-                progressBar.setVisibility(View.GONE);
+                dismissDialog();
 
-                messageView.setText("Sign up Success");
-
-
+                startActivity(new Intent(SignupActivity.this,LoginActivity.class).putExtra("signup",true));
+finish();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
 
 
-                showDialog();
-                displayErrors(volleyError);
-                Log.d("response",volleyError.toString());
+                VolleyError error = null;
+                if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
+                    error = new VolleyError(new String(volleyError.networkResponse.data));
+                    Log.d("parsed volley error", error.getMessage());
+                    try {
+                        JSONObject object= new JSONObject(error.getMessage());
+                        String finalerror=   object.getString("message");
+                        Log.d("final error", finalerror);
+                        progressBar.setVisibility(View.GONE);
+                        messageView.setText(finalerror);
 
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }else {
+                    displayErrors(volleyError);
+                    Log.d("normal errors", volleyError.getMessage());
+                }
 
 
             }
@@ -267,7 +281,7 @@ Toast.makeText(SignupActivity.this,"Sign up Success",Toast.LENGTH_LONG).show();
             messageView.setText("AuthFailureError");
         } else if (error instanceof ServerError) {
             progressBar.setVisibility(View.GONE);
-            messageView.setText("Username Already Exist");
+            messageView.setText("ServerError");
         } else if (error instanceof NetworkError) {
             messageView.setText("NetworkError");
         } else if (error instanceof ParseError) {

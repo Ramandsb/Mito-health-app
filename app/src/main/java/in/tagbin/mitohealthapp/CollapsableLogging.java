@@ -2,6 +2,7 @@ package in.tagbin.mitohealthapp;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -28,23 +29,30 @@ import android.widget.DatePicker;
 
 import com.github.fabtransitionactivity.SheetLayout;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.joda.time.LocalDateTime;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import in.tagbin.mitohealthapp.CalenderView.CalenderListener;
+import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Interfaces.ExerciseInterface;
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.CalenderView.WeekFragment;
@@ -54,8 +62,13 @@ import in.tagbin.mitohealthapp.Fragments.FoodFrag;
 import in.tagbin.mitohealthapp.Fragments.SleepFrag;
 import in.tagbin.mitohealthapp.Fragments.WaterFrag;
 import in.tagbin.mitohealthapp.Interfaces.FoodInterface;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Interfaces.SleepInterface;
 import in.tagbin.mitohealthapp.Interfaces.WaterInterface;
+import in.tagbin.mitohealthapp.Pojo.DataItems;
+import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.model.DateRangeDataModel;
+import in.tagbin.mitohealthapp.model.WaterLogModel;
 
 public class CollapsableLogging extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener{
 
@@ -124,6 +137,7 @@ public FoodInterface foodInterface;
 
                     }
 
+                    addData(dop.getChartInformation(dop,HomePage.selectedDate),"water");
 
                 }
                 if (position==0){
@@ -136,6 +150,7 @@ public FoodInterface foodInterface;
                         window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
                     }
+                    addData(dop.getChartInformation(dop,HomePage.selectedDate),"food");
 
                 }
                 if (position==2){
@@ -147,7 +162,7 @@ public FoodInterface foodInterface;
                         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                         window.setStatusBarColor(getResources().getColor(R.color.mdtp_red_focused));
                     }
-
+                    addData(dop.getChartInformation(dop,HomePage.selectedDate),"exercise");
                 }
                 if (position==3){
                     fab.hide();
@@ -159,6 +174,7 @@ public FoodInterface foodInterface;
                         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                         window.setStatusBarColor(getResources().getColor(R.color.grey_acc));
                     }
+                    addData(dop.getChartInformation(dop,HomePage.selectedDate),"sleep");
                 }
 
 
@@ -198,6 +214,21 @@ public FoodInterface foodInterface;
         mChart.getAxisLeft().setTextColor(Color.parseColor("#ffffff"));
         mChart.getAxisRight().setTextColor(Color.parseColor("#ffffff"));
         mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setValueFormatter(new AxisValueFormatter() {
+
+            private SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM");
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                return mFormat.format(new Date((long) value));
+            }
+
+            @Override
+            public int getDecimalDigits() {
+                return 0;
+            }
+        });
 
         // enable touch gestures
         mChart.setTouchEnabled(true);
@@ -208,7 +239,7 @@ public FoodInterface foodInterface;
         mChart.setPinchZoom(true);
         Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
         l.setPosition(Legend.LegendPosition.LEFT_OF_CHART_INSIDE);
-        addData();
+        addData(dop.getChartInformation(dop,HomePage.selectedDate),"food");
 
         mSheetLayout.setFab(fab);
         mSheetLayout.setFabAnimationEndListener(this);
@@ -365,6 +396,18 @@ public FoodInterface foodInterface;
 
     @Override
     public void onBackPressed() {
+
+
+//        try {
+//            Log.d("waterDetails",addDbValuetoJsonArray().toString());
+//        } catch (ParseException e) {
+//            Log.e("waterDetailsErrors",e.toString());
+//        }
+//        try {
+//            Controller.getWaterLog(this,addDbValuetoJsonArray(),mWaterLogListener);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
         startActivity(new Intent(CollapsableLogging.this,BinderActivity.class).putExtra("selection",2).putExtra("source","indirect"));
         finish();
         super.onBackPressed();
@@ -379,6 +422,35 @@ public FoodInterface foodInterface;
         }
     }
 
+    public  List<WaterLogModel> addDbValuetoJsonArray() throws ParseException {
+       Cursor cursor= dop.getCompleteWaterInformation(dop);
+
+        List<WaterLogModel> listData= new ArrayList<>();
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+                WaterLogModel item = new WaterLogModel();
+                item.setC_id(Integer.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.GLASSES))));
+                item.setTime_consumed(Double.valueOf(convertDateToTimeStamp(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.WATER_DATE)),"00:00")));
+                Log.d("Database read", listData.toString());
+                listData.add(item);
+            }
+            while (cursor.moveToNext());
+        }
+        return listData;
+    }
+
+    public long convertDateToTimeStamp(String date,String time) throws ParseException {
+
+        long time_stamp;
+
+        Date startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date+" "+time+":00");
+        Log.d("convertedTimeStamp",startDate.toString()+"////"+startDate.getTime()+"////"+startDate.getDate());
+        time_stamp=startDate.getTime()/1000;
+
+        return time_stamp;
+    }
 
 
 //    @Override
@@ -426,46 +498,67 @@ public FoodInterface foodInterface;
             ColorTemplate.VORDIPLOM_COLORS[2]
     };
 
-    public void addData() {
+    public void addData(ArrayList<DateRangeDataModel> list,String source) {
         ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+        Log.d("addData",list.toString());
 
-        for (int z = 0; z < 2; z++) {
 
 
-            ArrayList<Entry> values = new ArrayList<Entry>();
-            for (int i = 0; i < 10; i++) {
-                double val = (Math.random() * 100) + 3;
-                values.add(new Entry(i, (float) val));
+
+        ArrayList<Entry> values = new ArrayList<Entry>();
+//        values.add(new Entry(1471890600000L, 40));
+//        values.add(new Entry(1471977000000L, 10));
+//        values.add(new Entry(1472063400000L, 80));
+//        values.add(new Entry(1472149800000L, 0));
+//        values.add(new Entry(1472236200000L, 90));
+//        values.add(new Entry(1472322600000L, 10));
+//        values.add(new Entry(1472409000000L, 50));
+//        values.add(new Entry(1472495400000L, 33));
+
+        ArrayList<Entry> values2 = new ArrayList<Entry>();
+//
+//        values2.add(new Entry(1471977000000L, 70));
+//        values2.add(new Entry(1472063400000L, 30));
+//        values2.add(new Entry(1472149800000L, 100));
+//        values2.add(new Entry(1472236200000L, 10));
+//        values2.add(new Entry(1472322600000L, 100));
+//        values2.add(new Entry(1472409000000L, 40));
+//        values2.add(new Entry(1472495400000L, 33));
+        DateRangeDataModel dm;
+        for (int i =0;i<list.size();i++){
+            dm= list.get(i);
+            if (source.equals("food")){
+                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getFood_req()));
+                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getFood_con()));
+                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getFood_req())));
+                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getFood_con())));
+            }else if (source.equals("water")){
+                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getWater_req()));
+                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getWater_con()));
+                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getWater_req())));
+                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getWater_con())));
+            }else if (source.equals("exercise")){
+                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getExer_req()));
+                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getExer_con()));
+                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getExer_req())));
+                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getExer_con())));
+            }else if (source.equals("sleep")){
+                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getSleep_req()));
+                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getSleep_con()));
+                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getSleep_req())));
+                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getSleep_con())));
             }
-
-
-
 
         }
 
-        ArrayList<Entry> values = new ArrayList<Entry>();
-        values.add(new Entry(0, (float) 30));
-        values.add(new Entry(1, (float) 40));
-        values.add(new Entry(2, (float) 70));
-        values.add(new Entry(3, (float) 20));
-        values.add(new Entry(4, (float) 100));
-        values.add(new Entry(5, (float) 10));
-        values.add(new Entry(6, (float) 150));
-
-        ArrayList<Entry> values2 = new ArrayList<Entry>();
-        values2.add(new Entry(0, (float) 40));
-        values2.add(new Entry(1, (float) 50));
-        values2.add(new Entry(2, (float) 80));
-        values2.add(new Entry(3, (float) 10));
-        values2.add(new Entry(4, (float) 120));
-        values2.add(new Entry(5, (float) 30));
-        values2.add(new Entry(6, (float) 50));
         LineDataSet d = new LineDataSet(values, "Required");
         d.setLineWidth(2.5f);
         d.setCircleRadius(4f);
         LineDataSet d1 = new LineDataSet(values2, "Consumed");
         d1.setLineWidth(2.5f);
         d1.setCircleRadius(4f);
+        d1.setDrawFilled(true);
+        d.setDrawFilled(true);
 
 //        int color = mColors[z % mColors.length];
 //        d.setColor(getResources().getColor(R.color.red));
@@ -484,6 +577,35 @@ public FoodInterface foodInterface;
 
         LineData data = new LineData(dataSets);
         mChart.setData(data);
+        mChart.animateY(3000);
         mChart.invalidate();
+
     }
-}
+    RequestListener mWaterLogListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+
+        }
+    };
+
+    public void getAllDataforchart() {
+
+        ArrayList<DateRangeDataModel> list = new ArrayList<>();
+        DateRangeDataModel dm = new DateRangeDataModel();
+        list = dop.getChartInformation(dop, selectedDate + " 00:00:00");
+        for (int i = 0; i < list.size(); i++) {
+            dm = list.get(i);
+            Log.d("detailsfromdb", dm.getDate() + "//" + dm.getFood_req() + "//" + dm.getFood_con() + "//" + dm.getExer_con() + "//" + dm.getTimestamp() + "//" + dm.getWater_con());
+        }
+    }
+    }

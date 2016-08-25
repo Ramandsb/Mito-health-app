@@ -51,6 +51,20 @@ public class TableData {
         public static final String WATER_SYNCED = "water_synced";
 
         public static final String TABLE_NAME_WATER = "water_log_table";
+        /////////////////////chart Table/////////////////////////////////////////
+        public static final String CHART_DATE = "chart_date";
+        public static final String CHART_TIMESTAMP = "chart_timestamp";
+        public static final String CHART_FOODCAL_CONSUMED = "chart_foodcal_cons";
+        public static final String CHART_FOODCAL_REQ = "chart_foodcal_req";
+        public static final String CHART_WATER_CONSUMED = "chart_water_con";
+        public static final String CHART_WATER_REQ = "chart_water_req";
+        public static final String CHART_SLEEP_REQ = "chart_sleep_req";
+        public static final String CHART_SLEEP_CONSUMED = "chart_sleep_con";
+        public static final String CHART_EXERCAL_REQ = "chart_exer_req";
+        public static final String CHART_EXERCAL_BURNED = "chart_exer_burn";
+
+        public static final String TABLE_NAME_CHART = "chart_table";
+
 
 
     }

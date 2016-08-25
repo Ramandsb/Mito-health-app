@@ -9,8 +9,7 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,7 +51,7 @@ public class ChatActivity extends AppCompatActivity {
     public static final String SERVICE = "chat.eazevent.in";
     public static final String USERNAME = "ankit";
     public static final String PASSWORD = "1234";
-    RecyclerView recyclerView;
+//    RecyclerView recyclerView;
     ChatActivityAdapter adapter;
     private XMPPConnection connection;
     private ArrayList<String> messages = new ArrayList<String>();
@@ -70,10 +69,10 @@ public class ChatActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         customDialog();
-        recyclerView=(RecyclerView)findViewById(R.id.recycleView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView=(RecyclerView)findViewById(R.id.recycleView);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter=new ChatActivityAdapter(this);
-        recyclerView.setAdapter(adapter);
+//        recyclerView.setAdapter(adapter);
         textMessage = (EditText) this.findViewById(R.id.chatET);
         user_name=getIntent().getExtras().getString("user_name");
         toolbar.setTitle(user_name);

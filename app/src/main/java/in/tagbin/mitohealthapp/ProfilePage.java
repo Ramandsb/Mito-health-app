@@ -84,6 +84,7 @@ import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Fragments.Profile;
 import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
 import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
+import in.tagbin.mitohealthapp.ProfileImage.L;
 import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -680,9 +681,8 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                     public void onResponse(JSONObject res) {
                         Log.d("response", res.toString());
 
-                        showDialog();
-                        progressBar.setVisibility(View.GONE);
-                        messageView.setText("Profile Updated Successfuly");
+                        dismissDialog();
+                        Toast.makeText(getActivity(),"Profile Updated Successfuly",Toast.LENGTH_LONG).show();
                         BinderActivity i = (BinderActivity) getActivity();
                         i.bottomNavigation.setCurrentItem(2);
                         //startActivity(new Intent(ProfilePage.this, HomePage.class));

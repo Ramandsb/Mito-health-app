@@ -57,6 +57,7 @@ import in.tagbin.mitohealthapp.ItemClickSupport;
 import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 
@@ -128,6 +129,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         animator.setInterpolator(new OvershootInterpolator());
 // or recyclerView.setItemAnimator(new SlideInUpAnimator(new OvershootInterpolator(1f));
         food_list.setItemAnimator(animator);
+        getAllDataforchart();
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         food_list.setLayoutManager(linearLayoutManager);
@@ -341,6 +343,20 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
 
         // Adding request to request queue
         AppController.getInstance().addToRequestQueue(jsonObjReq);
+    }
+
+    public void getAllDataforchart(){
+
+        ArrayList<DateRangeDataModel> list= new ArrayList<>();
+        DateRangeDataModel dm= new DateRangeDataModel();
+      list= dop.getChartInformation(dop,selectedDate+" 00:00:00");
+        for (int i=0;i<list.size();i++){
+            dm=list.get(i);
+            Log.d("detailsfromdb",dm.getDate()+"//"+dm.getFood_req()+"//"+dm.getFood_con()+"//"+dm.getExer_con()+"//"+dm.getTimestamp()+"//"+dm.getWater_con());
+        }
+
+
+
     }
 
 }

@@ -2,6 +2,7 @@ package in.tagbin.mitohealthapp.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -14,19 +15,26 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+
+import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Interfaces.VolleyErrorListener;
 import in.tagbin.mitohealthapp.MainPage;
+import in.tagbin.mitohealthapp.ProfileImage.L;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.NetworkUtils;
 import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConfirmParticipantModel;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
+import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+import in.tagbin.mitohealthapp.model.WaterLogModel;
 
 /**
  * Created by aasaqt on 9/8/16.
@@ -84,7 +92,15 @@ public class Controller {
                 if (response.statusCode == 200 || response.statusCode == 201) {
                     String responseBody = new String(response.data);
                     if (mListener != null)
-                        mListener.onRequestCompleted(responseBody);
+                        try {
+                            mListener.onRequestCompleted(responseBody);
+                        } catch (JSONException e) {
+                            Log.d("error from controller",e.toString());
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                            Log.d("error from controller",e.toString());
+                        }
                     mResponse = Response.success(responseBody,
                             HttpHeaderParser.parseCacheHeaders(response));
                 } else if(response.statusCode >= 400 && response.statusCode<= 500) {
@@ -247,6 +263,28 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
+
+    public static void getWaterLog(Context context,List<WaterLogModel> waterLogModels,
+                                    RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.WATERLOG);
+        url=url+"water/mass/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, waterLogModels, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getDateRangeData(Context context,String startDate,String endDate,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.DATERANGEDATA);
+        url=url+"?start="+startDate+"&end="+endDate;
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+
     public interface ERROR_CODES {
         int BAD_REQUEST = 400;
         int UNAUTHORISED = 401;

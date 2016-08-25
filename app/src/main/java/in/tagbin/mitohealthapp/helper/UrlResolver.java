@@ -22,6 +22,9 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.USERS,"v1/users/");
         endPointMapper.put(EndPoints.CONNECT_PROFILE,"v1/connect/profile/");
         endPointMapper.put(EndPoints.INTEREST,"v1/interest/list");
+        endPointMapper.put(EndPoints.WATERLOG,"v1/logger/");
+        endPointMapper.put(EndPoints.DATERANGEDATA,"v1/users/history/");
+
     }
 
     public interface EndPoints {
@@ -30,5 +33,8 @@ public class UrlResolver {
         int USERS = 1;
         int CONNECT_PROFILE = 2;
         int INTEREST= 3;
+        int WATERLOG= 4;
+        int DATERANGEDATA =5;
+
     }
 }

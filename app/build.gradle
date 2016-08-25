@@ -35,7 +35,7 @@ android {
         maven {
             url "https://jitpack.io"
         }
-        mavenCentral()
+           mavenCentral()
     }
 
     dexOptions {
@@ -76,6 +76,8 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:1.2.1'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'link.fls:swipestack:0.3.0'
+    compile 'com.github.ivbaranov:materialfavoritebutton:0.1.2'
+
 }
 
 

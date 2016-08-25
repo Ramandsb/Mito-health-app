@@ -86,12 +86,13 @@ public class BinderActivity extends AppCompatActivity{
 
 // Use colored navigation with circle reveal effect
         bottomNavigation.setColored(false);
-
+        String source =getIntent().getStringExtra("source");
 // Set current item programmatically
         if (getIntent().getStringExtra("interests") != null){
             fra = new PartnerFrag();
             bottomNavigation.setCurrentItem(0);
-        }else if (getIntent().getStringExtra("source").equals("direct")) {
+
+        }else if (getIntent().getStringExtra("source") != null) {
 
             fra = new HomePage();
             bottomNavigation.setCurrentItem(2);
@@ -167,7 +168,7 @@ public class BinderActivity extends AppCompatActivity{
             case 2:
                 toolbar.setTitle("Mito");
                 fra = new HomePage();
-                bottomNavigation.setCurrentItem(2);
+//                bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
