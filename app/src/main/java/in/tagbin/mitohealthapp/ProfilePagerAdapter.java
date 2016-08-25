@@ -30,7 +30,7 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
                     return tab1;
                 case 1:
                     PartProfile tab2 = new PartProfile();
-                    if (!profile.equals("") && !profile.isEmpty() && profile != null){
+                    if (!profile.equals("") || !profile.isEmpty() || profile != null){
                         Bundle bundle = new Bundle();
                         bundle.putString("profile_connect","profile");
                         tab2.setArguments(bundle);

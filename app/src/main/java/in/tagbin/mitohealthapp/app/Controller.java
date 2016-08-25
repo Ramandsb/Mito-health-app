@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.android.internal.http.multipart.MultipartEntity;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -11,13 +12,21 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
-
+import com.squareup.okhttp.MultipartBuilder;
 import org.json.JSONException;
-
 import java.text.ParseException;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +41,7 @@ import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConfirmParticipantModel;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
+import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
 import in.tagbin.mitohealthapp.model.WaterLogModel;
@@ -41,6 +51,8 @@ import in.tagbin.mitohealthapp.model.WaterLogModel;
  */
 public class Controller {
     private static Context mContext;
+    static File mImageFile;
+    static MultipartEntityBuilder mBuilder = MultipartEntityBuilder.create();
     static SharedPreferences loginDetails;
     private static final RetryPolicy DEFAULT_RETRY_POLICY = new RetryPolicy() {
         @Override
@@ -122,6 +134,76 @@ public class Controller {
                 return headers;
             }
 
+        };
+        return tempRequest;
+    }
+    private static Request<String> bundleToVolleyRequestNoCaching1(
+            final Context context, int request_method_type,
+            final Object newRequest, String url, final RequestListener mListener) {
+        StringBuffer buffer = new StringBuffer(url);
+        buffer.replace(0, UrlResolver.BASE_URL.length() - 1, "response--");
+        final String url_recieved = buffer.toString();
+        // end
+        buildMultipartEntity();
+        Request<String> tempRequest = new JsonRequest<String>(
+                request_method_type, url, null,
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, new VolleyErrorListener(context, url_recieved, mListener)) {
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                Response<String> mResponse;
+                if (response.statusCode == 200 || response.statusCode == 201) {
+                    String responseBody = new String(response.data);
+                    if (mListener != null)
+                        try {
+                            mListener.onRequestCompleted(responseBody);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    mResponse = Response.success(responseBody,
+                            HttpHeaderParser.parseCacheHeaders(response));
+                } else if(response.statusCode >= 400 && response.statusCode<= 500) {
+                    parseNetworkError(new VolleyError(response));
+
+                    mResponse = Response.error(new VolleyError(response));
+                }else {
+                    parseNetworkError(new VolleyError(response));
+                    mResponse = Response.error(new VolleyError(response.toString()));
+                }
+                return mResponse;
+            }
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                loginDetails= context.getSharedPreferences(MainPage.LOGIN_DETAILS,0);
+                String key = loginDetails.getString("key",null);
+                headers.put("Authorization","JWT "+key);
+                return headers;
+            }
+
+            @Override
+            public byte[] getBody() {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                try {
+                    mBuilder.build().writeTo(bos);
+                } catch (IOException e) {
+                    VolleyLog.e("IOException writing to ByteArrayOutputStream bos, building the multipart request.");
+                }
+
+                return bos.toByteArray();
+            }
+
+            @Override
+            public String getBodyContentType() {
+                String contentTypeHeader = mBuilder.build().getContentType().getValue();
+                return contentTypeHeader;
+            }
         };
         return tempRequest;
     }
@@ -258,11 +340,13 @@ public class Controller {
                                          RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.INTEREST);
+        url= url+"list/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
+
 
     public static void getWaterLog(Context context,List<WaterLogModel> waterLogModels,
                                     RequestListener requestListener) {
@@ -283,6 +367,31 @@ public class Controller {
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setInterests(Context context,List<Integer> integers,
+                                    RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.INTEREST);
+        url = url+"mass/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, integers, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void upoadPhot(Context context,FileUploadModel fileUploadModel,
+                                    RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.UPLOAD);
+        mImageFile = fileUploadModel.getFile();
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching1(
+                context, Request.Method.POST, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    private static void buildMultipartEntity(){
+        mBuilder.addBinaryBody("file", mImageFile, ContentType.create("image/jpeg"), mImageFile.getName());
+        mBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        mBuilder.setLaxMode().setBoundary("xx").setCharset(Charset.forName("UTF-8"));
     }
 
     public interface ERROR_CODES {

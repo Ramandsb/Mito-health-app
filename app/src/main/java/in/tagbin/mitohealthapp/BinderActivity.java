@@ -162,25 +162,25 @@ public class BinderActivity extends AppCompatActivity{
             case 1:
                 toolbar.setTitle("Profile");
                 fra = new ProfileFragMent();
-//                bottomNavigation.setCurrentItem(1);
+                //bottomNavigation.setCurrentItem(1);
 //                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
                 toolbar.setTitle("Mito");
                 fra = new HomePage();
-//                bottomNavigation.setCurrentItem(2);
+                //bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
             case 3:
 
                 toolbar.setTitle("Cart");
                 fra = new CartFrag();
-//                bottomNavigation.setCurrentItem(3);
+                //bottomNavigation.setCurrentItem(3);
                 break;
             case 4:
                 toolbar.setTitle("Settings");
                 fra = new Settings_frag();
-//                bottomNavigation.setCurrentItem(4);
+                //bottomNavigation.setCurrentItem(4);
                 break;
             default:
                 if (getIntent().getStringExtra("interests") != null){

@@ -30,6 +30,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
                     android:id="@+id/userPic1"
+                    android:background="@color/colorPrimary"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -40,7 +41,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="30dp"
                 android:textSize="16sp"
-                android:textColor="#000000"
+                android:textColor="@color/colorPrimary"
                 android:id="@+id/tvPartnerName"
                 android:text="Hugh Jackman, 21"/>
 
@@ -63,6 +64,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
                     android:id="@+id/userPic2"
+                    android:background="@color/colorPrimary"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -78,6 +80,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
                     android:id="@+id/userPic3"
+                    android:background="@color/colorPrimary"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -91,6 +94,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
                     android:id="@+id/userPic4"
+                    android:background="@color/colorPrimary"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -113,6 +117,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
                     android:id="@+id/userPic5"
+                    android:background="@color/colorPrimary"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -128,19 +133,21 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
                     android:id="@+id/userPic6"
+                    android:background="@color/colorPrimary"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="5dp">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:src="@drawable/userpic"
                     android:id="@+id/userPic7"
+                    android:background="@color/colorPrimary"
                     android:adjustViewBounds="true"/>
 
             </RelativeLayout>
@@ -153,7 +160,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Location"
-        android:textColor="#000000"
+        android:textColor="@color/colorPrimary"
         android:layout_marginLeft="10dp"
         android:textSize="18sp"/>
     <EditText
@@ -161,16 +168,16 @@
         android:layout_height="wrap_content"
         android:hint="Australia"
         android:textSize="16sp"
+        android:textColorHint="#bbbbbb"
         android:textColor="#9b9b9b"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
         android:id="@+id/etPartnerLocation"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Occupation"
-        android:textColor="#000000"
+        android:textColor="@color/colorPrimary"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:textSize="18sp"/>
@@ -178,17 +185,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Model"
+        android:textColorHint="#bbbbbb"
         android:textSize="16sp"
         android:textColor="#9b9b9b"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
         android:id="@+id/etPartnerOccupation"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gender"
-        android:textColor="#000000"
+        android:text="Description"
+        android:textColor="@color/colorPrimary"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
         android:textSize="18sp"/>
@@ -196,12 +203,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Male"
+        android:textColorHint="#bbbbbb"
         android:textColor="#9b9b9b"
         android:textSize="16sp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="5dp"
         android:id="@+id/etPartnerGender"
         />
+    <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/facebook_people_connect"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_weight="1"
+        android:paddingTop="12dp"
+        android:background="#35548f"
+        android:layout_margin="10dp"
+        fb:confirm_logout="false"
+        android:textColor="#ffffff"
+        fb:login_text="Pick from my Facebook profile"
+        fb:logout_text="" />
 </LinearLayout>
 </ScrollView>

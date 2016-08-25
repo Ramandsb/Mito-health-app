@@ -243,6 +243,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
                         if (AccessToken.getCurrentAccessToken() != null) {
                             Log.d("loginreslut", loginResult.getAccessToken().getToken());
                             FbToken = loginResult.getAccessToken().getToken();
+
                             RequestData();
 
                             makeJsonObjReq(FbToken,"facebook");

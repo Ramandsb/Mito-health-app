@@ -10,6 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:clipChildren="false"
+        android:background="#ffffff"
+        android:layout_centerHorizontal="true"
         android:clipToPadding="false" />
     <TextView
         android:layout_width="wrap_content"

@@ -47,12 +47,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(path: ':android-image-zoom-crop')
-    compile project(path: ':ViewPagerIndicator-Library')
     testCompile 'junit:junit:4.12'
     //    compile 'com.newrelic.agent.android:android-agent:5.+'
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:design:24.1.1'
-    compile 'com.facebook.android:facebook-android-sdk:4.1.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.google.android.gms:play-services-wearable:9.4.0'
     compile 'com.google.android.gms:play-services:9.4.0'
     compile 'com.google.android.gms:play-services-auth:9.4.0'
@@ -77,7 +76,10 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.4'
     compile 'link.fls:swipestack:0.3.0'
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.2'
-
+    compile('org.apache.httpcomponents:httpmime:4.3.6') {
+        exclude module: 'httpclient'
+    }
+    compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
 }
 
 

@@ -24,12 +24,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
@@ -37,7 +56,11 @@ import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
+import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConnectProfileModel;
+import in.tagbin.mitohealthapp.model.FileUploadModel;
+import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
 import in.tagbin.mitohealthapp.model.InterestModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
 
@@ -49,13 +72,17 @@ public class PartProfile extends Fragment implements View.OnClickListener {
     EditText etLocation,etGender,etOccupation;
     TextView name;
     ConnectProfileModel connectProfileModel;
-    Button save;
+    LoginButton facebookConnect;
+    CallbackManager callbackManager;
+    private AccessTokenTracker accessTokenTracker;
+    String fbAuthToken,fbUserID;
+    PrefManager pref;
     int SELECT_PICTURE1 =0,SELECT_PICTURE2 =1,SELECT_PICTURE3 =2,SELECT_PICTURE4 =3,SELECT_PICTURE5 =4,SELECT_PICTURE6 =5,SELECT_PICTURE7 =6;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        FacebookSdk.sdkInitialize(getContext());
         setHasOptionsMenu(true);
     }
 
@@ -64,6 +91,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_part_profile, container, false);
+        pref = new PrefManager(getActivity());
         img1 = (ImageView) layout.findViewById(R.id.userPic1);
         img2 = (ImageView) layout.findViewById(R.id.userPic2);
         img3 = (ImageView) layout.findViewById(R.id.userPic3);
@@ -71,6 +99,65 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         img5 = (ImageView) layout.findViewById(R.id.userPic5);
         img6 = (ImageView) layout.findViewById(R.id.userPic6);
         img7 = (ImageView) layout.findViewById(R.id.userPic7);
+        facebookConnect = (LoginButton) layout.findViewById(R.id.facebook_people_connect);
+        facebookConnect.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
+        facebookConnect.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.facebook, 0, 0);
+        facebookConnect.setReadPermissions(Arrays.asList("user_photos ", "user_about_me", "user_location"));
+        callbackManager = CallbackManager.Factory.create();
+        facebookConnect.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.v("facebook", JsonUtils.jsonify(object)+"\n"+response.toString());
+                                Toast.makeText(getContext(),JsonUtils.jsonify(object),Toast.LENGTH_LONG).show();
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender,birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
+
+
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+                Log.v("LoginActivity", "cancel");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+                Log.v("LoginActivity", exception.getCause().toString());
+            }
+        });
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+
+                if (currentAccessToken == null){
+                    fbAuthToken = oldAccessToken.getToken();
+                    fbUserID = oldAccessToken.getUserId();
+                    Log.d("people connect1",fbAuthToken+"\n"+fbUserID);
+
+                }else{
+                    fbAuthToken = currentAccessToken.getToken();
+                    fbUserID = currentAccessToken.getUserId();
+                    Log.d("people connect",fbAuthToken+"\n"+fbUserID);
+                }
+
+
+
+            }
+        };
         img1.setOnClickListener(this);
         img2.setOnClickListener(this);
         img3.setOnClickListener(this);
@@ -354,6 +441,30 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         if (id == R.id.action_next) {
             SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
             setConnectProfileModel.setGender(etGender.getText().toString());
+            SetConnectProfileModel.Images1Model images1Model = setConnectProfileModel.getImages();
+            if (pref.getKeyMasterImage() != null){
+                images1Model.setMaster(pref.getKeyMasterImage());
+            }
+            ArrayList<String> other = new ArrayList<String>();
+            if (pref.getKeyUserPic1() != null){
+                other.add(pref.getKeyUserPic1());
+            }
+            if (pref.getKeyUserPic2() != null){
+                other.add(pref.getKeyUserPic2());
+            }
+            if (pref.getKeyUserPic3() != null){
+                other.add(pref.getKeyUserPic3());
+            }
+            if (pref.getKeyUserPic4() != null){
+                other.add(pref.getKeyUserPic4());
+            }
+            if (pref.getKeyUserPic5() != null){
+                other.add(pref.getKeyUserPic5());
+            }
+            if (pref.getKeyUserPic6() != null){
+                other.add(pref.getKeyUserPic6());
+            }
+            images1Model.setOther(other);
             Log.d("profile",JsonUtils.jsonify(setConnectProfileModel));
             Controller.setConnectProfile(getContext(),setConnectProfileModel,msetProfileListener);
 //            InitActivity.change(2);
@@ -368,6 +479,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     public void onClick(View view) {
@@ -397,9 +509,14 @@ public class PartProfile extends Fragment implements View.OnClickListener {
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent result) {
+        super.onActivityResult(requestCode, resultCode, result);
+        callbackManager.onActivityResult(requestCode, resultCode, result);
         if (requestCode == SELECT_PICTURE1 ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener);
                 img1.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -411,6 +528,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         }else if (requestCode == SELECT_PICTURE2 ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener1);
                 img2.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -422,6 +542,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         }else if (requestCode == SELECT_PICTURE3 ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener2);
                 img3.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -432,6 +555,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         }else if (requestCode == SELECT_PICTURE4 ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener3);
                 img4.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -442,6 +568,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         }else if (requestCode == SELECT_PICTURE5 ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener4);
                 img5.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -452,6 +581,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         }else if (requestCode == SELECT_PICTURE6 ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener5);
                 img6.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -462,6 +594,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         }else if (requestCode == SELECT_PICTURE7 ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener6);
                 img7.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -550,6 +685,132 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
 
+        }
+    };
+    RequestListener mUploadListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyMasterImage(imageUploadResponseModel.getUrl());
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
+        }
+    };
+    RequestListener mUploadListener1 = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyUserPic1(imageUploadResponseModel.getUrl());
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
+        }
+    };
+    RequestListener mUploadListener2 = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyUserPic2(imageUploadResponseModel.getUrl());
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
+        }
+    };
+    RequestListener mUploadListener3 = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyUserPic3(imageUploadResponseModel.getUrl());
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
+        }
+    };
+    RequestListener mUploadListener4 = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyUserPic4(imageUploadResponseModel.getUrl());
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
+        }
+    };
+    RequestListener mUploadListener5 = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyUserPic5(imageUploadResponseModel.getUrl());
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
+        }
+    };
+    RequestListener mUploadListener6 = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyUserPic6(imageUploadResponseModel.getUrl());
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
         }
     };
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -25,6 +26,7 @@ import java.util.zip.Inflater;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.InterestModel;
 
 /**
@@ -36,6 +38,7 @@ public class InterestActivity extends AppCompatActivity {
     TextView next;
     InterestModel interestModel;
     List<Integer> idFinal;
+    PrefManager pref;
     android.widget.SearchView searchView;
 
     @Override
@@ -47,6 +50,7 @@ public class InterestActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         idFinal = new ArrayList<Integer>();
+        pref = new PrefManager(this);
         getSupportActionBar().setTitle("Interests");
         String response = getIntent().getStringExtra("response");
         interestModel = JsonUtils.objectify(response, InterestModel.class);
@@ -55,8 +59,9 @@ public class InterestActivity extends AppCompatActivity {
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(InterestActivity.this, SliderActivity.class);
-                startActivity(i);
+                pref.setKeyInterests(idFinal);
+                Controller.setInterests(InterestActivity.this,idFinal,mSetInterestListener);
+
             }
         });
         searchView = (SearchView) findViewById(R.id.searchView);
@@ -74,7 +79,23 @@ public class InterestActivity extends AppCompatActivity {
                         final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
                         toggleButton.setTextOn(interestModel.getList().get(i).getName());
                         toggleButton.setTextOff(interestModel.getList().get(i).getName());
-                        toggleButton.setChecked(false);
+                        if (idFinal.size() >0) {
+                            for (int y = 0; y < idFinal.size(); y++) {
+                                if (interestModel.getList().get(i).getId() == idFinal.get(y)){
+                                    toggleButton.setChecked(true);
+                                    break;
+                                }else{
+                                    toggleButton.setChecked(false);
+                                }
+                            }
+                        }
+                        if (toggleButton.isChecked()) {
+                            toggleButton.setBackgroundResource(R.drawable.backtoggled);
+                            toggleButton.setTextColor(Color.parseColor("#ffffff"));
+                        } else {
+                            toggleButton.setBackgroundResource(R.drawable.back);
+                            toggleButton.setTextColor(Color.parseColor("#000000"));
+                        }
                         final int finalI = i;
                         toggleButton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -111,7 +132,23 @@ public class InterestActivity extends AppCompatActivity {
                         final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
                         toggleButton.setTextOn(interestModel.getList().get(i).getName());
                         toggleButton.setTextOff(interestModel.getList().get(i).getName());
-                        toggleButton.setChecked(false);
+                        if (idFinal.size() >0) {
+                            for (int y = 0; y < idFinal.size(); y++) {
+                                if (interestModel.getList().get(i).getId() == idFinal.get(y)){
+                                    toggleButton.setChecked(true);
+                                    break;
+                                }else{
+                                    toggleButton.setChecked(false);
+                                }
+                            }
+                        }
+                        if (toggleButton.isChecked()) {
+                            toggleButton.setBackgroundResource(R.drawable.backtoggled);
+                            toggleButton.setTextColor(Color.parseColor("#ffffff"));
+                        } else {
+                            toggleButton.setBackgroundResource(R.drawable.back);
+                            toggleButton.setTextColor(Color.parseColor("#000000"));
+                        }
                         final int finalI = i;
                         toggleButton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -157,7 +194,26 @@ public class InterestActivity extends AppCompatActivity {
             final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
             toggleButton.setTextOn(interestModel.getList().get(i).getName());
             toggleButton.setTextOff(interestModel.getList().get(i).getName());
-            toggleButton.setChecked(false);
+            if (pref.getInterests() != null){
+                for (int y = 0; y < pref.getInterests().size(); y++) {
+                    if (interestModel.getList().get(i).getId() == pref.getInterests().get(y)){
+                        toggleButton.setChecked(true);
+                        break;
+                    }else{
+                        toggleButton.setChecked(false);
+                    }
+                }
+                if (toggleButton.isChecked()) {
+                    toggleButton.setBackgroundResource(R.drawable.backtoggled);
+                    toggleButton.setTextColor(Color.parseColor("#ffffff"));
+                } else {
+                    toggleButton.setBackgroundResource(R.drawable.back);
+                    toggleButton.setTextColor(Color.parseColor("#000000"));
+                }
+            }else{
+                toggleButton.setChecked(false);
+            }
+
             final int finalI = i;
             toggleButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -179,5 +235,23 @@ public class InterestActivity extends AppCompatActivity {
             flowLayout.addView(layout);
         }
     }
+    RequestListener mSetInterestListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("iterest ",responseObject.toString());
+            Intent i = new Intent(InterestActivity.this, SliderActivity.class);
+            startActivity(i);
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("iterest error",message);
+        }
+    };
 
 }

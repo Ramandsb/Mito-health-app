@@ -37,12 +37,12 @@ public class ConnectProfileModel {
 
     public class ImagesModel{
         String master;
-        String[] others;
+        String[] other;
         public String getMaster(){
             return this.master;
         }
         public String[] getOthers(){
-            return this.others;
+            return this.other;
         }
     }
     public class User1Model{
