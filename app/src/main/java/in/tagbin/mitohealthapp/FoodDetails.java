@@ -62,6 +62,7 @@ import in.tagbin.mitohealthapp.Fragments.FoodFrag;
 import in.tagbin.mitohealthapp.Fragments.RecipeDetailsFrag;
 import in.tagbin.mitohealthapp.Fragments.SleepFrag;
 import in.tagbin.mitohealthapp.Fragments.WaterFrag;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 
 public class FoodDetails extends AppCompatActivity {
@@ -160,15 +161,11 @@ public class FoodDetails extends AppCompatActivity {
                                         .setAction("Action", null).show();
                             } else {
 
-                                String time_stamp = "";
-                                try {
-                                    Date startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(FoodFrag.selectedDate+" "+FoodDetailsFrag.time+":00");
-                                    Log.d("converted time",startDate.toString()+"////"+startDate.getTime()+"////"+startDate.getDate());
-                                   time_stamp=String.valueOf(startDate.getTime()/1000);
-                                    makeJsonObjReq(food_id,time_stamp,FoodDetailsFrag.quantity);
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
+                                long time_stamp =0;
+
+                                   time_stamp= MyUtils.getUtcTimestamp(FoodFrag.selectedDate+" "+FoodDetailsFrag.time+":00","s");
+                                    makeJsonObjReq(food_id,String.valueOf(time_stamp),FoodDetailsFrag.quantity);
+
 //
 
                             }

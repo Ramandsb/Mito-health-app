@@ -25,7 +25,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
     public static final int database_version = 2;
     public String CREATE_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_FOOD + "(" + TableData.Tableinfo.ID + " TEXT," + TableData.Tableinfo.FOOD_ID + " TEXT," + TableData.Tableinfo.FOOD_NAME + " TEXT," + TableData.Tableinfo.TIME_CONSUMED + " TEXT," + TableData.Tableinfo.AMOUNT + " TEXT," + TableData.Tableinfo.DATE + " TEXT," + TableData.Tableinfo.SYNCED + " TEXT)";
-    public String CREATE_SLEEP_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_SLEEP + "(" + TableData.Tableinfo.SLEEP_UNIQUE_ID + " TEXT," + TableData.Tableinfo.START_TIME + " TEXT," + TableData.Tableinfo.END_TIME + " TEXT," + TableData.Tableinfo.SLEEP_DATE + " TEXT," + TableData.Tableinfo.SLEEP_HOURS + " TEXT," + TableData.Tableinfo.SLEEP_QUALITY + " TEXT)";
+    public String CREATE_SLEEP_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_SLEEP + "(" + TableData.Tableinfo.SLEEP_UNIQUE_ID + " TEXT," + TableData.Tableinfo.START_TIME + " TEXT," + TableData.Tableinfo.END_TIME + " TEXT," + TableData.Tableinfo.SLEEP_DATE + " TEXT," + TableData.Tableinfo.SLEEP_HOURS + " TEXT," + TableData.Tableinfo.SLEEP_QUALITY + " TEXT," + TableData.Tableinfo.START_TIME_STAMP + " TEXT," + TableData.Tableinfo.END_TIME_STAMP + " TEXT)";
     public String CREATE_EXERCISE_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_EXERCISE + "(" + TableData.Tableinfo.EXER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.EXER_NAME + " TEXT," + TableData.Tableinfo.WEIGHT + " TEXT," + TableData.Tableinfo.SETS + " TEXT," + TableData.Tableinfo.REPS + " TEXT," + TableData.Tableinfo.EXER_ID + " TEXT," + TableData.Tableinfo.EXER_DATE + " TEXT)";
     public String CREATE_WATER_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_WATER + "(" + TableData.Tableinfo.WATER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.WATER_DATE + " TEXT," + TableData.Tableinfo.GLASSES + " TEXT," + TableData.Tableinfo.ML + " TEXT," + TableData.Tableinfo.GLASS_SIZE + " TEXT," + TableData.Tableinfo.WATER_SYNCED + " TEXT)";
     public String CREATE_CHART_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_CHART + "(" + TableData.Tableinfo.CHART_DATE + " TEXT," + TableData.Tableinfo.CHART_TIMESTAMP + " TEXT," + TableData.Tableinfo.CHART_FOODCAL_REQ + " TEXT," + TableData.Tableinfo.CHART_FOODCAL_CONSUMED + " TEXT," + TableData.Tableinfo.CHART_WATER_REQ + " TEXT," + TableData.Tableinfo.CHART_WATER_CONSUMED + " TEXT," + TableData.Tableinfo.CHART_EXERCAL_REQ + " TEXT," + TableData.Tableinfo.CHART_EXERCAL_BURNED + " TEXT," + TableData.Tableinfo.CHART_SLEEP_REQ + " TEXT," + TableData.Tableinfo.CHART_SLEEP_CONSUMED + " TEXT)";
@@ -105,7 +105,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         Log.d("Database Created", "true");
 
     }
-    public void putSleepInformation(DatabaseOperations dop, String id, String start, String end,String date,String hours,String quality) {
+    public void putSleepInformation(DatabaseOperations dop, String id, String start, String end,String date,String hours,String quality,String sts,String ets) {
         SQLiteDatabase SQ = dop.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(TableData.Tableinfo.SLEEP_UNIQUE_ID, id);
@@ -114,6 +114,8 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         cv.put(TableData.Tableinfo.SLEEP_DATE, date);
         cv.put(TableData.Tableinfo.SLEEP_HOURS, hours);
         cv.put(TableData.Tableinfo.SLEEP_QUALITY, quality);
+        cv.put(TableData.Tableinfo.START_TIME_STAMP, sts);
+        cv.put(TableData.Tableinfo.END_TIME_STAMP, ets);
         long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_SLEEP, null, cv);
         Log.d("Database Created", "true");
 
@@ -139,6 +141,13 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         SQLiteDatabase SQ = dop.getReadableDatabase();
 //        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
         Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_WATER, null);
+
+        return cursor;
+    }
+    public Cursor getCompleteSleepInformation(DatabaseOperations dop){
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_SLEEP, null);
 
         return cursor;
     }

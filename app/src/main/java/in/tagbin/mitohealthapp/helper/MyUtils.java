@@ -55,6 +55,25 @@ public class MyUtils {
         }
         return null;
     }
+
+    public static long getUtcTimestamp(String validDate,String source) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long da = 0;
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = simpleDateFormat.parse(validDate);
+            if (source.equals("s")){
+                da= date.getTime()/1000;
+            }else if (source.equals("m")){
+                da= date.getTime();
+            }
+
+            return da;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return da;
+    }
     public static String getCityName(Context context,String location){
         int indexStartLong = location.indexOf("(");
         int endindexLong = location.indexOf("0 ");

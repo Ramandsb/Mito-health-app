@@ -50,6 +50,7 @@ import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.SleepAdapter;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 public class SleepFrag extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
@@ -136,6 +137,7 @@ RatingBar ratingBar;
                     if (cursor != null && cursor.moveToFirst()) {
                         do {
                             uniqueId = cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_UNIQUE_ID));
+                            Log.d("ratings",uniqueId+"///"+ratingBar.getRating());
                         } while (cursor.moveToNext());
 
                         ContentValues cv = new ContentValues();
@@ -237,7 +239,7 @@ RatingBar ratingBar;
                                             }
                                         }else if (count == 0) {
                                                 uniqueId = String.valueOf(System.currentTimeMillis());
-                                                dop.putSleepInformation(dop, uniqueId, start_t, end_t, selectedDate,"","");
+                                                dop.putSleepInformation(dop, uniqueId, start_t, end_t, selectedDate,"","4.0","start","end");
 
                                             }
                                     try {
@@ -332,6 +334,8 @@ RatingBar ratingBar;
             Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(selectedDate+" "+sth+":"+stm+":00");
             Date endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(newDate+" "+eh+":"+em+":00");
 
+            long start_time_stamp= MyUtils.getUtcTimestamp(selectedDate+" "+sth+":"+stm+":00","s");
+            long end_time_stamp= MyUtils.getUtcTimestamp(newDate+" "+eh+":"+em+":00","s");
             long s=startTime.getTime();
             long e=endTime.getTime();
             long d =e-s;
@@ -344,6 +348,8 @@ RatingBar ratingBar;
             Log.d("endTimeelse",d+"");
             ContentValues cv = new ContentValues();
             cv.put(TableData.Tableinfo.SLEEP_HOURS, i[0]+":"+i[1]);
+            cv.put(TableData.Tableinfo.START_TIME_STAMP, String.valueOf(start_time_stamp));
+            cv.put(TableData.Tableinfo.END_TIME_STAMP, String.valueOf(end_time_stamp));
             dop.updateSleepRow(dop, cv, uniqueId);
 
 
@@ -352,6 +358,9 @@ RatingBar ratingBar;
         }else{
             Date startTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(selectedDate+" "+sth+":"+stm+":00");
             Date endTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(selectedDate+" "+eh+":"+em+":00");
+            long start_time_stamp= MyUtils.getUtcTimestamp(selectedDate+" "+sth+":"+stm+":00","s");
+            long end_time_stamp= MyUtils.getUtcTimestamp(selectedDate+" "+eh+":"+em+":00","s");
+
 
             long s=startTime.getTime();
             long e=endTime.getTime();
@@ -363,6 +372,8 @@ RatingBar ratingBar;
             no_of_hours.setText(i[0]+":"+i[1]);
             ContentValues cv = new ContentValues();
             cv.put(TableData.Tableinfo.SLEEP_HOURS, i[0]+":"+i[1]);
+            cv.put(TableData.Tableinfo.START_TIME_STAMP, String.valueOf(start_time_stamp));
+            cv.put(TableData.Tableinfo.END_TIME_STAMP, String.valueOf(end_time_stamp));
             dop.updateSleepRow(dop, cv, uniqueId);
 
             Log.d("endTimeelse",d+"");

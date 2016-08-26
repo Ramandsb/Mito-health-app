@@ -58,6 +58,7 @@ import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Fragments.FoodFrag;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import jp.wasabeef.recyclerview.animators.holder.AnimateViewHolder;
 
 /**
@@ -81,7 +82,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
     ProgressBar progressBar;
     android.app.AlertDialog alert;
    String Uniqueid="";
-    String time_stamp="";
+    long time_stamp=0;
     MyviewHolder myviewHolder;
     String url="http://pngimg.com/upload/small/apple_PNG12458.png";
     public CustomAdapter(Context context) {
@@ -162,14 +163,12 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
             public void onClick(View v) {
                 Toast.makeText(context,"tick"+dataItems.getFood_name() ,Toast.LENGTH_LONG).show();
 
-                try {
-                    Date startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dataItems.getDate()+" "+dataItems.getTime_consumed()+":00");
-                    Log.d("converted time",startDate.toString()+"////"+startDate.getTime()+"////"+startDate.getDate());
-                    time_stamp=String.valueOf(startDate.getTime()/1000);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                makeJsonObjReq(dataItems.getFood_id(),time_stamp,dataItems.getAmount());
+
+//
+                    time_stamp= MyUtils.getUtcTimestamp(dataItems.getDate()+" "+dataItems.getTime_consumed()+":00","s");
+                Log.d("converted time",time_stamp+"///");
+
+                makeJsonObjReq(dataItems.getFood_id(),String.valueOf(time_stamp),dataItems.getAmount());
             }
         });
         holder.cross.setOnClickListener(new View.OnClickListener() {

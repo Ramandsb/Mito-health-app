@@ -44,6 +44,7 @@ import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+import in.tagbin.mitohealthapp.model.SleepLogModel;
 import in.tagbin.mitohealthapp.model.WaterLogModel;
 
 /**
@@ -348,13 +349,23 @@ public class Controller {
     }
 
 
-    public static void getWaterLog(Context context,List<WaterLogModel> waterLogModels,
+    public static void getWaterLog(Context context,WaterLogModel waterLogModels,
                                     RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.WATERLOG);
         url=url+"water/mass/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.POST, waterLogModels, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+
+    public static void getSleepLog(Context context,SleepLogModel sleepLogModel,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.SLEEPLOG);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, sleepLogModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }

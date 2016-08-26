@@ -73,6 +73,7 @@ import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 
 public class HomePage extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
@@ -278,11 +279,11 @@ showDialog();
             Log.d("date", selectedDate);
 
         }
-        Controller.getDateRangeData(getActivity(),PreviousrangeDate,selectedDate,mDateRangelistener);
+        Controller.getDateRangeData(getActivity(),String.valueOf(MyUtils.getUtcTimestamp(PreviousrangeDate+" 00:00:00","s")),String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s")),mDateRangelistener);
         widget= (MaterialCalendarView) v.findViewById(R.id.calendarView);
         // Add a decorator to disable prime numbered days
 
-        Log.d("start Date",selectedDate);
+        Log.d("start Date",MyUtils.getUtcTimestamp(PreviousrangeDate+" 00:00:00","s")+"////"+MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
 
         widget.setSelectedDate(calendar.getTime());
 
@@ -298,6 +299,7 @@ showDialog();
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
                 .setFirstDayOfWeek(Calendar.MONDAY)
                 .commit();
+
 
 
         mBgColor = getResources().getColor(R.color.sample_bg);
@@ -337,41 +339,9 @@ showDialog();
                 cal_consumed.setText(fcal_int+"");
                 cal_left.setText(fcal_int+"/"+totcal_int+"");
                 cal_burned.setText(calbur_int+"");
-//            foodcard_recom.setText(totcal_int+"");
-//            exercard_burnt.setText(calbur_int);
-            }
-
-
-        plus_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (j <=9 && j>=2) {
-                    j++;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
-
-                if (j==1){
-                    j++;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
-
-
 
             }
-        });
-        minus_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (j < 10 && j>=2) {
-                    j--;
-                    glasses.setText(j+"/9");
-                    makeJsonObjReq();
-                }
 
-            }
-        });
 
 
         food_card.setOnClickListener(new View.OnClickListener() {
@@ -440,13 +410,13 @@ showDialog();
                     String fcal_con = obj.getString("calorie_consumed");
                     String fcal_req = obj.getString("calorie_required");
                     String exer_bur = obj.getString("calorie_burnt");
-                    String  time=convertTimestamp(date);
+                    long  time= MyUtils.getUtcTimestamp(date,"m");
 
                     Log.d("check response prob",water+date+""+fcal_con+fcal_req+exer_bur);
                     int count =dop.getCount(dop, TableData.Tableinfo.TABLE_NAME_CHART, TableData.Tableinfo.CHART_DATE,selectedDate+" 00:00:00");
 
                   if (count==0){
-                      dop.putChartInformation(dop, date, time, fcal_req, fcal_con, "8", water, "100", exer_bur, "8", "6");
+                      dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "8", water, "100", exer_bur, "8", "6");
                       Log.d("count with put",count+"/////");
                   }else {
                       Log.d("count",count+"///  count without");
@@ -494,70 +464,11 @@ showDialog();
 
 
     }
-    private void makeJsonObjReq() {
-showDialog();
-        auth_key=   login_details.getString("key", "");
-        Map<String, String> postParam = new HashMap<String, String>();
-        postParam.put("ltype", "water");
-        postParam.put("c_id", "1");
 
-
-
-
-        JSONObject jsonObject = new JSONObject(postParam);
-        Log.d("postpar", jsonObject.toString());
-
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                Config.url+"logger/", jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
-
-
-dismissDialog();
-
-
-
-
-                    }
-
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-displayErrors(error);
-                Log.d("error", error.toString());
-            }
-        }) {
-
-            //
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put( "charset", "utf-8");
-                headers.put("Authorization","JWT "+auth_key);
-                return headers;
-            }
-
-
-
-        };
-
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
 
     public  String convertTimestamp(String selectedDate) throws ParseException {
 
-        String str_date="2016-08-04 15:15:15";
+
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date date = (Date)formatter.parse(selectedDate+" 00:00:00");
        String timestamp=String.valueOf(date.getTime());
@@ -652,14 +563,11 @@ displayErrors(error);
 //        String selectedDate=year+"-"+"0"+day+"-"+"0"+month;
 
         int nextdays=day+7;
-         try {
-             String start_date=convertTimestamp(selectedDate);
-             String end_date=convertTimestamp(year+"-0"+month+"-0"+nextdays);
-makeJsonObjReq(start_date,end_date);
-         } catch (ParseException e) {
-                e.printStackTrace();
+         
+             long start_date=MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s");
+             long end_date=MyUtils.getUtcTimestamp(year+"-0"+month+"-0"+nextdays+" 00:00:00","s");
+makeJsonObjReq(String.valueOf(start_date),String.valueOf(end_date));
 
-        }
     }
     public void customDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());

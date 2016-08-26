@@ -6,17 +6,17 @@ import java.util.List;
 /**
  * Created by hp on 8/23/2016.
  */
-public class WaterLogModel {
+public class SleepLogModel {
 
 
 
-    List<Timeconsumed> data= new ArrayList<>();
+    List<SleepTimeconsumed> data= new ArrayList<>();
 
-    public List<Timeconsumed> getList() {
+    public List<SleepTimeconsumed> getList() {
         return data;
     }
 
-    public void setList(List<Timeconsumed> list) {
+    public void setList(List<SleepTimeconsumed> list) {
         this.data = list;
     }
 

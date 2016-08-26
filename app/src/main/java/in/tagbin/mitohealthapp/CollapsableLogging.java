@@ -67,7 +67,11 @@ import in.tagbin.mitohealthapp.Interfaces.SleepInterface;
 import in.tagbin.mitohealthapp.Interfaces.WaterInterface;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
+import in.tagbin.mitohealthapp.model.SleepLogModel;
+import in.tagbin.mitohealthapp.model.SleepTimeconsumed;
+import in.tagbin.mitohealthapp.model.Timeconsumed;
 import in.tagbin.mitohealthapp.model.WaterLogModel;
 
 public class CollapsableLogging extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener{
@@ -197,7 +201,6 @@ public FoodInterface foodInterface;
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
         tabLayout.getTabAt(3).setIcon(tabIcons[3]);
         mSheetLayout = (SheetLayout) findViewById(R.id.bottom_sheet);
-
         mChart = (LineChart) findViewById(R.id.chart1);
         mChart.setOnChartValueSelectedListener(this);
 
@@ -216,6 +219,7 @@ public FoodInterface foodInterface;
         mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
         XAxis xAxis = mChart.getXAxis();
         xAxis.setValueFormatter(new AxisValueFormatter() {
+
 
             private SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM");
 
@@ -408,6 +412,13 @@ public FoodInterface foodInterface;
 //        } catch (ParseException e) {
 //            e.printStackTrace();
 //        }
+        try {
+            Controller.getWaterLog(this,addDbValuetoJsonArray(),mWaterLogListener);
+            Controller.getSleepLog(this,addDbSleepValuetoJsonArray(),mSleepLogListener);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         startActivity(new Intent(CollapsableLogging.this,BinderActivity.class).putExtra("selection",2).putExtra("source","indirect"));
         finish();
         super.onBackPressed();
@@ -422,35 +433,55 @@ public FoodInterface foodInterface;
         }
     }
 
-    public  List<WaterLogModel> addDbValuetoJsonArray() throws ParseException {
+    public  WaterLogModel addDbValuetoJsonArray() throws ParseException {
        Cursor cursor= dop.getCompleteWaterInformation(dop);
 
-        List<WaterLogModel> listData= new ArrayList<>();
-
+        WaterLogModel waterLogModel = new WaterLogModel();
+        List<Timeconsumed> timeconsumeds = new ArrayList<Timeconsumed>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 //create a new movie object and retrieve the data from the cursor to be stored in this movie object
-                WaterLogModel item = new WaterLogModel();
-                item.setC_id(Integer.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.GLASSES))));
-                item.setTime_consumed(Double.valueOf(convertDateToTimeStamp(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.WATER_DATE)),"00:00")));
-                Log.d("Database read", listData.toString());
-                listData.add(item);
+                Timeconsumed timeconsumed = new Timeconsumed();
+                timeconsumed.setC_id(Integer.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.GLASSES))));
+                timeconsumed.setTime_consumed(Double.valueOf(MyUtils.getUtcTimestamp(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.WATER_DATE+"00:00:00")),"s")));
+                timeconsumeds.add(timeconsumed);
             }
             while (cursor.moveToNext());
         }
-        return listData;
+        waterLogModel.setList(timeconsumeds);
+        return waterLogModel;
     }
 
-    public long convertDateToTimeStamp(String date,String time) throws ParseException {
+    public  SleepLogModel addDbSleepValuetoJsonArray() throws ParseException {
+        Cursor cursor= dop.getCompleteSleepInformation(dop);
 
-        long time_stamp;
-
-        Date startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date+" "+time+":00");
-        Log.d("convertedTimeStamp",startDate.toString()+"////"+startDate.getTime()+"////"+startDate.getDate());
-        time_stamp=startDate.getTime()/1000;
-
-        return time_stamp;
+        SleepLogModel sleepLogModel = new SleepLogModel();
+        List<SleepTimeconsumed> timeconsumeds = new ArrayList<SleepTimeconsumed>();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+                SleepTimeconsumed timeconsumed = new SleepTimeconsumed();
+                timeconsumed.setEnd(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.END_TIME_STAMP)));
+                timeconsumed.setStart(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.START_TIME_STAMP)));
+                timeconsumed.setQos(Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SLEEP_QUALITY))));
+                timeconsumeds.add(timeconsumed);
+            }
+            while (cursor.moveToNext());
+        }
+        sleepLogModel.setList(timeconsumeds);
+        return sleepLogModel;
     }
+
+//    public long convertDateToTimeStamp(String date,String time) throws ParseException {
+//
+//        long time_stamp;
+//
+//        Date startDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date+" "+time+":00");
+//        Log.d("convertedTimeStamp",startDate.toString()+"////"+startDate.getTime()+"////"+startDate.getDate());
+//        time_stamp=startDate.getTime()/1000;
+//
+//        return time_stamp;
+//    }
 
 
 //    @Override
@@ -589,11 +620,32 @@ public FoodInterface foodInterface;
 
         @Override
         public void onRequestCompleted(Object responseObject) {
+            Log.d("WaterLogging response",responseObject.toString());
 
         }
 
         @Override
         public void onRequestError(int errorCode, String message) {
+            Log.d("WaterLogging Error",message.toString());
+
+        }
+    };
+
+    RequestListener mSleepLogListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("Sleep  response",responseObject.toString());
+
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("Sleep Error",message.toString());
 
         }
     };
