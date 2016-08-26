@@ -247,9 +247,9 @@ public class Chatfrag extends Fragment {
 
     public void showDialog() {
 
-        progressBar.setVisibility(View.VISIBLE);
-        alert.show();
-        messageView.setText("Loading");
+//        progressBar.setVisibility(View.VISIBLE);
+//        alert.show();
+//        messageView.setText("Loading");
     }
 
     public void dismissDialog() {

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.InterestModel;
 
 /**
@@ -39,6 +41,7 @@ public class InterestActivity extends AppCompatActivity {
     InterestModel interestModel;
     List<Integer> idFinal;
     PrefManager pref;
+    ProgressBar progressBar;
     android.widget.SearchView searchView;
 
     @Override
@@ -47,7 +50,7 @@ public class InterestActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_interests);
         flowLayout = (FlowLayout) findViewById(R.id.flowLayout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         setSupportActionBar(toolbar);
         idFinal = new ArrayList<Integer>();
         pref = new PrefManager(this);
@@ -60,6 +63,7 @@ public class InterestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 pref.setKeyInterests(idFinal);
+                progressBar.setVisibility(View.VISIBLE);
                 Controller.setInterests(InterestActivity.this,idFinal,mSetInterestListener);
 
             }
@@ -246,11 +250,19 @@ public class InterestActivity extends AppCompatActivity {
             Log.d("iterest ",responseObject.toString());
             Intent i = new Intent(InterestActivity.this, SliderActivity.class);
             startActivity(i);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
         public void onRequestError(int errorCode, String message) {
-            Log.d("iterest error",message);
+            Log.d("interest error",message);
+            ErrorResponseModel errorResponseModel= JsonUtils.objectify(message,ErrorResponseModel.class);
+            Toast.makeText(InterestActivity.this,errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
         }
     };
 

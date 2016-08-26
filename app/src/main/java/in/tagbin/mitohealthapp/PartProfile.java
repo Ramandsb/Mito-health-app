@@ -59,6 +59,7 @@ import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConnectProfileModel;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
 import in.tagbin.mitohealthapp.model.InterestModel;
@@ -402,12 +403,11 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                             name.setText(data.getUser().getFirst_name());
                     }
                 }
-                if (data.getGender() != null){
-                    if (data.getGender().toLowerCase().equals("m") || data.getGender().toLowerCase().equals("male")){
-                        etGender.setText("M");
-                    }else{
-                        etGender.setText("F");
-                    }
+                if (data.getOccupation() != null){
+                    etOccupation.setText(data.getOccupation());
+                }
+                if (data.getDescription() != null){
+                    etGender.setText(data.getOccupation());
                 }
             }
         }
@@ -440,7 +440,13 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_next) {
             SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
-            setConnectProfileModel.setGender(etGender.getText().toString());
+            setConnectProfileModel.setDescription(etGender.getText().toString());
+            setConnectProfileModel.setOccupation(etOccupation.getText().toString());
+            PrefManager pref = new PrefManager(getActivity());
+            if (pref.getCurrentLocationAsObject() != null){
+                double[] location = {pref.getCurrentLocationAsObject().getLongitude(),pref.getCurrentLocationAsObject().getLatitude()};
+                setConnectProfileModel.setLocation(location);
+            }
             SetConnectProfileModel.Images1Model images1Model = setConnectProfileModel.getImages();
             if (pref.getKeyMasterImage() != null){
                 images1Model.setMaster(pref.getKeyMasterImage());
@@ -465,8 +471,14 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 other.add(pref.getKeyUserPic6());
             }
             images1Model.setOther(other);
-            Log.d("profile",JsonUtils.jsonify(setConnectProfileModel));
-            Controller.setConnectProfile(getContext(),setConnectProfileModel,msetProfileListener);
+            if (etGender.getText().toString().equals("") || etGender.getText().toString().isEmpty()){
+                Toast.makeText(getContext(),"Please enter the description",Toast.LENGTH_LONG).show();
+            }else if(etOccupation.getText().toString().equals("") || etOccupation.getText().toString().isEmpty()){
+                Toast.makeText(getContext(),"Please enter the occupation",Toast.LENGTH_LONG).show();
+            }else {
+                Log.d("profile", JsonUtils.jsonify(setConnectProfileModel));
+                Controller.setConnectProfile(getContext(), setConnectProfileModel, msetProfileListener);
+            }
 //            InitActivity.change(2);
 
 
@@ -618,27 +630,25 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("partner connect",responseObject.toString());
-
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(),"Profile submitted succesfully",Toast.LENGTH_LONG).show();
+                }
+            });
+            if (getArguments() != null && getArguments().getString("profile_connect") != null){
+                Controller.getInterests(getContext(),mInterestListener);
+            }else {
+                BinderActivity i = (BinderActivity) getActivity();
+                i.bottomNavigation.setCurrentItem(2);
+            }
         }
 
         @Override
         public void onRequestError(int errorCode, String message) {
-            Log.d("erroe",message);
-            if (message.equals("Error object is null")){
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getContext(),"Profile submitted succesfully",Toast.LENGTH_LONG).show();
-                    }
-                });
-                if (getArguments() != null && getArguments().getString("profile_connect") != null){
-                    Controller.getInterests(getContext(),mInterestListener);
-
-                }else {
-                    BinderActivity i = (BinderActivity) getActivity();
-                    i.bottomNavigation.setCurrentItem(2);
-                }
-            }
+            Log.d("erro",message);
+            ErrorResponseModel errorResponseModel= JsonUtils.objectify(message,ErrorResponseModel.class);
+            Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
         }
     };
     private void showAddProfilePicDialog1(final int select_picture) {

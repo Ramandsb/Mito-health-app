@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import in.tagbin.mitohealthapp.model.LocationModel;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
 
 /**
@@ -29,6 +30,7 @@ public class PrefManager {
     private static final String KEY_USER_PIC5 = "user_pic5";
     private static final String KEY_USER_PIC6 = "user_pic6";
     private static final String KEY_INTERESTS = "key_interests";
+    private static String LOCATION_OBJECT = "location_object";
 
     public PrefManager(Context ctx){
         _context = ctx;
@@ -110,5 +112,15 @@ public class PrefManager {
         Type collectionType = new TypeToken<List<Integer>>() {}.getType();
         List<Integer> interests = (List<Integer>) new Gson() .fromJson(response, collectionType);
         return interests;
+    }
+    public void saveCurrentLocation (LocationModel locationModel) {
+        String userJson = JsonUtils.jsonify(locationModel);
+        editor.putString(LOCATION_OBJECT, userJson);
+        editor.apply();
+    }
+    public LocationModel getCurrentLocationAsObject(){
+        String userJson = pref.getString(LOCATION_OBJECT, null);
+        LocationModel locationModel = JsonUtils.objectify(userJson,LocationModel.class);
+        return locationModel;
     }
 }

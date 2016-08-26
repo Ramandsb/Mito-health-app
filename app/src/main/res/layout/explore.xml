@@ -4,13 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff">
-
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/relativeMainProfile">
     <link.fls.swipestack.SwipeStack
         android:id="@+id/container"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="230dp"
         android:clipChildren="false"
         android:background="#ffffff"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
         android:layout_centerHorizontal="true"
         android:clipToPadding="false" />
     <TextView
@@ -21,7 +26,7 @@
         android:textSize="22sp"
         android:id="@+id/tvExploreName"
         android:textColor="#9b9b9b"
-        android:text="Melenia Eglasius"/>
+        android:text=""/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,34 +61,27 @@
         android:layout_marginTop="10dp"
         android:src="@drawable/mito_click"
         android:id="@+id/ivExploreSubmit"/>
+    </RelativeLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/ivExploreSubmit"
-        android:textSize="40sp"
-        android:id="@+id/tvExploreArrow"
-        android:layout_marginRight="10dp"
-        android:textColor="#9b9b9b"
-        android:text="^"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#9b9b9b"
-        android:id="@+id/viewSperator1"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="8dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/tvExploreArrow"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/viewSperator1"
-        android:textSize="17sp"
-        android:layout_marginLeft="12dp"
-        android:id="@+id/tvExploreInterests"
-        android:textColor="#9b9b9b"
-        android:text="2 Common Interests"/>
+        android:layout_centerVertical="true"
+        android:text="No users nearby"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:id="@+id/tvNoNearbyUsersData"
+        android:textColor="@color/colorPrimary"/>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        android:indeterminateTint="@color/colorAccent"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone" />
 </RelativeLayout>

@@ -185,6 +185,7 @@ public class Controller {
                 loginDetails= context.getSharedPreferences(MainPage.LOGIN_DETAILS,0);
                 String key = loginDetails.getString("key",null);
                 headers.put("Authorization","JWT "+key);
+                Log.d("key","JWT "+key);
                 return headers;
             }
 

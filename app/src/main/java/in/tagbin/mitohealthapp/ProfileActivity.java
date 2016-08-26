@@ -5,17 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import java.util.ArrayList;
 
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
-import in.tagbin.mitohealthapp.model.UserListModel;
+import in.tagbin.mitohealthapp.model.ConnectProfileModel;
 
 /**
  * Created by aasaqt on 12/8/16.
@@ -26,23 +28,19 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
     private ImageView[] dots;
     private LinearLayout pager_indicator;
     private ViewPager intro_images;
-    private int[] mImageResources = {
-            R.drawable.hotel,
-            R.drawable.hotel,
-            R.drawable.hotel/*,
-            R.drawable.intro4*/};
+    private ArrayList<String> mImageResources;
     ImageView back;
-    TextView name,age,distance,time;
-    GridLayout gridLayout;
+    TextView name,age,distance,time,occupation,description;
+    FlowLayout flowLayout;
     String response;
-    UserListModel data;
+    ConnectProfileModel data;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         response = getIntent().getStringExtra("response");
-        data = JsonUtils.objectify(response,UserListModel.class);
+        data = JsonUtils.objectify(response,ConnectProfileModel.class);
         intro_images = (ViewPager) findViewById(R.id.pagerProfile);
         pager_indicator = (LinearLayout) findViewById(R.id.viewPagerCountDots);
         back = (ImageView) findViewById(R.id.ivProfileBack);
@@ -50,30 +48,35 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         age = (TextView) findViewById(R.id.tvProfileAge);
         distance = (TextView) findViewById(R.id.tvProfileDistance);
         time = (TextView) findViewById(R.id.tvProfileTime);
-        gridLayout = (GridLayout) findViewById(R.id.gridProfileHobbies);
-        //mAdapter = new ViewPagerAdapter(this, mImageResources);
-        //intro_images.setAdapter(mAdapter);
+        occupation = (TextView) findViewById(R.id.tvProfileOccupation);
+        description = (TextView) findViewById(R.id.tvProfileDescription);
+        flowLayout = (FlowLayout) findViewById(R.id.flowLayoutProfile);
+        mImageResources = new ArrayList<String>();
+        mImageResources.add(null);
+        mAdapter = new ViewPagerAdapter(this, mImageResources);
+        intro_images.setAdapter(mAdapter);
         intro_images.setCurrentItem(0);
         intro_images.setOnPageChangeListener(this);
         setUiPageViewController();
-        name.setText(data.getName());
-        age.setText(data.getAge()+", "+data.getSex());
-        distance.setText(data.getDistance());
-        gridLayout.setRowCount(data.getHobbies().size()%3 +1);
-        for (int i= 0;i<data.getHobbies().size();i++){
-            TextView textView = new TextView(ProfileActivity.this);
-            textView.setTextColor(Color.parseColor("#ffffff"));
-            textView.setBackgroundResource(R.drawable.bg_hobby);
-            int padding = MyUtils.dpToPx(this,5);
-            int padding1 = MyUtils.dpToPx(this,10);
-            textView.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.cross_svg,0);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(new GridLayoutManager.LayoutParams(GridLayoutManager.LayoutParams.WRAP_CONTENT, GridLayoutManager.LayoutParams.WRAP_CONTENT));
-            params.setMargins(padding,padding,padding,padding);
-            textView.setLayoutParams(params);
-            textView.setCompoundDrawablePadding(padding1);
-            textView.setPadding(padding,padding,padding,padding);
-            textView.setText(data.getHobbies().get(i).toString());
-            gridLayout.addView(textView);
+        name.setText(data.getUser().getFirst_name());
+        age.setText(data.getAge()+", "+data.getGender());
+        occupation.setText(data.getOccupation());
+        description.setText(data.getDescription());
+        //distance.setText(data.getDistance());
+        LayoutInflater inflater = LayoutInflater.from(this);
+        for (int i= 0;i<data.getInterests().size();i++){
+            View layout = inflater.inflate(R.layout.interest_toggle, flowLayout, false);
+            final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
+            toggleButton.setTextOn(data.getInterests().get(i).getInterest().getName());
+            toggleButton.setBackgroundResource(R.drawable.bg_hobby);
+            toggleButton.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            toggleButton.setTextColor(Color.parseColor("#ffffff"));
+            toggleButton.setTransformationMethod(null);
+            int padding =  MyUtils.dpToPx(this,4);
+            toggleButton.setPadding(padding,padding-2,padding-2,padding-2);
+            toggleButton.setChecked(true);
+            toggleButton.setClickable(false);
+            flowLayout.addView(layout);
         }
         back.setOnClickListener(new View.OnClickListener() {
             @Override

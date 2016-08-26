@@ -1,120 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <android.support.v4.view.ViewPager
         android:id="@+id/pagerProfile"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignTop="@+id/pagerProfile"
-        android:layout_margin="10dp">
+        android:layout_marginTop="15dp"
+        android:id="@+id/relativePagerHeading"
+        android:background="#6f4c516d"
+        android:padding="10dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="People"
+            android:textColor="#ffffff"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="#ffffff"/>
+            android:textStyle="bold" />
+
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:id="@+id/ivProfileBack"
-            android:src="@drawable/back_button"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/pagerProfile">
-        <LinearLayout
-            android:id="@+id/viewPagerCountDots"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#bf4c516d"
-            android:layout_below="@+id/viewPagerCountDots">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:id="@+id/tvProfileAge"
-                android:text="23, Male"
-                android:textColor="#ffffff"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="8dp"
-                android:text="Varun Dhawan"
-                android:textColor="#ffffff"
-                android:layout_marginBottom="8dp"
-                android:id="@+id/tvProfileName"/>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tvProfileAge"
-                android:textAlignment="center"
-                android:id="@+id/relativeProfileTime"
-                android:layout_centerHorizontal="true"
-                android:background="#df4c516d">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginRight="20dp"
-                    android:id="@+id/tvProfileTime"
-                    android:text="Active 2 hours ago"
-                    android:textColor="#ffffff"/>
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="20dp"
-                    android:background="#ffffff"
-                    android:layout_toRightOf="@+id/tvProfileTime"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:id="@+id/viewSperator"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_toRightOf="@+id/viewSperator"
-                    android:layout_marginBottom="8dp"
-                    android:id="@+id/tvProfileDistance"
-                    android:text="2 miles away"
-                    android:textColor="#ffffff"/>
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relativeProfileTime">
-                <GridLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="3"
-                    android:layout_margin="20dp"
-                    android:id="@+id/gridProfileHobbies">
-                </GridLayout>
-            </RelativeLayout>
-        </RelativeLayout>
+            android:padding="5dp"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/back_button" />
     </RelativeLayout>
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/relativePagerHeading"
+        android:layout_alignTop="@+id/pagerProfile"
+        android:fitsSystemWindows="true">
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="0dp"
+            android:clipToPadding="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:id="@+id/tvProfileBlank"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_below="@+id/tvProfileBlank">
+
+                    <LinearLayout
+                        android:id="@+id/viewPagerCountDots"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:orientation="horizontal" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/viewPagerCountDots"
+                        android:background="#bf4c516d">
+
+                        <TextView
+                            android:id="@+id/tvProfileAge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="8dp"
+                            android:text="23, Male"
+                            android:textColor="#ffffff" />
+
+                        <TextView
+                            android:id="@+id/tvProfileName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginTop="8dp"
+                            android:text="Varun Dhawan"
+                            android:textColor="#ffffff" />
+
+                        <RelativeLayout
+                            android:id="@+id/relativeProfileTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvProfileAge"
+                            android:layout_centerHorizontal="true"
+                            android:background="#df4c516d"
+                            android:textAlignment="center">
+
+                            <TextView
+                                android:id="@+id/tvProfileTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="40dp"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginTop="8dp"
+                                android:text="Active 2 hours ago"
+                                android:textColor="#ffffff" />
+
+                            <View
+                                android:id="@+id/viewSperator"
+                                android:layout_width="2dp"
+                                android:layout_height="20dp"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_toRightOf="@+id/tvProfileTime"
+                                android:background="#ffffff" />
+
+                            <TextView
+                                android:id="@+id/tvProfileDistance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_toRightOf="@+id/viewSperator"
+                                android:text="2 miles away"
+                                android:textColor="#ffffff" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/relativeInterestsProfile"
+                            android:layout_below="@+id/relativeProfileTime">
+
+                            <in.tagbin.mitohealthapp.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                xmlns:app="http://schemas.android.com/apk/res-auto"
+                                xmlns:tools="http://schemas.android.com/tools"
+                                android:id="@+id/flowLayoutProfile"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical"
+                                android:layout_margin="20dp"
+                                android:textAlignment="center"
+                                android:layout_centerHorizontal="true"
+                                app:horizontalSpacing="5dp"
+                                app:verticalSpacing="4dp">
+
+                            </in.tagbin.mitohealthapp.FlowLayout>
+                        </RelativeLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/relativeInterestsProfile"
+                            android:text="Description"
+                            android:id="@+id/tvProfileDescriptionHeading"
+                            android:layout_marginBottom="3dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="8dp"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="#ffffff"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvProfileDescriptionHeading"
+                            android:text="Description"
+                            android:id="@+id/tvProfileDescription"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="#ffffff"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvProfileDescription"
+                            android:text="Occupation"
+                            android:id="@+id/tvProfileOccupationHeading"
+                            android:layout_marginBottom="3dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginTop="8dp"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="#ffffff"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/tvProfileOccupationHeading"
+                            android:text="Occupation"
+                            android:id="@+id/tvProfileOccupation"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginLeft="30dp"
+                            android:layout_marginTop="4dp"
+                            android:textSize="16sp"
+                            android:textColor="#ffffff"/>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.design.widget.CoordinatorLayout>
 
 
 </RelativeLayout>
