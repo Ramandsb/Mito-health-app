@@ -92,6 +92,8 @@ public class InterestActivity extends AppCompatActivity {
                                     toggleButton.setChecked(false);
                                 }
                             }
+                        }else{
+                            toggleButton.setChecked(false);
                         }
                         if (toggleButton.isChecked()) {
                             toggleButton.setBackgroundResource(R.drawable.backtoggled);
@@ -145,6 +147,8 @@ public class InterestActivity extends AppCompatActivity {
                                     toggleButton.setChecked(false);
                                 }
                             }
+                        }else{
+                            toggleButton.setChecked(false);
                         }
                         if (toggleButton.isChecked()) {
                             toggleButton.setBackgroundResource(R.drawable.backtoggled);
@@ -198,7 +202,7 @@ public class InterestActivity extends AppCompatActivity {
             final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
             toggleButton.setTextOn(interestModel.getList().get(i).getName());
             toggleButton.setTextOff(interestModel.getList().get(i).getName());
-            if (pref.getInterests() != null){
+            if (pref.getInterests() != null && pref.getInterests().size() >0){
                 for (int y = 0; y < pref.getInterests().size(); y++) {
                     if (interestModel.getList().get(i).getId() == pref.getInterests().get(y)){
                         toggleButton.setChecked(true);
