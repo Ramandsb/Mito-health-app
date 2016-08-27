@@ -9,7 +9,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import in.tagbin.mitohealthapp.CustomPojo;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
+import in.tagbin.mitohealthapp.model.ChatAccounts;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 
 /**
@@ -29,6 +31,8 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public String CREATE_EXERCISE_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_EXERCISE + "(" + TableData.Tableinfo.EXER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.EXER_NAME + " TEXT," + TableData.Tableinfo.WEIGHT + " TEXT," + TableData.Tableinfo.SETS + " TEXT," + TableData.Tableinfo.REPS + " TEXT," + TableData.Tableinfo.EXER_ID + " TEXT," + TableData.Tableinfo.EXER_DATE + " TEXT)";
     public String CREATE_WATER_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_WATER + "(" + TableData.Tableinfo.WATER_UNIQUE_ID + " TEXT," + TableData.Tableinfo.WATER_DATE + " TEXT," + TableData.Tableinfo.GLASSES + " TEXT," + TableData.Tableinfo.ML + " TEXT," + TableData.Tableinfo.GLASS_SIZE + " TEXT," + TableData.Tableinfo.WATER_SYNCED + " TEXT)";
     public String CREATE_CHART_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_CHART + "(" + TableData.Tableinfo.CHART_DATE + " TEXT," + TableData.Tableinfo.CHART_TIMESTAMP + " TEXT," + TableData.Tableinfo.CHART_FOODCAL_REQ + " TEXT," + TableData.Tableinfo.CHART_FOODCAL_CONSUMED + " TEXT," + TableData.Tableinfo.CHART_WATER_REQ + " TEXT," + TableData.Tableinfo.CHART_WATER_CONSUMED + " TEXT," + TableData.Tableinfo.CHART_EXERCAL_REQ + " TEXT," + TableData.Tableinfo.CHART_EXERCAL_BURNED + " TEXT," + TableData.Tableinfo.CHART_SLEEP_REQ + " TEXT," + TableData.Tableinfo.CHART_SLEEP_CONSUMED + " TEXT)";
+    public String CREATE_CHAT_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_CHAT + " (" + TableData.Tableinfo.CHAT_NAME + " TEXT," + TableData.Tableinfo.CHAT_USER + " TEXT NOT NULL UNIQUE," + TableData.Tableinfo.CHAT_STATUS + " TEXT," + TableData.Tableinfo.CHAT_TYPE + " TEXT," + TableData.Tableinfo.CHAT_PRESENCE + " TEXT," + TableData.Tableinfo.CHAT_PRESENCE_STATUS + " TEXT)";
+    public String CREATE_CM_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_CM + " (" + TableData.Tableinfo.CM_SOURCE + " TEXT," + TableData.Tableinfo.CM_TIME + " TEXT," + TableData.Tableinfo.CM_MESSAGES + " TEXT," + TableData.Tableinfo.CM_USER + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase sdb) {
@@ -37,6 +41,8 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         sdb.execSQL(CREATE_EXERCISE_TABLE);
         sdb.execSQL(CREATE_WATER_TABLE);
         sdb.execSQL(CREATE_CHART_TABLE);
+        sdb.execSQL(CREATE_CHAT_TABLE);
+        sdb.execSQL(CREATE_CM_TABLE);
 
         Log.d("Database operations", "Table created");
     }
@@ -58,6 +64,30 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         cv.put(TableData.Tableinfo.DATE, date);
         cv.put(TableData.Tableinfo.SYNCED, synced);
         long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_FOOD, null, cv);
+        Log.d("Database Created", "true");
+
+    }
+    public void putCMInformation(DatabaseOperations dop, String source, String time, String messages,String user) {
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(TableData.Tableinfo.CM_SOURCE, source);
+        cv.put(TableData.Tableinfo.CM_TIME, time);
+        cv.put(TableData.Tableinfo.CM_MESSAGES, messages);
+        cv.put(TableData.Tableinfo.CM_USER, user);
+        long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_CM, null, cv);
+        Log.d("Database Created", "true");
+
+    }
+    public void putChatInformation(DatabaseOperations dop, String name, String user, String status,String type,String presence,String presence_type) {
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(TableData.Tableinfo.CHAT_NAME, name);
+        cv.put(TableData.Tableinfo.CHAT_USER, user);
+        cv.put(TableData.Tableinfo.CHAT_STATUS, status);
+        cv.put(TableData.Tableinfo.CHAT_TYPE, type);
+        cv.put(TableData.Tableinfo.CHAT_PRESENCE, presence);
+        cv.put(TableData.Tableinfo.CHAT_PRESENCE_STATUS, presence_type);
+        long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_CHAT, null, cv);
         Log.d("Database Created", "true");
 
     }
@@ -172,6 +202,62 @@ public class DatabaseOperations extends SQLiteOpenHelper {
                 item.setTime_consumed(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.TIME_CONSUMED)));
                 item.setDate(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.DATE)));
                 item.setSynced(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SYNCED)));
+                Log.d("Database read", listData.toString());
+                listData.add(item);
+
+            }
+            while (cursor.moveToNext());
+        }
+        return listData;
+
+    }
+
+    public ArrayList<CustomPojo> getCMInformation(DatabaseOperations dop,String user){
+        ArrayList<CustomPojo> listData = new ArrayList<>();
+
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+        Log.d("DatabasRead", "is it null  //  "+user);
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CM + " WHERE " + TableData.Tableinfo.CM_USER + "='" + user + "'", null);
+
+//        String[] coloumns = {TableData.Tableinfo.DISH, TableData.Tableinfo.DATE,TableData.Tableinfo.TIME,TableData.Tableinfo.DISH_ID,};
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+                CustomPojo item = new CustomPojo();
+                item.setSource(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_SOURCE)));
+                item.setTime(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_TIME)));
+                item.setMessages(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_MESSAGES)));
+                item.setUser_id(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_USER)));
+                Log.d("Database read", listData.toString());
+                listData.add(item);
+
+            }
+            while (cursor.moveToNext());
+        }
+        return listData;
+
+    }
+
+    public ArrayList<ChatAccounts> getChatInformation(DatabaseOperations dop){
+        ArrayList<ChatAccounts> listData = new ArrayList<>();
+
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+        Log.d("DatabasRead", "is it null  //  ");
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CHAT , null);
+
+//        String[] coloumns = {TableData.Tableinfo.DISH, TableData.Tableinfo.DATE,TableData.Tableinfo.TIME,TableData.Tableinfo.DISH_ID,};
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+                ChatAccounts item = new ChatAccounts();
+                item.setName(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHAT_NAME)));
+                item.setUser(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHAT_USER)));
+                item.setStatus(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHAT_STATUS)));
+                item.setType(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHAT_TYPE)));
+                item.setPresence(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHAT_PRESENCE)));
+                item.setPresence_status(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHAT_PRESENCE_STATUS)));
                 Log.d("Database read", listData.toString());
                 listData.add(item);
 

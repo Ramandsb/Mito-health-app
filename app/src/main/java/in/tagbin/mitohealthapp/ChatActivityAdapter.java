@@ -3,9 +3,12 @@ package in.tagbin.mitohealthapp;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -37,6 +40,19 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         list_items=list_members.get(position);
 
+        Log.d("sourceeeeeee",list_items.getSource());
+        String source= list_items.getSource();
+        if (source.equals("to")){
+
+            holder.setGravity.setGravity(Gravity.RIGHT);
+            holder.setpatch.setBackgroundResource(R.drawable.in_message_bg);
+
+        }else if (source.equals("from")){
+
+            holder.setGravity.setGravity(Gravity.LEFT);
+            holder.setpatch.setBackgroundResource(R.drawable.out_message_bg);
+
+        }
         holder.message.setText(list_items.getMessages());
 
     }
@@ -57,13 +73,17 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
     //View holder class, where all view components are defined
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView message,time;
-        View setGravity;
+        LinearLayout setGravity,setpatch;
+
         public MyViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            setGravity=itemView.findViewById(R.id.set_gravity);
+            setGravity= (LinearLayout) itemView.findViewById(R.id.set_gravity);
+            setpatch= (LinearLayout) itemView.findViewById(R.id.setpatch);
             message=(TextView)itemView.findViewById(R.id.set_message);
             time=(TextView)itemView.findViewById(R.id.time);
+
+
         }
         @Override
         public void onClick(View v) {

@@ -6,10 +6,96 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="in.tagbin.mitohealthapp.Fragments.RecipeDetailsFrag">
-
-    <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_marginTop="20dp"
+    android:gravity="center"
+   >
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center">
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="Preparation Time :"
+        android:textColor="#111111"
+        android:textSize="15sp"/>
+        
+        <TextView
+            android:id="@+id/preparation_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="45 mins"
+            android:textColor="#111111"
+            android:layout_marginLeft="10dp"
+            android:textSize="15sp"/>
+    </LinearLayout>
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recipe"
+        android:layout_margin="10dp"
+        android:textSize="20sp"
+        android:textColor="#111111"
+
+        />
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#111111"
+        android:layout_margin="20dp"
+        ></LinearLayout>
+
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="RecipeDetailsFrag" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+    <TextView
+        android:id="@+id/set_recipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#111111"
+        android:layout_margin="10dp"
+        android:text="@string/recipe" />
+            </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+</LinearLayout>
+    </ScrollView>
 </android.support.v4.widget.NestedScrollView>

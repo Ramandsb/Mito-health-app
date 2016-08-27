@@ -51,6 +51,7 @@ public class BinderActivity extends AppCompatActivity{
 
 
 // Create items
+        startService(new Intent(this,XamppChatService.class));
 
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.partnet_final);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.profile_final);

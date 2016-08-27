@@ -1,6 +1,7 @@
 package in.tagbin.mitohealthapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -30,6 +31,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
@@ -84,6 +86,37 @@ public class Chatpage extends Fragment {
 
         listview = (ListView) view.findViewById(R.id.listMessages);
         Button send = (Button) view.findViewById(R.id.sendBtn);
+        connection.addConnectionListener(new ConnectionListener() {
+            @Override
+            public void connectionClosed() {
+                Log.d("connectionClosed","true");
+            }
+
+            @Override
+            public void connectionClosedOnError(Exception e) {
+                Log.d("connectionClosedOnError",e.toString());
+
+            }
+
+            @Override
+            public void reconnectingIn(int i) {
+                Log.d("reconnectingIn","i value : "+i);
+
+            }
+
+            @Override
+            public void reconnectionSuccessful() {
+                Log.d("reconnectionSuccessful","true");
+
+            }
+
+            @Override
+            public void reconnectionFailed(Exception e) {
+                Log.d("reconnectionFailed",e.toString());
+
+            }
+        });
+
         send.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 String text = textMessage.getText().toString();
@@ -99,14 +132,15 @@ public class Chatpage extends Fragment {
                 }
             }
         });
-        if (isNetworkAvailable()) {
-            Connector asyncTask = new Connector();
-            asyncTask.execute();
-            Log.d("available network","");
-        }else {
-            Log.d("No Network Available","");
-        }
+//        if (isNetworkAvailable()) {
+//            Connector asyncTask = new Connector();
+//            asyncTask.execute();
+//            Log.d("available network","");
+//        }else {
+//            Log.d("No Network Available","");
+//        }
 
+        getActivity().startService(new Intent(getActivity(),XamppChatService.class));
         return view;
     }
     public static Chatpage newInstance(String param1, String param2) {
@@ -123,9 +157,14 @@ public class Chatpage extends Fragment {
 //        ListAdapter la=new ListAdapter();
 
     }
+    public boolean hasInternetConnection() {
+        ConnectivityManager cm = (ConnectivityManager) getActivity()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
 
     private boolean isNetworkAvailable() {
-        showDialog();
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

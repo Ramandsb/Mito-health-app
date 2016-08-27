@@ -9,11 +9,21 @@ public class CustomPojo {
     private String time_mess;
     private String time,content;
     private String source;
+    private  String user_id;
 
 
     public CustomPojo() {
 
     }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
     //getting content value
     public String getContent(){return content;}
     //setting content value

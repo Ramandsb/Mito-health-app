@@ -66,6 +66,25 @@ public class TableData {
         public static final String CHART_EXERCAL_BURNED = "chart_exer_burn";
 
         public static final String TABLE_NAME_CHART = "chart_table";
+        ///////////////////////////////////////////////////////
+
+        public static final String CHAT_USER = "chat_user";
+        public static final String CHAT_NAME = "chat_name";
+        public static final String CHAT_STATUS = "chat_status";
+        public static final String CHAT_TYPE = "chat_type";
+        public static final String CHAT_PRESENCE_STATUS = "chat_presence_status";
+        public static final String CHAT_PRESENCE = "chat_presence";
+
+        public static final String TABLE_NAME_CHAT = "chat_table";
+        //////////////////////////////////////////////////////////
+
+        public static final String CM_USER = "cm_user";
+        public static final String CM_TIME = "cm_time";
+        public static final String CM_MESSAGES = "cm_messages";
+        public static final String CM_SOURCE = "cm_source";
+
+        public static final String TABLE_NAME_CM = "cm_table";
+
 
 
 

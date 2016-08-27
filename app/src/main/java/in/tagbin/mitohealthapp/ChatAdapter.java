@@ -11,10 +11,12 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import in.tagbin.mitohealthapp.model.ChatAccounts;
+
 public class ChatAdapter extends  RecyclerView.Adapter<ChatAdapter.MyViewHolder> {
 
     //Creating an arraylist of POJO objects
-    private ArrayList<CustomPojo> list_members=new ArrayList<>();
+    private ArrayList<ChatAccounts> list_members=new ArrayList<>();
     private final LayoutInflater inflater;
     View view;
     MyViewHolder holder;
@@ -32,18 +34,18 @@ public class ChatAdapter extends  RecyclerView.Adapter<ChatAdapter.MyViewHolder>
         return holder;
     }
 
-    CustomPojo list_items;
+    ChatAccounts list_items;
     //Binding the data using get() method of POJO object
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         list_items=list_members.get(position);
         holder.user_name.setText(list_items.getName());
-        holder.content.setText(list_items.getContent());
-        holder.time.setText(list_items.getTime());
+        holder.content.setText(list_items.getUser());
+        holder.time.setText(list_items.getPresence_status());
     }
 
     //Setting the arraylist
-    public void setListContent(ArrayList<CustomPojo> list_members){
+    public void setListContent(ArrayList<ChatAccounts> list_members){
         this.list_members=list_members;
 //        notifyItemRangeChanged(0,list_members.size());
         notifyDataSetChanged();

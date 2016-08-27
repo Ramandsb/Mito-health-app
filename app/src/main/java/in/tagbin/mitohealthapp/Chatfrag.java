@@ -46,6 +46,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
+import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.model.ChatAccounts;
+
 public class Chatfrag extends Fragment {
 
     public static final String HOST = "chat.eazevent.in";
@@ -54,14 +57,22 @@ public class Chatfrag extends Fragment {
     public static final String USERNAME = "ankit";
     public static final String PASSWORD = "1234";
 
+    DatabaseOperations dop;
     private XMPPConnection connection;
     private ArrayList<String> messages = new ArrayList<String>();
     private Handler mHandler = new Handler();
 
     RecyclerView recyclerView;
     ChatAdapter adapter;
-    private ArrayList<CustomPojo> listContentArr= new ArrayList<>();
+    private ArrayList<ChatAccounts> listContentArr= new ArrayList<>();
     String user="rman";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        dop= new DatabaseOperations(getActivity());
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,20 +81,23 @@ public class Chatfrag extends Fragment {
         recyclerView=(RecyclerView)view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter=new ChatAdapter(getActivity());
-        if (isNetworkAvailable()) {
-            Connector asyncTask = new Connector();
-            asyncTask.execute();
-            Log.d("available network","");
-        }else {
-            Log.d("No Network Available","");
-        }
+        recyclerView.setAdapter(adapter);
+        listContentArr=dop.getChatInformation(dop);
+        adapter.setListContent(listContentArr);
+//        if (isNetworkAvailable()) {
+//            Connector asyncTask = new Connector();
+//            asyncTask.execute();
+//            Log.d("available network","");
+//        }else {
+//            Log.d("No Network Available","");
+//        }
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
 
-                CustomPojo pojo = listContentArr.get(position);
-                startActivity(new Intent(getActivity(),ChatActivity.class).putExtra("user_name",pojo.getName()));
-                Log.d("click details",""+pojo.getContent()+"//////"+pojo.getName()+"/////"+pojo.getTime());
+                ChatAccounts pojo = listContentArr.get(position);
+                startActivity(new Intent(getActivity(),ChatActivity.class).putExtra("user_name",pojo.getUser()));
+                Log.d("click details",""+pojo.getName()+"//////"+pojo.getUser()+"/////"+pojo.getPresence_status());
             }
         });
         return view;
@@ -127,106 +141,106 @@ public class Chatfrag extends Fragment {
             }, filter);
         }
     }
-    class Connector extends AsyncTask {
-
-
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            showDialog();
-            ConnectionConfiguration connConfig = new ConnectionConfiguration(
-                    HOST, PORT, SERVICE);
-            XMPPConnection connection = new XMPPConnection(connConfig);
-
-            try {
-                connection.connect();
-                Log.i("XMPPChatDemoActivity",
-                        "Connected to " + connection.getHost());
-            } catch (XMPPException ex) {
-                Log.e("XMPPChatDemoActivity", "Failed to connect to "
-                        + connection.getHost());
-                Log.e("XMPPChatDemoActivity", ex.toString());
-                setConnection(null);
-            }
-            try {
-                // SASLAuthentication.supportSASLMechanism("PLAIN", 0);
-                connection.login(USERNAME, PASSWORD);
-                Log.i("XMPPChatDemoActivity",
-                        "Logged in as " + connection.getUser());
-
-                // Set the status to available
-                Presence presence = new Presence(Presence.Type.available);
-                connection.sendPacket(presence);
-                setConnection(connection);
-
-                Roster roster = connection.getRoster();
-                Collection<RosterEntry> entries = roster.getEntries();
-                for (RosterEntry entry : entries) {
-                    Log.d("XMPPChatDemoActivity",
-                            "--------------------------------------");
-                    Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
-                    Log.d("XMPPChatDemoActivity",
-                            "User: " + entry.getUser());
-                    Log.d("XMPPChatDemoActivity",
-                            "Name: " + entry.getName());
-
-                    String name = entry.getName();
-                    String content = entry.getUser();
-
-
-                    Log.d("XMPPChatDemoActivity",
-                            "Status: " + entry.getStatus());
-                    Log.d("XMPPChatDemoActivity",
-                            "Type: " + entry.getType());
-                    Presence entryPresence = roster.getPresence(entry
-                            .getUser());
-
-                    Log.d("XMPPChatDemoActivity", "Presence Status: "
-                            + entryPresence.getStatus());
-                    Log.d("XMPPChatDemoActivity", "Presence Type: "
-                            + entryPresence.getType());
-                    Presence.Type type = entryPresence.getType();
-                    if (type == Presence.Type.available)
-                        Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
-                    Log.d("XMPPChatDemoActivity", "Presence : "
-                            + entryPresence);
-
-                    CustomPojo pojoObject = new CustomPojo();
-                    DateFormat df = new SimpleDateFormat("HH:mm");
-                    Calendar calobj = Calendar.getInstance();
-
-                    pojoObject.setName(content);
-                    pojoObject.setContent(content);
-                    pojoObject.setTime(df.format(calobj.getTime()));
-                    listContentArr.add(pojoObject);
-
-                }
-
+//    class Connector extends AsyncTask {
 //
-            } catch (XMPPException ex) {
-                Log.e("XMPPChatDemoActivity", "Failed to log in as "
-                        + USERNAME);
-                Log.e("XMPPChatDemoActivity", ex.toString());
-                setConnection(null);
-            }
-
-            //
-            // dialog.dismiss();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            super.onPostExecute(o);
-            recyclerView.setAdapter(adapter);
-            adapter.setListContent(listContentArr);
-            dismissDialog();
-        }
-
-        //    }
-
-
-    }
+//
+//
+//        @Override
+//        protected Object doInBackground(Object[] objects) {
+//            showDialog();
+//            ConnectionConfiguration connConfig = new ConnectionConfiguration(
+//                    HOST, PORT, SERVICE);
+//            XMPPConnection connection = new XMPPConnection(connConfig);
+//
+//            try {
+//                connection.connect();
+//                Log.i("XMPPChatDemoActivity",
+//                        "Connected to " + connection.getHost());
+//            } catch (XMPPException ex) {
+//                Log.e("XMPPChatDemoActivity", "Failed to connect to "
+//                        + connection.getHost());
+//                Log.e("XMPPChatDemoActivity", ex.toString());
+//                setConnection(null);
+//            }
+//            try {
+//                // SASLAuthentication.supportSASLMechanism("PLAIN", 0);
+//                connection.login(USERNAME, PASSWORD);
+//                Log.i("XMPPChatDemoActivity",
+//                        "Logged in as " + connection.getUser());
+//
+//                // Set the status to available
+//                Presence presence = new Presence(Presence.Type.available);
+//                connection.sendPacket(presence);
+//                setConnection(connection);
+//
+//                Roster roster = connection.getRoster();
+//                Collection<RosterEntry> entries = roster.getEntries();
+//                for (RosterEntry entry : entries) {
+//                    Log.d("XMPPChatDemoActivity",
+//                            "--------------------------------------");
+//                    Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
+//                    Log.d("XMPPChatDemoActivity",
+//                            "User: " + entry.getUser());
+//                    Log.d("XMPPChatDemoActivity",
+//                            "Name: " + entry.getName());
+//
+//                    String name = entry.getName();
+//                    String content = entry.getUser();
+//
+//
+//                    Log.d("XMPPChatDemoActivity",
+//                            "Status: " + entry.getStatus());
+//                    Log.d("XMPPChatDemoActivity",
+//                            "Type: " + entry.getType());
+//                    Presence entryPresence = roster.getPresence(entry
+//                            .getUser());
+//
+//                    Log.d("XMPPChatDemoActivity", "Presence Status: "
+//                            + entryPresence.getStatus());
+//                    Log.d("XMPPChatDemoActivity", "Presence Type: "
+//                            + entryPresence.getType());
+//                    Presence.Type type = entryPresence.getType();
+//                    if (type == Presence.Type.available)
+//                        Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
+//                    Log.d("XMPPChatDemoActivity", "Presence : "
+//                            + entryPresence);
+//
+////                    ChatAccounts pojoObject = new ChatAccounts();
+////                    DateFormat df = new SimpleDateFormat("HH:mm");
+////                    Calendar calobj = Calendar.getInstance();
+////
+////                    pojoObject.setName(content);
+////                    pojoObject.setUser(content);
+////                    pojoObject.setPresence(df.format(calobj.getTime()));
+////                    listContentArr.add(pojoObject);
+//
+//                }
+//
+////
+//            } catch (XMPPException ex) {
+//                Log.e("XMPPChatDemoActivity", "Failed to log in as "
+//                        + USERNAME);
+//                Log.e("XMPPChatDemoActivity", ex.toString());
+//                setConnection(null);
+//            }
+//
+//            //
+//            // dialog.dismiss();
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Object o) {
+//            super.onPostExecute(o);
+//            recyclerView.setAdapter(adapter);
+//            adapter.setListContent(listContentArr);
+//            dismissDialog();
+//        }
+//
+//        //    }
+//
+//
+//    }
 
     TextView messageView;
     ProgressBar progressBar;
