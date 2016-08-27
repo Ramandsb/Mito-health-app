@@ -194,6 +194,24 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Home Town"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="18sp"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="New Delhi"
+        android:textColorHint="#bbbbbb"
+        android:textSize="16sp"
+        android:textColor="#9b9b9b"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/etPartnerHomeTown"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Description"
         android:textColor="@color/colorPrimary"
         android:layout_marginTop="5dp"
@@ -202,7 +220,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Male"
+        android:hint="description"
         android:textColorHint="#bbbbbb"
         android:textColor="#9b9b9b"
         android:textSize="16sp"

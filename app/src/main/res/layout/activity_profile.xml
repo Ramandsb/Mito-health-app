@@ -62,7 +62,7 @@
                 <TextView
                     android:id="@+id/tvProfileBlank"
                     android:layout_width="match_parent"
-                    android:layout_height="400dp" />
+                    android:layout_height="430dp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -73,12 +73,14 @@
                         android:id="@+id/viewPagerCountDots"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
                         android:layout_centerHorizontal="true"
                         android:orientation="horizontal" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:id="@+id/relativeProfileAllInfo"
                         android:layout_below="@+id/viewPagerCountDots"
                         android:background="#bf4c516d">
 
@@ -178,7 +180,7 @@
                             android:layout_marginLeft="20dp"
                             android:layout_marginTop="8dp"
                             android:textStyle="bold"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textColor="#ffffff"/>
                         <TextView
                             android:layout_width="wrap_content"
@@ -189,7 +191,7 @@
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="30dp"
                             android:layout_marginTop="4dp"
-                            android:textSize="16sp"
+                            android:textSize="12sp"
                             android:textColor="#ffffff"/>
                         <TextView
                             android:layout_width="wrap_content"
@@ -201,7 +203,7 @@
                             android:layout_marginLeft="20dp"
                             android:layout_marginTop="8dp"
                             android:textStyle="bold"
-                            android:textSize="16sp"
+                            android:textSize="14sp"
                             android:textColor="#ffffff"/>
                         <TextView
                             android:layout_width="wrap_content"
@@ -212,7 +214,7 @@
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="30dp"
                             android:layout_marginTop="4dp"
-                            android:textSize="16sp"
+                            android:textSize="12sp"
                             android:textColor="#ffffff"/>
                     </RelativeLayout>
                 </RelativeLayout>

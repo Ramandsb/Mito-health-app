@@ -3,21 +3,18 @@ package in.tagbin.mitohealthapp.model;
 import java.util.List;
 
 /**
- * Created by aasaqt on 14/8/16.
+ * Created by aasaqt on 27/8/16.
  */
-public class InterestModel {
+public class EventTypeModel {
     List<InterestListModel> list;
     public class InterestListModel{
-        String name,title;
+        String title;
         int id;
 
         public String getTitle() {
             return title;
         }
 
-        public String getName(){
-            return this.name;
-        }
         public int getId(){
             return this.id;
         }

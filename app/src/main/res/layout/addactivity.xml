@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/ivAddActivityImage"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="140dp"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="10dp"
         android:src="@drawable/hotel"
@@ -57,12 +57,30 @@
             android:padding="10dp"
             android:textSize="15sp"
             android:id="@+id/etAddTitle"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Type"
+            android:textColor="#6f87b3"
+            android:layout_below="@+id/etAddTitle"
+            android:id="@+id/tvAddType"
+            android:textSize="17sp" />
+        <AutoCompleteTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvAddType"
+            android:hint="Horse riding"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:textColorHint="#bbbbbb"
+            android:id="@+id/etAddType"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Desciption"
             android:textColor="#6f87b3"
-            android:layout_below="@+id/etAddTitle"
+            android:layout_below="@+id/etAddType"
             android:id="@+id/tvAddDesciption"
             android:textSize="17sp" />
         <EditText
@@ -77,26 +95,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Type"
-            android:textColor="#6f87b3"
-            android:layout_below="@+id/etAddDesciption"
-            android:id="@+id/tvAddType"
-            android:textSize="17sp" />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvAddType"
-            android:hint="Horse riding"
-            android:padding="10dp"
-            android:textSize="15sp"
-            android:textColorHint="#bbbbbb"
-            android:id="@+id/etAddType"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Location"
             android:textColor="#6f87b3"
-            android:layout_below="@+id/etAddType"
+            android:layout_below="@+id/etAddDesciption"
             android:id="@+id/tvAddLocation"
             android:textSize="17sp" />
         <EditText
@@ -111,31 +112,85 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Member"
+            android:text="Activity Date and Time"
             android:textColor="#6f87b3"
             android:layout_below="@+id/etAddLocation"
+            android:id="@+id/tvAddActivityDateHeading"
+            android:textSize="17sp" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/tvAddActivityDateHeading"
+            android:id="@+id/relativeTime">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1 Sep 2016"
+            android:textColor="#6f87b3"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:id="@+id/tvAddActivityDate"
+            android:textSize="15sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="3:00 PM"
+                android:textColor="#6f87b3"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:id="@+id/tvAddActivitytime"
+                android:layout_below="@+id/tvAddActivityDate"
+                android:textSize="15sp" />
+        </RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Member"
+            android:textColor="#6f87b3"
+            android:layout_below="@+id/relativeTime"
             android:id="@+id/tvAddMember"
             android:textSize="17sp"  />
-        <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/rangebar"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="#6f87b3"
+            android:layout_below="@+id/relativeTime"
+            android:id="@+id/tvAddMemberValue"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:textSize="17sp"  />
+        <!--<com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"-->
+            <!--android:id="@+id/rangebar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="72dp"-->
+            <!--android:layout_below="@+id/tvAddMember"-->
+            <!--android:layout_marginLeft="16dp"-->
+            <!--android:layout_marginRight="16dp"-->
+            <!--custom:connectingLineColor="@color/colorPrimary"-->
+            <!--custom:pinColor="@color/colorPrimary"-->
+            <!--custom:pinMaxFont="20sp"-->
+            <!--custom:pinMinFont="14sp"-->
+            <!--custom:pinPadding="10dp"-->
+            <!--custom:pinRadius="17dp"-->
+            <!--custom:rangeBarColor="#d0cfcf"-->
+            <!--custom:selectorColor="@color/colorPrimary"-->
+            <!--custom:textColor="#ffffff"-->
+            <!--custom:tickColor="#000000"-->
+            <!--custom:tickEnd="100"-->
+            <!--custom:tickInterval="1"-->
+            <!--custom:tickStart="0" />-->
+        <SeekBar
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:layout_below="@+id/tvAddMember"
+            android:layout_height="match_parent"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            custom:connectingLineColor="@color/colorPrimary"
-            custom:pinColor="@color/colorPrimary"
-            custom:pinMaxFont="20sp"
-            custom:pinMinFont="14sp"
-            custom:pinPadding="10dp"
-            custom:pinRadius="17dp"
-            custom:rangeBarColor="#d0cfcf"
-            custom:selectorColor="@color/colorPrimary"
-            custom:textColor="#ffffff"
-            custom:tickColor="#000000"
-            custom:tickEnd="100"
-            custom:tickInterval="1"
-            custom:tickStart="0" />
+            android:layout_marginTop="10dp"
+            android:id="@+id/rangebar"
+            android:layout_below="@+id/tvAddMember"/>
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -154,7 +209,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="00:00:00"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 android:id="@+id/tvAddDecisionTime"
                 android:textColor="@color/colorPrimary"
                 android:layout_marginLeft="10dp"
@@ -169,7 +224,7 @@
             android:background="@drawable/bg_card"
             android:layout_below="@+id/relativeAddDecisionTimer"
             android:elevation="30dp"
-            android:text="Created Activity"
+            android:text="Create Activity"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="#9FC793"

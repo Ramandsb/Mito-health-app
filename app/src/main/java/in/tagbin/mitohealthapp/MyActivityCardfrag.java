@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
@@ -41,7 +42,7 @@ import in.tagbin.mitohealthapp.model.ParticipantModel;
  * Created by aasaqt on 9/8/16.
  */
 public class MyActivityCardfrag extends Fragment implements View.OnClickListener {
-    TextView title,time,people,location,date,friendRequests,heading,selectedPeople,interested,approved,left;
+    TextView title,time,people,location,date,heading,selectedPeople,interested,approved,left;
     DataObject data;
     ImageView backImage,edit;
     LinearLayout linearFriends;
@@ -67,7 +68,6 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         heading = (TextView) layout.findViewById(R.id.tvMyActivityHeading);
         frameLayout = (FrameLayout) layout.findViewById(R.id.frameParticipantDetail);
         backImage = (ImageView) layout.findViewById(R.id.ivMyActivityImage);
-        friendRequests = (TextView) layout.findViewById(R.id.tvFriendRequests);
         linearFriends = (LinearLayout) layout.findViewById(R.id.lineaFriendRequsts);
         selectedPeople = (TextView) layout.findViewById(R.id.tvSelectedPeople);
         invite = (RelativeLayout) layout.findViewById(R.id.relativeInviteFriends);
@@ -75,10 +75,23 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         interested = (TextView) layout.findViewById(R.id.tvInterestedFriends);
         approved = (TextView) layout.findViewById(R.id.tvApprovedFriends);
         left = (TextView) layout.findViewById(R.id.tvLeftFriends);
+        final String dataobject = getArguments().getString("dataobject");
         progressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Bundle bundle = new Bundle();
+                Fragment fragment = new AddActivityfrag();
+                bundle.putString("response",dataobject);
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.frameAddActivity, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
         join.setOnClickListener(this);
         invite.setOnClickListener(this);
-        String dataobject = getArguments().getString("dataobject");
         data = JsonUtils.objectify(dataobject,DataObject.class);
         title.setText(data.getTitle());
         time.setText(MyUtils.getValidTime(data.getTime()));
@@ -143,19 +156,21 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             date.setVisibility(View.VISIBLE);
             edit.setVisibility(View.GONE);
             linearFriends.setVisibility(View.VISIBLE);
-            friendRequests.setVisibility(View.GONE);
             heading.setText("Activities");
             Controller.getParticipants(getContext(),data.getEvent_type().getId(),mParticipantListener);
             selectedPeople.setVisibility(View.VISIBLE);
             date.setText(MyUtils.getValidDate(data.getTime()));
+            linearFriends.setWeightSum(5);
+            join.setVisibility(View.VISIBLE);
         }else{
             date.setVisibility(View.GONE);
             edit.setVisibility(View.VISIBLE);
             heading.setText("My Activity");
             Controller.getParticipants(getContext(),data.getEvent_type().getId(),mParticipantListener);
             selectedPeople.setVisibility(View.GONE);
-            linearFriends.setVisibility(View.GONE);
-            friendRequests.setVisibility(View.VISIBLE);
+            linearFriends.setVisibility(View.VISIBLE);
+            join.setVisibility(View.GONE);
+            linearFriends.setWeightSum(4);
         }
         return layout;
     }

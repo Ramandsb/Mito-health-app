@@ -9,7 +9,7 @@ public class SetConnectProfileModel {
     String gender;
     double[] location = {77.8880, 29.8543};
     Images1Model images;
-    String occupation,description;
+    String occupation,description,hometown;
 
     public void setDescription(String description) {
         this.description = description;
@@ -21,6 +21,10 @@ public class SetConnectProfileModel {
 
     public void setLocation(double[] location) {
         this.location = location;
+    }
+
+    public void setHometown(String hometown) {
+        this.hometown = hometown;
     }
 
     public SetConnectProfileModel(){

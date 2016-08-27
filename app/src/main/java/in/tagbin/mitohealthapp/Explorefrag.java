@@ -12,11 +12,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+
+import java.text.ParseException;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.CardsDataAdapter;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.model.ConnectUserModel;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.ExploreModel;
 import link.fls.swipestack.SwipeStack;
 
@@ -42,28 +49,6 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
         mainContent = (RelativeLayout) viewGroup.findViewById(R.id.relativeMainProfile);
         progressBar = (ProgressBar) viewGroup.findViewById(R.id.progressBar);
         data = new ExploreModel();
-
-//        mCardStack.setStackMargin(20);
-//        list.add(new UserListModel(23,"Varun","Male","less 2 kms away","2 Common Interests"));
-//        list.add(new UserListModel(22,"Aasaqt","Male","less 3 kms away","3 Common Interests"));
-//        list.add(new UserListModel(24,"Chetan","Male","less 4 kms away","4 Common Interests"));
-//        list.add(new UserListModel(25,"Raman","Male","less 5 kms away","5 Common Interests"));
-//        list.add(new UserListModel(26,"Girish","Male","less 6 kms away","6 Common Interests"));
-
-//        mCardAdapter.add("test2");
-//        mCardAdapter.add("test3");
-//        mCardAdapter.add("test4");
-//        mCardAdapter.add("test5");
-//
-//        imageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent i = new Intent(getContext(), ProfileActivity.class);
-//                i.putExtra("response", JsonUtils.jsonify(list.get(0)));
-//                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                getContext().startActivity(i);
-//            }
-//        });
 
         //interests.setText(list.get(position).getInterests());
         progressBar.setVisibility(View.VISIBLE);
@@ -102,6 +87,15 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
                                 startActivity(i);
                             }
                         });
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                ConnectUserModel connectUserModel = new ConnectUserModel();
+                                connectUserModel.setId(data.getNearby_user_list().get(0).getId());
+                                progressBar.setVisibility(View.VISIBLE);
+                                Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
+                            }
+                        });
                     }else{
                         mainContent.setVisibility(View.GONE);
                         noData.setVisibility(View.VISIBLE);
@@ -113,6 +107,15 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("users listener error",message);
+            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+
         }
     };
 
@@ -130,6 +133,15 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
                     Intent i = new Intent(getContext(),ProfileActivity.class);
                     i.putExtra("response",JsonUtils.jsonify(data.getNearby_user_list().get(position1)));
                     startActivity(i);
+                }
+            });
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ConnectUserModel connectUserModel = new ConnectUserModel();
+                    connectUserModel.setId(data.getNearby_user_list().get(position1).getId());
+                    progressBar.setVisibility(View.VISIBLE);
+                    Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
                 }
             });
         }
@@ -151,6 +163,15 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
                     startActivity(i);
                 }
             });
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ConnectUserModel connectUserModel = new ConnectUserModel();
+                    connectUserModel.setId(data.getNearby_user_list().get(position1).getId());
+                    progressBar.setVisibility(View.VISIBLE);
+                    Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
+                }
+            });
         }
         //interests.setText(list.get(position1).getInterests());
     }
@@ -169,6 +190,46 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
                 startActivity(i);
             }
         });
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ConnectUserModel connectUserModel = new ConnectUserModel();
+                connectUserModel.setId(data.getNearby_user_list().get(0).getId());
+                progressBar.setVisibility(View.VISIBLE);
+                Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
+            }
+        });
     }
+    RequestListener mConnectListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("user connected",responseObject.toString());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("user con error",message);
+            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+
+        }
+    };
 
 }
