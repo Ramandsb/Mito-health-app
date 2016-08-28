@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -90,7 +91,8 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     TextView messageView;
     ProgressBar progressBar;
     android.app.AlertDialog alert;
-    String PreviousrangeDate="";
+    String last7Days="";
+    String next7Days="";
     String myurl=Config.url + "logger/history/dates/";
 
     int a = 0, b = 0, c = 0;
@@ -112,145 +114,13 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("PREPDUG","Setting options true");
+        Log.d("PREPDUG", "Setting options true");
         BinderActivity i = (BinderActivity) getActivity();
         setHasOptionsMenu(true);
         i.invalidateOptionsMenu();
-        dop=new DatabaseOperations(getActivity());
+        dop = new DatabaseOperations(getActivity());
 
     }
-
-    private void makeJsonObjGETReq() {
-showDialog();
-        Map<String, String> postParam = new HashMap<String, String>();
-
-
-        auth_key=   login_details.getString("key","");
-        user_id=   login_details.getString("user_id","");
-        Log.d("details", user_id + "//" + auth_key);
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                Config.url + "users/" + user_id + "/", null,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject res) {
-                        Log.d("response", res.toString());
-
-                        try {
-
-                            SharedPreferences.Editor editor= login_details.edit();
-
-                            dismissDialog();
-                            JSONObject obj = res.getJSONObject("user");
-                          String  username = obj.getString("username");
-                          String  first_name = obj.getString("first_name");
-                           String last_name = obj.getString("last_name");
-                          String   email = obj.getString("email");
-                            JSONObject profile = res.getJSONObject("profile");
-                            String dob = profile.getString("dob");
-                            String gender = profile.getString("gender");
-                            String height = profile.getString("height");
-                            String weight = profile.getString("weight");
-                            String waist = profile.getString("waist");
-
-
-
-
-
-                            int wei=Integer.valueOf(weight);
-                            int  grams= wei%1000;
-                            int kg =wei/1000;
-                            int hei=Integer.valueOf(height);
-                            int  fee= hei/12;
-                            int inv =wei%1000;
-
-
-
-
-                            try {
-
-
-
-                                SharedPreferences.Editor editor1= login_details.edit();
-//                                JSONObject images=     res.getJSONObject("images");
-//                                String master=   images.getString("master");
-//                                editor.putString("master_image",master);
-//
-
-                                JSONArray energy=    res.getJSONArray("energy");
-                                Log.d("energy details",energy.toString());
-
-                                String[] energyi=new String[5];
-                                for (int i =0;i<energy.length();i++){
-
-                                    energyi[i]=energy.get(i).toString();
-
-                                    Log.d("energy val",energyi[i]);
-                                }
-                                editor1.putString("water_amount",energyi[1]);
-                                editor1.putString("food_cal",energyi[2]);
-                                editor1.putString("calorie_burnt",energyi[3]);
-                                editor1.putString("total_calorie_required",energyi[4]);
-                                Log.d("energy details",energyi[1]+"///"+energyi[2]+"///"+energyi[3]+"///"+energyi[4]+"///");
-
-                                JSONObject user =   res.getJSONObject("user");
-                                String user_username=   user.getString("username");
-                                String user_first_name=   user.getString("first_name");
-                                String user_last_name=  user.getString("last_name");
-                                String user_email=   user.getString("email");
-
-                                editor1.putString("user_username",user_username);
-                                editor1.putString("user_first_name",user_first_name);
-                                editor1.putString("user_last_name",user_last_name);
-                                editor1.putString("user_email",user_email);
-
-                                editor1.commit();
-                                Log.d("all details",login_details.getAll().toString())   ;
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-                displayErrors(error);
-
-                Log.d("error", error.toString());
-            }
-        }) {
-
-            //
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("charset", "utf-8");
-                headers.put("Authorization", "JWT " + auth_key);
-                return headers;
-            }
-//
-
-
-        };
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
-
-
-
-// Create items
 
     @Nullable
     @Override
@@ -262,28 +132,38 @@ showDialog();
         int  year = calendar.get(Calendar.YEAR);
         int  month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = month+1;
-        if (month<=9 && day <=9){
-            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else  if (month<=9 && day >9){
-            selectedDate = year + "-" + "0"+month + "-" + day;
-            PreviousrangeDate=year + "-" + "0"+month + "-" + (day-7);
-            Log.d("date",selectedDate);
-        }else  if (day <=9 && month >9){
-            selectedDate = year + "-" +month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else if (day >9 && month >9){
-            selectedDate = year + "-" + month + "-" + day;
-            PreviousrangeDate=year + "-" + "0"+month + "-" + (day-7);
-            Log.d("date", selectedDate);
 
-        }
-        Controller.getDateRangeData(getActivity(),String.valueOf(MyUtils.getUtcTimestamp(PreviousrangeDate+" 00:00:00","s")),String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s")),mDateRangelistener);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Calendar  current_cal = Calendar.getInstance();
+        Date currentDate = current_cal.getTime();
+        selectedDate=sdf.format(currentDate);
+     //////////////////////////////////////////
+        Calendar  p_cal = Calendar.getInstance();
+        p_cal.add(Calendar.DATE,-7);
+        Date p_Date = p_cal.getTime();
+        last7Days=sdf.format(p_Date);
+        ///////////////////////////////////////////
+        Calendar  n_cal = Calendar.getInstance();
+        n_cal.add(Calendar.DATE,+2);
+        Date n_Date = n_cal.getTime();
+        next7Days=sdf.format(n_Date);
+
+
+
+
+        Log.d("last 7 date",last7Days);
+        Log.d("normal date",selectedDate);
+        Log.d("next 7 date",next7Days);
+
+
+
+        Controller.getDateRangeData(getActivity(),String.valueOf(MyUtils.getUtcTimestamp(last7Days+" 00:00:00","s")),String.valueOf(MyUtils.getUtcTimestamp(next7Days+" 00:00:00","s")),mDateRangelistener);
         widget= (MaterialCalendarView) v.findViewById(R.id.calendarView);
         // Add a decorator to disable prime numbered days
 
-        Log.d("start Date",MyUtils.getUtcTimestamp(PreviousrangeDate+" 00:00:00","s")+"////"+MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
+        Log.d("start Date",MyUtils.getUtcTimestamp(last7Days+" 00:00:00","s")+"////"+MyUtils.getUtcTimestamp(next7Days+" 00:00:00","s"));
 
         widget.setSelectedDate(calendar.getTime());
 
@@ -310,39 +190,42 @@ showDialog();
         plus_button = (Button) v.findViewById(R.id.plus_but);
         minus_button = (Button) v.findViewById(R.id.minus_but);
         glasses = (TextView) v.findViewById(R.id.glasses);
+        foodcard_recom = (TextView) v.findViewById(R.id.foodcard_recomended);
+        exercard_burnt = (TextView) v.findViewById(R.id.exercard_burnt);
         cal_consumed = (TextView) v.findViewById(R.id.cal_consumed);
         cal_left = (TextView) v.findViewById(R.id.cal_left);
         cal_burned = (TextView) v.findViewById(R.id.cal_burned);
         login_details=getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
 
-        makeJsonObjGETReq();
-            String water_amount=   login_details.getString("water_amount","");
-            String food_cal=   login_details.getString("food_cal","");
-            String calorie_burnt=   login_details.getString("calorie_burnt","");
-            String total_calorie_required=   login_details.getString("total_calorie_required","");
+////        makeJsonObjGETReq();
+//            String water_amount=   login_details.getString("water_amount","");
+//            String food_cal=   login_details.getString("food_cal","");
+//            String calorie_burnt=   login_details.getString("calorie_burnt","");
+//            String total_calorie_required=   login_details.getString("total_calorie_required","");
+//
+////            Float left= Float.valueOf(total_calorie_required)-Float.valueOf(food_cal);
+//            if (water_amount.equals("") ||food_cal.equals("")||calorie_burnt.equals("")||total_calorie_required.equals("")){
+//
+//            }else {
+//                double wat_int=(Double.valueOf(water_amount));
+//                int i=Integer.valueOf((int) wat_int);
+//                double wat_int1=(Double.valueOf(food_cal));
+//                int j=Integer.valueOf((int) wat_int1);
+//                double wat_int2=(Double.valueOf(calorie_burnt));
+//                int k=Integer.valueOf((int) wat_int2);
+//                double wat_int3=(Double.valueOf(total_calorie_required));
+//                int l=Integer.valueOf((int) wat_int3);
+//                int fcal_int=j;
+//                int calbur_int=k;
+//                int totcal_int=l;
+////                cal_consumed.setText(fcal_int+"");
+////                cal_left.setText(fcal_int+"/"+totcal_int+"");
+////                cal_burned.setText(calbur_int+"");
+//
+//            }
 
-//            Float left= Float.valueOf(total_calorie_required)-Float.valueOf(food_cal);
-            if (water_amount.equals("") ||food_cal.equals("")||calorie_burnt.equals("")||total_calorie_required.equals("")){
 
-            }else {
-                double wat_int=(Double.valueOf(water_amount));
-                int i=Integer.valueOf((int) wat_int);
-                double wat_int1=(Double.valueOf(food_cal));
-                int j=Integer.valueOf((int) wat_int1);
-                double wat_int2=(Double.valueOf(calorie_burnt));
-                int k=Integer.valueOf((int) wat_int2);
-                double wat_int3=(Double.valueOf(total_calorie_required));
-                int l=Integer.valueOf((int) wat_int3);
-                int fcal_int=j;
-                int calbur_int=k;
-                int totcal_int=l;
-                cal_consumed.setText(fcal_int+"");
-                cal_left.setText(fcal_int+"/"+totcal_int+"");
-                cal_burned.setText(calbur_int+"");
-
-            }
-
-
+        setHomepageDetails();
 
         food_card.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -384,6 +267,39 @@ showDialog();
         return v;
     }
 
+    private void setHomepageDetails() {
+
+        Cursor cursor =dop.getCompleteChartInfo(dop,selectedDate);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+  String      f_con=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_CONSUMED));
+  String   e_bur=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_EXERCAL_BURNED));
+  String  water=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_WATER_CONSUMED));
+  String    f_req=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_REQ));
+                double wat_int=(Double.valueOf(water));
+                int i=Integer.valueOf((int) wat_int);
+                double wat_int1=(Double.valueOf(f_con));
+                int j=Integer.valueOf((int) wat_int1);
+                double wat_int2=(Double.valueOf(e_bur));
+                int k=Integer.valueOf((int) wat_int2);
+                double wat_int3=(Double.valueOf(f_req));
+                int l=Integer.valueOf((int) wat_int3);
+                int fcal_int=j;
+                int calbur_int=k;
+                int totcal_int=l;
+                cal_consumed.setText(fcal_int+"");
+                cal_left.setText(fcal_int+"/"+totcal_int);
+                cal_burned.setText(calbur_int+"");
+                String w= String.valueOf(i/100);
+                glasses.setText(w+"/8");
+                foodcard_recom.setText(fcal_int + " Kcal");
+                exercard_burnt.setText(calbur_int+"");
+            }
+            while (cursor.moveToNext());
+        }
+
+    }
+
     RequestListener mDateRangelistener= new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -400,6 +316,7 @@ showDialog();
 
             try {
 
+                dop.ClearChartTable(dop);
 
                 JSONObject object = new JSONObject(responseObject.toString());
                 JSONArray chart = object.getJSONArray("chart");
@@ -413,14 +330,16 @@ showDialog();
                     long  time= MyUtils.getUtcTimestamp(date,"m");
 
                     Log.d("check response prob",water+date+""+fcal_con+fcal_req+exer_bur);
+                    dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "2000", water, "100", exer_bur, "8", "6");
+
                     int count =dop.getCount(dop, TableData.Tableinfo.TABLE_NAME_CHART, TableData.Tableinfo.CHART_DATE,selectedDate+" 00:00:00");
 
-                  if (count==0){
-                      dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "8", water, "100", exer_bur, "8", "6");
-                      Log.d("count with put",count+"/////");
-                  }else {
-                      Log.d("count",count+"///  count without");
-                  }
+//                  if (count==0){
+//                      dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "8", water, "100", exer_bur, "8", "6");
+//                      Log.d("count with put",count+"/////");
+//                  }else {
+//                      Log.d("count",count+"///  count without");
+//                  }
 
                 }
             }catch (Exception e){
@@ -478,70 +397,7 @@ showDialog();
 
         return timestamp;
     }
-    private void makeJsonObjReq(String start,String end) {
-showDialog();
-        auth_key=   login_details.getString("key", "");
-        Map<String, String> postParam = new HashMap<String, String>();
 
-        Log.d("check auth",auth_key);
-
-        postParam.put("start", start);
-        postParam.put("end", end);
-
-
-
-
-        JSONObject jsonObject = new JSONObject(postParam);
-        Log.d("postpar", jsonObject.toString());
-
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                myurl, jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
-
-
-dismissDialog();
-
-
-
-
-                    }
-
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-displayErrors(error);
-
-                Log.d("error", error.toString()+"//////////"+error.getMessage());
-            }
-        }) {
-
-            //
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put( "charset", "utf-8");
-                headers.put("Authorization","JWT "+auth_key);
-                return headers;
-            }
-
-
-
-        };
-
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
 
 
 
@@ -558,16 +414,20 @@ displayErrors(error);
         int day=   date.getDay();
         int month=   date.getMonth()+1;
         int year=   date.getYear();
-        selectedDate=year+"-0"+month+"-0"+day;
-        Log.d("date",selectedDate);
-//        String selectedDate=year+"-"+"0"+day+"-"+"0"+month;
-
-        int nextdays=day+7;
-         
-             long start_date=MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s");
-             long end_date=MyUtils.getUtcTimestamp(year+"-0"+month+"-0"+nextdays+" 00:00:00","s");
-makeJsonObjReq(String.valueOf(start_date),String.valueOf(end_date));
-
+        if (month<=9 && day <=9){
+            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else  if (month<=9 && day >9){
+            selectedDate = year + "-" + "0"+month + "-" + day;
+            Log.d("date",selectedDate);
+        }else  if (day <=9 && month >9){
+            selectedDate = year + "-" +month + "-" + "0"+day;
+            Log.d("date",selectedDate);
+        }else if (day >9 && month >9){
+            selectedDate = year + "-" + month + "-" + day;
+            Log.d("date", selectedDate);
+        }
+        setHomepageDetails();
     }
     public void customDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());

@@ -29,6 +29,7 @@ import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import in.tagbin.mitohealthapp.CollapsableLogging;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
@@ -59,7 +60,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     MaterialCalendarView widget;
     public static String selectedDate="";
     public static String unique_id="";
-
+    int glass_size=100;
     TextView ml;
     int a=0,b=0,c=0;
     int i = 0;
@@ -79,25 +80,11 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Calendar  calendar = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        int  year = calendar.get(Calendar.YEAR);
-        int  month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = month+1;
-        if (month<=9 && day <=9){
-            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else  if (month<=9 && day >9){
-            selectedDate = year + "-" + "0"+month + "-" + day;
-            Log.d("date",selectedDate);
-        }else  if (day <=9 && month >9){
-            selectedDate = year + "-" +month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else if (day >9 && month >9){
-            selectedDate = year + "-" + month + "-" + day;
-            Log.d("date", selectedDate);
-        }
+        Calendar  current_cal = Calendar.getInstance();
+        Date currentDate = current_cal.getTime();
+        selectedDate=sdf.format(currentDate);
         dop= new DatabaseOperations(getActivity());
 
 
@@ -432,6 +419,8 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
             water6.setBeerProgress(0);
             water7.setBeerProgress(0);
             water8.setBeerProgress(0);
+            water9.setBeerProgress(0);
+            ml.setText("00 ml");
             boo1=false;
             boo2=false;
             boo3=false;
@@ -461,10 +450,15 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
             for (int j = 1; j <= i; j++) {
 
                 if (source.equals("start")){
-                    PourBeerTask pourBeerTask = new PourBeerTask(getActivity(), ReturnImageView(j), 80, 0);
-                    pourBeerTask.execute(true);
+                        PourBeerTask pourBeerTask = new PourBeerTask(getActivity(), ReturnImageView(j), 80, 0);
+                        pourBeerTask.execute(true);
+
                 }else if (source.equals("click")){
                     ReturnImageView(j).setBeerProgress(80);
+                    water9.setBeerProgress(Returnjug(i));
+                    jugcount=Returnjug(i);
+
+
 
 
                 }
@@ -522,6 +516,9 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
 
         int value=00;
         switch (i){
+            case 0:
+                value=0;
+                break;
             case 1:
                 value=8;
                 break;
@@ -553,10 +550,11 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     }
 
 
+
 public void UpdateDataBase(String count){
     Cursor cursor = dop.getWaterInformation(dop, selectedDate);
     int co = cursor.getCount();
-    int mli=Integer.valueOf(count)*250;
+    int mli=Integer.valueOf(count)*glass_size;
 
     if (co == 1) {
         if (cursor != null && cursor.moveToFirst()) {
@@ -566,13 +564,14 @@ public void UpdateDataBase(String count){
             ContentValues cv = new ContentValues();
             cv.put(TableData.Tableinfo.GLASSES, String.valueOf(count));
             cv.put(TableData.Tableinfo.ML, String.valueOf(mli));
+            cv.put(TableData.Tableinfo.WATER_SYNCED, "no");
             dop.updateWaterRow(dop, cv, unique_id);
             ml.setText(String.valueOf(mli)+" ml");
 
         }
     }else if (co == 0) {
         unique_id = String.valueOf(System.currentTimeMillis());
-        dop.putWaterInformation(dop, unique_id,selectedDate,String.valueOf(count),String.valueOf(mli),"250","no");
+        dop.putWaterInformation(dop, unique_id,selectedDate,String.valueOf(count),String.valueOf(mli),String.valueOf(glass_size),"no");
         ml.setText(String.valueOf(mli)+" ml");
     }
 }

@@ -101,7 +101,7 @@ public class ChatActivity extends AppCompatActivity {
             adapter.setListContent(list);
         }
         toolbar.setTitle(user_name);
-        recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
+//        recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
 
 
         // Set a listener to send a chat text message
@@ -140,6 +140,13 @@ public class ChatActivity extends AppCompatActivity {
         } catch (Exception e) {
 
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     private BroadcastReceiver Recievemsgs = new BroadcastReceiver() {
         @Override

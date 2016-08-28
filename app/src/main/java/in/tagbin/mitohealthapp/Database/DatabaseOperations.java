@@ -91,6 +91,11 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         Log.d("Database Created", "true");
 
     }
+
+    public void ClearChartTable(DatabaseOperations dop){
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        SQ.delete(TableData.Tableinfo.TABLE_NAME_CHART,null,null);
+    }
     public void putChartInformation(DatabaseOperations dop, String date, String timestamp, String fcal_req,String fcal_con,String wat_req,String water_con,String exer_req,String exer_con,String sleep_req,String sleep_con) {
         SQLiteDatabase SQ = dop.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -167,10 +172,21 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor getCompleteWaterInformation(DatabaseOperations dop){
+    public Cursor getCompleteWaterInformation(DatabaseOperations dop,String source){
+        Log.d("source",source);
+        Cursor cursor = null;
+
         SQLiteDatabase SQ = dop.getReadableDatabase();
 //        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
-        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_WATER, null);
+        if (source.equals("all")){
+            cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_WATER , null);
+return cursor;
+
+        }else if (source.equals("no")){
+            cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_WATER + " WHERE " + TableData.Tableinfo.WATER_SYNCED + "='" + source + "'", null);
+return cursor;
+        }
+
 
         return cursor;
     }
@@ -266,6 +282,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         }
         return listData;
 
+    }
+    public Cursor getCompleteChartInfo(DatabaseOperations dop,String date){
+        date=date+" 00:00:00";
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CHART + " WHERE " + TableData.Tableinfo.CHART_DATE + "='" + date + "'", null);
+
+        return cursor;
     }
 
 
@@ -377,6 +401,7 @@ String da="2016-08-23 00:00:00";
         cursor.close();
         return cnt;
     }
+
 
     public  void updateRow(DatabaseOperations dop,ContentValues cv,String id){
         SQLiteDatabase SQ = dop.getWritableDatabase();

@@ -130,7 +130,7 @@ public class DishSearch extends AppCompatActivity {
         auto_tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(DishSearch.this, i + " itemClicked" + "value got is" + adapterView.getItemAtPosition(i), Toast.LENGTH_LONG).show();
+//                Toast.makeText(DishSearch.this, i + " itemClicked" + "value got is" + adapterView.getItemAtPosition(i), Toast.LENGTH_LONG).show();
 
                 Log.d("Item Clicked", "true");
 

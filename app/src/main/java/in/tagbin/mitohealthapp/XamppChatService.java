@@ -85,14 +85,13 @@ public class XamppChatService extends Service {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        Log.d("is connected",activeNetworkInfo.isConnected()+"///");
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("Service called","///");
 
-        Toast.makeText(getBaseContext(),"Service Started",Toast.LENGTH_LONG).show();
+//        Toast.makeText(getBaseContext(),"Service Started",Toast.LENGTH_LONG).show();
 
         if (isNetworkAvailable()) {
             Connector asyncTask = new Connector();

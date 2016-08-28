@@ -1,6 +1,7 @@
 package in.tagbin.mitohealthapp;
 
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -32,6 +33,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -120,6 +122,10 @@ public FoodInterface foodInterface;
         tabLayout.setupWithViewPager(viewPager);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        int i = getIntent().getIntExtra("selection",0);
+        setupViewPager(viewPager);
+        viewPager.setOffscreenPageLimit(2);
+        viewPager.setCurrentItem(i);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -189,10 +195,7 @@ public FoodInterface foodInterface;
 
             }
         });
-       int i = getIntent().getIntExtra("selection",0);
-        setupViewPager(viewPager);
-        viewPager.setOffscreenPageLimit(2);
-        viewPager.setCurrentItem(i);
+
 
 //        calenderTrans();
 
@@ -240,10 +243,62 @@ public FoodInterface foodInterface;
         // enable scaling and dragging
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        mChart.setPinchZoom(true);
+        mChart.setPinchZoom(false);
         Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
         l.setPosition(Legend.LegendPosition.LEFT_OF_CHART_INSIDE);
-        addData(dop.getChartInformation(dop,HomePage.selectedDate),"food");
+
+        int position=i;
+        if (position==1){
+            fab.hide();
+            appBarLayout.setBackgroundResource(R.color.bluegrey_pri);
+            tabLayout.setBackgroundResource(R.color.bluegrey_pri);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.bluegrey_acc));
+
+            }
+
+            addData(dop.getChartInformation(dop,HomePage.selectedDate),"water");
+
+        }
+        if (position==0){
+            fab.show();
+            appBarLayout.setBackgroundResource(R.color.colorPrimary);
+            tabLayout.setBackgroundResource(R.color.colorPrimary);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+
+            }
+            addData(dop.getChartInformation(dop,HomePage.selectedDate),"food");
+
+        }
+        if (position==2){
+            fab.show();
+            appBarLayout.setBackgroundResource(R.color.mdtp_red);
+            tabLayout.setBackgroundResource(R.color.mdtp_red);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.mdtp_red_focused));
+            }
+            addData(dop.getChartInformation(dop,HomePage.selectedDate),"exercise");
+        }
+        if (position==3){
+            fab.hide();
+
+            appBarLayout.setBackgroundResource(R.color.grey_pri);
+            tabLayout.setBackgroundResource(R.color.grey_pri);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.grey_acc));
+            }
+            addData(dop.getChartInformation(dop,HomePage.selectedDate),"sleep");
+        }
+
 
         mSheetLayout.setFab(fab);
         mSheetLayout.setFabAnimationEndListener(this);
@@ -274,6 +329,7 @@ public FoodInterface foodInterface;
                 for (ILineDataSet iSet : sets) {
 
                     LineDataSet set = (LineDataSet) iSet;
+
                     set.setDrawValues(!set.isDrawValuesEnabled());
                 }
 
@@ -413,11 +469,18 @@ public FoodInterface foodInterface;
 //            e.printStackTrace();
 //        }
         try {
-            Controller.getWaterLog(this,addDbValuetoJsonArray(),mWaterLogListener);
+
+            Cursor cursor= dop.getCompleteWaterInformation(dop,"no");
+            Log.d("Countwater",cursor.getCount()+"//");
+
+            if (cursor.getCount()!=0) {
+                Controller.getWaterLog(this, addDbValuetoJsonArray(), mWaterLogListener);
+            }
             Controller.getSleepLog(this,addDbSleepValuetoJsonArray(),mSleepLogListener);
 
         } catch (ParseException e) {
             e.printStackTrace();
+            Log.d("count error","true");
         }
         startActivity(new Intent(CollapsableLogging.this,BinderActivity.class).putExtra("selection",2).putExtra("source","indirect"));
         finish();
@@ -434,16 +497,19 @@ public FoodInterface foodInterface;
     }
 
     public  WaterLogModel addDbValuetoJsonArray() throws ParseException {
-       Cursor cursor= dop.getCompleteWaterInformation(dop);
+       Cursor cursor= dop.getCompleteWaterInformation(dop,"no");
+        Log.d("Countwater",cursor.getCount()+"//");
 
         WaterLogModel waterLogModel = new WaterLogModel();
         List<Timeconsumed> timeconsumeds = new ArrayList<Timeconsumed>();
         if (cursor != null && cursor.moveToFirst()) {
+
             do {
                 //create a new movie object and retrieve the data from the cursor to be stored in this movie object
                 Timeconsumed timeconsumed = new Timeconsumed();
-                timeconsumed.setC_id(Integer.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.GLASSES))));
-                timeconsumed.setTime_consumed(Double.valueOf(MyUtils.getUtcTimestamp(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.WATER_DATE+"00:00:00")),"s")));
+                timeconsumed.setAmount(Integer.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.GLASSES))));
+                timeconsumed.setC_id(1);
+                timeconsumed.setTime_consumed(Double.valueOf(MyUtils.getUtcTimestamp(((cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.WATER_DATE)))+" 00:00:00"),"s")));
                 timeconsumeds.add(timeconsumed);
             }
             while (cursor.moveToNext());
@@ -585,11 +651,17 @@ public FoodInterface foodInterface;
         LineDataSet d = new LineDataSet(values, "Required");
         d.setLineWidth(2.5f);
         d.setCircleRadius(4f);
+        d.setValueTextColor(Color.WHITE);
+        d.setAxisDependency(YAxis.AxisDependency.LEFT);
+
         LineDataSet d1 = new LineDataSet(values2, "Consumed");
         d1.setLineWidth(2.5f);
         d1.setCircleRadius(4f);
         d1.setDrawFilled(true);
-        d.setDrawFilled(true);
+        d1.setValueTextColor(Color.WHITE);
+        d1.setDrawFilled(true);
+        d1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
 
 //        int color = mColors[z % mColors.length];
 //        d.setColor(getResources().getColor(R.color.red));
@@ -621,6 +693,23 @@ public FoodInterface foodInterface;
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("WaterLogging response",responseObject.toString());
+            Cursor cursor= dop.getCompleteWaterInformation(dop,"no");
+            Log.d("Countwater",cursor.getCount()+"//");
+
+
+            if (cursor != null && cursor.moveToFirst()) {
+
+                do {
+                    //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+              String unique_id=cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.WATER_UNIQUE_ID));
+                    ContentValues cv = new ContentValues();
+                    cv.put(TableData.Tableinfo.WATER_SYNCED,"yes");
+                    dop.updateWaterRow(dop,cv,unique_id);
+
+                }
+                while (cursor.moveToNext());
+            }
+
 
         }
 

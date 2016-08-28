@@ -6,6 +6,7 @@ package in.tagbin.mitohealthapp.model;
 public class Timeconsumed{
     int c_id=0;
     double time_consumed=0.0;
+    int amount=0;
 
     public double getTime_consumed() {
         return time_consumed;
@@ -23,4 +24,11 @@ public class Timeconsumed{
         this.time_consumed = time_consumed;
     }
 
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
 }

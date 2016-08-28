@@ -291,7 +291,7 @@
                             android:layout_height="wrap_content"
                             android:textSize="13sp"
                             android:textColor="#ffffff"
-                            android:text="4/9"
+                            android:text="0/8"
                             android:id="@+id/glasses"
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true" />
