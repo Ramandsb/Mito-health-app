@@ -152,7 +152,10 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             dataObject = JsonUtils.objectify(response,DataObject.class);
             title.setText(dataObject.getTitle());
             type.setText(dataObject.getEvent_type().getTitle());
+            description.setText(dataObject.getDescription());
             rangeBar.setProgress(dataObject.getCapacity());
+            activityDate.setText(MyUtils.getValidDate(dataObject.getEvent_time()));
+            activityTime.setText(MyUtils.getValidTime(dataObject.getEvent_time()));
             if (dataObject.getPicture() != null){
                 ImageLoader.getInstance().loadImage(dataObject.getPicture(), new ImageLoadingListener() {
                     @Override
@@ -206,6 +209,13 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             }else {
                 addImage.setImageResource(R.drawable.hotel);
             }
+            createActivity.setText("Update Activity");
+            createActivity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
         }
         type.setOnItemClickListener(mAutocompleteClickListener);
         adapter = new PlaceAutoCompleteAdapter(getContext(), android.R.layout.simple_list_item_1);
@@ -235,9 +245,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 createEventSendModel.capacity = memberValueFinal;
                 Date date1 = new Date(year - 1900, month, day, hour, minute);
                 long output = date1.getTime() / 1000L;
+                Date date2 =new Date(year1-1900,month1,day1,hour1,minute1);
+                long output1 = date2.getTime()/1000L;
                 if (pref.getKeyMasterCreate() != null){
                     createEventSendModel.picture = pref.getKeyMasterCreate();
                 }
+                createEventSendModel.event_time = output1;
                 createEventSendModel.timer = String.valueOf(output);
                 createEventSendModel.event_type = "1";
                 Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));

@@ -410,6 +410,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 if (data.getDescription() != null){
                     etGender.setText(data.getDescription());
                 }
+                if (data.getHome_town() != null){
+                    etHomeTwon.setText(data.getHome_town());
+                }
             }
         }
 

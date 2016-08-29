@@ -10,7 +10,7 @@ public class ConnectProfileModel {
     int id;
     String gender;
     ImagesModel images;
-    String occupation,description,last_login,location;
+    String occupation,description,last_login,location,home_town;
     int age,compatibility;
 
     List<InterestProfileModel> interests;
@@ -31,6 +31,10 @@ public class ConnectProfileModel {
 
     public int getCompatibility() {
         return compatibility;
+    }
+
+    public String getHome_town() {
+        return home_town;
     }
 
     public User1Model getUser(){

@@ -21,10 +21,10 @@ public class SliderActivity extends AppCompatActivity implements ViewPager.OnPag
     private ViewPager intro_images;
     RelativeLayout pager;
     private int[] mImageResources = {
-            R.drawable.hotel,
-            R.drawable.hotel,
-            R.drawable.hotel,
-            R.drawable.hotel/*,
+            R.drawable.profile_intro1,
+            R.drawable.profile_intro2,
+            R.drawable.profile_intro3,
+            R.drawable.profile_intro4/*,
             R.drawable.intro4*/};
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -25,6 +25,14 @@ public class ParticipantModel {
         return this.user;
     }
 
+    public boolean isConfirm() {
+        return confirm;
+    }
+
+    public boolean isDecline() {
+        return decline;
+    }
+
     public class UserModel{
         public UserModel(){
             profile = new ProfileModel();

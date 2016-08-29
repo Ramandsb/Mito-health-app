@@ -4,7 +4,7 @@ package in.tagbin.mitohealthapp.model;
  * Created by Akshay-Pc on 8/7/2016.
  */
 public class DataObject {
-    public String title,location,etitle,timer,picture;
+    public String title,location,etitle,timer,picture,description,event_time;
     public boolean all;
     public int id,capacity,total_request,total_approved;
     public EventType event_type;
@@ -17,6 +17,14 @@ public class DataObject {
         this.timer=tme;
         this.all = false;
 
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getEvent_time() {
+        return event_time;
     }
 
     public String getTime() {

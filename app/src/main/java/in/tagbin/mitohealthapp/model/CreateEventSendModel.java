@@ -6,6 +6,7 @@ package in.tagbin.mitohealthapp.model;
 public class CreateEventSendModel {
     public String event_type = "1";
     public String timer,title,picture,type,description;
+    public long event_time;
     public int capacity;
     double[] location = {77.0266, 28.4595};
 

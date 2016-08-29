@@ -74,9 +74,11 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         join = (RelativeLayout) layout.findViewById(R.id.relativeJoinFriends);
         interested = (TextView) layout.findViewById(R.id.tvInterestedFriends);
         interestedRelative = (RelativeLayout) layout.findViewById(R.id.relativeInterested);
-        interestedRelative = (RelativeLayout) layout.findViewById(R.id.relativeInterested);
+        approvedRelative = (RelativeLayout) layout.findViewById(R.id.relativeApproved);
         approved = (TextView) layout.findViewById(R.id.tvApprovedFriends);
         left = (TextView) layout.findViewById(R.id.tvLeftFriends);
+        interestedRelative.setOnClickListener(this);
+        approvedRelative.setOnClickListener(this);
         final String dataobject = getArguments().getString("dataobject");
         progressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         edit.setOnClickListener(new View.OnClickListener() {
@@ -164,15 +166,20 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             date.setText(MyUtils.getValidDate(data.getTime()));
             linearFriends.setWeightSum(5);
             join.setVisibility(View.VISIBLE);
+            approvedRelative.setClickable(false);
+            interestedRelative.setClickable(false);
         }else{
             date.setVisibility(View.GONE);
             edit.setVisibility(View.VISIBLE);
             heading.setText("My Activity");
             Controller.getParticipants(getContext(),data.getEvent_type().getId(),mParticipantListener);
-            selectedPeople.setVisibility(View.GONE);
+            selectedPeople.setVisibility(View.VISIBLE);
+            selectedPeople.setText("Interested People");
             linearFriends.setVisibility(View.VISIBLE);
             join.setVisibility(View.GONE);
             linearFriends.setWeightSum(4);
+            approvedRelative.setClickable(true);
+            interestedRelative.setClickable(true);
         }
         return layout;
     }
@@ -214,7 +221,38 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
                 Controller.joinEvent(getContext(),data.getId(),mJoinEventListener);
                 break;
             case R.id.relativeInviteFriends:
-
+                break;
+            case R.id.relativeApproved:
+                selectedPeople.setText("Approved People");
+                if (mModel.size() >0){
+                    mModel.clear();
+                    for (int i= 0;i<da.size();i++){
+                        if (da.get(i).isConfirm()){
+                            mModel.add(da.get(i));
+                        }
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+                break;
+            case R.id.relativeInterested:
+                selectedPeople.setText("Interested People");
+                if (mModel.size() >0){
+                    mModel.clear();
+                    for (int i= 0;i<da.size();i++){
+                        mModel.add(da.get(i));
+                    }
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
                 break;
         }
     }

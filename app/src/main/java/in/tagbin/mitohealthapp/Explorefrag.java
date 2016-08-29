@@ -91,7 +91,7 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
                             @Override
                             public void onClick(View view) {
                                 ConnectUserModel connectUserModel = new ConnectUserModel();
-                                connectUserModel.setId(data.getNearby_user_list().get(0).getId());
+                                connectUserModel.setId(data.getNearby_user_list().get(0).getUser().getId());
                                 progressBar.setVisibility(View.VISIBLE);
                                 Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
                             }
@@ -139,7 +139,7 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
                 @Override
                 public void onClick(View view) {
                     ConnectUserModel connectUserModel = new ConnectUserModel();
-                    connectUserModel.setId(data.getNearby_user_list().get(position1).getId());
+                    connectUserModel.setId(data.getNearby_user_list().get(position1).getUser().getId());
                     progressBar.setVisibility(View.VISIBLE);
                     Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
                 }
@@ -167,7 +167,7 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
                 @Override
                 public void onClick(View view) {
                     ConnectUserModel connectUserModel = new ConnectUserModel();
-                    connectUserModel.setId(data.getNearby_user_list().get(position1).getId());
+                    connectUserModel.setId(data.getNearby_user_list().get(position1).getUser().getId());
                     progressBar.setVisibility(View.VISIBLE);
                     Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
                 }
@@ -194,7 +194,7 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
             @Override
             public void onClick(View view) {
                 ConnectUserModel connectUserModel = new ConnectUserModel();
-                connectUserModel.setId(data.getNearby_user_list().get(0).getId());
+                connectUserModel.setId(data.getNearby_user_list().get(0).getUser().getId());
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
             }
