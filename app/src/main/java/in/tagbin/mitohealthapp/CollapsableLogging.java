@@ -421,6 +421,7 @@ public FoodInterface foodInterface;
         adapter.addFragment(new WaterFrag(), "Water");
         adapter.addFragment(new ExerciseFrag(), "Exercise");
         adapter.addFragment(new SleepFrag(), "Sleep");
+        adapter.addFragment(new SleepFrag(), "Sleep");
         viewPager.setAdapter(adapter);
     }
 

@@ -51,9 +51,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.sql.Time;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import br.com.mauker.materialsearchview.MaterialSearchView;
@@ -62,7 +64,11 @@ import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Fragments.ExerciseFrag;
 import in.tagbin.mitohealthapp.Fragments.FoodFrag;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
+import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.model.ElasticSearchModel;
+import in.tagbin.mitohealthapp.model.MustModel;
 
 public class DishSearch extends AppCompatActivity {
     AutoCompleteTextView auto_tv;
@@ -86,6 +92,7 @@ public class DishSearch extends AppCompatActivity {
     TextView messageView;
     ProgressBar progressBar;
     android.app.AlertDialog alert;
+
     ImageView search_icon;
 
     @Override
@@ -98,7 +105,6 @@ public class DishSearch extends AppCompatActivity {
         customDialog();
 
         back = getIntent().getStringExtra("back");
-//        Log.d("intent", back);
         layout = findViewById(R.id.layout);
         names = new ArrayList<String>();
         sql_ids = new ArrayList<String>();
@@ -169,13 +175,26 @@ public class DishSearch extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
                 Log.d("tagbhi", count + "");
-                if (s.toString().length() <= 2) {
+                if (s.toString().length() <= 1) {
                     Log.d("tagbhi", s.toString().length() + "");
                 } else {
                     if (back.equals("food")) {
                         searchUrl = url + "?q=" + s.toString();
                         names = new ArrayList<String>();
-                        makeJsonObjReq(searchUrl);
+//                        ElasticSearchModel elasticSearchModel = new ElasticSearchModel();
+//                        ElasticSearchModel.QueryModel queryModel = elasticSearchModel.getQuery();
+//                        ElasticSearchModel.QueryModel.BoolModel boolModel = queryModel.getBool();
+//                        List<MustModel> mustModels = new ArrayList<MustModel>();
+//                        MustModel mustModel = new MustModel();
+//                        MustModel.MatchPhrase matchPhrase = mustModel.getMatch_phrase_prefix();
+//                        matchPhrase.setRecipe_name(s.toString());
+//                        mustModel.setMatch_phrase_prefix(matchPhrase);
+//                        mustModels.add(mustModel);
+//                        boolModel.setMust(mustModels);
+//                        queryModel.setBool(boolModel);
+//                        elasticSearchModel.setQuery(queryModel);
+//                        Controller.getFoodlist(DishSearch.this,elasticSearchModel,url,mRequestListener);
+                        makeJsonObjReq(s.toString());
                         Log.d("length", s.toString().length() + "" + back);
                     } else if (back.equals("exercise")) {
                         names = new ArrayList<String>();
@@ -203,6 +222,58 @@ public class DishSearch extends AppCompatActivity {
         });
     }
 
+    RequestListener mRequestListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+
+            try{
+            JSONArray ja = new JSONObject(responseObject.toString()).getJSONObject("hits").getJSONArray("hits");
+            names.clear();
+            sql_ids.clear();
+            for (int i = 0; i < ja.length(); i++) {
+                JSONObject c = ja.getJSONObject(i);
+                String Restraunt = c.getJSONObject("_source").getString("recipe_name");
+                String event_id = c.getJSONObject("_source").getString("sql_id");
+
+
+                Log.d("description", Restraunt);
+                names.add(Restraunt);
+                sql_ids.add(event_id);
+
+            }
+
+            adapter = new ArrayAdapter<String>(
+                    DishSearch.this, android.R.layout.simple_dropdown_item_1line, names) {
+                @Override
+                public View getView(int position,
+                                    View convertView, ViewGroup parent) {
+                    View view = super.getView(position,
+                            convertView, parent);
+                    TextView text = (TextView) view
+                            .findViewById(android.R.id.text1);
+                    text.setTextColor(Color.BLACK);
+                    return view;
+                }
+            };
+            auto_tv.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        } catch (Exception e) {
+//                            Toast.makeText(getActivity(), "try vala expe" + e.toString(), Toast.LENGTH_LONG).show();
+            Log.d("tag", "onERROR: " + e.toString());
+        }
+
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("tag", "onERROR: " + message);
+        }
+    };
     @Override
     protected void onPause() {
 //        exitToBottomAnimation();
@@ -212,76 +283,113 @@ public class DishSearch extends AppCompatActivity {
 
     private void makeJsonObjReq(String s) {
 
+        Log.d("checkString", s.toString());
+
+        String json="{  \n" +
+                "   \"query\":{  \n" +
+                "      \"bool\":{  \n" +
+                "         \"must\":[  \n" +
+                "            {  \n" +
+                "               \"match_phrase_prefix\":{  \n" +
+                "                  \"recipe_name\":'"+s+
+                "'               }\n" +
+                "            }\n" +
+                "         ],\n" +
+                "         \"must_not\":[  \n" +
+                "\n" +
+                "         ],\n" +
+                "         \"should\":[  \n" +
+                "\n" +
+                "         ]\n" +
+                "      }\n" +
+                "   },\n" +
+                "   \"from\":0,\n" +
+                "   \"size\":10,\n" +
+                "   \"sort\":[  \n" +
+                "\n" +
+                "   ],\n" +
+                "   \"aggs\":{  \n" +
+                "\n" +
+                "   }\n" +
+                "}";
+
 //        Map<String, String> postParam = new HashMap<String, String>();
 //        postParam.put("access_token",s);
 //        postParam.put("source", "facebook");
 //        postParam.put("is_nutritionist", "1");
 //
-//
-//        JSONObject jsonObject = new JSONObject(postParam);
+JSONObject jsonObject = null;
+        try {
+             jsonObject = new JSONObject(json);
+        }catch (JSONException e){
+            Log.d("JsonObject",e.toString());
+
+        }
 //        Log.d("postpar", jsonObject.toString());
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                s, null,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
-                        try {
-                            if (back.equals("food")) {
-                                JSONArray ja = response.getJSONObject("hits").getJSONArray("hits");
-                                names.clear();
-                                sql_ids.clear();
-                                for (int i = 0; i < ja.length(); i++) {
-                                    JSONObject c = ja.getJSONObject(i);
-                                    String Restraunt = c.getJSONObject("_source").getString("recipe_name");
-                                    String event_id = c.getJSONObject("_source").getString("sql_id");
-
-
-                                    Log.d("description", Restraunt);
-                                    names.add(Restraunt);
-                                    sql_ids.add(event_id);
-
-                                }
-                            } else if (back.equals("exercise")) {
-
-                            }
-//                            Toast.makeText(getActivity(), names.toString(), Toast.LENGTH_LONG).show();
-                            adapter = new ArrayAdapter<String>(
-                                    DishSearch.this, android.R.layout.simple_dropdown_item_1line, names) {
-                                @Override
-                                public View getView(int position,
-                                                    View convertView, ViewGroup parent) {
-                                    View view = super.getView(position,
-                                            convertView, parent);
-                                    TextView text = (TextView) view
-                                            .findViewById(android.R.id.text1);
-                                    text.setTextColor(Color.BLACK);
-                                    return view;
-                                }
-                            };
-                            auto_tv.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
-                        } catch (Exception e) {
-//                            Toast.makeText(getActivity(), "try vala expe" + e.toString(), Toast.LENGTH_LONG).show();
-                            Log.d("tag", "onERROR: " + e.toString());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-                Log.d("error", error.toString());
-            }
-        }) {
-
 //
+        JsonObjectRequest jsonObjReq = null;
+            jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                    url, jsonObject,
+                    new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("response", response.toString());
+                            try {
+                                if (back.equals("food")) {
+                                    JSONArray ja = response.getJSONObject("hits").getJSONArray("hits");
+                                    names.clear();
+                                    sql_ids.clear();
+                                    for (int i = 0; i < ja.length(); i++) {
+                                        JSONObject c = ja.getJSONObject(i);
+                                        String Restraunt = c.getJSONObject("_source").getString("recipe_name");
+                                        String event_id = c.getJSONObject("_source").getString("sql_id");
 
 
-        };
+                                        Log.d("description", Restraunt);
+                                        names.add(Restraunt);
+                                        sql_ids.add(event_id);
+
+                                    }
+                                } else if (back.equals("exercise")) {
+
+                                }
+    //                            Toast.makeText(getActivity(), names.toString(), Toast.LENGTH_LONG).show();
+                                adapter = new ArrayAdapter<String>(
+                                        DishSearch.this, android.R.layout.simple_dropdown_item_1line, names) {
+                                    @Override
+                                    public View getView(int position,
+                                                        View convertView, ViewGroup parent) {
+                                        View view = super.getView(position,
+                                                convertView, parent);
+                                        TextView text = (TextView) view
+                                                .findViewById(android.R.id.text1);
+                                        text.setTextColor(Color.BLACK);
+                                        return view;
+                                    }
+                                };
+                                auto_tv.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                            } catch (Exception e) {
+    //                            Toast.makeText(getActivity(), "try vala expe" + e.toString(), Toast.LENGTH_LONG).show();
+                                Log.d("tag", "onERROR: " + e.toString());
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    VolleyLog.d("error", "Error: " + error.getMessage());
+
+                    Log.d("error", error.toString());
+                }
+            }) {
+
+    //
+
+
+            };
+
 
 
         // Adding request to request queue
