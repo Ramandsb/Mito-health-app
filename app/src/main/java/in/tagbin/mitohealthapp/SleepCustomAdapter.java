@@ -124,14 +124,14 @@ public class SleepCustomAdapter extends RecyclerView.Adapter<SleepCustomAdapter.
 static class MyviewHolder extends AnimateViewHolder {
     TextView start_time;
     TextView end_tiem;
-    Button del;
+    ImageView del;
 
 
     public MyviewHolder(View rowView) {
         super(rowView);
         start_time = (TextView) rowView.findViewById(R.id.start_time);
         end_tiem = (TextView) rowView.findViewById(R.id.end_time);
-        del = (Button) rowView.findViewById(R.id.del);
+        del = (ImageView) rowView.findViewById(R.id.del);
     }
 
     @Override

@@ -157,7 +157,7 @@ public class BinderActivity extends AppCompatActivity{
                 }
 
                 //fra = new PartnerFrag();
-                Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
 
                 break;
             case 1:
