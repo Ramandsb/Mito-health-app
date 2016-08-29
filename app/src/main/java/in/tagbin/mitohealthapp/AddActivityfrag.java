@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -22,27 +23,37 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appyvet.rangebar.RangeBar;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
@@ -50,7 +61,15 @@ import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.helper.PlaceAutoCompleteAdapter;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
+import in.tagbin.mitohealthapp.model.DataObject;
+import in.tagbin.mitohealthapp.model.EventTypeModel;
+import in.tagbin.mitohealthapp.model.FileUploadModel;
+import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
+import in.tagbin.mitohealthapp.model.InterestModel;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -60,17 +79,26 @@ import static android.app.Activity.RESULT_OK;
  */
 public class AddActivityfrag extends Fragment implements View.OnClickListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     ImageView addImage;
-    EditText title,description,location,type;
-    TextView time;
+    EditText title,description,location;
+    AutoCompleteTextView type;
+    TextView time,memberValue,activityDate,activityTime;
     Button createActivity;
-    RangeBar rangeBar;
+    SeekBar rangeBar;
     FloatingActionButton fabAddImage;
-    String editType,editTitle,editDescription,editLocation;
-    RelativeLayout relativeTime;
+    String editType,editTitle,editDescription,editLocation,response;
+    RelativeLayout relativeTime,relativeDate;
     private static int SELECT_PICTURE = 1;
     final int REQUEST_LOCATION = 2;
     ProgressBar progressBar;
-    int hour,minute,year,month,day,memberLowerValue,memberMaxValue;
+    PrefManager pref;
+    DataObject dataObject;
+    PlaceAutoCompleteAdapter adapter;
+    CountDownTimer countDownTimer;
+    private static final int SECOND = 1000;
+    private static final int MINUTE = 60 * SECOND;
+    private static final int HOUR = 60 * MINUTE;
+    private static final int DAY = 24 * HOUR;
+    int hour,minute,year,month,day,hour1,minute1,year1,month1,day1,memberValueFinal;
     private static String[] PERMISSIONS_LOCATION = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Nullable
@@ -81,26 +109,117 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         title = (EditText) layout.findViewById(R.id.etAddTitle);
         description = (EditText) layout.findViewById(R.id.etAddDesciption);
         location = (EditText) layout.findViewById(R.id.etAddLocation);
-        type = (EditText) layout.findViewById(R.id.etAddType);
+        type = (AutoCompleteTextView) layout.findViewById(R.id.etAddType);
         time = (TextView) layout.findViewById(R.id.tvAddDecisionTime);
         createActivity = (Button) layout.findViewById(R.id.buttonCreateActivity);
         relativeTime = (RelativeLayout) layout.findViewById(R.id.relativeAddDecisionTimer);
-        rangeBar = (RangeBar) layout.findViewById(R.id.rangebar);
+        relativeDate = (RelativeLayout) layout.findViewById(R.id.relativeTime);
+        rangeBar = (SeekBar) layout.findViewById(R.id.rangebar);
         progressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
         fabAddImage = (FloatingActionButton) layout.findViewById(R.id.fabAddImage);
+        activityDate = (TextView) layout.findViewById(R.id.tvAddActivityDate);
+        activityTime = (TextView) layout.findViewById(R.id.tvAddActivitytime);
+        memberValue = (TextView) layout.findViewById(R.id.tvAddMemberValue);
         createActivity.setOnClickListener(this);
         fabAddImage.setOnClickListener(this);
         relativeTime.setOnClickListener(this);
-        rangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+        relativeDate.setOnClickListener(this);
+
+
+        rangeBar.setProgress(0);
+        pref = new PrefManager(getActivity());
+        rangeBar.incrementProgressBy(1);
+        rangeBar.setMax(100);
+        rangeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
-                memberLowerValue = Integer.parseInt(leftPinValue);
-                memberMaxValue = Integer.parseInt(rightPinValue);
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                memberValue.setText(String.valueOf(i));
+                memberValueFinal = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
+        if (getArguments() != null){
+            response = getArguments().getString("response");
+            dataObject = JsonUtils.objectify(response,DataObject.class);
+            title.setText(dataObject.getTitle());
+            type.setText(dataObject.getEvent_type().getTitle());
+            rangeBar.setProgress(dataObject.getCapacity());
+            if (dataObject.getPicture() != null){
+                ImageLoader.getInstance().loadImage(dataObject.getPicture(), new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        addImage.setImageBitmap(loadedImage);
+                    }
+                });
+                long endTime = MyUtils.getTimeinMillis(dataObject.getTime());
+                long currentTime = System.currentTimeMillis();
+                countDownTimer = new CountDownTimer(endTime - currentTime, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        long ms = millisUntilFinished;
+                        StringBuffer text = new StringBuffer("");
+                        if (ms > DAY) {
+                            text.append(ms / DAY).append("d ");
+                            ms %= DAY;
+                        }
+                        if (ms > HOUR) {
+                            text.append(ms / HOUR).append("hr ");
+                            ms %= HOUR;
+                        }
+                        if (ms > MINUTE) {
+                            text.append(ms / MINUTE).append("min ");
+                            ms %= MINUTE;
+                        }
+                        time.setText(text.toString()+"left");
+                    }
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+                };
+                countDownTimer.start();
+            }else {
+                addImage.setImageResource(R.drawable.hotel);
+            }
+        }
+        type.setOnItemClickListener(mAutocompleteClickListener);
+        adapter = new PlaceAutoCompleteAdapter(getContext(), android.R.layout.simple_list_item_1);
+        type.setAdapter(adapter);
         return layout;
     }
-
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            EventTypeModel.InterestListModel interestListModel = adapter.getItem(position);
+            type.setText(interestListModel.getTitle());
+        }
+    };
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -113,9 +232,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 createEventSendModel.title = editTitle;
                 createEventSendModel.description = editDescription;
                 createEventSendModel.type = editType;
-                createEventSendModel.capacity = memberMaxValue - memberLowerValue;
+                createEventSendModel.capacity = memberValueFinal;
                 Date date1 = new Date(year - 1900, month, day, hour, minute);
                 long output = date1.getTime() / 1000L;
+                if (pref.getKeyMasterCreate() != null){
+                    createEventSendModel.picture = pref.getKeyMasterCreate();
+                }
                 createEventSendModel.timer = String.valueOf(output);
                 createEventSendModel.event_type = "1";
                 Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
@@ -133,13 +255,36 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 day = calendar.get(Calendar.DAY_OF_MONTH);
                 com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(this, year, month, day);
                 dpd.show(getActivity().getFragmentManager(), "DATE_PICKER_TAG");
-
+                break;
+            case R.id.relativeTime:
+                Calendar calendar1 = Calendar.getInstance();
+                year1 = calendar1.get(Calendar.YEAR);
+                month1 = calendar1.get(Calendar.MONTH);
+                day1 = calendar1.get(Calendar.DAY_OF_MONTH);
+                com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd1 = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+                        year1 = year;
+                        month1 = monthOfYear;
+                        day1 = dayOfMonth;
+                        com.wdullaer.materialdatetimepicker.time.TimePickerDialog tpd = com.wdullaer.materialdatetimepicker.time.TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+                               updateTime1(hourOfDay,minute);
+                            }
+                        }, 0, 0, false);
+                        tpd.show(getActivity().getFragmentManager(), "TIME_PICKER_TAG");
+                    }
+                }, year1, month1, day1);
+                dpd1.show(getActivity().getFragmentManager(), "DATE_PICKER_TAG");
                 break;
         }
     }
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        if (countDownTimer != null)
+            countDownTimer.cancel();
         updateTime(hourOfDay, minute);
     }
     private void updateTime(int hours, int mins) {
@@ -169,8 +314,73 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         // Append in a StringBuilder
         String aTime = new StringBuilder().append(hours).append(':')
                 .append(minute).append(" ").append(timeSet).toString();
+        Date date = new Date(year-1900,month,day,hour,minute);
+        long endTime = date.getTime();
+        long currentTime = System.currentTimeMillis();
+        countDownTimer = new CountDownTimer(endTime - currentTime, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long ms = millisUntilFinished;
+                StringBuffer text = new StringBuffer("");
+                if (ms > DAY) {
+                    text.append(ms / DAY).append("d ");
+                    ms %= DAY;
+                }
+                if (ms > HOUR) {
+                    text.append(ms / HOUR).append("hr ");
+                    ms %= HOUR;
+                }
+                if (ms > MINUTE) {
+                    text.append(ms / MINUTE).append("min ");
+                    ms %= MINUTE;
+                }
+                time.setText(text.toString()+"left");
+            }
 
-        time.setText(aTime);
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        countDownTimer.start();
+        //time.setText(aTime);
+    }
+    private void updateTime1(int hours, int mins) {
+        if (mins >= 60) {
+            hour1 = hours + 1;
+            hours = hours + 1;
+            minute1 = mins - 60;
+            mins = mins - 60;
+        } else {
+            hour1 = hours;
+            minute1 = mins;
+        }
+
+        String timeSet = "";
+        if (hours > 12) {
+            hours -= 12;
+            timeSet = "PM";
+        } else if (hours == 0) {
+            hours += 12;
+            timeSet = "AM";
+        } else if (hours == 12)
+            timeSet = "PM";
+        else
+            timeSet = "AM";
+
+
+        // Append in a StringBuilder
+        String aTime = new StringBuilder().append(hours).append(':')
+                .append(minute1).append(" ").append(timeSet).toString();
+        Date date = new Date(year1-1900,month1,day1,hour1,minute1);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+        String value = dateFormat.format(date);
+        activityDate.setText(value);
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("hh:mm a");
+        String value1 = dateFormat1.format(date);
+        activityTime.setText(value1);
+
+        //time.setText(aTime);
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -179,6 +389,9 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         if (requestCode == SELECT_PICTURE ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = data.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener);
                 addImage.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -314,6 +527,24 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                     Toast.makeText(getContext(),"Event creation error",Toast.LENGTH_LONG).show();
                 }
             });
+        }
+    };
+    RequestListener mUploadListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyMasterCreate(imageUploadResponseModel.getUrl());
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
         }
     };
 }

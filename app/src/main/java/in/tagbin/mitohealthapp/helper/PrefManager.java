@@ -23,6 +23,7 @@ public class PrefManager {
     private static final String PREF_NAME = "MITO_APP";
     private static final String KEY_TUT_SHOWN= "tut_shown";
     private static final String KEY_MASTER_IMAGE = "master_image";
+    private static final String KEY_MASTER_CREATE = "create_image";
     private static final String KEY_USER_PIC1 = "user_pic1";
     private static final String KEY_USER_PIC2 = "user_pic2";
     private static final String KEY_USER_PIC3 = "user_pic3";
@@ -80,11 +81,16 @@ public class PrefManager {
         editor.putString(KEY_MASTER_IMAGE,keyUserPic1);
         editor.commit();
     }
-
+    public void setKeyMasterCreate(String keyUserPic1) {
+        editor.putString(KEY_MASTER_CREATE,keyUserPic1);
+        editor.commit();
+    }
     public String getKeyMasterImage() {
         return pref.getString(KEY_MASTER_IMAGE,null);
     }
-
+    public String getKeyMasterCreate() {
+        return pref.getString(KEY_MASTER_CREATE,null);
+    }
     public String getKeyUserPic1() {
         return pref.getString(KEY_USER_PIC1,null);
     }

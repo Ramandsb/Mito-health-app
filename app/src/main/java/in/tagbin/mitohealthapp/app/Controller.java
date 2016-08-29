@@ -39,6 +39,7 @@ import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.NetworkUtils;
 import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConfirmParticipantModel;
+import in.tagbin.mitohealthapp.model.ConnectUserModel;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
@@ -102,7 +103,7 @@ public class Controller {
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
                 Response<String> mResponse;
-                if (response.statusCode == 200 || response.statusCode == 201) {
+                if (response.statusCode >= 200 && response.statusCode< 300) {
                     String responseBody = new String(response.data);
                     if (mListener != null)
                         try {
@@ -157,7 +158,7 @@ public class Controller {
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response) {
                 Response<String> mResponse;
-                if (response.statusCode == 200 || response.statusCode == 201) {
+                if (response.statusCode >= 200 && response.statusCode<= 300) {
                     String responseBody = new String(response.data);
                     if (mListener != null)
                         try {
@@ -317,6 +318,16 @@ public class Controller {
         url = url+"nearby/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void connectToUser(Context context,ConnectUserModel connectUserModel,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url = url+"connect/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, connectUserModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }

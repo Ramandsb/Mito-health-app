@@ -3,12 +3,17 @@ package in.tagbin.mitohealthapp;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -30,10 +35,14 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
     private ViewPager intro_images;
     private ArrayList<String> mImageResources;
     ImageView back;
-    TextView name,age,distance,time,occupation,description;
+    TextView name,age,distance,time,occupation,description,blankSpace;
     FlowLayout flowLayout;
     String response;
+    RelativeLayout allInfo;
+    CoordinatorLayout coordinatorLayout;
     ConnectProfileModel data;
+    NestedScrollView nestedScrollView;
+    boolean checkod = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,8 +60,53 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         occupation = (TextView) findViewById(R.id.tvProfileOccupation);
         description = (TextView) findViewById(R.id.tvProfileDescription);
         flowLayout = (FlowLayout) findViewById(R.id.flowLayoutProfile);
+        blankSpace = (TextView) findViewById(R.id.tvProfileBlank);
+        allInfo = (RelativeLayout) findViewById(R.id.relativeProfileAllInfo);
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
+        nestedScrollView = (NestedScrollView) findViewById(R.id.scrollView);
+        blankSpace.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,MyUtils.dpToPx(ProfileActivity.this,250));
+                layoutParams.addRule(RelativeLayout.BELOW,0);
+                layoutParams.addRule(RelativeLayout.ALIGN_TOP,0);
+                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,1);
+                coordinatorLayout.setLayoutParams(layoutParams);
+                coordinatorLayout.setFitsSystemWindows(true);
+                nestedScrollView.setFitsSystemWindows(true);
+                blankSpace.setVisibility(View.GONE);
+                checkod = true;
+                return false;
+            }
+        });
+        if (!checkod) {
+            allInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    layoutParams.addRule(RelativeLayout.BELOW, R.id.relativePagerHeading);
+                    layoutParams.addRule(RelativeLayout.ALIGN_TOP, R.id.pagerProfile);
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+                    coordinatorLayout.setLayoutParams(layoutParams);
+                    coordinatorLayout.setFitsSystemWindows(true);
+                    blankSpace.setVisibility(View.VISIBLE);
+                    checkod = true;
+                }
+            });
+        }
         mImageResources = new ArrayList<String>();
-        mImageResources.add(null);
+        if (data.getImages() != null){
+            if (data.getImages().getMaster() != null){
+                mImageResources.add(data.getImages().getMaster());
+            }
+            if (data.getImages().getOthers() != null){
+                for (int i = 0;i<data.getImages().getOthers().length;i++){
+                    mImageResources.add(data.getImages().getOthers()[i]);
+                }
+            }
+        }else {
+            mImageResources.add(null);
+        }
         mAdapter = new ViewPagerAdapter(this, mImageResources);
         intro_images.setAdapter(mAdapter);
         intro_images.setCurrentItem(0);
@@ -64,19 +118,24 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         description.setText(data.getDescription());
         //distance.setText(data.getDistance());
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (int i= 0;i<data.getInterests().size();i++){
-            View layout = inflater.inflate(R.layout.interest_toggle, flowLayout, false);
-            final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
-            toggleButton.setTextOn(data.getInterests().get(i).getInterest().getName());
-            toggleButton.setBackgroundResource(R.drawable.bg_hobby);
-            toggleButton.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-            toggleButton.setTextColor(Color.parseColor("#ffffff"));
-            toggleButton.setTransformationMethod(null);
-            int padding =  MyUtils.dpToPx(this,4);
-            toggleButton.setPadding(padding,padding-2,padding-2,padding-2);
-            toggleButton.setChecked(true);
-            toggleButton.setClickable(false);
-            flowLayout.addView(layout);
+        if (data.getInterests().size() >0) {
+            flowLayout.setVisibility(View.VISIBLE);
+            for (int i = 0; i < data.getInterests().size(); i++) {
+                View layout = inflater.inflate(R.layout.interest_toggle, flowLayout, false);
+                final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
+                toggleButton.setTextOn(data.getInterests().get(i).getInterest().getName());
+                toggleButton.setBackgroundResource(R.drawable.bg_hobby);
+                toggleButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                toggleButton.setTextColor(Color.parseColor("#ffffff"));
+                toggleButton.setTransformationMethod(null);
+                int padding = MyUtils.dpToPx(this, 4);
+                toggleButton.setPadding(padding, padding - 2, padding - 2, padding - 2);
+                toggleButton.setChecked(true);
+                toggleButton.setClickable(false);
+                flowLayout.addView(layout);
+            }
+        }else{
+            flowLayout.setVisibility(View.GONE);
         }
         back.setOnClickListener(new View.OnClickListener() {
             @Override

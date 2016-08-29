@@ -55,7 +55,17 @@ public class MyUtils {
         }
         return null;
     }
-
+    public static long getTimeinMillis(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public static long getUtcTimestamp(String validDate,String source) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long da = 0;

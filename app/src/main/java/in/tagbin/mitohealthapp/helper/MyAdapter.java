@@ -21,6 +21,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import in.tagbin.mitohealthapp.AddActivityfrag;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.MyActivityCardfrag;
 import in.tagbin.mitohealthapp.R;
@@ -32,14 +33,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
     Context mycontext;
     FrameLayout pFrameLayout;
     FragmentManager mFragmentManager;
-    ArrayList<DataObject> newlist=new ArrayList<DataObject>();
-    int year,month,day;
+    ArrayList<DataObject> newlist = new ArrayList<DataObject>();
+    int year, month, day;
 
     public MyAdapter(Context context, ArrayList<DataObject> mylist, FrameLayout mFrameLayout, FragmentManager fragmentManager) {
-        mycontext=context;
+        mycontext = context;
         pFrameLayout = mFrameLayout;
         mFragmentManager = fragmentManager;
-        newlist=mylist;
+        newlist = mylist;
     }
 
     @Override
@@ -54,15 +55,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.eventtitle.setText(newlist.get(position).etitle);
         holder.title.setText(newlist.get(position).getTitle());
         holder.time.setText(MyUtils.getValidTime(newlist.get(position).getTime()));
-        holder.capacity.setText(""+newlist.get(position).getCapacity());
+        holder.capacity.setText("" + newlist.get(position).getCapacity());
         //holder.location.setText(MyUtils.getCityName(mycontext,newlist.get(position).getLocation()));
-        if (newlist.get(position).isAll()){
+        if (newlist.get(position).isAll()) {
             holder.confirm.setVisibility(View.VISIBLE);
             holder.date.setVisibility(View.VISIBLE);
             holder.delete.setVisibility(View.GONE);
             holder.date.setText(MyUtils.getValidDate(newlist.get(position).getTime()));
             holder.edit.setVisibility(View.GONE);
-        }else{
+        } else {
             holder.confirm.setVisibility(View.GONE);
             holder.date.setVisibility(View.GONE);
             holder.delete.setVisibility(View.VISIBLE);
@@ -72,70 +73,66 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             @Override
             public void onClick(View view) {
                 pFrameLayout.setVisibility(View.VISIBLE);
-
-                    Bundle bundle = new Bundle();
-                    Fragment fragment = new MyActivityCardfrag();
-                    String dataobject = JsonUtils.jsonify(newlist.get(position));
-                if (newlist.get(position).isAll()){
-                    bundle.putString("myact","myact");
-                }else{
-                    bundle.putString("myact","all");
-                }
-                    bundle.putString("dataobject",dataobject);
-                    fragment.setArguments(bundle);
-                    FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                    transaction.add(R.id.frameAddActivity, fragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
+                Bundle bundle = new Bundle();
+                Fragment fragment = new MyActivityCardfrag();
+                String dataobject = JsonUtils.jsonify(newlist.get(position));
+                bundle.putString("dataobject", dataobject);
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                transaction.add(R.id.frameAddActivity, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
 
             }
         });
         holder.confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Controller.joinEvent(mycontext,newlist.get(position).getId(),mJoinEventListener);
+                Controller.joinEvent(mycontext, newlist.get(position).getId(), mJoinEventListener);
             }
         });
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.time.setClickable(true);
-                holder.time.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });
+                Bundle bundle = new Bundle();
+                Fragment fragment = new AddActivityfrag();
+                String dataobject = JsonUtils.jsonify(newlist.get(position));
+                bundle.putString("response",dataobject);
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = mFragmentManager.beginTransaction();
+                transaction.add(R.id.frameAddActivity, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
-        if (newlist.get(position).getPicture() != null){
+        if (newlist.get(position).getPicture() != null) {
 
-                ImageLoader.getInstance().loadImage(newlist.get(position).getPicture(), new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
+            ImageLoader.getInstance().loadImage(newlist.get(position).getPicture(), new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
 
-                    }
+                }
 
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 
-                    }
+                }
 
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
 
-                    }
+                }
 
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
 
 
-                        holder.backimage.setImageBitmap(loadedImage);
+                    holder.backimage.setImageBitmap(loadedImage);
 
-                    }
-                });
+                }
+            });
 
-        }else{
+        } else {
             holder.backimage.setBackgroundResource(R.drawable.hotel);
         }
 
@@ -143,7 +140,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public int getItemCount() {
-       return newlist.size();
+        return newlist.size();
     }
 
     RequestListener mJoinEventListener = new RequestListener() {

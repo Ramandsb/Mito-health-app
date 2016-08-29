@@ -70,7 +70,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class PartProfile extends Fragment implements View.OnClickListener {
     ImageView img1,img2,img3,img4,img5,img6,img7;
-    EditText etLocation,etGender,etOccupation;
+    EditText etLocation,etGender,etOccupation,etHomeTwon;
     TextView name;
     ConnectProfileModel connectProfileModel;
     LoginButton facebookConnect;
@@ -100,6 +100,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         img5 = (ImageView) layout.findViewById(R.id.userPic5);
         img6 = (ImageView) layout.findViewById(R.id.userPic6);
         img7 = (ImageView) layout.findViewById(R.id.userPic7);
+        etHomeTwon = (EditText) layout.findViewById(R.id.etPartnerHomeTown);
         facebookConnect = (LoginButton) layout.findViewById(R.id.facebook_people_connect);
         facebookConnect.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
         facebookConnect.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.facebook, 0, 0);
@@ -442,6 +443,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
             setConnectProfileModel.setDescription(etGender.getText().toString());
             setConnectProfileModel.setOccupation(etOccupation.getText().toString());
+            setConnectProfileModel.setHometown(etHomeTwon.getText().toString());
             PrefManager pref = new PrefManager(getActivity());
             if (pref.getCurrentLocationAsObject() != null){
                 double[] location = {pref.getCurrentLocationAsObject().getLongitude(),pref.getCurrentLocationAsObject().getLatitude()};
@@ -475,6 +477,8 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(),"Please enter the description",Toast.LENGTH_LONG).show();
             }else if(etOccupation.getText().toString().equals("") || etOccupation.getText().toString().isEmpty()){
                 Toast.makeText(getContext(),"Please enter the occupation",Toast.LENGTH_LONG).show();
+            }else if(etHomeTwon.getText().toString().equals("") || etHomeTwon.getText().toString().isEmpty()){
+                Toast.makeText(getContext(),"Please enter the home town",Toast.LENGTH_LONG).show();
             }else {
                 Log.d("profile", JsonUtils.jsonify(setConnectProfileModel));
                 Controller.setConnectProfile(getContext(), setConnectProfileModel, msetProfileListener);
