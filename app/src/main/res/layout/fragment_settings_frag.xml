@@ -1,16 +1,297 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="in.tagbin.mitohealthapp.Fragments.Settings_frag">
 
-
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="7dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customize Notification"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/tvCustomNotification"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/viewSperator"
+            android:layout_below="@+id/tvCustomNotification"
+            android:background="@color/colorPrimary"/>
+        <Switch
+            android:id="@+id/switchFilterMeals"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="7dp"
+            android:layout_below="@+id/viewSperator"
+            android:drawableRight="@drawable/switch_thumb"
+            android:drawablePadding="10dp"
+            android:drawableLeft="@drawable/setting_meals"
+            android:text="Meals"
+            android:textOff=""
+            android:textOn=""
+            android:textSize="15sp"
+            android:thumb="@android:color/transparent"
+            android:track="@android:color/transparent" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:id="@+id/viewSperator1"
+            android:layout_below="@+id/switchFilterMeals"
+            android:background="@color/colorPrimary"/>
+        <Switch
+            android:id="@+id/switchFilterWater"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="7dp"
+            android:layout_below="@+id/viewSperator1"
+            android:drawableRight="@drawable/switch_thumb"
+            android:text="Water"
+            android:drawableLeft="@drawable/setting_water"
+            android:drawablePadding="10dp"
+            android:checked="true"
+            android:textOff=""
+            android:textOn=""
+            android:textSize="15sp"
+            android:thumb="@android:color/transparent"
+            android:track="@android:color/transparent" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:id="@+id/viewSperator2"
+            android:layout_below="@+id/switchFilterWater"
+            android:background="@color/colorPrimary"/>
+        <Switch
+            android:id="@+id/switchFilterSleep"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="7dp"
+            android:layout_below="@+id/viewSperator2"
+            android:drawableRight="@drawable/switch_thumb"
+            android:text="Sleep"
+            android:drawableLeft="@drawable/setting_sleep"
+            android:drawablePadding="10dp"
+            android:textOff=""
+            android:textOn=""
+            android:textSize="15sp"
+            android:thumb="@android:color/transparent"
+            android:track="@android:color/transparent" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:id="@+id/viewSperator3"
+            android:layout_below="@+id/switchFilterSleep"
+            android:background="@color/colorPrimary"/>
+        <Switch
+            android:id="@+id/switchFilterExercise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="7dp"
+            android:layout_below="@+id/viewSperator3"
+            android:drawableRight="@drawable/switch_thumb"
+            android:text="Exercise"
+            android:drawableLeft="@drawable/setting_exercise"
+            android:drawablePadding="10dp"
+            android:textOff=""
+            android:textOn=""
+            android:textSize="15sp"
+            android:thumb="@android:color/transparent"
+            android:track="@android:color/transparent" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:id="@+id/viewSperator4"
+            android:layout_below="@+id/switchFilterExercise"
+            android:background="@color/colorPrimary"/>
+        <Switch
+            android:id="@+id/switchFilterWeeklyProgress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="7dp"
+            android:layout_below="@+id/viewSperator4"
+            android:drawableLeft="@drawable/setting_weeklyprogress"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/switch_thumb"
+            android:text="Weekly Progress"
+            android:textOff=""
+            android:textOn=""
+            android:textSize="15sp"
+            android:thumb="@android:color/transparent"
+            android:track="@android:color/transparent" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:id="@+id/viewSperator5"
+            android:layout_below="@+id/switchFilterWeeklyProgress"
+            android:background="@color/colorPrimary"/>
+        <Switch
+            android:id="@+id/switchFilterHealthTips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="7dp"
+            android:layout_below="@+id/viewSperator5"
+            android:drawableRight="@drawable/switch_thumb"
+            android:text="Daily Health Tips"
+            android:drawableLeft="@drawable/setting_health"
+            android:drawablePadding="10dp"
+            android:textOff=""
+            android:textOn=""
+            android:textSize="15sp"
+            android:thumb="@android:color/transparent"
+            android:track="@android:color/transparent" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/viewSperator6"
+            android:layout_below="@+id/switchFilterHealthTips"
+            android:background="@color/colorPrimary"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="People Connect"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="7dp"
+            android:layout_below="@+id/viewSperator6"
+            android:id="@+id/tvPeopleConnect"
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="7dp"
+            android:id="@+id/viewSperator7"
+            android:layout_below="@+id/tvPeopleConnect"
+            android:background="@color/colorPrimary"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:id="@+id/relativeSettingGender"
+            android:layout_below="@+id/viewSperator7">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:textStyle="bold"
+                android:textSize="15sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="15sp"
+                android:layout_marginRight="5dp"
+                android:text="Only Women    >"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/viewSperator8"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_below="@+id/relativeSettingGender"
+            android:background="@color/colorPrimary"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:id="@+id/relativeSettingState"
+            android:layout_below="@+id/viewSperator8">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="State"
+                android:textStyle="bold"
+                android:textSize="15sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="15sp"
+                android:layout_marginRight="5dp"
+                android:text="Haryana    >"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/viewSperator9"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_below="@+id/relativeSettingState"
+            android:background="@color/colorPrimary"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:id="@+id/relativeSettingCity"
+            android:layout_below="@+id/viewSperator9">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="City"
+                android:textStyle="bold"
+                android:textSize="15sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:textSize="15sp"
+                android:layout_marginRight="5dp"
+                android:text="Gurgaon    >"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/viewSperator10"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_below="@+id/relativeSettingCity"
+            android:background="@color/colorPrimary"/>
+    </RelativeLayout>
     <LinearLayout
         android:id="@+id/logout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:visibility="gone"
         android:background="@drawable/ab_gradient_purple"
         android:gravity="center_vertical"
         android:layout_margin="30dp">
@@ -19,11 +300,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Logout"
+            android:textStyle="bold"
             android:layout_margin="10dp"
             android:textColor="#ffffff"
             android:textSize="25sp"/>
+
     </LinearLayout>
 
 
 
-</LinearLayout>
+</RelativeLayout>

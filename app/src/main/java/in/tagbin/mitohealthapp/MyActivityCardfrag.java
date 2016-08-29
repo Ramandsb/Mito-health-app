@@ -52,7 +52,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
     ProgressBar progressBar;
     StaggeredGridLayoutManager mylayoutmanager;
     ParticipantAdapter mAdapter;
-    RelativeLayout invite,join;
+    RelativeLayout invite,join,interestedRelative,approvedRelative;
 
     @Nullable
     @Override
@@ -73,6 +73,8 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         invite = (RelativeLayout) layout.findViewById(R.id.relativeInviteFriends);
         join = (RelativeLayout) layout.findViewById(R.id.relativeJoinFriends);
         interested = (TextView) layout.findViewById(R.id.tvInterestedFriends);
+        interestedRelative = (RelativeLayout) layout.findViewById(R.id.relativeInterested);
+        interestedRelative = (RelativeLayout) layout.findViewById(R.id.relativeInterested);
         approved = (TextView) layout.findViewById(R.id.tvApprovedFriends);
         left = (TextView) layout.findViewById(R.id.tvLeftFriends);
         final String dataobject = getArguments().getString("dataobject");

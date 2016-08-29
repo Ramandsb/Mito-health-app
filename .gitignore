@@ -5,6 +5,7 @@
 /.idea/libraries
 /.idea/*
 .DS_Store
+/app/src/main/res/drawable/.directory
 /build
 /captures
 /ViewPagerIndicator-Library/build

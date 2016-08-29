@@ -408,7 +408,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     etOccupation.setText(data.getOccupation());
                 }
                 if (data.getDescription() != null){
-                    etGender.setText(data.getOccupation());
+                    etGender.setText(data.getDescription());
                 }
             }
         }
