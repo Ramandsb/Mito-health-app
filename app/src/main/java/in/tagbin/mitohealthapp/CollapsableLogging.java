@@ -55,6 +55,7 @@ import java.util.List;
 
 import in.tagbin.mitohealthapp.CalenderView.CalenderListener;
 import in.tagbin.mitohealthapp.Database.TableData;
+import in.tagbin.mitohealthapp.Fragments.FeelingsFrag;
 import in.tagbin.mitohealthapp.Interfaces.ExerciseInterface;
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.CalenderView.WeekFragment;
@@ -124,7 +125,7 @@ public FoodInterface foodInterface;
         fab = (FloatingActionButton) findViewById(R.id.fab);
         int i = getIntent().getIntExtra("selection",0);
         setupViewPager(viewPager);
-        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setCurrentItem(i);
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -421,7 +422,7 @@ public FoodInterface foodInterface;
         adapter.addFragment(new WaterFrag(), "Water");
         adapter.addFragment(new ExerciseFrag(), "Exercise");
         adapter.addFragment(new SleepFrag(), "Sleep");
-        adapter.addFragment(new SleepFrag(), "Sleep");
+        adapter.addFragment(new FeelingsFrag(), "Feelings");
         viewPager.setAdapter(adapter);
     }
 

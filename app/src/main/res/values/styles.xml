@@ -78,4 +78,13 @@
         <item name="colorPrimaryDark">#4c516d</item>
         <item name="colorAccent">#4c516d</item>
     </style>
-</resources>
+
+    <style name="CustomFloaterTextAppearance" parent="android:TextAppearance.Small">
+        <item name="android:textSize">9sp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:shadowRadius">4</item>
+        <item name="android:shadowDx">1</item>
+        <item name="android:shadowDy">3</item>
+    </style>
+
+    </resources>

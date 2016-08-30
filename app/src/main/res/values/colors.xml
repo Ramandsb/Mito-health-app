@@ -19,6 +19,7 @@
     <color name="cyan">#00ddff</color>
     <color name="blue">#FF2D42FA</color>
     <color name="orange">#ff8800</color>
+    <color name="yellow">#FFFFFC35</color>
 
     <color name="cyan_primary">#00BCD4</color>
     <color name="cyan_accent">#0097A7</color>
