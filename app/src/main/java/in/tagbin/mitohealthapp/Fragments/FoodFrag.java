@@ -57,6 +57,7 @@ import in.tagbin.mitohealthapp.ItemClickSupport;
 import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
@@ -110,6 +111,8 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         }
         makeJsonArrayReq(selectedDate);
         Log.d("date",selectedDate);
+       String dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
+        dop.putFeelingsInformation(dop, dateTimeStamp,"0.0","0.0","0.0","0.0","0.0","no");
 
 
     }
@@ -135,6 +138,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         food_list.setLayoutManager(linearLayoutManager);
         database_list = new ArrayList<>();
         dop = new DatabaseOperations(getActivity());
+
         customAdapter = new CustomAdapter(getActivity());
         food_list.setAdapter(customAdapter);
         food_list.setHasFixedSize(true);

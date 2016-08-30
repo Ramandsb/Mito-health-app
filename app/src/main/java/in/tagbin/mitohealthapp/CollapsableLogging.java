@@ -72,6 +72,8 @@ import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
+import in.tagbin.mitohealthapp.model.FeelingLogModel;
+import in.tagbin.mitohealthapp.model.FeelingTimeConsumed;
 import in.tagbin.mitohealthapp.model.SleepLogModel;
 import in.tagbin.mitohealthapp.model.SleepTimeconsumed;
 import in.tagbin.mitohealthapp.model.Timeconsumed;
@@ -101,7 +103,7 @@ public FoodInterface foodInterface;
     Intent sendDate;
     public static String SENDDATE="sendDate";
     private int[] tabIcons= {
-            R.drawable.food_tab,R.drawable.water_tab,R.drawable.exercise_tab,R.drawable.sleep_tab
+            R.drawable.foodicon_svg,R.drawable.watericon_svg,R.drawable.exericon_svg,R.drawable.sleepicon_svg,R.drawable.feeling
     };
 
     int currentFrag = 0;
@@ -121,12 +123,14 @@ public FoodInterface foodInterface;
         sendDate=new Intent(SENDDATE);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         int i = getIntent().getIntExtra("selection",0);
         setupViewPager(viewPager);
         viewPager.setOffscreenPageLimit(3);
         viewPager.setCurrentItem(i);
+
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -188,6 +192,20 @@ public FoodInterface foodInterface;
                     addData(dop.getChartInformation(dop,HomePage.selectedDate),"sleep");
                 }
 
+                if (position==4){
+                    fab.hide();
+
+                    appBarLayout.setBackgroundResource(R.color.cal_bg);
+                    tabLayout.setBackgroundResource(R.color.cal_bg);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        Window window = getWindow();
+                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                        window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+                    }
+                    addDatatoFeelingsChart();
+                }
+
+
 
             }
 
@@ -201,9 +219,11 @@ public FoodInterface foodInterface;
 //        calenderTrans();
 
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+
         tabLayout.getTabAt(1).setIcon(tabIcons[1]);
         tabLayout.getTabAt(2).setIcon(tabIcons[2]);
         tabLayout.getTabAt(3).setIcon(tabIcons[3]);
+        tabLayout.getTabAt(4).setIcon(tabIcons[4]);
         mSheetLayout = (SheetLayout) findViewById(R.id.bottom_sheet);
         mChart = (LineChart) findViewById(R.id.chart1);
         mChart.setOnChartValueSelectedListener(this);
@@ -298,6 +318,18 @@ public FoodInterface foodInterface;
                 window.setStatusBarColor(getResources().getColor(R.color.grey_acc));
             }
             addData(dop.getChartInformation(dop,HomePage.selectedDate),"sleep");
+        }
+        if (position==4){
+            fab.hide();
+
+            appBarLayout.setBackgroundResource(R.color.cal_bg);
+            tabLayout.setBackgroundResource(R.color.cal_bg);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+            }
+            addDatatoFeelingsChart();
         }
 
 
@@ -473,13 +505,16 @@ public FoodInterface foodInterface;
         try {
 
             Cursor cursor= dop.getCompleteWaterInformation(dop,"no");
+            Cursor cursorF= dop.getCompleteFeelingInformation(dop,"no");
             Log.d("Countwater",cursor.getCount()+"//");
 
             if (cursor.getCount()!=0) {
                 Controller.getWaterLog(this, addDbValuetoJsonArray(), mWaterLogListener);
             }
             Controller.getSleepLog(this,addDbSleepValuetoJsonArray(),mSleepLogListener);
-
+            if (cursorF.getCount()!=0) {
+                Controller.getFeelingLog(this, addFeelingDbValuetoJsonArray(), mFeelingLogListener);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
             Log.d("count error","true");
@@ -518,6 +553,30 @@ public FoodInterface foodInterface;
         }
         waterLogModel.setList(timeconsumeds);
         return waterLogModel;
+    }
+
+    public FeelingLogModel addFeelingDbValuetoJsonArray() throws ParseException {
+        Cursor cursor= dop.getCompleteFeelingInformation(dop,"no");
+        Log.d("Countwater",cursor.getCount()+"//");
+
+        FeelingLogModel feelingLogModel = new FeelingLogModel();
+        List<FeelingTimeConsumed> feelingTimeConsumeds = new ArrayList<FeelingTimeConsumed>();
+        if (cursor != null && cursor.moveToFirst()) {
+
+            do {
+                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+                FeelingTimeConsumed feelingTime = new FeelingTimeConsumed();
+                feelingTime.setStress(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.STRESS)));
+                feelingTime.setHappiness(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.HAPPINESS)));
+                feelingTime.setEnergy(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.ENERGY)));
+                feelingTime.setConfidence(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CONFIDENCE)));
+                feelingTime.setTime(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.FEELINGS_DATE)));
+                feelingTimeConsumeds.add(feelingTime);
+                  }
+            while (cursor.moveToNext());
+        }
+        feelingLogModel.setList(feelingTimeConsumeds);
+        return feelingLogModel;
     }
 
     public  SleepLogModel addDbSleepValuetoJsonArray() throws ParseException {
@@ -686,6 +745,56 @@ public FoodInterface foodInterface;
         mChart.invalidate();
 
     }
+
+    public void addDatatoFeelingsChart(){
+        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+
+
+
+
+        ArrayList<Entry> values2 = new ArrayList<Entry>();
+      Cursor cursor=  dop.getFeelingsInformation(dop,"yes");
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+               String  time=cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.FEELINGS_DATE));
+               String  avg=cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.AVERAGE));
+                values2.add(new Entry(Long.valueOf(time+"000"), Float.valueOf(avg)));
+
+
+            }
+            while (cursor.moveToNext());
+        }
+
+
+
+
+        LineDataSet d1 = new LineDataSet(values2, "Feelings");
+        d1.setLineWidth(2.5f);
+        d1.setCircleRadius(4f);
+        d1.setDrawFilled(true);
+        d1.setValueTextColor(Color.WHITE);
+        d1.setDrawFilled(true);
+        d1.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+
+//        int color = mColors[z % mColors.length];
+//        d.setColor(getResources().getColor(R.color.red));
+//        d.setCircleColor(getResources().getColor(R.color.red));
+
+        dataSets.add(d1);
+        int col_consumed=getResources().getColor(R.color.white);
+        // make the first DataSet dashed
+//        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
+        ((LineDataSet) dataSets.get(0)).setColors(new int[]{col_consumed});
+        ((LineDataSet) dataSets.get(0)).setCircleColors(new int[]{col_consumed});
+
+
+        LineData data = new LineData(dataSets);
+        mChart.setData(data);
+        mChart.animateY(3000);
+        mChart.invalidate();
+
+    }
     RequestListener mWaterLogListener = new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -737,6 +846,42 @@ public FoodInterface foodInterface;
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("Sleep Error",message.toString());
+
+        }
+    };
+
+    RequestListener mFeelingLogListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("Feeling  response",responseObject.toString());
+            Cursor cursor= dop.getCompleteFeelingInformation(dop,"no");
+            Log.d("CountFeeling",cursor.getCount()+"//");
+
+            if (cursor != null && cursor.moveToFirst()) {
+
+                do {
+                    //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+                    String unique_id=cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.FEELINGS_DATE));
+                    ContentValues cv = new ContentValues();
+                    cv.put(TableData.Tableinfo.FEELING_SYNCED,"yes");
+                    dop.updateAnyRow(dop, TableData.Tableinfo.TABLE_NAME_FEELINGS,cv, TableData.Tableinfo.FEELINGS_DATE,unique_id);
+
+                }
+                while (cursor.moveToNext());
+            }
+
+
+
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("Feeling Error",message.toString());
 
         }
     };

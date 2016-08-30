@@ -27,6 +27,7 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.INTEREST,"v1/interest/");
         endPointMapper.put(EndPoints.UPLOAD,"v1/uploads/");
         endPointMapper.put(EndPoints.SLEEPLOG,"v1/logger/sleep/mass/");
+        endPointMapper.put(EndPoints.FEELINGSLOG,"v1/logger/feeling/mass/");
     }
 
     public interface EndPoints {
@@ -39,5 +40,6 @@ public class UrlResolver {
         int DATERANGEDATA =5;
         int UPLOAD = 6;
         int SLEEPLOG = 7;
+        int FEELINGSLOG = 10;
     }
 }

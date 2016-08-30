@@ -33,6 +33,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public String CREATE_CHART_TABLE= "CREATE TABLE " + TableData.Tableinfo.TABLE_NAME_CHART + "(" + TableData.Tableinfo.CHART_DATE + " TEXT," + TableData.Tableinfo.CHART_TIMESTAMP + " TEXT," + TableData.Tableinfo.CHART_FOODCAL_REQ + " TEXT," + TableData.Tableinfo.CHART_FOODCAL_CONSUMED + " TEXT," + TableData.Tableinfo.CHART_WATER_REQ + " TEXT," + TableData.Tableinfo.CHART_WATER_CONSUMED + " TEXT," + TableData.Tableinfo.CHART_EXERCAL_REQ + " TEXT," + TableData.Tableinfo.CHART_EXERCAL_BURNED + " TEXT," + TableData.Tableinfo.CHART_SLEEP_REQ + " TEXT," + TableData.Tableinfo.CHART_SLEEP_CONSUMED + " TEXT)";
     public String CREATE_CHAT_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_CHAT + " (" + TableData.Tableinfo.CHAT_NAME + " TEXT," + TableData.Tableinfo.CHAT_USER + " TEXT NOT NULL UNIQUE," + TableData.Tableinfo.CHAT_STATUS + " TEXT," + TableData.Tableinfo.CHAT_TYPE + " TEXT," + TableData.Tableinfo.CHAT_PRESENCE + " TEXT," + TableData.Tableinfo.CHAT_PRESENCE_STATUS + " TEXT)";
     public String CREATE_CM_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_CM + " (" + TableData.Tableinfo.CM_SOURCE + " TEXT," + TableData.Tableinfo.CM_TIME + " TEXT," + TableData.Tableinfo.CM_MESSAGES + " TEXT," + TableData.Tableinfo.CM_USER + " TEXT)";
+    public String CREATE_FEELINGS_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_FEELINGS + " (" + TableData.Tableinfo.STRESS + " TEXT," + TableData.Tableinfo.HAPPINESS + " TEXT," + TableData.Tableinfo.ENERGY + " TEXT," + TableData.Tableinfo.CONFIDENCE + " TEXT," + TableData.Tableinfo.AVERAGE + " TEXT," + TableData.Tableinfo.FEELINGS_DATE + " TEXT NOT NULL UNIQUE," + TableData.Tableinfo.FEELING_SYNCED + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase sdb) {
@@ -43,6 +44,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         sdb.execSQL(CREATE_CHART_TABLE);
         sdb.execSQL(CREATE_CHAT_TABLE);
         sdb.execSQL(CREATE_CM_TABLE);
+        sdb.execSQL(CREATE_FEELINGS_TABLE);
 
         Log.d("Database operations", "Table created");
     }
@@ -75,6 +77,20 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         cv.put(TableData.Tableinfo.CM_MESSAGES, messages);
         cv.put(TableData.Tableinfo.CM_USER, user);
         long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_CM, null, cv);
+        Log.d("Database Created", "true");
+
+    }
+    public void putFeelingsInformation(DatabaseOperations dop, String date, String stress, String happiness,String energy,String confidence,String average,String synced) {
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(TableData.Tableinfo.FEELINGS_DATE, date);
+        cv.put(TableData.Tableinfo.STRESS, stress);
+        cv.put(TableData.Tableinfo.HAPPINESS, happiness);
+        cv.put(TableData.Tableinfo.ENERGY, energy);
+        cv.put(TableData.Tableinfo.CONFIDENCE, confidence);
+        cv.put(TableData.Tableinfo.AVERAGE, average);
+        cv.put(TableData.Tableinfo.FEELING_SYNCED, synced);
+        long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_FEELINGS, null, cv);
         Log.d("Database Created", "true");
 
     }
@@ -172,6 +188,15 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor getFeelingsInformation(DatabaseOperations dop,String source){
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FEELINGS, null, null);
+//        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FEELINGS + " WHERE " + TableData.Tableinfo.FEELINGS_DATE + "='" + date + "'", null);
+      Cursor  cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FEELINGS + " WHERE " + TableData.Tableinfo.FEELING_SYNCED + "='" + source + "'", null);
+
+        return cursor;
+    }
+
     public Cursor getCompleteWaterInformation(DatabaseOperations dop,String source){
         Log.d("source",source);
         Cursor cursor = null;
@@ -188,6 +213,28 @@ return cursor;
         }
 
 
+
+        return cursor;
+    }
+
+    public Cursor getCompleteFeelingInformation(DatabaseOperations dop,String source){
+        Log.d("source",source);
+        Cursor cursor = null;
+
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
+        if (source.equals("all")){
+
+            cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FEELINGS , null);
+            return cursor;
+
+        }else if (source.equals("no")){
+            cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FEELINGS + " WHERE " + TableData.Tableinfo.FEELING_SYNCED + "='" + source + "'"+" ORDER BY "+ TableData.Tableinfo.FEELINGS_DATE +" ASC", null);
+            return cursor;
+        }
+
+
+
         return cursor;
     }
     public Cursor getCompleteSleepInformation(DatabaseOperations dop){
@@ -197,6 +244,13 @@ return cursor;
 
         return cursor;
     }
+//    public Cursor getCompleteFeelingInformation(DatabaseOperations dop){
+//        SQLiteDatabase SQ = dop.getReadableDatabase();
+////        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
+//        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FEELINGS, null);
+//
+//        return cursor;
+//    }
 
     public ArrayList<DataItems> getInformation(DatabaseOperations dop,String date){
         ArrayList<DataItems> listData = new ArrayList<>();
@@ -422,6 +476,11 @@ String da="2016-08-23 00:00:00";
     public  void updateExerRow(DatabaseOperations dop,ContentValues cv,String id){
         SQLiteDatabase SQ = dop.getWritableDatabase();
         SQ.update(TableData.Tableinfo.TABLE_NAME_EXERCISE, cv, TableData.Tableinfo.EXER_UNIQUE_ID + "=" + id, null);
+        Log.d("update","true"+cv.toString()+"///"+id);
+    }
+    public  void updateAnyRow(DatabaseOperations dop,String tablename,ContentValues cv,String unique_column,String id){
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        SQ.update(tablename, cv, unique_column + "=" + id, null);
         Log.d("update","true"+cv.toString()+"///"+id);
     }
 

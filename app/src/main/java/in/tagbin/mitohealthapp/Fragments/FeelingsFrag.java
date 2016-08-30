@@ -1,11 +1,13 @@
 package in.tagbin.mitohealthapp.Fragments;
 
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseException;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -26,8 +29,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,7 +48,9 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     TextView stress_tv,happiness_tv,energy_tv,confidence_tv;
+    double stress=0.0,happiness=0.0,energy=0.0,confidence=0.0;
 
+    String dateTimeStamp="";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -81,6 +88,7 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dop = new DatabaseOperations(getActivity());
+
         login_details = getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, getActivity().MODE_PRIVATE);
         Calendar calendar = Calendar.getInstance();
 
@@ -103,11 +111,13 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
 
         }
 
+
+
         Log.d("date",selectedDate);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_feelings, container, false);
@@ -116,8 +126,15 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
         happiness_tv= (TextView) view.findViewById(R.id.hapinesstv);
         energy_tv= (TextView) view.findViewById(R.id.energytv);
         confidence_tv= (TextView) view.findViewById(R.id.confidencetv);
+        dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
 
-        Calendar calendar = Calendar.getInstance();
+        try{
+            dop.putFeelingsInformation(dop, dateTimeStamp,"0.0","0.0","0.0","0.0","0.0","no");
+        }catch (Exception e){
+            Log.d("DatabaseException",e.toString());
+        }
+
+        final Calendar calendar = Calendar.getInstance();
         widget.setSelectedDate(calendar.getTime());
 
         Calendar instance1 = Calendar.getInstance();
@@ -133,27 +150,36 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
                 .commit();
 
         //////////////////
-        DiscreteSeekBar stressbar = (DiscreteSeekBar) view.findViewById(R.id.stressbar);
+        final DiscreteSeekBar stressbar = (DiscreteSeekBar) view.findViewById(R.id.stressbar);
         stressbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
-                stress_tv.setText(value+"");
+
+                stress=value;
+                stress_tv.setText(stress+"");
+                calculate(stress,happiness,energy,confidence);
                 return value;
             }
         });
-        DiscreteSeekBar happinessbar = (DiscreteSeekBar) view.findViewById(R.id.happinessbar);
+        final DiscreteSeekBar happinessbar = (DiscreteSeekBar) view.findViewById(R.id.happinessbar);
         happinessbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
-                happiness_tv.setText(value+"");
+
+                happiness=value;
+                happiness_tv.setText(happiness+"");
+                calculate(stress,happiness,energy,confidence);
                 return value;
             }
         });
-        DiscreteSeekBar energybar = (DiscreteSeekBar) view.findViewById(R.id.energybar);
+        final DiscreteSeekBar energybar = (DiscreteSeekBar) view.findViewById(R.id.energybar);
         energybar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
-                energy_tv.setText(value+"");
+
+                energy=value;
+                energy_tv.setText(energy+"");
+                calculate(stress,happiness,energy,confidence);
                 return value;
             }
         });
@@ -161,7 +187,10 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
         confidencebar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
-                confidence_tv.setText(value+"");
+
+                confidence=value;
+                confidence_tv.setText(confidence+"");
+                calculate(stress,happiness,energy,confidence);
                 return value;
             }
         });
@@ -182,6 +211,22 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
         mListener = null;
     }
 
+    public void calculate(double stress,double happiness,double energy,double confidence){
+        double add= (-stress)+happiness+energy+confidence;
+        double result= add/4;
+        Log.d("Calculate Result",result+"//");
+        ContentValues cv = new ContentValues();
+        cv.put(TableData.Tableinfo.STRESS,stress);
+        cv.put(TableData.Tableinfo.HAPPINESS,happiness);
+        cv.put(TableData.Tableinfo.ENERGY,energy);
+        cv.put(TableData.Tableinfo.CONFIDENCE,confidence);
+        cv.put(TableData.Tableinfo.AVERAGE,String.valueOf(result));
+        cv.put(TableData.Tableinfo.FEELING_SYNCED,"no");
+
+        dop.updateAnyRow(dop, TableData.Tableinfo.TABLE_NAME_FEELINGS,cv, TableData.Tableinfo.FEELINGS_DATE,dateTimeStamp);
+
+    }
+
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
 
@@ -200,6 +245,12 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
         }else if (day >9 && month >9){
             selectedDate = year + "-" + month + "-" + day;
             Log.d("date", selectedDate);
+        }
+        dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
+        try{
+            dop.putFeelingsInformation(dop, dateTimeStamp,"0.0","0.0","0.0","0.0","0.0","no");
+        }catch (DatabaseException e){
+            Log.d("DatabaseException",e.toString());
         }
     }
 

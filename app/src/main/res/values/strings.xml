@@ -30,6 +30,7 @@
     <string name="title_activity_chat">Chat</string>
     <string name="title_activity_forgot_password">ForgotPassword</string>
     <string name="recipe">"1. Combine the tomatoes and 1 cup of water in a deep non-stick kadhai and cook on a medium flame for 8 to 10 minutes or till the tomatoes turn soft while stirring occasionally. \r\n2. Allow them to cool slightly and blend in a mixer to a smooth pulp. Keep aside. \r\n3. Heat the oil in a deep non-stick kadhai add the onions and sautÃ© on a medium flame for 2 to 3 minutes. \r\n4. Add the garlic-ginger-green chilli paste chilli powder and 2 tbsp of water mix well and cook on a medium flame for 1 to 2 minutes. \r\n5. Add the rajma tomato pulp and salt mix well and cook on a medium flame for 2 to 3 minutes while stirring occasionally. \r\n6. Serve hot."</string>
+    <string name="title_activity_splash">SplashActivity</string>
 
 
 </resources>

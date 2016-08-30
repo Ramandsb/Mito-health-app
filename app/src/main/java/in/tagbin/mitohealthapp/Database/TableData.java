@@ -84,7 +84,17 @@ public class TableData {
         public static final String CM_SOURCE = "cm_source";
 
         public static final String TABLE_NAME_CM = "cm_table";
+        //////////////////////////////////////////////////////////
 
+        public static final String FEELINGS_DATE = "feelings_date";
+        public static final String STRESS = "stress";
+        public static final String HAPPINESS = "happiness";
+        public static final String ENERGY = "energy";
+        public static final String CONFIDENCE = "confidence";
+        public static final String AVERAGE = "average";
+        public static final String FEELING_SYNCED = "feeling_synced";
+
+        public static final String TABLE_NAME_FEELINGS = "feelings_table";
 
 
 

@@ -101,6 +101,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     android.support.v7.widget.CardView water_card;
     android.support.v7.widget.CardView exercise_card;
     android.support.v7.widget.CardView sleep_card;
+    android.support.v7.widget.CardView feelings_card;
     public static boolean flagHome = false;
     public static String firstdate = "";
     Button plus_button,minus_button;
@@ -187,6 +188,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         water_card = (CardView) v.findViewById(R.id.water_card);
         exercise_card = (CardView) v.findViewById(R.id.exercise_card);
         sleep_card = (CardView) v.findViewById(R.id.sleep_card);
+        feelings_card = (CardView) v.findViewById(R.id.feelings_card);
         plus_button = (Button) v.findViewById(R.id.plus_but);
         minus_button = (Button) v.findViewById(R.id.minus_but);
         glasses = (TextView) v.findViewById(R.id.glasses);
@@ -260,6 +262,15 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
 
                 Intent intent = new Intent(getActivity(),CollapsableLogging.class);
                 intent.putExtra("selection",3);
+                startActivity(intent);
+            }
+        });
+        feelings_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(getActivity(),CollapsableLogging.class);
+                intent.putExtra("selection",4);
                 startActivity(intent);
             }
         });

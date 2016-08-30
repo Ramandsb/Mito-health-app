@@ -87,4 +87,7 @@
         <item name="android:shadowDy">3</item>
     </style>
 
-    </resources>
+    <style name="GifMoviewView.GifMoviewView" parent="@android:style/Widget"></style>
+
+
+</resources>

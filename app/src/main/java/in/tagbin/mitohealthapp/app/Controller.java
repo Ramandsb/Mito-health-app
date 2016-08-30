@@ -43,6 +43,8 @@ import in.tagbin.mitohealthapp.model.ConnectUserModel;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 import in.tagbin.mitohealthapp.model.ElasticSearchModel;
+import in.tagbin.mitohealthapp.model.FeelingLogModel;
+import in.tagbin.mitohealthapp.model.FeelingTimeConsumed;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
@@ -371,6 +373,16 @@ public class Controller {
         url=url+"water/mass/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.POST, waterLogModels, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+
+    public static void getFeelingLog(Context context,FeelingLogModel feelingLogModel,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.FEELINGSLOG);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, feelingLogModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
