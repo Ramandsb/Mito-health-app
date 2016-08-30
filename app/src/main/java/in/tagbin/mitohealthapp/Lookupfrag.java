@@ -1,6 +1,7 @@
 package in.tagbin.mitohealthapp;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,7 +35,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
 
     StaggeredGridLayoutManager mylayoutmanager;
     FrameLayout frameLayout;
-    TextView filter;
+    TextView allActivity,myActivity;
     ArrayList<DataObject> mylist=new ArrayList<DataObject>();
     ArrayList<DataObject> da=new ArrayList<DataObject>();
     FloatingActionButton fabCreateEvent;
@@ -50,9 +51,11 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
 
         frameLayout = (FrameLayout) viewGroup.findViewById(R.id.frameAddActivity);
         fabCreateEvent = (FloatingActionButton) viewGroup.findViewById(R.id.createevent);
-        filter = (TextView) viewGroup.findViewById(R.id.ivFilter);
+        allActivity = (TextView) viewGroup.findViewById(R.id.buttonAllActivity);
+        myActivity = (TextView) viewGroup.findViewById(R.id.buttonMyActivity);
         progressBar = (ProgressBar) viewGroup.findViewById(R.id.progressBar);
-        filter.setOnClickListener(this);
+        allActivity.setOnClickListener(this);
+        myActivity.setOnClickListener(this);
         fabCreateEvent.setOnClickListener(this);
         mylayoutmanager = new StaggeredGridLayoutManager(2, 1);
         adapter=new MyAdapter(getContext().getApplicationContext(),mylist,frameLayout,getActivity().getSupportFragmentManager());
@@ -75,17 +78,23 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
                 transaction.addToBackStack(null);
                 transaction.commit();
                 break;
-            case R.id.ivFilter:
-                if (filter.getText().toString().equals("My Activities")){
-                    filter.setText("All");
-                    progressBar.setVisibility(View.VISIBLE);
-                    Controller.getAllEvents(getContext(),mAllEventsListener);
-                }else if (filter.getText().toString().equals("All")){
-                    filter.setText("My Activities");
-                    progressBar.setVisibility(View.VISIBLE);
-                    Controller.getEventsByMe(getContext(),mNearbyEvents);
-                }
+            case R.id.buttonAllActivity:
+                allActivity.setTextColor(Color.parseColor("#ffffff"));
+                allActivity.setBackgroundResource(R.drawable.bg_filter_change);
+                myActivity.setTextColor(Color.parseColor("#26446d"));
+                myActivity.setBackgroundResource(R.drawable.bg_filter);
+                progressBar.setVisibility(View.VISIBLE);
+                Controller.getAllEvents(getContext(),mAllEventsListener);
                 break;
+            case R.id.buttonMyActivity:
+                myActivity.setTextColor(Color.parseColor("#ffffff"));
+                myActivity.setBackgroundResource(R.drawable.bg_filter_change);
+                allActivity.setTextColor(Color.parseColor("#26446d"));
+                allActivity.setBackgroundResource(R.drawable.bg_filter);
+                progressBar.setVisibility(View.VISIBLE);
+                Controller.getEventsByMe(getContext(),mNearbyEvents);
+                break;
+
         }
     }
 

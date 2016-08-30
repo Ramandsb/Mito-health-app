@@ -22,6 +22,7 @@ public class PrefManager {
     int PRIVATE_MODE = 0;
     private static final String PREF_NAME = "MITO_APP";
     private static final String KEY_TUT_SHOWN= "tut_shown";
+    private static final String KEY_TUT_SHOWN1= "tut_shown1";
     private static final String KEY_MASTER_IMAGE = "master_image";
     private static final String KEY_MASTER_CREATE = "create_image";
     private static final String KEY_USER_PIC1 = "user_pic1";
@@ -52,7 +53,13 @@ public class PrefManager {
     public boolean isTutorialShown(){
         return pref.getBoolean(KEY_TUT_SHOWN,false);
     }
-
+    public void setTutorial1(boolean tokenToServer){
+        editor.putBoolean(KEY_TUT_SHOWN1,tokenToServer);
+        editor.commit();
+    }
+    public boolean isTutorialShown1(){
+        return pref.getBoolean(KEY_TUT_SHOWN1,false);
+    }
     public void setKeyUserPic1(String keyUserPic1) {
         editor.putString(KEY_USER_PIC1,keyUserPic1);
         editor.commit();

@@ -1,6 +1,7 @@
 package in.tagbin.mitohealthapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +28,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import org.json.JSONException;
+
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +103,8 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         invite.setOnClickListener(this);
         data = JsonUtils.objectify(dataobject,DataObject.class);
         title.setText(data.getTitle());
-        time.setText(MyUtils.getValidTime(data.getTime()));
+        final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(data.getTime()), getCurrentTime(getContext()), DateUtils.MINUTE_IN_MILLIS));
+        time.setText(relativeTime);
         location.setText(MyUtils.getCityName(getContext(),data.getLocation()));
         people.setText(""+data.getCapacity());
         interested.setText(""+data.getTotal_request());
@@ -161,7 +167,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             edit.setVisibility(View.GONE);
             linearFriends.setVisibility(View.VISIBLE);
             heading.setText("Activities");
-            Controller.getParticipants(getContext(),data.getEvent_type().getId(),mParticipantListener);
+            Controller.getParticipants(getContext(),data.getId(),mParticipantListener);
             selectedPeople.setVisibility(View.VISIBLE);
             date.setText(MyUtils.getValidDate(data.getTime()));
             linearFriends.setWeightSum(5);
@@ -172,7 +178,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             date.setVisibility(View.GONE);
             edit.setVisibility(View.VISIBLE);
             heading.setText("My Activity");
-            Controller.getParticipants(getContext(),data.getEvent_type().getId(),mParticipantListener);
+            Controller.getParticipants(getContext(),data.getId(),mParticipantListener);
             selectedPeople.setVisibility(View.VISIBLE);
             selectedPeople.setText("Interested People");
             linearFriends.setVisibility(View.VISIBLE);
@@ -194,6 +200,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             Log.d("All participants",responseObject.toString());
             Type collectionType = new TypeToken<List<ParticipantModel>>() {
             }.getType();
+            mModel.clear();
             da = (List<ParticipantModel>) new Gson()
                     .fromJson(responseObject.toString(), collectionType);
             for (int i=0;i<da.size();i++){
@@ -203,6 +210,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
                 @Override
                 public void run() {
                     mAdapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         }
@@ -224,38 +232,48 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
                 break;
             case R.id.relativeApproved:
                 selectedPeople.setText("Approved People");
-                if (mModel.size() >0){
-                    mModel.clear();
-                    for (int i= 0;i<da.size();i++){
-                        if (da.get(i).isConfirm()){
-                            mModel.add(da.get(i));
-                        }
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
+                progressBar.setVisibility(View.VISIBLE);
+                Controller.getParticipants(getContext(),data.getId(),mParticipantApprovedListener);
                 break;
             case R.id.relativeInterested:
                 selectedPeople.setText("Interested People");
-                if (mModel.size() >0){
-                    mModel.clear();
-                    for (int i= 0;i<da.size();i++){
-                        mModel.add(da.get(i));
-                    }
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    });
-                }
+                progressBar.setVisibility(View.VISIBLE);
+                Controller.getParticipants(getContext(),data.getId(),mParticipantListener);
                 break;
         }
     }
+    RequestListener mParticipantApprovedListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("All participants",responseObject.toString());
+            Type collectionType = new TypeToken<List<ParticipantModel>>() {
+            }.getType();
+            mModel.clear();
+            da = (List<ParticipantModel>) new Gson()
+                    .fromJson(responseObject.toString(), collectionType);
+            for (int i=0;i<da.size();i++){
+                if(da.get(i).isConfirm())
+                    mModel.add(da.get(i));
+            }
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyDataSetChanged();
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+
+        }
+    };
     RequestListener mJoinEventListener = new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -286,4 +304,9 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             });
         }
     };
+    public long getCurrentTime(Context ctx){
+
+        long sec = System.currentTimeMillis();
+        return sec;
+    }
 }

@@ -644,6 +644,8 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 }
             });
             if (getArguments() != null && getArguments().getString("profile_connect") != null){
+                PrefManager pref = new PrefManager(getContext());
+                pref.setTutorial(true);
                 Controller.getInterests(getContext(),mInterestListener);
             }else {
                 BinderActivity i = (BinderActivity) getActivity();

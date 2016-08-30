@@ -154,8 +154,10 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             type.setText(dataObject.getEvent_type().getTitle());
             description.setText(dataObject.getDescription());
             rangeBar.setProgress(dataObject.getCapacity());
-            activityDate.setText(MyUtils.getValidDate(dataObject.getEvent_time()));
-            activityTime.setText(MyUtils.getValidTime(dataObject.getEvent_time()));
+            if (dataObject.getEvent_time() != null) {
+                activityDate.setText(MyUtils.getValidDate(dataObject.getEvent_time()));
+                activityTime.setText(MyUtils.getValidTime(dataObject.getEvent_time()));
+            }
             if (dataObject.getPicture() != null){
                 ImageLoader.getInstance().loadImage(dataObject.getPicture(), new ImageLoadingListener() {
                     @Override
@@ -213,7 +215,32 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             createActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    editType = type.getText().toString();
+                    editTitle = title.getText().toString();
+                    editDescription = description.getText().toString();
+                    editLocation = location.getText().toString();
+                    CreateEventSendModel createEventSendModel = new CreateEventSendModel();
+                    if (editTitle != dataObject.getTitle())
+                        createEventSendModel.title = editTitle;
+                    if (editDescription != dataObject.getDescription())
+                        createEventSendModel.description = editDescription;
+                    if (editType != dataObject.getEvent_type().getTitle())
+                        createEventSendModel.type = editType;
+                    if (memberValueFinal != dataObject.getCapacity())
+                        createEventSendModel.capacity = memberValueFinal;
+                    Date date1 = new Date(year - 1900, month, day, hour, minute);
+                    long output = date1.getTime() / 1000L;
+                    Date date2 =new Date(year1-1900,month1,day1,hour1,minute1);
+                    long output1 = date2.getTime()/1000L;
+                    if (pref.getKeyMasterCreate() != null){
+                        createEventSendModel.picture = pref.getKeyMasterCreate();
+                    }
+                    createEventSendModel.event_time = output1;
+                    createEventSendModel.timer = String.valueOf(output);
+                    createEventSendModel.event_type = "1";
+                    Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
+                    progressBar.setVisibility(View.VISIBLE);
+                    Controller.updateEvent(getActivity(),createEventSendModel,dataObject.getId(),mUpdateListener);
                 }
             });
         }
@@ -533,6 +560,47 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("event created error",message);
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),"Event creation error",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    };
+    RequestListener mUpdateListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("Event Updated",responseObject.toString());
+            /*DataObject dataObject = JsonUtils.objectify(responseObject.toString(),DataObject.class);
+            dataObject.all = false;
+            Bundle bundle = new Bundle();
+            Fragment fragment = new MyActivityCardfrag();
+            String dataobject = JsonUtils.jsonify(dataObject);
+            bundle.putString("dataobject",dataobject);
+            fragment.setArguments(bundle);
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.frameAddActivity, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();*/
+            getFragmentManager().popBackStack();
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("event updated error",message);
             ((Activity) getContext()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

@@ -25,6 +25,8 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
 import in.tagbin.mitohealthapp.Fragments.CartFrag;
 import in.tagbin.mitohealthapp.Fragments.Settings_frag;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter1;
@@ -99,6 +101,12 @@ public class BinderActivity extends AppCompatActivity{
             bottomNavigation.setCurrentItem(2);
 
 
+        }else if (getIntent().getStringExtra("profile_connect") != null){
+            fra = new ProfileFragMent();
+            Bundle bundle = new Bundle();
+            bundle.putString("profile_connect", "profile");
+            fra.setArguments(bundle);
+            bottomNavigation.setCurrentItem(1);
         }else {
             fra = new ProfileFragMent();
             bottomNavigation.setCurrentItem(1);
@@ -147,11 +155,11 @@ public class BinderActivity extends AppCompatActivity{
                 PrefManager pref = new PrefManager(this);
 
                 if (!pref.isTutorialShown()) {
-                    pref.setTutorial(true);
-                    fra = new ProfileFragMent();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("profile_connect", "profile");
-                    fra.setArguments(bundle);
+                    Intent i = new Intent(this,SliderActivity.class);
+                    startActivity(i);
+
+                }else if(!pref.isTutorialShown1()){
+                    Controller.getInterests(this,mInterestListener);
                 }else{
                     fra = new PartnerFrag();
                 }
@@ -209,6 +217,31 @@ public class BinderActivity extends AppCompatActivity{
         }
         return super.onCreateOptionsMenu(menu);
     }
+    RequestListener mInterestListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+//            interestModel = JsonUtils.objectify(responseObject.toString(),InterestModel.class);
+//            runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    setToggleButtons(interestModel);
+//                }
+//            });
+            Intent i = new Intent(BinderActivity.this,InterestActivity.class);
+            i.putExtra("response",responseObject.toString());
+            startActivity(i);
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+
+        }
+    };
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

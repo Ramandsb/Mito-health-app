@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
 /**
  * Created by aasaqt on 10/8/16.
@@ -85,11 +86,13 @@ public class MyUtils {
         return da;
     }
     public static String getCityName(Context context,String location){
-        int indexStartLong = location.indexOf("(");
-        int endindexLong = location.indexOf("0 ");
-        int indexStartLat = location.indexOf(")");
-        double MyLong = Double.parseDouble(location.substring(indexStartLong+1,endindexLong+1));
-        double MyLat = Double.parseDouble(location.substring(endindexLong+1,indexStartLat));
+        String[] parts1 = location.split(Pattern.quote("("));
+        String location1 = parts1[1];
+        String[] parts2 = location1.split(Pattern.quote(" "));
+        String latitude = parts2[1];
+        String[] parts3 = latitude.split(Pattern.quote(")"));
+        double MyLong = Double.parseDouble(parts2[0]);
+        double MyLat = Double.parseDouble(parts3[0]);
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         List<Address> addresses = null;
         try {

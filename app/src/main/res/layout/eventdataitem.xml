@@ -13,17 +13,16 @@
         <ImageView
             android:id="@+id/setimage"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/setimage"
             android:layout_gravity="top"
-            android:background="#bf4c516d"
-            android:padding="6dp"
+            android:background="#20000000"
             android:weightSum="3">
 
             <TextView
@@ -31,129 +30,135 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Detail Commnet"
+                android:text="Join for Horse riding"
+                android:layout_marginLeft="6dp"
                 android:textColor="#fff"
-                android:textSize="9sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
-
-            <View
-                android:id="@+id/viewSperator"
-                android:layout_width="1dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_toRightOf="@+id/maintitle"
-                android:background="#dedede" />
 
             <TextView
                 android:id="@+id/event_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_toRightOf="@+id/viewSperator"
+                android:layout_below="@+id/maintitle"
+                android:layout_marginTop="2dp"
                 android:layout_weight="1"
-                android:text="Event Name"
-                android:textColor="#fff"
-                android:textSize="9sp"
-                android:textStyle="bold" />
-            <TextView
-                android:id="@+id/event_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="18/05/16"
-                android:layout_alignParentRight="true"
-                android:visibility="gone"
+                android:text="Horse riding"
+                android:layout_marginLeft="6dp"
                 android:textColor="#fff"
                 android:textSize="9sp"
                 android:textStyle="bold" />
             <ImageView
-                android:id="@+id/ivBin"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:id="@+id/ivDelete"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:padding="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="6dp"
                 android:layout_alignParentRight="true"
-                android:src="@drawable/delete_svg" />
+                android:layout_gravity="end"
+                android:visibility="gone"
+                android:src="@drawable/delete_event" />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="end"
                 android:id="@+id/ivEdit"
-                android:layout_toLeftOf="@+id/ivBin"
-                android:src="@drawable/edit_svg" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:padding="4dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="6dp"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="end"
+                android:src="@drawable/edit_white" />
 
         </RelativeLayout>
-        <ImageView
-            android:id="@+id/ivConfirm"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_margin="5dp"
-            android:layout_above="@+id/relativeBottomBar"
-            android:src="@drawable/commnet_right_icon"
-            android:layout_alignParentRight="true"
-            android:visibility="gone" />
+        <!--<ImageView-->
+        <!--android:id="@+id/ivConfirm"-->
+        <!--android:layout_width="20dp"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:layout_margin="5dp"-->
+        <!--android:layout_above="@+id/relativeBottomBar"-->
+        <!--android:src="@drawable/commnet_right_icon"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:visibility="gone" />-->
 
         <RelativeLayout
+            android:id="@+id/relativeBottomBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/setimage"
-            android:background="#bf4c516d"
-            android:padding="4dp"
-            android:id="@+id/relativeBottomBar"
+            android:layout_marginBottom="10dp"
+            android:background="#20000000"
             android:weightSum="2">
 
-            <TextView
-                android:id="@+id/time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/bg_time"
-                android:padding="2dp"
-                android:text="Time"
-                android:textColor="#FFF"
-                android:textSize="9sp"
-                android:textStyle="bold" />
+
             <ImageView
                 android:id="@+id/ivPeople"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_alignParentRight="true"
+                android:layout_marginTop="2dp"
+                android:layout_toLeftOf="@+id/capacity"
                 android:src="@drawable/personwhite" />
 
             <TextView
                 android:id="@+id/capacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/ivPeople"
-                android:background="@drawable/bg_people"
-                android:padding="3dp"
-                android:text="5"
+                android:layout_alignParentRight="true"
                 android:layout_marginTop="2dp"
-                android:textSize="9sp"
-                android:textColor="#ffffff" />
-
-            <View
-                android:id="@+id/viewSperator1"
-                android:layout_width="2dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_toLeftOf="@+id/capacity"
-                android:background="#dedede" />
+                android:layout_marginRight="6dp"
+                android:padding="3dp"
+                android:text="8/8"
+                android:textColor="#ffffff"
+                android:textSize="10sp" />
 
             <TextView
                 android:id="@+id/myloc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_marginTop="5dp"
-                android:layout_toLeftOf="@+id/viewSperator1"
                 android:text="Location"
+                android:layout_marginLeft="6dp"
                 android:textColor="#FFF"
-                android:textSize="6sp"
+                android:textSize="10sp"
                 android:textStyle="bold" />
 
 
         </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/setimage"
+            android:weightSum="2"
+            android:id="@+id/linearBottomBar"
+            android:background="#ffffff">
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textAlignment="center"
+                android:layout_weight="1"
+                android:text="Time"
+                android:textColor="#000000"
+                android:textSize="9sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="5dp"
+                android:id="@+id/joinEvent"
+                android:textAlignment="center"
+                android:text="Join Now"
+                android:background="@color/colorPrimary"
+                android:textColor="#ffffff"
+                android:textSize="9sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
     </RelativeLayout>
 
 </RelativeLayout>

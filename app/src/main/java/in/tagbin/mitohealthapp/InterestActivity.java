@@ -252,8 +252,12 @@ public class InterestActivity extends AppCompatActivity {
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("iterest ",responseObject.toString());
-            Intent i = new Intent(InterestActivity.this, SliderActivity.class);
+            PrefManager pref = new PrefManager(InterestActivity.this);
+            pref.setTutorial1(true);
+            Intent i = new Intent(InterestActivity.this,BinderActivity.class);
+            i.putExtra("interests","interests");
             startActivity(i);
+            finish();
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

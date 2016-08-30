@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4c516d"
+        android:background="#20000000"
         android:id="@+id/relativeTitle"
         android:layout_below="@+id/tvMyActivityHeading">
         <TextView
@@ -24,6 +24,9 @@
             android:textColor="#ffffff"
             android:padding="5dp"
             android:layout_marginLeft="5dp"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,7 +40,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/edit_svg"
+            android:src="@drawable/edit_white"
             android:layout_alignParentRight="true"
             android:padding="5dp"
             android:id="@+id/ivMyActivityEdit"
@@ -117,6 +120,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="5"
+            android:padding="10dp"
             android:id="@+id/lineaFriendRequsts">
             <RelativeLayout
                 android:layout_width="match_parent"

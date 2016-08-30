@@ -8,11 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -52,21 +54,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-        holder.eventtitle.setText(newlist.get(position).etitle);
+        holder.eventtitle.setText(newlist.get(position).getEvent_type().getTitle());
         holder.title.setText(newlist.get(position).getTitle());
-        holder.time.setText(MyUtils.getValidTime(newlist.get(position).getTime()));
-        holder.capacity.setText("" + newlist.get(position).getCapacity());
-        //holder.location.setText(MyUtils.getCityName(mycontext,newlist.get(position).getLocation()));
+        final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(newlist.get(position).getTime()), getCurrentTime(mycontext), DateUtils.MINUTE_IN_MILLIS));
+        holder.time.setText(relativeTime);
+
+        holder.capacity.setText("" +(newlist.get(position).getTotal_approved())+"/"+newlist.get(position).getCapacity());
+        holder.location.setText(MyUtils.getCityName(mycontext,newlist.get(position).getLocation()));
         if (newlist.get(position).isAll()) {
-            holder.confirm.setVisibility(View.VISIBLE);
-            holder.date.setVisibility(View.VISIBLE);
-            holder.delete.setVisibility(View.GONE);
-            holder.date.setText(MyUtils.getValidDate(newlist.get(position).getTime()));
+            holder.join.setVisibility(View.VISIBLE);
+            //holder.date.setVisibility(View.VISIBLE);
+            //holder.delete.setVisibility(View.GONE);
+            holder.delete.setVisibility(View.VISIBLE);
+            holder.bottomBar.setWeightSum(2);
+            //holder.date.setText(MyUtils.getValidDate(newlist.get(position).getTime()));
             holder.edit.setVisibility(View.GONE);
         } else {
-            holder.confirm.setVisibility(View.GONE);
-            holder.date.setVisibility(View.GONE);
-            holder.delete.setVisibility(View.VISIBLE);
+            holder.join.setVisibility(View.GONE);
+            holder.delete.setVisibility(View.GONE);
+            holder.bottomBar.setWeightSum(1);
+            //holder.delete.setVisibility(View.VISIBLE);
             holder.edit.setVisibility(View.VISIBLE);
         }
         holder.linearCard.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +92,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
             }
         });
-        holder.confirm.setOnClickListener(new View.OnClickListener() {
+        holder.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Controller.joinEvent(mycontext, newlist.get(position).getId(), mJoinEventListener);
@@ -159,5 +166,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             Log.d("join event error", message);
         }
     };
+    public long getCurrentTime(Context ctx){
 
+        long sec = System.currentTimeMillis();
+        return sec;
+    }
 }

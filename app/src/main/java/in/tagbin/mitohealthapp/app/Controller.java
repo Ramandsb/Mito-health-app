@@ -266,6 +266,16 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
+    public static void updateEvent(Context context,CreateEventSendModel createEventSendModel,int id,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.EVENTS);
+        url += id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, createEventSendModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
     public static void joinEvent(Context context,int event_id,
                                    RequestListener requestListener) {
         String url = UrlResolver
@@ -278,21 +288,12 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-    public static void editEvent(Context context,
-                                   RequestListener requestListener) {
-        String url = UrlResolver
-                .withAppendedPath(UrlResolver.EndPoints.EVENTS);
-        url = url+"3/";
-        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
-                context, Request.Method.PUT, null, url, requestListener);
-        volleyTypeRequest.setShouldCache(false);
-        dispatchToQueue(volleyTypeRequest, context);
-    }
+
     public static void getParticipants(Context context,int id,
                                  RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.EVENTS);
-        url = url+"5/users/";
+        url = url+id+"/users/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
@@ -322,6 +323,7 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
+
     public static void connectToUser(Context context,ConnectUserModel connectUserModel,
                                       RequestListener requestListener) {
         String url = UrlResolver
@@ -332,6 +334,7 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
+
     public static void getConnectProfile(Context context,
                                       RequestListener requestListener) {
         String url = UrlResolver
@@ -360,7 +363,6 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-
 
     public static void getWaterLog(Context context,WaterLogModel waterLogModels,
                                     RequestListener requestListener) {
