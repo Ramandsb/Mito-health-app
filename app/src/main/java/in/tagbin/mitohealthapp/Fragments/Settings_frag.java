@@ -69,18 +69,18 @@ public class Settings_frag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_settings_frag, container, false);
-        View logout = view.findViewById(R.id.logout);
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences loginDetails= getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS,Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor=loginDetails.edit();
-                editor.clear();
-                editor.commit();
-                startActivity(new Intent(getActivity(),MainPage.class));
-                getActivity().finish();
-            }
-        });
+//        View logout = view.findViewById(R.id.logout);
+//        logout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                SharedPreferences loginDetails= getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS,Context.MODE_PRIVATE);
+//                SharedPreferences.Editor editor=loginDetails.edit();
+//                editor.clear();
+//                editor.commit();
+//                startActivity(new Intent(getActivity(),MainPage.class));
+//                getActivity().finish();
+//            }
+//        });
         return view;
     }
 
