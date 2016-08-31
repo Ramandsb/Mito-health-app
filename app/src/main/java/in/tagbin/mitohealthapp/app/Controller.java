@@ -315,11 +315,11 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-    public static void getUsersNearBy(Context context,
+    public static void getUsersNearBy(Context context,double longitude,double latitude,
                                        RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.USERS);
-        url = url+"nearby/";
+        url = url+"nearby/custom?location=["+longitude+","+latitude+"]";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);

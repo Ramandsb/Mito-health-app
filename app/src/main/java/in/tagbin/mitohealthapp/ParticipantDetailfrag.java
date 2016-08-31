@@ -33,6 +33,7 @@ import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 import in.tagbin.mitohealthapp.model.DataObject;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by aasaqt on 10/8/16.
@@ -53,7 +54,7 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
     AllParticipantAdapter allAdapter;
     FrameLayout frameLayout;
     ImageView addParticipant;
-    ProgressBar progressBar;
+    GifImageView progressBar;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
         pager_indicator = (LinearLayout) layout.findViewById(R.id.viewPagerCountDots);
         frameLayout = (FrameLayout) layout.findViewById(R.id.frameAllParticiapnts);
         addParticipant = (ImageView) layout.findViewById(R.id.ivPArticipantApproved);
-        progressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        progressBar = (GifImageView) layout.findViewById(R.id.progressBar);
         addParticipant.setOnClickListener(this);
         dataObject = JsonUtils.objectify(getArguments().getString("dataobject"),DataObject.class);
         Type collectionType = new TypeToken<List<ParticipantModel>>() {

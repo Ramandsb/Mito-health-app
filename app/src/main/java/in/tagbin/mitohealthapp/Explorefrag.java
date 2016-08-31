@@ -22,10 +22,12 @@ import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.CardsDataAdapter;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ConnectUserModel;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.ExploreModel;
 import link.fls.swipestack.SwipeStack;
+import pl.droidsonroids.gif.GifImageView;
 
 public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListener {
     private SwipeStack mCardStack;
@@ -34,7 +36,8 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
     ExploreModel data;
     RelativeLayout mainContent;
     TextView name,age,distance,noData;
-    ProgressBar progressBar;
+    GifImageView progressBar;
+    PrefManager pref;
 
     @Nullable
     @Override
@@ -47,12 +50,19 @@ public class Explorefrag  extends Fragment implements SwipeStack.SwipeStackListe
         imageView = (ImageView) viewGroup.findViewById(R.id.ivExploreSubmit);
         noData = (TextView) viewGroup.findViewById(R.id.tvNoNearbyUsersData);
         mainContent = (RelativeLayout) viewGroup.findViewById(R.id.relativeMainProfile);
-        progressBar = (ProgressBar) viewGroup.findViewById(R.id.progressBar);
+        progressBar = (GifImageView) viewGroup.findViewById(R.id.progressBar);
         data = new ExploreModel();
-
+        pref = new PrefManager(getActivity());
         //interests.setText(list.get(position).getInterests());
         progressBar.setVisibility(View.VISIBLE);
-        Controller.getUsersNearBy(getContext(),mUsersListener);
+        double latitde=0.0,longitude=0.0;
+        if (pref.getCurrentLocationAsObject() != null){
+            if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
+                latitde = pref.getCurrentLocationAsObject().getLatitude();
+                longitude = pref.getCurrentLocationAsObject().getLongitude();
+            }
+        }
+        Controller.getUsersNearBy(getContext(),longitude,latitde,mUsersListener);
         return viewGroup;
     }
     RequestListener mUsersListener = new RequestListener() {

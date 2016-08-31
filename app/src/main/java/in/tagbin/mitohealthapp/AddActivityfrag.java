@@ -66,10 +66,12 @@ import in.tagbin.mitohealthapp.helper.PlaceAutoCompleteAdapter;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
 import in.tagbin.mitohealthapp.model.DataObject;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.EventTypeModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
 import in.tagbin.mitohealthapp.model.InterestModel;
+import pl.droidsonroids.gif.GifImageView;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -89,7 +91,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
     RelativeLayout relativeTime,relativeDate;
     private static int SELECT_PICTURE = 1;
     final int REQUEST_LOCATION = 2;
-    ProgressBar progressBar;
+    GifImageView progressBar;
     PrefManager pref;
     DataObject dataObject;
     PlaceAutoCompleteAdapter adapter;
@@ -115,7 +117,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         relativeTime = (RelativeLayout) layout.findViewById(R.id.relativeAddDecisionTimer);
         relativeDate = (RelativeLayout) layout.findViewById(R.id.relativeTime);
         rangeBar = (SeekBar) layout.findViewById(R.id.rangebar);
-        progressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        progressBar = (GifImageView) layout.findViewById(R.id.progressBar);
         fabAddImage = (FloatingActionButton) layout.findViewById(R.id.fabAddImage);
         activityDate = (TextView) layout.findViewById(R.id.tvAddActivityDate);
         activityTime = (TextView) layout.findViewById(R.id.tvAddActivitytime);
@@ -560,11 +562,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("event created error",message);
+            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
             ((Activity) getContext()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),"Event creation error",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -601,11 +604,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("event updated error",message);
+            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
             ((Activity) getContext()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),"Event creation error",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -626,6 +630,14 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error",message);
+            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
+            ((Activity) getContext()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
         }
     };
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -42,27 +43,34 @@ import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.ParticipantAdapter;
 import in.tagbin.mitohealthapp.model.DataObject;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by aasaqt on 9/8/16.
  */
 public class MyActivityCardfrag extends Fragment implements View.OnClickListener {
-    TextView title,time,people,location,date,heading,selectedPeople,interested,approved,left;
+    TextView title,type,time,people,location,date,heading,selectedPeople,interested,approved,left;
     DataObject data;
     ImageView backImage,edit;
     LinearLayout linearFriends;
     RecyclerView recyclerView;
     List<ParticipantModel> mModel,da;
     FrameLayout frameLayout;
-    ProgressBar progressBar;
+    GifImageView progressBar;
     StaggeredGridLayoutManager mylayoutmanager;
     ParticipantAdapter mAdapter;
     RelativeLayout invite,join,interestedRelative,approvedRelative;
+    private static final int SECOND = 1000;
+    private static final int MINUTE = 60 * SECOND;
+    private static final int HOUR = 60 * MINUTE;
+    private static final int DAY = 24 * HOUR;
+    CountDownTimer countDownTimer;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.myactivitycard,container,false);
+        type = (TextView) layout.findViewById(R.id.tvMyActivityType);
         title = (TextView) layout.findViewById(R.id.tvMyActivityTitle);
         time = (TextView) layout.findViewById(R.id.tvMyActivityTime);
         people = (TextView) layout.findViewById(R.id.tvMyActivityPeople);
@@ -85,7 +93,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         interestedRelative.setOnClickListener(this);
         approvedRelative.setOnClickListener(this);
         final String dataobject = getArguments().getString("dataobject");
-        progressBar = (ProgressBar) layout.findViewById(R.id.progressBar);
+        progressBar = (GifImageView) layout.findViewById(R.id.progressBar);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,13 +111,47 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         invite.setOnClickListener(this);
         data = JsonUtils.objectify(dataobject,DataObject.class);
         title.setText(data.getTitle());
-        final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(data.getTime()), getCurrentTime(getContext()), DateUtils.MINUTE_IN_MILLIS));
-        time.setText(relativeTime);
+        type.setText(data.getEvent_type().getTitle());
+//        final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(data.getTime()), getCurrentTime(getContext()), DateUtils.MINUTE_IN_MILLIS));
+//        time.setText(relativeTime);
         location.setText(MyUtils.getCityName(getContext(),data.getLocation()));
         people.setText(""+data.getCapacity());
         interested.setText(""+data.getTotal_request());
         approved.setText(""+data.getTotal_approved());
         left.setText(""+(data.getCapacity()-data.getTotal_approved()));
+        long endTime = MyUtils.getTimeinMillis(data.getTime());
+        long currentTime = System.currentTimeMillis();
+        countDownTimer = new CountDownTimer(endTime - currentTime, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long ms = millisUntilFinished;
+                StringBuffer text = new StringBuffer("");
+                if (ms > DAY) {
+                    text.append(ms / DAY).append(":");
+                    ms %= DAY;
+                }
+                if (ms > HOUR) {
+                    text.append(ms / HOUR).append(":");
+                    ms %= HOUR;
+                }
+                if (ms > MINUTE) {
+                    text.append(ms / MINUTE).append(":");
+                    ms %= MINUTE;
+                }
+                if (ms > SECOND){
+                    text.append(ms/SECOND);
+                    ms %= SECOND;
+                }
+                time.setText(text.toString());
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        countDownTimer.start();
+
         if (data.getPicture() != null){
 
             ImageLoader.getInstance().loadImage(data.getPicture(), new ImageLoadingListener() {
@@ -166,7 +208,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             date.setVisibility(View.VISIBLE);
             edit.setVisibility(View.GONE);
             linearFriends.setVisibility(View.VISIBLE);
-            heading.setText("Activities");
+            heading.setText("All Activities");
             Controller.getParticipants(getContext(),data.getId(),mParticipantListener);
             selectedPeople.setVisibility(View.VISIBLE);
             date.setText(MyUtils.getValidDate(data.getTime()));

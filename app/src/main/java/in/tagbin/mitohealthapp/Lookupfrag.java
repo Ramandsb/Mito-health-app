@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -26,8 +27,11 @@ import java.util.ArrayList;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyAdapter;
 import in.tagbin.mitohealthapp.model.DataObject;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import pl.droidsonroids.gif.GifImageView;
 
 public class Lookupfrag extends Fragment implements View.OnClickListener {
 
@@ -39,7 +43,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
     ArrayList<DataObject> mylist=new ArrayList<DataObject>();
     ArrayList<DataObject> da=new ArrayList<DataObject>();
     FloatingActionButton fabCreateEvent;
-    ProgressBar progressBar;
+    GifImageView progressBar;
     MyAdapter adapter;
 
     @Nullable
@@ -53,12 +57,12 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         fabCreateEvent = (FloatingActionButton) viewGroup.findViewById(R.id.createevent);
         allActivity = (TextView) viewGroup.findViewById(R.id.buttonAllActivity);
         myActivity = (TextView) viewGroup.findViewById(R.id.buttonMyActivity);
-        progressBar = (ProgressBar) viewGroup.findViewById(R.id.progressBar);
+        progressBar = (GifImageView) viewGroup.findViewById(R.id.progressBar);
         allActivity.setOnClickListener(this);
         myActivity.setOnClickListener(this);
         fabCreateEvent.setOnClickListener(this);
         mylayoutmanager = new StaggeredGridLayoutManager(2, 1);
-        adapter=new MyAdapter(getContext().getApplicationContext(),mylist,frameLayout,getActivity().getSupportFragmentManager());
+        adapter=new MyAdapter(getContext(),mylist,frameLayout,getActivity().getSupportFragmentManager(),progressBar);
         myview.setLayoutManager(this.mylayoutmanager);
         myview.setHasFixedSize(true);
         myview.setAdapter(adapter);
@@ -98,27 +102,6 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         }
     }
 
-
-    public class Async extends AsyncTask<String,String,String>
-    {
-
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-    }
     RequestListener mNearbyEvents = new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -149,10 +132,12 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("nearby events error",message);
+            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
             ((Activity) getContext()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -188,10 +173,12 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("all events error",message);
+            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
             ((Activity) getContext()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
                 }
             });
         }

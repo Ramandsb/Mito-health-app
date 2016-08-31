@@ -58,14 +58,12 @@ public class BinderActivity extends AppCompatActivity{
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.partnet_final);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.profile_final);
         AHBottomNavigationItem item3 = new AHBottomNavigationItem("", R.drawable.big_mito);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.cart_final);
         AHBottomNavigationItem item5 = new AHBottomNavigationItem("", R.drawable.settings_final);
 
 // Add itemsF63D2B
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
         bottomNavigation.addItem(item3);
-        bottomNavigation.addItem(item4);
         bottomNavigation.addItem(item5);
 
 // Set background color
@@ -180,13 +178,13 @@ public class BinderActivity extends AppCompatActivity{
                 //bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
+//            case 3:
+//
+//                toolbar.setTitle("Cart");
+//                fra = new CartFrag();
+//                //bottomNavigation.setCurrentItem(3);
+//                break;
             case 3:
-
-                toolbar.setTitle("Cart");
-                fra = new CartFrag();
-                //bottomNavigation.setCurrentItem(3);
-                break;
-            case 4:
                 toolbar.setTitle("Settings");
                 fra = new Settings_frag();
                 //bottomNavigation.setCurrentItem(4);

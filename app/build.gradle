@@ -83,6 +83,7 @@ dependencies {
     compile 'com.github.ivbaranov:materialfavoritebutton:0.1.2'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     compile 'org.adw.library:discrete-seekbar:1.0.1'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.1'
 }
 
 

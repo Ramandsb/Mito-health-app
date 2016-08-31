@@ -30,6 +30,7 @@ import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.InterestModel;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by aasaqt on 14/8/16.
@@ -41,7 +42,7 @@ public class InterestActivity extends AppCompatActivity {
     InterestModel interestModel;
     List<Integer> idFinal;
     PrefManager pref;
-    ProgressBar progressBar;
+    GifImageView progressBar;
     android.widget.SearchView searchView;
 
     @Override
@@ -50,7 +51,7 @@ public class InterestActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_interests);
         flowLayout = (FlowLayout) findViewById(R.id.flowLayout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = (GifImageView) findViewById(R.id.progressBar);
         setSupportActionBar(toolbar);
         idFinal = new ArrayList<Integer>();
         pref = new PrefManager(this);

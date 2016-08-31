@@ -3,6 +3,7 @@ package in.tagbin.mitohealthapp.helper;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -29,20 +32,24 @@ import in.tagbin.mitohealthapp.MyActivityCardfrag;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.model.DataObject;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import pl.droidsonroids.gif.GifImageView;
 
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     Context mycontext;
     FrameLayout pFrameLayout;
     FragmentManager mFragmentManager;
+    GifImageView mProgressBar;
     ArrayList<DataObject> newlist = new ArrayList<DataObject>();
     int year, month, day;
 
-    public MyAdapter(Context context, ArrayList<DataObject> mylist, FrameLayout mFrameLayout, FragmentManager fragmentManager) {
+    public MyAdapter(Context context, ArrayList<DataObject> mylist, FrameLayout mFrameLayout, FragmentManager fragmentManager, GifImageView progressBar) {
         mycontext = context;
         pFrameLayout = mFrameLayout;
         mFragmentManager = fragmentManager;
         newlist = mylist;
+        mProgressBar = progressBar;
     }
 
     @Override
@@ -61,6 +68,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
         holder.capacity.setText("" +(newlist.get(position).getTotal_approved())+"/"+newlist.get(position).getCapacity());
         holder.location.setText(MyUtils.getCityName(mycontext,newlist.get(position).getLocation()));
+        if (newlist.get(position).getTotal_approved() == newlist.get(position).getCapacity()){
+            holder.join.setTextColor(Color.parseColor("#9b9b9b"));
+            holder.join.setClickable(false);
+        }else{
+            holder.join.setTextColor(Color.parseColor("#ffffff"));
+            holder.join.setClickable(true);
+        }
         if (newlist.get(position).isAll()) {
             holder.join.setVisibility(View.VISIBLE);
             //holder.date.setVisibility(View.VISIBLE);
@@ -95,6 +109,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mProgressBar.setVisibility(View.VISIBLE);
                 Controller.joinEvent(mycontext, newlist.get(position).getId(), mJoinEventListener);
             }
         });
@@ -159,11 +174,26 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("join event", responseObject.toString());
+            ((Activity)mycontext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(mycontext,"Event joined successfully",Toast.LENGTH_LONG).show();
+                }
+            });
         }
 
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("join event error", message);
+            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
+            ((Activity)mycontext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(mycontext,errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
         }
     };
     public long getCurrentTime(Context ctx){

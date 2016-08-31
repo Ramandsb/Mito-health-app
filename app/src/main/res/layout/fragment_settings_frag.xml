@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context="in.tagbin.mitohealthapp.Fragments.Settings_frag">
 
     <RelativeLayout
@@ -23,7 +24,7 @@
             android:layout_marginTop="10dp"
             android:id="@+id/viewSperator"
             android:layout_below="@+id/tvCustomNotification"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
         <Switch
             android:id="@+id/switchFilterMeals"
             android:layout_width="match_parent"
@@ -49,7 +50,7 @@
             android:layout_marginRight="12dp"
             android:id="@+id/viewSperator1"
             android:layout_below="@+id/switchFilterMeals"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
         <Switch
             android:id="@+id/switchFilterWater"
             android:layout_width="match_parent"
@@ -76,7 +77,7 @@
             android:layout_marginRight="12dp"
             android:id="@+id/viewSperator2"
             android:layout_below="@+id/switchFilterWater"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
         <Switch
             android:id="@+id/switchFilterSleep"
             android:layout_width="match_parent"
@@ -102,7 +103,7 @@
             android:layout_marginRight="12dp"
             android:id="@+id/viewSperator3"
             android:layout_below="@+id/switchFilterSleep"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
         <Switch
             android:id="@+id/switchFilterExercise"
             android:layout_width="match_parent"
@@ -128,7 +129,7 @@
             android:layout_marginRight="12dp"
             android:id="@+id/viewSperator4"
             android:layout_below="@+id/switchFilterExercise"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
         <Switch
             android:id="@+id/switchFilterWeeklyProgress"
             android:layout_width="match_parent"
@@ -154,7 +155,7 @@
             android:layout_marginRight="12dp"
             android:id="@+id/viewSperator5"
             android:layout_below="@+id/switchFilterWeeklyProgress"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
         <Switch
             android:id="@+id/switchFilterHealthTips"
             android:layout_width="match_parent"
@@ -178,7 +179,7 @@
             android:layout_marginTop="10dp"
             android:id="@+id/viewSperator6"
             android:layout_below="@+id/switchFilterHealthTips"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -195,7 +196,7 @@
             android:layout_marginTop="7dp"
             android:id="@+id/viewSperator7"
             android:layout_below="@+id/tvPeopleConnect"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -207,14 +208,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Gender"
-                android:textStyle="bold"
+                android:text="Preference"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:textSize="15sp"
+                android:textColor="@color/colorAccent"
                 android:layout_marginRight="5dp"
                 android:text="Only Women    >"/>
         </RelativeLayout>
@@ -225,67 +227,69 @@
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:layout_below="@+id/relativeSettingGender"
-            android:background="@color/colorPrimary"/>
+            android:background="#dedede"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:paddingTop="7dp"
             android:paddingBottom="7dp"
-            android:id="@+id/relativeSettingState"
+            android:id="@+id/relativeSettingAge"
             android:layout_below="@+id/viewSperator8">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="State"
-                android:textStyle="bold"
+                android:text="Age Range"
+                android:textColor="@color/colorPrimary"
                 android:textSize="15sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:textSize="15sp"
+                android:textColor="@color/colorAccent"
                 android:layout_marginRight="5dp"
-                android:text="Haryana    >"/>
+                android:text="18-25 yrs"/>
         </RelativeLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:id="@+id/viewSperator9"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_below="@+id/relativeSettingState"
-            android:background="@color/colorPrimary"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:paddingTop="7dp"
-            android:paddingBottom="7dp"
-            android:id="@+id/relativeSettingCity"
-            android:layout_below="@+id/viewSperator9">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="City"
-                android:textStyle="bold"
-                android:textSize="15sp"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:textSize="15sp"
-                android:layout_marginRight="5dp"
-                android:text="Gurgaon    >"/>
-        </RelativeLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:id="@+id/viewSperator10"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_below="@+id/relativeSettingCity"
-            android:background="@color/colorPrimary"/>
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:id="@+id/viewSperator9"-->
+            <!--android:layout_marginLeft="12dp"-->
+            <!--android:layout_marginRight="12dp"-->
+            <!--android:layout_below="@+id/relativeSettingState"-->
+            <!--android:background="#dedede"/>-->
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="10dp"-->
+            <!--android:paddingTop="7dp"-->
+            <!--android:paddingBottom="7dp"-->
+            <!--android:id="@+id/relativeSettingCity"-->
+            <!--android:layout_below="@+id/viewSperator9">-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="City"-->
+                <!--android:textStyle="bold"-->
+                <!--android:textSize="15sp"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:textSize="15sp"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:text="Gurgaon    >"/>-->
+        <!--</RelativeLayout>-->
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:id="@+id/viewSperator10"-->
+            <!--android:layout_marginLeft="12dp"-->
+            <!--android:layout_marginRight="12dp"-->
+            <!--android:layout_below="@+id/relativeSettingCity"-->
+            <!--android:background="#dedede"/>-->
     </RelativeLayout>
     <LinearLayout
         android:id="@+id/logout"

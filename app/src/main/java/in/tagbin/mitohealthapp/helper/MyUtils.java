@@ -107,4 +107,20 @@ public class MyUtils {
             cityName = "";
         return cityName;
     }
+    public static String getCityNameFromLatLng(Context context,double latitude,double longitude){
+
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String cityName;
+        if (addresses != null)
+            cityName = addresses.get(0).getAddressLine(0);
+        else
+            cityName = "";
+        return cityName;
+    }
 }

@@ -56,6 +56,7 @@ import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConnectProfileModel;
@@ -412,6 +413,11 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 }
                 if (data.getHome_town() != null){
                     etHomeTwon.setText(data.getHome_town());
+                }
+                if (pref.getCurrentLocationAsObject() != null){
+                    if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
+                        etLocation.setText(MyUtils.getCityNameFromLatLng(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
+                    }
                 }
             }
         }

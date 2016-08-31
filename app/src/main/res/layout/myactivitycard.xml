@@ -8,25 +8,62 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:text="My Activity"
+        android:textColor="@color/colorPrimary"
         android:id="@+id/tvMyActivityHeading"
         android:textSize="18sp"/>
+
+    <ImageView
+        android:id="@+id/ivMyActivityImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:adjustViewBounds="true"
+        android:layout_below="@+id/tvMyActivityHeading"
+        android:scaleType="centerCrop" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#20000000"
-        android:id="@+id/relativeTitle"
-        android:layout_below="@+id/tvMyActivityHeading">
+        android:layout_alignTop="@+id/ivMyActivityImage"
+        android:id="@+id/relativeTitle">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvMyActivityType"
+            android:text="Horse Riding"
+            android:textColor="#ffffff"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="5dp"
+            android:layout_marginLeft="5dp"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:layout_toRightOf="@+id/tvMyActivityType"
+            android:background="#ffffff"
+            android:id="@+id/viewSperator3"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tvMyActivityTitle"
-            android:text="Horse Riding"
+            android:text="Join for horse riding"
             android:textColor="#ffffff"
-            android:padding="5dp"
-            android:layout_marginLeft="5dp"/>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="20dp"/>
+            android:padding="8dp"
+            android:layout_toRightOf="@+id/viewSperator3"
+            android:textSize="10sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00:00"
+            android:textSize="10sp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/tvMyActivityTime"
+            android:layout_below="@+id/tvMyActivityType"
+            android:textColor="#ffffff"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,64 +83,40 @@
             android:id="@+id/ivMyActivityEdit"
             android:layout_marginRight="5dp"/>
     </RelativeLayout>
-    <ImageView
-        android:id="@+id/ivMyActivityImage"
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:layout_below="@+id/relativeTitle"
-        android:layout_marginBottom="10dp"
-        android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#bf4c516d"
+        android:background="#20000000"
         android:id="@+id/relativeBottomImage"
         android:layout_alignBottom="@+id/ivMyActivityImage">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="00:00:00"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:padding="5dp"
-            android:id="@+id/tvMyActivityTime"
-            android:background="@drawable/bg_time"
-            android:layout_marginLeft="15dp"
-            android:textColor="#ffffff"/>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/people"
-            android:layout_alignParentRight="true"
+            android:src="@drawable/personwhite"
             android:padding="5dp"
             android:id="@+id/ivMyActivityPeople"
-            android:layout_marginRight="5dp"/>
+            android:layout_toLeftOf="@+id/tvMyActivityPeople"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="5"
+            android:text="5/5"
+            android:layout_marginRight="5dp"
             android:textColor="#ffffff"
+            android:layout_alignParentRight="true"
             android:padding="7dp"
-            android:background="@drawable/bg_people"
             android:textSize="16sp"
-            android:id="@+id/tvMyActivityPeople"
-            android:layout_toLeftOf="@+id/ivMyActivityPeople"/>
-        <View
-            android:layout_width="2dp"
-            android:layout_height="20dp"
-            android:layout_margin="8dp"
-            android:id="@+id/viewSperator"
-            android:layout_toLeftOf="@+id/tvMyActivityPeople"
-            android:background="#9b9b9b"/>
+            android:id="@+id/tvMyActivityPeople"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tvMyActivityLocation"
             android:text="New Delhi"
             android:padding="10dp"
-            android:layout_toLeftOf="@+id/viewSperator"
-            android:textColor="#000000"/>
+            android:layout_alignParentLeft="true"
+            android:textColor="#ffffff"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -257,18 +270,31 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </RelativeLayout>
-    <ProgressBar
-        android:id="@+id/progressBar"
+    <pl.droidsonroids.gif.GifImageView
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:id="@+id/progressBar"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:layout_marginBottom="60dp"
-        android:indeterminateTint="@color/colorAccent"
         android:indeterminateTintMode="src_atop"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:src="@drawable/loader"
+        />
+    <!--<ProgressBar-->
+        <!--android:id="@+id/progressBar"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_marginBottom="60dp"-->
+        <!--android:indeterminateTint="@color/colorAccent"-->
+        <!--android:indeterminateTintMode="src_atop"-->
+        <!--android:visibility="gone" />-->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
