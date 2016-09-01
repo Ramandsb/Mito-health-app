@@ -238,11 +238,11 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-    public static void getAllEventsNearby(Context context,
+    public static void getAllEventsNearby(Context context,double latitude,double longitude,
                                        RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.EVENTS);
-        url = url+"/location?location=[77.0266, 28.4595]";
+        url = url+"/location?location=["+longitude+","+latitude+"]";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
@@ -315,11 +315,11 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-    public static void getUsersNearBy(Context context,double longitude,double latitude,
+    public static void getUsersNearBy(Context context,double longitude,double latitude,int page,
                                        RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.USERS);
-        url = url+"nearby/custom?location=["+longitude+","+latitude+"]";
+        url = url+"nearby/custom?location=["+longitude+","+latitude+"]&page="+page;
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);

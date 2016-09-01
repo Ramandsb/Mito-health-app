@@ -101,7 +101,7 @@ public class InterestActivity extends AppCompatActivity {
                             toggleButton.setTextColor(Color.parseColor("#ffffff"));
                         } else {
                             toggleButton.setBackgroundResource(R.drawable.back);
-                            toggleButton.setTextColor(Color.parseColor("#000000"));
+                            toggleButton.setTextColor(Color.parseColor("#26446d"));
                         }
                         final int finalI = i;
                         toggleButton.setOnClickListener(new View.OnClickListener() {
@@ -113,7 +113,7 @@ public class InterestActivity extends AppCompatActivity {
                                     idFinal.add(interestModel.getList().get(finalI).getId());
                                 } else {
                                     toggleButton.setBackgroundResource(R.drawable.back);
-                                    toggleButton.setTextColor(Color.parseColor("#000000"));
+                                    toggleButton.setTextColor(Color.parseColor("#26446d"));
                                     for (Integer integer : new ArrayList<>(idFinal)) {
                                         if (integer == interestModel.getList().get(finalI).getId())
                                             idFinal.remove(integer);
@@ -156,7 +156,7 @@ public class InterestActivity extends AppCompatActivity {
                             toggleButton.setTextColor(Color.parseColor("#ffffff"));
                         } else {
                             toggleButton.setBackgroundResource(R.drawable.back);
-                            toggleButton.setTextColor(Color.parseColor("#000000"));
+                            toggleButton.setTextColor(Color.parseColor("#26446d"));
                         }
                         final int finalI = i;
                         toggleButton.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +168,7 @@ public class InterestActivity extends AppCompatActivity {
                                     idFinal.add(interestModel.getList().get(finalI).getId());
                                 } else {
                                     toggleButton.setBackgroundResource(R.drawable.back);
-                                    toggleButton.setTextColor(Color.parseColor("#000000"));
+                                    toggleButton.setTextColor(Color.parseColor("#26446d"));
                                     for (Integer integer : new ArrayList<>(idFinal)) {
                                         if (integer == interestModel.getList().get(finalI).getId())
                                             idFinal.remove(integer);
@@ -186,7 +186,7 @@ public class InterestActivity extends AppCompatActivity {
         searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
+                if (!hasFocus) {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     if (imm != null) {
                         imm.showSoftInput(view, 0);
@@ -217,7 +217,7 @@ public class InterestActivity extends AppCompatActivity {
                     toggleButton.setTextColor(Color.parseColor("#ffffff"));
                 } else {
                     toggleButton.setBackgroundResource(R.drawable.back);
-                    toggleButton.setTextColor(Color.parseColor("#000000"));
+                    toggleButton.setTextColor(Color.parseColor("#26446d"));
                 }
             }else{
                 toggleButton.setChecked(false);
@@ -233,7 +233,7 @@ public class InterestActivity extends AppCompatActivity {
                         idFinal.add(interestModel.getList().get(finalI).getId());
                     } else {
                         toggleButton.setBackgroundResource(R.drawable.back);
-                        toggleButton.setTextColor(Color.parseColor("#000000"));
+                        toggleButton.setTextColor(Color.parseColor("#26446d"));
                         for (Integer integer : new ArrayList<>(idFinal)) {
                             if (integer == interestModel.getList().get(finalI).getId())
                                 idFinal.remove(integer);
@@ -270,8 +270,24 @@ public class InterestActivity extends AppCompatActivity {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("interest error",message);
-            ErrorResponseModel errorResponseModel= JsonUtils.objectify(message,ErrorResponseModel.class);
-            Toast.makeText(InterestActivity.this,errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(InterestActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(InterestActivity.this, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
 

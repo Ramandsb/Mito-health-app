@@ -186,14 +186,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("join event error", message);
-            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
-            ((Activity)mycontext).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(mycontext,errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
-                }
-            });
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) mycontext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mycontext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity) mycontext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mycontext, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
     public long getCurrentTime(Context ctx){

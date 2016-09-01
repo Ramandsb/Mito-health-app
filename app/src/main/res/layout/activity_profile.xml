@@ -18,7 +18,7 @@
         android:layout_alignTop="@+id/pagerProfile"
         android:layout_marginTop="15dp"
         android:id="@+id/relativePagerHeading"
-        android:background="#6f4c516d"
+        android:background="#50000000"
         android:padding="10dp">
 
         <TextView
@@ -82,7 +82,7 @@
                         android:layout_height="wrap_content"
                         android:id="@+id/relativeProfileAllInfo"
                         android:layout_below="@+id/viewPagerCountDots"
-                        android:background="#bf4c516d">
+                        android:background="#a0000000">
 
                         <TextView
                             android:id="@+id/tvProfileAge"
@@ -112,7 +112,7 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/tvProfileAge"
                             android:layout_centerHorizontal="true"
-                            android:background="#df4c516d"
+                            android:background="#ff4c516d"
                             android:textAlignment="center">
 
                             <TextView
@@ -176,12 +176,11 @@
                             android:layout_below="@+id/relativeInterestsProfile"
                             android:text="Description"
                             android:id="@+id/tvProfileDescriptionHeading"
-                            android:layout_marginBottom="3dp"
                             android:layout_marginLeft="20dp"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="5dp"
                             android:textStyle="bold"
                             android:textSize="14sp"
-                            android:textColor="#ffffff"/>
+                            android:textColor="@color/colorPrimary"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -190,7 +189,6 @@
                             android:id="@+id/tvProfileDescription"
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="30dp"
-                            android:layout_marginTop="4dp"
                             android:textSize="12sp"
                             android:textColor="#ffffff"/>
                         <TextView
@@ -201,10 +199,10 @@
                             android:id="@+id/tvProfileOccupationHeading"
                             android:layout_marginBottom="3dp"
                             android:layout_marginLeft="20dp"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="5dp"
                             android:textStyle="bold"
                             android:textSize="14sp"
-                            android:textColor="#ffffff"/>
+                            android:textColor="@color/colorPrimary"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -213,7 +211,6 @@
                             android:id="@+id/tvProfileOccupation"
                             android:layout_marginBottom="8dp"
                             android:layout_marginLeft="30dp"
-                            android:layout_marginTop="4dp"
                             android:textSize="12sp"
                             android:textColor="#ffffff"/>
                     </RelativeLayout>

@@ -2,6 +2,7 @@ package in.tagbin.mitohealthapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -32,6 +33,7 @@ import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 import in.tagbin.mitohealthapp.model.DataObject;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
 import pl.droidsonroids.gif.GifImageView;
 
@@ -55,6 +57,12 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
     FrameLayout frameLayout;
     ImageView addParticipant;
     GifImageView progressBar;
+    CountDownTimer countDownTimer;
+    private static final int SECOND = 1000;
+    private static final int MINUTE = 60 * SECOND;
+    private static final int HOUR = 60 * MINUTE;
+    private static final int DAY = 24 * HOUR;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,7 +86,38 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
         participantModels = (List<ParticipantModel>) new Gson()
                 .fromJson(getArguments().getString("allmodels"), collectionType);
         data = JsonUtils.objectify(getArguments().getString("participantModel"),ParticipantModel.class);
-        time.setText(MyUtils.getValidTime(dataObject.getTime()));
+        long endTime = MyUtils.getTimeinMillis(dataObject.getTime());
+        long currentTime = System.currentTimeMillis();
+        countDownTimer = new CountDownTimer(endTime - currentTime, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long ms = millisUntilFinished;
+                StringBuffer text = new StringBuffer("");
+                if (ms > DAY) {
+                    text.append(ms / DAY).append(":");
+                    ms %= DAY;
+                }
+                if (ms > HOUR) {
+                    text.append(ms / HOUR).append(":");
+                    ms %= HOUR;
+                }
+                if (ms > MINUTE) {
+                    text.append(ms / MINUTE).append(":");
+                    ms %= MINUTE;
+                }
+                if (ms > SECOND){
+                    text.append(ms/SECOND);
+                    ms %= SECOND;
+                }
+                time.setText(text.toString());
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
+        countDownTimer.start();
         title.setText(dataObject.getTitle());
         location.setText(MyUtils.getCityName(getContext(),dataObject.getLocation()));
         people.setText(""+dataObject.getCapacity());
@@ -201,13 +240,24 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("approved error",message);
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),"Participant approved error",Toast.LENGTH_LONG).show();
-                }
-            });
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
 }

@@ -248,6 +248,11 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         }
         type.setOnItemClickListener(mAutocompleteClickListener);
         adapter = new PlaceAutoCompleteAdapter(getContext(), android.R.layout.simple_list_item_1);
+        if (pref.getCurrentLocationAsObject() != null){
+            if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
+                location.setText(MyUtils.getCityNameFromLatLng(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
+            }
+        }
         type.setAdapter(adapter);
         return layout;
     }

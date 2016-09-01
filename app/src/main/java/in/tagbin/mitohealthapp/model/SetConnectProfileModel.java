@@ -31,7 +31,7 @@ public class SetConnectProfileModel {
         images = new Images1Model();
     }
     public class Images1Model{
-        String master = "http://2.bp.blogspot.com/-Wsm4_g8ra9s/TzUtuGQWs6I/AAAAAAAAAj0/Ji-gtwukVP8/s1600/django_admin_action.png";
+        String master;
         ArrayList<String> other = new ArrayList<String>();
         public void setMaster(String master) {
             this.master = master;

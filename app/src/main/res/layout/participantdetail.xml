@@ -9,7 +9,9 @@
         android:layout_centerHorizontal="true"
         android:text="Horse Riding"
         android:id="@+id/tvParticipantDetailTitle"
-        android:textSize="18sp"/>
+        android:textSize="20sp"
+        android:textColor="@color/colorPrimary"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,9 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00:00"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:padding="5dp"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:paddingRight="10dp"
             android:id="@+id/tvParticipantDetailTime"
             android:background="@drawable/bg_time"
             android:textColor="#ffffff"/>
@@ -41,8 +43,8 @@
             android:text="5"
             android:textColor="#ffffff"
             android:padding="7dp"
-            android:background="@drawable/bg_people"
-            android:textSize="16sp"
+            android:background="@drawable/solid_cicle"
+            android:textSize="12sp"
             android:id="@+id/tvParticipantDetailPeople"
             android:layout_toLeftOf="@+id/ivParticipantDetailPeople"/>
         <View
@@ -59,7 +61,7 @@
             android:text="New Delhi"
             android:padding="10dp"
             android:layout_toLeftOf="@+id/viewSperator"
-            android:textColor="#000000"/>
+            android:textColor="@color/colorPrimary"/>
     </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -78,26 +80,26 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#bf4c516d"
+            android:background="#70000000"
             android:layout_alignTop="@+id/pagerParticipant">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Varun Dhawan, 29"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:id="@+id/tvParticipantDetailName"
                 android:textColor="#ffffff"
-                android:textSize="15sp"/>
+                android:textSize="17sp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Indian Actor"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:id="@+id/tvParticipantDetailProfession"
                 android:layout_below="@+id/tvParticipantDetailName"
                 android:textColor="#ffffff"
-                android:textSize="13sp"/>
+                android:textSize="15sp"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"

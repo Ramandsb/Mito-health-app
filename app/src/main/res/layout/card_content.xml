@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -23,6 +23,26 @@
         android:layout_marginBottom="18dp"
         android:layout_alignBottom="@+id/card1"
         android:background="@drawable/bg_people"/>
-
+    <TextView
+        android:id="@+id/left_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PASS"
+        android:textSize="20sp"
+        android:background="@drawable/bg_explore_pass"
+        android:padding="10dp"
+        android:layout_marginLeft="70dp"
+        android:layout_alignTop="@+id/card1" />
+    <TextView
+        android:id="@+id/right_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PASS"
+        android:textSize="20sp"
+        android:background="@drawable/bg_explore_pass"
+        android:padding="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="70dp"
+        android:layout_alignTop="@+id/card1" />
 
 </RelativeLayout>

@@ -39,9 +39,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:drawableLeft="@drawable/setting_meals"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/switch_thumb"
@@ -60,7 +61,6 @@
                 android:layout_below="@+id/switchFilterMeals"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="10dp"
                 android:background="#dedede" />
 
             <Switch
@@ -68,9 +68,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator1"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:checked="true"
                 android:drawableLeft="@drawable/setting_water"
                 android:drawablePadding="10dp"
@@ -90,7 +91,6 @@
                 android:layout_below="@+id/switchFilterWater"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="10dp"
                 android:background="#dedede" />
 
             <Switch
@@ -98,9 +98,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator2"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:drawableLeft="@drawable/setting_sleep"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/switch_thumb"
@@ -119,7 +120,6 @@
                 android:layout_below="@+id/switchFilterSleep"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="10dp"
                 android:background="#dedede" />
 
             <Switch
@@ -127,9 +127,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator3"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:drawableLeft="@drawable/setting_exercise"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/switch_thumb"
@@ -148,7 +149,6 @@
                 android:layout_below="@+id/switchFilterExercise"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="10dp"
                 android:background="#dedede" />
 
             <Switch
@@ -156,9 +156,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator4"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:drawableLeft="@drawable/setting_weeklyprogress"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/switch_thumb"
@@ -177,7 +178,6 @@
                 android:layout_below="@+id/switchFilterWeeklyProgress"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="10dp"
                 android:background="#dedede" />
 
             <Switch
@@ -185,9 +185,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator5"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:drawableLeft="@drawable/setting_health"
                 android:drawablePadding="10dp"
                 android:drawableRight="@drawable/switch_thumb"
@@ -204,7 +205,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/switchFilterHealthTips"
-                android:layout_marginTop="10dp"
                 android:background="#dedede" />
 
             <TextView
@@ -232,8 +232,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator7"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp">
 
@@ -267,8 +267,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator8"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp">
 
@@ -377,9 +377,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator10"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:drawableRight="@drawable/switch_thumb"
                 android:text="Show me on Explore"
                 android:textColor="@color/colorPrimary"
@@ -394,7 +395,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/switchFilterExplore"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:background="#dedede" />
@@ -403,9 +403,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator11"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:drawableRight="@drawable/switch_thumb"
                 android:text="Chat Notifications"
                 android:textColor="@color/colorPrimary"
@@ -420,7 +421,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/switchFilterChatNotifications"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:background="#dedede" />
@@ -429,9 +429,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Contact Us"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:layout_below="@+id/viewSperator12"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp" />
@@ -440,7 +441,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/tvSettingContactUs"
-                android:layout_marginTop="10dp"
                 android:background="#dedede" />
             <TextView
                 android:id="@+id/tvHelpSupport"
@@ -461,13 +461,14 @@
                 android:layout_marginTop="10dp"
                 android:background="#dedede" />
             <TextView
-                android:id="@+id/tvSettingLegal"
+                android:id="@+id/tvSettingPrivacy"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LEGAL"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
+                android:text="Privacy Policy"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
                 android:layout_below="@+id/viewSperator14"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp" />
@@ -475,28 +476,7 @@
                 android:id="@+id/viewSperator15"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_below="@+id/tvSettingLegal"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:background="#dedede" />
-            <TextView
-                android:id="@+id/tvSettingPrivacy"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Privacy Policy"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
-                android:layout_below="@+id/viewSperator15"
-                android:textColor="@color/colorPrimary"
-                android:textSize="15sp" />
-            <View
-                android:id="@+id/viewSperator16"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
                 android:layout_below="@+id/tvSettingPrivacy"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:background="#dedede" />
@@ -505,18 +485,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Terms &amp; Conditions"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
-                android:layout_below="@+id/viewSperator16"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
+                android:layout_below="@+id/viewSperator15"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp" />
             <View
-                android:id="@+id/viewSperator17"
+                android:id="@+id/viewSperator16"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/tvSettingTerms"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
                 android:background="#dedede" />
@@ -525,24 +505,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="FAQs"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="7dp"
-                android:layout_below="@+id/viewSperator17"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingTop="7dp"
+                android:paddingBottom="10dp"
+                android:layout_below="@+id/viewSperator16"
                 android:textColor="@color/colorPrimary"
                 android:textSize="15sp" />
             <View
-                android:id="@+id/viewSperator18"
+                android:id="@+id/viewSperator17"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/tvSettingFaqs"
-                android:layout_marginTop="10dp"
                 android:background="#dedede" />
             <TextView
                 android:id="@+id/tvLogout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/viewSperator18"
+                android:layout_below="@+id/viewSperator17"
                 android:paddingLeft="10dp"
                 android:paddingTop="7dp"
                 android:text="Log out"

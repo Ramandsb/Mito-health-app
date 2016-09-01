@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,6 +64,7 @@ public class Settings_frag extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -78,6 +80,8 @@ public class Settings_frag extends Fragment {
                 SharedPreferences.Editor editor=loginDetails.edit();
                 editor.clear();
                 editor.commit();
+                PrefManager pref = new PrefManager(getContext());
+                pref.clearSession();
                 startActivity(new Intent(getActivity(),MainPage.class));
                 getActivity().finish();
             }

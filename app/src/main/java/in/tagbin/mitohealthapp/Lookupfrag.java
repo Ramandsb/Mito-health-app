@@ -29,6 +29,7 @@ import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyAdapter;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.DataObject;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import pl.droidsonroids.gif.GifImageView;
@@ -45,6 +46,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
     FloatingActionButton fabCreateEvent;
     GifImageView progressBar;
     MyAdapter adapter;
+    PrefManager pref;
 
     @Nullable
     @Override
@@ -67,7 +69,15 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         myview.setHasFixedSize(true);
         myview.setAdapter(adapter);
         progressBar.setVisibility(View.VISIBLE);
-        Controller.getAllEvents(getContext(),mAllEventsListener);
+        pref = new PrefManager(getContext());
+        if (pref.getCurrentLocationAsObject() != null){
+            if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
+                Controller.getAllEventsNearby(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude(),mAllEventsListener);
+            }else{
+                Controller.getAllEvents(getContext(),mAllEventsListener);
+            }
+        }
+
         return viewGroup;
     }
 
@@ -88,7 +98,13 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
                 myActivity.setTextColor(Color.parseColor("#26446d"));
                 myActivity.setBackgroundResource(R.drawable.bg_filter);
                 progressBar.setVisibility(View.VISIBLE);
-                Controller.getAllEvents(getContext(),mAllEventsListener);
+                if (pref.getCurrentLocationAsObject() != null){
+                    if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
+                        Controller.getAllEventsNearby(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude(),mAllEventsListener);
+                    }else{
+                        Controller.getAllEvents(getContext(),mAllEventsListener);
+                    }
+                }
                 break;
             case R.id.buttonMyActivity:
                 myActivity.setTextColor(Color.parseColor("#ffffff"));
@@ -132,14 +148,24 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("nearby events error",message);
-            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
-                }
-            });
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
     RequestListener mAllEventsListener = new RequestListener() {
@@ -173,14 +199,24 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("all events error",message);
-            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
-                }
-            });
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
 }

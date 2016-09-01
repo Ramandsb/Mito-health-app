@@ -46,6 +46,10 @@ public class PrefManager {
         editor = pref.edit();
         editor.apply();
     }
+    public void clearSession(){
+        editor.clear();
+        editor.commit();
+    }
     public void setTutorial(boolean tokenToServer){
         editor.putBoolean(KEY_TUT_SHOWN,tokenToServer);
         editor.commit();

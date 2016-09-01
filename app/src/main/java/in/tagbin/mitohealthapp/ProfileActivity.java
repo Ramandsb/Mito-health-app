@@ -17,10 +17,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 import in.tagbin.mitohealthapp.model.ConnectProfileModel;
 
@@ -41,6 +43,8 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
     RelativeLayout allInfo;
     CoordinatorLayout coordinatorLayout;
     ConnectProfileModel data;
+    PrefManager pref;
+    double latitde = 0.0,longitude = 0.0;
     NestedScrollView nestedScrollView;
     boolean checkod = false;
 
@@ -64,13 +68,22 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         allInfo = (RelativeLayout) findViewById(R.id.relativeProfileAllInfo);
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
         nestedScrollView = (NestedScrollView) findViewById(R.id.scrollView);
+        pref = new PrefManager(this);
+        if (pref.getCurrentLocationAsObject() != null){
+            if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
+                latitde = pref.getCurrentLocationAsObject().getLatitude();
+                longitude = pref.getCurrentLocationAsObject().getLongitude();
+            }
+        }
         blankSpace.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,MyUtils.dpToPx(ProfileActivity.this,250));
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) coordinatorLayout.getLayoutParams();
                 layoutParams.addRule(RelativeLayout.BELOW,0);
                 layoutParams.addRule(RelativeLayout.ALIGN_TOP,0);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,1);
+                layoutParams.width= layoutParams.MATCH_PARENT;
+                layoutParams.height = MyUtils.dpToPx(ProfileActivity.this,250);
                 coordinatorLayout.setLayoutParams(layoutParams);
                 coordinatorLayout.setFitsSystemWindows(true);
                 nestedScrollView.setFitsSystemWindows(true);
@@ -116,20 +129,18 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         age.setText(data.getAge()+", "+data.getGender());
         occupation.setText(data.getOccupation());
         description.setText(data.getDescription());
+        double lat2 = MyUtils.getLatitude(this,data.getLocation());
+        double long2 = MyUtils.getLongitude(this,data.getLocation());
+        double result = MyUtils.calculateDistance(latitde, longitude, lat2, long2, "M");
+        distance.setText(new DecimalFormat("##").format(result).toString() + " miles away");
         //distance.setText(data.getDistance());
         LayoutInflater inflater = LayoutInflater.from(this);
         if (data.getInterests().size() >0) {
             flowLayout.setVisibility(View.VISIBLE);
             for (int i = 0; i < data.getInterests().size(); i++) {
-                View layout = inflater.inflate(R.layout.interest_toggle, flowLayout, false);
-                final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
+                View layout = inflater.inflate(R.layout.profile_toggle, flowLayout, false);
+                final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton1);
                 toggleButton.setTextOn(data.getInterests().get(i).getInterest().getName());
-                toggleButton.setBackgroundResource(R.drawable.bg_hobby);
-                toggleButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                toggleButton.setTextColor(Color.parseColor("#ffffff"));
-                toggleButton.setTransformationMethod(null);
-                int padding = MyUtils.dpToPx(this, 4);
-                toggleButton.setPadding(padding, padding - 2, padding - 2, padding - 2);
                 toggleButton.setChecked(true);
                 toggleButton.setClickable(false);
                 flowLayout.addView(layout);

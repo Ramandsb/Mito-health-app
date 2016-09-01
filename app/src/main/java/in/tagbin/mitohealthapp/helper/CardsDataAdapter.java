@@ -2,6 +2,7 @@ package in.tagbin.mitohealthapp.helper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.tagbin.mitohealthapp.ProfileActivity;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.model.ConnectProfileModel;
 import in.tagbin.mitohealthapp.model.ExploreModel;
@@ -82,14 +84,14 @@ public class CardsDataAdapter extends BaseAdapter {
             personCard.setImageResource(R.drawable.hotel);
         }
 
-//        personCard.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent i = new Intent(mContext,ProfileActivity.class);
-//                i.putExtra("response",JsonUtils.jsonify(mData.get(position)));
-//                mContext.startActivity(i);
-//            }
-//        });
+        contentView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(mContext,ProfileActivity.class);
+                i.putExtra("response",JsonUtils.jsonify(mData.getNearby_user_list().get(position)));
+                mContext.startActivity(i);
+            }
+        });
         return contentView;
     }
 }
