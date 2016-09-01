@@ -35,6 +35,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,8 +104,8 @@ public class FoodDetailsFrag extends Fragment {
 
         }
         sendDishData= new Intent(Broadcastsend);
-
-
+        hour=calendar.get(Calendar.HOUR);
+        min=calendar.get(Calendar.MINUTE);
     }
     View view;
     @Override
@@ -118,6 +121,7 @@ public class FoodDetailsFrag extends Fragment {
         set_fat= (TextView) view.findViewById(R.id.set_fat);
         set_carbo= (TextView) view.findViewById(R.id.set_carbo);
         set_energy= (TextView) view.findViewById(R.id.set_energy);
+        setTime(hour,min);
         View qvieq=view.findViewById(R.id.qview);
 
         if (FoodDetails.source.equals("dish_search")){
@@ -292,9 +296,12 @@ public class FoodDetailsFrag extends Fragment {
             messageView.setText("ParseError");
         }
     }
+    Calendar calendar= Calendar.getInstance();
     private static int hour = 0, min = 0, day = 0;
+
    public static String dishName = "", time = "", quantity = "",recipe="";
     public void Timepick() {
+
 
         quantity = quantity_ed.getText().toString();
         if (quantity.equals("")) {
@@ -310,21 +317,38 @@ public class FoodDetailsFrag extends Fragment {
                                               int minute) {
                             hour = hourOfDay;
                             min = minute;
-                            if (hour > 12) {
-                                hour = hour - 12;
-                                time = hour + ":" + min;
-                                set_time.setText(time);
-                                set_ampm.setText("pm");
-                            } else {
-                                time = hour + ":" + min;
-                                set_time.setText(time);
-                                set_ampm.setText("am");
-                            }
+
+
+                            setTime(hour,min);
+
 
 
                         }
                     }, hour, min, false);
             tpd.show();
         }
+    }
+    public void setTime(int hour,int min){
+        if (hour > 12) {
+            hour = hour - 12;
+//            time = hour + ":" + min;
+            Date d= new Date();
+            d.setHours(hour);
+            d.setMinutes(min);
+            SimpleDateFormat sd = new SimpleDateFormat("hh:mm");
+          time=  sd.format(d);
+            set_time.setText(time);
+            set_ampm.setText("pm");
+        } else {
+//            time = hour + ":" + min;
+            Date d= new Date();
+            d.setHours(hour);
+            d.setMinutes(min);
+            SimpleDateFormat sd = new SimpleDateFormat("hh:mm");
+            time=  sd.format(d);
+            set_time.setText(time);
+            set_ampm.setText("am");
+        }
+
     }
 }

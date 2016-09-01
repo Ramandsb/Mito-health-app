@@ -96,11 +96,6 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".FoodLogging"
-            android:label="@string/title_activity_food_logging"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".DishSearch"
             android:label="@string/title_activity_dish_search"
             android:screenOrientation="portrait"

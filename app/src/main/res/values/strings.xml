@@ -3,7 +3,7 @@
     <string name="title_activity_login">Mito</string>
     <string name="title_activity_signup">SignupActivity</string>
     <string name="app_id">145106709242101</string>
-    <string name="title_activity_profile_page">Profile</string>
+    <string name="title_activity_profile_page"></string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

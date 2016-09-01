@@ -196,6 +196,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
 
         return cursor;
     }
+    public Cursor getFeelingsInformationByDate(DatabaseOperations dop,String date){
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FEELINGS, null, null);
+//        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FEELINGS + " WHERE " + TableData.Tableinfo.FEELINGS_DATE + "='" + date + "'", null);
+        Cursor  cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FEELINGS + " WHERE " + TableData.Tableinfo.FEELINGS_DATE + "='" + date + "'", null);
+
+        return cursor;
+    }
 
     public Cursor getCompleteWaterInformation(DatabaseOperations dop,String source){
         Log.d("source",source);

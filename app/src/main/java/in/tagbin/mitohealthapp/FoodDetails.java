@@ -2,6 +2,7 @@ package in.tagbin.mitohealthapp;
 
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -70,20 +71,24 @@ public class FoodDetails extends AppCompatActivity {
     ViewPager viewPager;
     PagerAdapter adapter;
     TabLayout tabLayout;
+    long time_stamp =0;
   public static String food_id,source;
     DatabaseOperations dop;
     int currentPosition=0;
     SharedPreferences login_details;
     String auth_key;
+    View view;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         customDialog();
 
 
+        view=findViewById(R.id.cont);
         login_details = getSharedPreferences(MainPage.LOGIN_DETAILS,MODE_PRIVATE);
         auth_key=   login_details.getString("key", "");
         food_id=  getIntent().getStringExtra("food_id");
@@ -161,7 +166,7 @@ public class FoodDetails extends AppCompatActivity {
                                         .setAction("Action", null).show();
                             } else {
 
-                                long time_stamp =0;
+
 
                                    time_stamp= MyUtils.getUtcTimestamp(FoodFrag.selectedDate+" "+FoodDetailsFrag.time+":00","s");
                                     makeJsonObjReq(food_id,String.valueOf(time_stamp),FoodDetailsFrag.quantity);
@@ -196,11 +201,70 @@ public class FoodDetails extends AppCompatActivity {
 
         switch (item.getItemId()) {
 
+            case android.R.id.home: {
+
+                if (FoodDetails.source.equals("dish_search")){
+                    closeAppDialog();
+
+                }else if (FoodDetails.source.equals("food_frag")){
+                    startActivity(new Intent(FoodDetails.this,CollapsableLogging.class).putExtra("selection",0));
+                    finish();
+                }
+                break;
+            }
         }
 
         return true;
     }
-    public void makeServerStatusRequestObject(String recipe_id,String like){
+
+    @Override
+    public void onBackPressed() {
+        if (FoodDetails.source.equals("dish_search")){
+            closeAppDialog();
+
+        }else if (FoodDetails.source.equals("food_frag")){
+            startActivity(new Intent(FoodDetails.this,CollapsableLogging.class).putExtra("selection",0));
+            finish();
+        }
+
+    }
+    public void closeAppDialog(){
+        AlertDialog.Builder dialog=  new AlertDialog.Builder(this);
+        dialog.setTitle("Save Changes");
+        dialog.setMessage("Do you want to Log this food item?");
+        dialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                if (FoodDetailsFrag.time.equals("") || FoodDetailsFrag.quantity.equals("")) {
+                    Snackbar.make(view, "Set Time & Quantity", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                } else {
+
+
+
+                    time_stamp= MyUtils.getUtcTimestamp(FoodFrag.selectedDate+" "+FoodDetailsFrag.time+":00","s");
+                    makeJsonObjReq(food_id,String.valueOf(time_stamp),FoodDetailsFrag.quantity);
+
+//
+
+                }
+            }
+        });
+        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                startActivity(new Intent(FoodDetails.this,DishSearch.class).putExtra("back","food"));
+                finish();
+            }
+        });
+        AlertDialog alert = dialog.create();
+        alert.show();
+
+    }
+
+    public void makeServerStatusRequestObject(String recipe_id, String like){
 
         String local_url=Config.url+"recipe/"+like;
         Map<String, String> postParam = new HashMap<String, String>();

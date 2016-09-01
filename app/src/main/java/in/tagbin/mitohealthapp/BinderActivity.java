@@ -2,6 +2,8 @@ package in.tagbin.mitohealthapp;
 
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -14,10 +16,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -36,6 +40,7 @@ public class BinderActivity extends AppCompatActivity{
     static Fragment fra;
     FragmentTransaction fraTra;
     Toolbar toolbar;
+    TextView toolbar_title;
     public AHBottomNavigation bottomNavigation;
 
 
@@ -44,10 +49,10 @@ public class BinderActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_binder);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar_title= (TextView) toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
-
-        toolbar.setTitle("Profile");
-
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar_title.setText("Mito");
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
 
 
@@ -112,6 +117,7 @@ public class BinderActivity extends AppCompatActivity{
         fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
         fraTra.commit();
 
+
 // Customize notification (title, background, typeface)
         bottomNavigation.setNotificationBackgroundColor(getResources().getColor(R.color.bottombar));
 
@@ -145,11 +151,38 @@ public class BinderActivity extends AppCompatActivity{
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        closeAppDialog();
+    }
 
+    public void closeAppDialog(){
+        AlertDialog.Builder dialog=  new AlertDialog.Builder(this);
+        dialog.setTitle("Are you Sure!");
+        dialog.setMessage("You want to Exit Mito");
+        dialog.setPositiveButton("yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        dialog.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+
+            }
+        });
+        AlertDialog alert = dialog.create();
+        alert.show();
+
+    }
     public void change (int position){
 
         switch (position){
             case 0:
+                toolbar_title.setText("Partner Connect");
+                toolbar.setTitle("");
                 PrefManager pref = new PrefManager(this);
 
                 if (!pref.isTutorialShown()) {
@@ -167,25 +200,28 @@ public class BinderActivity extends AppCompatActivity{
 
                 break;
             case 1:
-                toolbar.setTitle("Profile");
+                toolbar_title.setText("Profile");
+                toolbar.setTitle("");
                 fra = new ProfileFragMent();
                 //bottomNavigation.setCurrentItem(1);
 //                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                toolbar.setTitle("Mito");
+                toolbar_title.setText("Mito");
+                toolbar.setTitle("");
                 fra = new HomePage();
                 //bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
 //            case 3:
 //
-//                toolbar.setTitle("Cart");
+//
 //                fra = new CartFrag();
 //                //bottomNavigation.setCurrentItem(3);
 //                break;
             case 3:
-                toolbar.setTitle("Settings");
+                toolbar_title.setText("Settings");
+                toolbar.setTitle("");
                 fra = new Settings_frag();
                 //bottomNavigation.setCurrentItem(4);
                 break;

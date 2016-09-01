@@ -33,4 +33,24 @@
     <color name="grey_acc">#616161</color>
 
 
+    <color name="food">#E27A7A</color>
+    <color name="foodacc">#E53935</color>
+    <color name="foodline">#5F5E7A</color>
+    <color name="water">#4A749E</color>
+    <color name="wateracc">#3949AB</color>
+    <color name="waterline">#19B5FE</color>
+
+    <color name="exercise">#A0C894</color>
+    <color name="exerciseacc">#689F38</color>
+    <color name="exerciseline">#4A749E</color>
+    <color name="sleep">#5F5E7A</color>
+    <color name="sleepacc">#464563</color>
+    <color name="sleepline">#ffffff</color>
+    <color name="feelings">#607D8B</color>
+    <color name="feelingsaacc">#455A64</color>
+    <color name="feelingsline">#BDC3C7</color>
+
+
+
+
 </resources>

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.R;
@@ -69,18 +70,18 @@ public class Settings_frag extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_settings_frag, container, false);
-//        View logout = view.findViewById(R.id.logout);
-//        logout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                SharedPreferences loginDetails= getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS,Context.MODE_PRIVATE);
-//                SharedPreferences.Editor editor=loginDetails.edit();
-//                editor.clear();
-//                editor.commit();
-//                startActivity(new Intent(getActivity(),MainPage.class));
-//                getActivity().finish();
-//            }
-//        });
+        TextView logout = (TextView) view.findViewById(R.id.tvLogout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences loginDetails= getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS,Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor=loginDetails.edit();
+                editor.clear();
+                editor.commit();
+                startActivity(new Intent(getActivity(),MainPage.class));
+                getActivity().finish();
+            }
+        });
         return view;
     }
 

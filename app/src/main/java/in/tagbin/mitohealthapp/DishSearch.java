@@ -3,12 +3,14 @@ package in.tagbin.mitohealthapp;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,9 +19,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -45,6 +50,8 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -85,6 +92,7 @@ public class DishSearch extends AppCompatActivity {
     private static int hour = 0, min = 0, day = 0;
     private static final String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/mito/recipe/_search";
 
+    ProgressBar loadingProgress;
     static String food_id = "";
     String searchUrl = "";
     String exerUrl = "http://api.mitoapp.com/v1/data/exercise?name=";
@@ -102,6 +110,7 @@ public class DishSearch extends AppCompatActivity {
         setContentView(R.layout.activity_dish_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         customDialog();
 
         back = getIntent().getStringExtra("back");
@@ -111,6 +120,12 @@ public class DishSearch extends AppCompatActivity {
         add_dish = new ArrayList<String>();
         login_details = getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
         auto_tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+        auto_tv.setFocusable(true);
+        auto_tv.setThreshold(1);
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(auto_tv, InputMethodManager.SHOW_FORCED);
+        loadingProgress = (ProgressBar) findViewById(R.id.loading_progress);
+        loadingProgress.setVisibility(View.GONE);
 //        search_icon = (ImageView) findViewById(R.id.search_icon);
 //        search_icon.setColorFilter(Color.parseColor("#cecece"));
 
@@ -132,7 +147,7 @@ public class DishSearch extends AppCompatActivity {
             }
         });
 
-        auto_tv.setThreshold(1);
+
         auto_tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -150,9 +165,10 @@ public class DishSearch extends AppCompatActivity {
                 if (back.equals("food")) {
 //                    Timepick();
                     startActivity(new Intent(DishSearch.this,FoodDetails.class).putExtra("food_id",food_id).putExtra("source","dish_search"));
+                finish();
                 } else if (back.equals("exercise")) {
 //                    WheelDialog("Select Weight");
-                    dop.putExerciseInformation(dop, unique_id, food_id, dishName, ExerciseFrag.selectedDate, weight, sets, reps);
+                    dop.putExerciseInformation(dop, unique_id, food_id, dishName, ExerciseFrag.selectedDate, "1", "1", "1");
 //                    makeJsonObjReq(food_id,"");
                     Snackbar.make(layout, "Exercise Logged Successfuly", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
@@ -175,25 +191,16 @@ public class DishSearch extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before,
                                       int count) {
                 Log.d("tagbhi", count + "");
-                if (s.toString().length() <= 1) {
-                    Log.d("tagbhi", s.toString().length() + "");
-                } else {
+                loadingProgress.setVisibility(View.VISIBLE);
+                if (count==0){
+                    loadingProgress.setVisibility(View.GONE);
+                }
+//                if (s.toString().length() <= 1) {
+//                    Log.d("tagbhi", s.toString().length() + "");
+//                } else {
                     if (back.equals("food")) {
                         searchUrl = url + "?q=" + s.toString();
                         names = new ArrayList<String>();
-//                        ElasticSearchModel elasticSearchModel = new ElasticSearchModel();
-//                        ElasticSearchModel.QueryModel queryModel = elasticSearchModel.getQuery();
-//                        ElasticSearchModel.QueryModel.BoolModel boolModel = queryModel.getBool();
-//                        List<MustModel> mustModels = new ArrayList<MustModel>();
-//                        MustModel mustModel = new MustModel();
-//                        MustModel.MatchPhrase matchPhrase = mustModel.getMatch_phrase_prefix();
-//                        matchPhrase.setRecipe_name(s.toString());
-//                        mustModel.setMatch_phrase_prefix(matchPhrase);
-//                        mustModels.add(mustModel);
-//                        boolModel.setMust(mustModels);
-//                        queryModel.setBool(boolModel);
-//                        elasticSearchModel.setQuery(queryModel);
-//                        Controller.getFoodlist(DishSearch.this,elasticSearchModel,url,mRequestListener);
                         makeJsonObjReq(s.toString());
                         Log.d("length", s.toString().length() + "" + back);
                     } else if (back.equals("exercise")) {
@@ -202,7 +209,7 @@ public class DishSearch extends AppCompatActivity {
                         makeJsonArrayReq(searchUrl);
                         Log.d("length", s.toString().length() + "" + back);
                     }
-                }
+//                }
             }
         });
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -220,6 +227,26 @@ public class DishSearch extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case android.R.id.home: {
+                startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",0));
+                finish();
+                break;
+            }
+        }
+        return true;
     }
 
     RequestListener mRequestListener = new RequestListener() {
@@ -274,6 +301,14 @@ public class DishSearch extends AppCompatActivity {
             Log.d("tag", "onERROR: " + message);
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",0));
+        finish();
+    }
+
     @Override
     protected void onPause() {
 //        exitToBottomAnimation();
@@ -282,6 +317,7 @@ public class DishSearch extends AppCompatActivity {
     }
 
     private void makeJsonObjReq(String s) {
+
 
         Log.d("checkString", s.toString());
 
@@ -338,6 +374,9 @@ JSONObject jsonObject = null;
                             try {
                                 if (back.equals("food")) {
                                     JSONArray ja = response.getJSONObject("hits").getJSONArray("hits");
+                                    if (ja.length()==0){
+                                        loadingProgress.setVisibility(View.GONE);
+                                    }
                                     names.clear();
                                     sql_ids.clear();
                                     for (int i = 0; i < ja.length(); i++) {
@@ -349,6 +388,7 @@ JSONObject jsonObject = null;
                                         Log.d("description", Restraunt);
                                         names.add(Restraunt);
                                         sql_ids.add(event_id);
+                                        loadingProgress.setVisibility(View.GONE);
 
                                     }
                                 } else if (back.equals("exercise")) {
@@ -467,249 +507,12 @@ JSONObject jsonObject = null;
         AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
 
-    public void quantity_dialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("Enter Quantity");
-        final View view = View.inflate(this, R.layout.quantity_getter, null);
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT
-        );
-        lp.setMargins(30, 0, 30, 10);
-
-        final EditText input = (EditText) view.findViewById(R.id.get_quantity);
-        alertDialog.setView(view);
-        alertDialog.setPositiveButton("Done",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        quantity = input.getText().toString();
-                        dop.putInformation(dop, unique_id, food_id, dishName, time, quantity, FoodFrag.selectedDate, "no");
-
-                        Snackbar.make(layout, "Food Logged Successfuly", Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-
-                    }
-                });
-
-        alertDialog.setNegativeButton("Cancel",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-        alertDialog.show();
-
-    }
-
-    public void Timepick() {
-
-        TimePickerDialog tpd = new TimePickerDialog(this,
-                new TimePickerDialog.OnTimeSetListener() {
-
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay,
-                                          int minute) {
-                        hour = hourOfDay;
-                        min = minute;
-                        if (hour > 12) {
-                            hour = hour - 12;
-                            time = hour + ":" + min;
-                        } else {
-                            time = hour + ":" + min;
-                        }
-                        quantity_dialog();
-
-                    }
-                }, hour, min, false);
-        tpd.show();
-    }
-
-    ArrayList<String> weightList, setsList, repsList;
-    String weight = "20", sets = "4", reps = "15";
-    String currentId = "", currentDate = "";
-
-    public void setUplists() {
-        int weightint = 0;
-        for (int i = 0; i < 25; i++) {
-            weightint = i * 5;
-            weightList.add(String.valueOf(weightint));
-        }
-        for (int i = 0; i < 20; i++) {
-            setsList.add(String.valueOf(i));
-        }
-        for (int i = 0; i < 50; i++) {
-            repsList.add(String.valueOf(i));
-        }
-
-    }
-
-    public void WheelDialog(final String source) {
-        String[] feets = null, inches = null, unit = null;
-
-
-        feets = new String[22];
-        inches = new String[21];
-        unit = new String[51];
-        for (int i = 0; i <= 21; i++) {
-            feets[i] = "" + (i * 5);
-        }
-        for (int i = 0; i <= 20; i++) {
-            inches[i] = "" + (i);
-        }
-        for (int i = 0; i <= 50; i++) {
-            unit[i] = "" + (i);
-        }
-
-
-        View outerView = View.inflate(this, R.layout.wheel_view, null);
-        if (source.equals("Select Weight")) {
-            WheelView wv1 = (WheelView) outerView.findViewById(R.id.wheel_view_wv1);
-            wv1.setOffset(2);
-            wv1.setItems(Arrays.asList(feets));
-            wv1.setSeletion(5);
-            wv1.setVisibility(View.VISIBLE);
-            wv1.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
-                @Override
-                public void onSelected(int selectedIndex, String item) {
-                    Log.d("feet", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-                    weight = item;
-                }
-            });
-        }
-
-        if (source.equals("Select Sets")) {
-            WheelView wv2 = (WheelView) outerView.findViewById(R.id.wheel_view_wv2);
-            wv2.setOffset(2);
-            wv2.setItems(Arrays.asList(inches));
-            wv2.setSeletion(4);
-            wv2.setVisibility(View.VISIBLE);
-            wv2.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
-                @Override
-                public void onSelected(int selectedIndex, String item) {
-                    Log.d("inches", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-
-                    sets = item;
-
-                }
-            });
-        }
-
-
-        if (source.equals("Select Reps")) {
-            WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_view_wv3);
-            wv.setOffset(2);
-            wv.setItems(Arrays.asList(unit));
-            wv.setSeletion(5);
-            wv.setVisibility(View.VISIBLE);
-            wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
-                @Override
-                public void onSelected(int selectedIndex, String item) {
-                    Log.d("Tag", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-
-                    reps = item;
-                }
-            });
-        }
-        new android.support.v7.app.AlertDialog.Builder(this)
-                .setTitle(source)
-                .setView(outerView)
-                .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if (source.equals("Select Weight")) {
-
-                            Log.d("val", weight);
-//                            ContentValues contentValues = new ContentValues();
-//                            contentValues.put(TableData.Tableinfo.WEIGHT, weight);
-//                            dop.updateExerRow(dop, contentValues, currentId);
-                            WheelDialog("Select Sets");
-
-
-                        } else if (source.equals("Select Sets")) {
-                            Log.d("val", sets);
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(TableData.Tableinfo.SETS, sets);
-//                            dop.updateExerRow(dop, contentValues, currentId);
-                            WheelDialog("Select Reps");
-                        } else if (source.equals("Select Reps")) {
-                            Log.d("val", reps);
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(TableData.Tableinfo.REPS, reps);
-//                            dop.updateExerRow(dop, contentValues, currentId);
 
 
 
-                        }
-
-                    }
-                })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .show();
-
-    }
-
-    String auth_key;
 
 
-    private void makeJsonObjReq(String food_id, String lg) {
-showDialog();
-        auth_key = login_details.getString("key", "");
-        Map<String, String> postParam = new HashMap<String, String>();
-        postParam.put("ltype", "exercise");
-        postParam.put("c_id", food_id);
 
-
-        JSONObject jsonObject = new JSONObject(postParam);
-        Log.d("postpar", jsonObject.toString());
-
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                Config.url + "logger/", jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
-
-                        dismissDialog();
-
-                    }
-
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-displayErrors(error);
-                Log.d("error", error.toString());
-            }
-        }) {
-
-            //
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("charset", "utf-8");
-                headers.put("Authorization", "JWT " + auth_key);
-                return headers;
-            }
-
-
-        };
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
 
     public void customDialog() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);

@@ -97,7 +97,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     private Calendar calendar;
     TextView dob_tv, height_tv, weight_tv, waist_tv,goal_weight_tv;
     String feet_val, inches_val, unit_val;
-    String gender;
+    String gender="";
     String url = "", name = "default";
     ImageView profile_pic;
     TextView profile_name;
@@ -205,8 +205,18 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                 showAddProfilePicDialog();
             }
         });
+        gender=login_details.getString("gender","");
 
-
+        if (gender.equals("M")){
+            male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
+            female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
+        }else  if (gender.equals("F")){
+            male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_m));
+            female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
+        }else{
+            male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
+            female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
+        }
         male_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -606,8 +616,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             MenuItem itm = menu.getItem(i);
             itm.setVisible(false);
         }
-        //InitActivity i = (InitActivity) getActivity();
-        //i.getActionBar().setTitle("Profile");
+
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(true);
         super.onPrepareOptionsMenu(menu);
@@ -1354,7 +1363,12 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
 //
                                 Log.d("all details", login_details.getAll().toString());
-                                updateProfile();
+                                try{
+                                    updateProfile();
+                                }catch (Exception e){
+                                    Log.d("Update profile error",e.toString());
+                                }
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -1496,13 +1510,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
      waist=   login_details.getInt("waist",0);
 
         dob_tv.setText(dob);
-//        if (gender.equals("M")){
-//            male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
-//            female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
-//        }else  if (gender.equals("F")){
-//            male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_m));
-//            female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
-//        }
+
 
 
 

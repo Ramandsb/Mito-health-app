@@ -16,11 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:layout_marginTop="10dp"
-            android:elevation="10dp"
-            card_view:cardCornerRadius="35dp">
+            android:elevation="20dp"
+            card_view:cardCornerRadius="10dp">
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/calendarView"
@@ -72,8 +72,8 @@
                         android:id="@+id/stresstv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="20dp"
-                        android:text="10" />
+                        android:layout_marginRight="10dp"
+                        android:text="10.0" />
 
 
                 </LinearLayout>
@@ -121,8 +121,8 @@
                         android:id="@+id/hapinesstv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="20dp"
-                        android:text="10" />
+                        android:layout_marginRight="10dp"
+                        android:text="10.0" />
 
 
                 </LinearLayout>
@@ -167,8 +167,8 @@
                         android:id="@+id/energytv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="20dp"
-                        android:text="10" />
+                        android:layout_marginRight="10dp"
+                        android:text="10.0" />
 
 
                 </LinearLayout>
@@ -216,8 +216,8 @@
                         android:id="@+id/confidencetv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="20dp"
-                        android:text="10" />
+                        android:layout_marginRight="10dp"
+                        android:text="10.0" />
 
 
                 </LinearLayout>

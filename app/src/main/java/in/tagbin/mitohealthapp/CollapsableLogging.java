@@ -141,70 +141,7 @@ public FoodInterface foodInterface;
             @Override
             public void onPageSelected(int position) {
                 currentFrag = position;
-                if (position==1){
-                    fab.hide();
-                    appBarLayout.setBackgroundResource(R.color.bluegrey_pri);
-                    tabLayout.setBackgroundResource(R.color.bluegrey_pri);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getWindow();
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        window.setStatusBarColor(getResources().getColor(R.color.bluegrey_acc));
-
-                    }
-
-                    addData(dop.getChartInformation(dop,HomePage.selectedDate),"water");
-
-                }
-                if (position==0){
-                    fab.show();
-                    appBarLayout.setBackgroundResource(R.color.colorPrimary);
-                    tabLayout.setBackgroundResource(R.color.colorPrimary);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getWindow();
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-
-                    }
-                    addData(dop.getChartInformation(dop,HomePage.selectedDate),"food");
-
-                }
-                if (position==2){
-                    fab.show();
-                    appBarLayout.setBackgroundResource(R.color.mdtp_red);
-                    tabLayout.setBackgroundResource(R.color.mdtp_red);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getWindow();
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        window.setStatusBarColor(getResources().getColor(R.color.mdtp_red_focused));
-                    }
-                    addData(dop.getChartInformation(dop,HomePage.selectedDate),"exercise");
-                }
-                if (position==3){
-                    fab.hide();
-
-                    appBarLayout.setBackgroundResource(R.color.grey_pri);
-                    tabLayout.setBackgroundResource(R.color.grey_pri);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getWindow();
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        window.setStatusBarColor(getResources().getColor(R.color.grey_acc));
-                    }
-                    addData(dop.getChartInformation(dop,HomePage.selectedDate),"sleep");
-                }
-
-                if (position==4){
-                    fab.hide();
-
-                    appBarLayout.setBackgroundResource(R.color.cal_bg);
-                    tabLayout.setBackgroundResource(R.color.cal_bg);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        Window window = getWindow();
-                        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                        window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-                    }
-                    addDatatoFeelingsChart();
-                }
-
+               setChartBackground(position);
 
 
             }
@@ -232,6 +169,8 @@ public FoodInterface foodInterface;
         mChart.setDescription("");
         mChart.setDrawBorders(false);
         mChart.getAxisLeft().setEnabled(true);
+        mChart.getAxisRight().setEnabled(false);
+
         mChart.getAxisRight().setDrawAxisLine(false);
         mChart.getAxisRight().setDrawGridLines(false);
         mChart.getXAxis().setDrawAxisLine(false);
@@ -266,71 +205,12 @@ public FoodInterface foodInterface;
         mChart.setScaleEnabled(true);
         mChart.setPinchZoom(false);
         Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
-        l.setPosition(Legend.LegendPosition.LEFT_OF_CHART_INSIDE);
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_INSIDE);
 
-        int position=i;
-        if (position==1){
-            fab.hide();
-            appBarLayout.setBackgroundResource(R.color.bluegrey_pri);
-            tabLayout.setBackgroundResource(R.color.bluegrey_pri);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.bluegrey_acc));
 
-            }
 
-            addData(dop.getChartInformation(dop,HomePage.selectedDate),"water");
+        setChartBackground(i);
 
-        }
-        if (position==0){
-            fab.show();
-            appBarLayout.setBackgroundResource(R.color.colorPrimary);
-            tabLayout.setBackgroundResource(R.color.colorPrimary);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-
-            }
-            addData(dop.getChartInformation(dop,HomePage.selectedDate),"food");
-
-        }
-        if (position==2){
-            fab.show();
-            appBarLayout.setBackgroundResource(R.color.mdtp_red);
-            tabLayout.setBackgroundResource(R.color.mdtp_red);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.mdtp_red_focused));
-            }
-            addData(dop.getChartInformation(dop,HomePage.selectedDate),"exercise");
-        }
-        if (position==3){
-            fab.hide();
-
-            appBarLayout.setBackgroundResource(R.color.grey_pri);
-            tabLayout.setBackgroundResource(R.color.grey_pri);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.grey_acc));
-            }
-            addData(dop.getChartInformation(dop,HomePage.selectedDate),"sleep");
-        }
-        if (position==4){
-            fab.hide();
-
-            appBarLayout.setBackgroundResource(R.color.cal_bg);
-            tabLayout.setBackgroundResource(R.color.cal_bg);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-            }
-            addDatatoFeelingsChart();
-        }
 
 
         mSheetLayout.setFab(fab);
@@ -349,6 +229,72 @@ public FoodInterface foodInterface;
         return true;
     }
 
+    public void setChartBackground(int position){
+        if (position==1){
+            fab.hide();
+            appBarLayout.setBackgroundResource(R.color.water);
+            tabLayout.setBackgroundResource(R.color.water);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.wateracc));
+
+            }
+
+            addData(dop.getChartInformation(dop,HomePage.selectedDate),"water");
+
+        }
+        if (position==0){
+            fab.show();
+            appBarLayout.setBackgroundResource(R.color.food);
+            tabLayout.setBackgroundResource(R.color.food);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.foodacc));
+
+            }
+            addData(dop.getChartInformation(dop,HomePage.selectedDate),"food");
+
+        }
+        if (position==2){
+            fab.show();
+            appBarLayout.setBackgroundResource(R.color.exercise);
+            tabLayout.setBackgroundResource(R.color.exercise);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.exerciseacc));
+            }
+            addData(dop.getChartInformation(dop,HomePage.selectedDate),"exercise");
+        }
+        if (position==3){
+            fab.hide();
+
+            appBarLayout.setBackgroundResource(R.color.sleep);
+            tabLayout.setBackgroundResource(R.color.sleep);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.sleepacc));
+            }
+            addData(dop.getChartInformation(dop,HomePage.selectedDate),"sleep");
+        }
+
+        if (position==4){
+            fab.hide();
+
+            appBarLayout.setBackgroundResource(R.color.feelings);
+            tabLayout.setBackgroundResource(R.color.feelings);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.feelingsaacc));
+            }
+            addDatatoFeelingsChart();
+        }
+
+    }
 
 
     @Override
@@ -729,8 +675,22 @@ public FoodInterface foodInterface;
 //        d.setCircleColor(getResources().getColor(R.color.red));
         dataSets.add(d);
         dataSets.add(d1);
-        int col_consumed=getResources().getColor(R.color.white);
-        int col_reql=getResources().getColor(R.color.red);
+        int col_consumed=0;int col_reql=0;
+        col_consumed =getResources().getColor(R.color.white);
+        if (source.equals("food")){
+
+            col_reql =getResources().getColor(R.color.foodline);
+
+        }else if (source.equals("water")){
+            col_reql =getResources().getColor(R.color.waterline);
+
+        }else if (source.equals("exercise")){
+            col_reql =getResources().getColor(R.color.exerciseline);
+        }else if (source.equals("sleep")){
+
+            col_reql =getResources().getColor(R.color.sleepline);
+        }
+
         // make the first DataSet dashed
 //        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
         ((LineDataSet) dataSets.get(0)).setColors(new int[]{col_consumed});
@@ -782,7 +742,7 @@ public FoodInterface foodInterface;
 //        d.setCircleColor(getResources().getColor(R.color.red));
 
         dataSets.add(d1);
-        int col_consumed=getResources().getColor(R.color.white);
+        int col_consumed=getResources().getColor(R.color.feelingsline);
         // make the first DataSet dashed
 //        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
         ((LineDataSet) dataSets.get(0)).setColors(new int[]{col_consumed});

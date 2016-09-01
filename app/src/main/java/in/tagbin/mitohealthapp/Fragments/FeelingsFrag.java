@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -33,6 +34,7 @@ import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.model.Timeconsumed;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,6 +63,7 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
     MaterialCalendarView widget;
     public static String selectedDate = "";
     private OnFragmentInteractionListener mListener;
+    DiscreteSeekBar stressbar ;DiscreteSeekBar happinessbar; DiscreteSeekBar energybar;  DiscreteSeekBar confidencebar;
 
     public FeelingsFrag() {
         // Required empty public constructor
@@ -150,7 +153,23 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
                 .commit();
 
         //////////////////
-        final DiscreteSeekBar stressbar = (DiscreteSeekBar) view.findViewById(R.id.stressbar);
+
+       Cursor cursor= dop.getFeelingsInformationByDate(dop,dateTimeStamp);
+        if (cursor != null && cursor.moveToFirst()) {
+
+            do {
+                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+              stress=  Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.STRESS)));
+            happiness=    Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.HAPPINESS)));
+             energy=   Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.ENERGY)));
+            confidence    =Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CONFIDENCE)));
+            }
+            while (cursor.moveToNext());
+        }
+
+         stressbar = (DiscreteSeekBar) view.findViewById(R.id.stressbar);
+        stressbar.setProgress((int) stress);
+        stress_tv.setText(stress+"");
         stressbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
@@ -161,7 +180,9 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
                 return value;
             }
         });
-        final DiscreteSeekBar happinessbar = (DiscreteSeekBar) view.findViewById(R.id.happinessbar);
+    happinessbar = (DiscreteSeekBar) view.findViewById(R.id.happinessbar);
+        happinessbar.setProgress((int) happiness);
+        happiness_tv.setText(happiness+"");
         happinessbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
@@ -172,7 +193,9 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
                 return value;
             }
         });
-        final DiscreteSeekBar energybar = (DiscreteSeekBar) view.findViewById(R.id.energybar);
+         energybar = (DiscreteSeekBar) view.findViewById(R.id.energybar);
+        energybar.setProgress((int) energy);
+        energy_tv.setText(energy+"");
         energybar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
@@ -183,7 +206,9 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
                 return value;
             }
         });
-        DiscreteSeekBar confidencebar = (DiscreteSeekBar) view.findViewById(R.id.confidencebar);
+        confidencebar = (DiscreteSeekBar) view.findViewById(R.id.confidencebar);
+        confidencebar.setProgress((int) confidence);
+        confidence_tv.setText(confidence+"");
         confidencebar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
@@ -247,11 +272,39 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
             Log.d("date", selectedDate);
         }
         dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
-        try{
-            dop.putFeelingsInformation(dop, dateTimeStamp,"0.0","0.0","0.0","0.0","0.0","no");
-        }catch (DatabaseException e){
-            Log.d("DatabaseException",e.toString());
+        Cursor cursor= dop.getFeelingsInformationByDate(dop,dateTimeStamp);
+
+        if (cursor.getCount()==0){
+            try{
+                dop.putFeelingsInformation(dop, dateTimeStamp,"0.0","0.0","0.0","0.0","0.0","no");
+            }catch (DatabaseException e){
+                Log.d("DatabaseException",e.toString());
+            }
         }
+
+        cursor= dop.getFeelingsInformationByDate(dop,dateTimeStamp);
+            if (cursor != null && cursor.moveToFirst()) {
+
+                do {
+                    //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+                    stress = Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.STRESS)));
+                    happiness = Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.HAPPINESS)));
+                    energy = Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.ENERGY)));
+                    confidence = Double.valueOf(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CONFIDENCE)));
+                }
+                while (cursor.moveToNext());
+            }
+
+        stressbar.setProgress((int) stress);
+        happinessbar.setProgress((int) happiness);
+        energybar.setProgress((int) energy);
+        confidencebar.setProgress((int) confidence);
+        stress_tv.setText(stress+"");
+        happiness_tv.setText(happiness+"");
+        energy_tv.setText(energy+"");
+        confidence_tv.setText(confidence+"");
+
+
     }
 
     /**
