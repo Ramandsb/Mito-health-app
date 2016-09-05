@@ -22,7 +22,7 @@
         android:layout_alignRight="@+id/card1"
         android:layout_marginBottom="18dp"
         android:layout_alignBottom="@+id/card1"
-        android:background="@drawable/bg_people"/>
+        android:background="@drawable/bg_user_rating"/>
     <TextView
         android:id="@+id/left_image"
         android:layout_width="wrap_content"

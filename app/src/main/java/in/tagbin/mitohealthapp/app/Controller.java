@@ -48,6 +48,7 @@ import in.tagbin.mitohealthapp.model.FeelingTimeConsumed;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+import in.tagbin.mitohealthapp.model.SettingsModel;
 import in.tagbin.mitohealthapp.model.SleepLogModel;
 import in.tagbin.mitohealthapp.model.WaterLogModel;
 
@@ -440,7 +441,26 @@ public class Controller {
         mBuilder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         mBuilder.setLaxMode().setBoundary("xx").setCharset(Charset.forName("UTF-8"));
     }
-
+    public static void setSettings(Context context,SettingsModel settingsModel,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += "settings/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, settingsModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getSettings(Context context,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += "settings/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
     public interface ERROR_CODES {
         int BAD_REQUEST = 400;
         int UNAUTHORISED = 401;

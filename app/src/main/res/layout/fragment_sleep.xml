@@ -36,12 +36,12 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="20dp">
+            android:layout_height="70dp"
+            android:layout_marginTop="10dp">
 
             <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:src="@drawable/night_png"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="10dp">
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -62,19 +62,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Start Time"
-                    android:layout_marginTop="20dp"
-                    android:textSize="20sp"/>
+                    android:textColor="#3D3D3B"
+                    android:textSize="22sp"/>
                 <TextView
                     android:id="@+id/start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="23:00"
-                    android:layout_marginTop="20dp"
-                    android:textSize="40sp"
-                    android:textStyle="bold"/>
+                    android:layout_marginTop="10dp"
+                    android:textColor="#8D9BAA"
+                    android:textSize="20sp"/>
 
 
             </LinearLayout>
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#3D3D3B"
+                android:layout_marginTop="10dp"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -85,16 +90,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="End Time"
-                    android:layout_marginTop="20dp"
-                    android:textSize="20sp"/>
+                    android:textColor="#3D3D3B"
+                    android:textSize="22sp"/>
                 <TextView
                     android:id="@+id/end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="23:00"
-                    android:layout_marginTop="20dp"
-                    android:textSize="40sp"
-                    android:textStyle="bold"/>
+                    android:layout_marginTop="10dp"
+                    android:textColor="#8D9BAA"
+                    android:textSize="20sp"/>
 
 
             </LinearLayout>
@@ -114,21 +119,21 @@
                 android:text="7:00"
                 android:id="@+id/set_no_hours"
                 android:textColor="@color/bottombar"
-                android:textSize="80sp"/>
+                android:textSize="30sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="hours of sleep"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:textColor="#8D9BAA"
+                android:textSize="18sp"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:orientation="vertical">
 
             <RatingBar
@@ -142,8 +147,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Quality of Sleep"
-                android:textStyle="bold"
-                android:textSize="20sp"
+                android:textColor="#8D9BAA"
+                android:textSize="18sp"
                 />
         </LinearLayout>
 

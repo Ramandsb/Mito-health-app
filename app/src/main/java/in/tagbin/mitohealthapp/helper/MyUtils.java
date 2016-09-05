@@ -6,10 +6,15 @@ import android.location.Geocoder;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
+import com.clevertap.android.sdk.CleverTapAPI;
+import com.clevertap.android.sdk.exceptions.CleverTapMetaDataNotFoundException;
+import com.clevertap.android.sdk.exceptions.CleverTapPermissionsNotSatisfied;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -162,5 +167,21 @@ public class MyUtils {
 
     private static  double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
+    }
+
+    public static void sendEvent(Context mContext, String eventName, HashMap<String,Object> eventHashmap){
+        CleverTapAPI cleverTap = null;
+        try {
+            cleverTap = CleverTapAPI.getInstance(mContext);
+            cleverTap.setDebugLevel(1);
+        } catch (CleverTapMetaDataNotFoundException e) {
+            e.printStackTrace();
+        } catch (CleverTapPermissionsNotSatisfied cleverTapPermissionsNotSatisfied) {
+            cleverTapPermissionsNotSatisfied.printStackTrace();
+        }
+        if (eventHashmap == null)
+            cleverTap.event.push(eventName);
+        else
+            cleverTap.event.push(eventName,eventHashmap);
     }
 }

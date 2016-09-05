@@ -396,11 +396,11 @@ public FoodInterface foodInterface;
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FoodFrag(), "Food");
-        adapter.addFragment(new WaterFrag(), "Water");
-        adapter.addFragment(new ExerciseFrag(), "Exercise");
-        adapter.addFragment(new SleepFrag(), "Sleep");
-        adapter.addFragment(new FeelingsFrag(), "Feelings");
+        adapter.addFragment(new FoodFrag(), "");
+        adapter.addFragment(new WaterFrag(), "");
+        adapter.addFragment(new ExerciseFrag(), "");
+        adapter.addFragment(new SleepFrag(), "");
+        adapter.addFragment(new FeelingsFrag(), "");
         viewPager.setAdapter(adapter);
     }
 

@@ -51,7 +51,13 @@ public class CardsDataAdapter extends BaseAdapter {
         contentView = ((Activity)mContext).getLayoutInflater().inflate(R.layout.card_content, parent, false);
         final CircleImageView personCard = (CircleImageView) contentView.findViewById(R.id.card1);
         TextView compatibility = (TextView) contentView.findViewById(R.id.tvProfileCompatibility);
-        compatibility.setText(""+mData.getNearby_user_list().get(position).getCompatibility());
+        double compatibilty1 = 0.0;
+        if (mData.getNearby_user_list().get(position).getCompatibility() != 0){
+            compatibilty1 = mData.getNearby_user_list().get(position).getCompatibility();
+        }else{
+            compatibilty1 = 0.0;
+        }
+        compatibility.setText(""+compatibilty1);
         personCard.setBorderWidth(MyUtils.dpToPx(mContext,3));
         personCard.setBorderColor(Color.parseColor("#a0c894"));
         if (mData.getNearby_user_list().get(position).getImages() != null){

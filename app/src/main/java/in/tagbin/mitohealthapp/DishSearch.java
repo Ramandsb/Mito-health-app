@@ -64,8 +64,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import br.com.mauker.materialsearchview.MaterialSearchView;
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
@@ -83,7 +81,6 @@ public class DishSearch extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     ListView food_list;
     CustomAdapter customAdapter;
-    MaterialSearchView searchView;
     public static String unique_id = "";
     String back = "";
     SharedPreferences login_details;

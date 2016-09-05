@@ -2,16 +2,19 @@ package in.tagbin.mitohealthapp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.graphics.Bitmap;
+import android.support.multidex.MultiDex;
 import android.util.Base64;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.clevertap.android.sdk.ActivityLifecycleCallback;
 import com.facebook.stetho.Stetho;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -40,6 +43,7 @@ public class AppController extends Application {
 
     @Override
 	public void onCreate() {
+        ActivityLifecycleCallback.register(this);
 		super.onCreate();
 		mInstance = this;
 //        printKeyHash();
@@ -52,6 +56,11 @@ public class AppController extends Application {
                         .build());
 
 
+    }
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
     private void initUIL() {
         DisplayImageOptions options = new DisplayImageOptions.Builder()

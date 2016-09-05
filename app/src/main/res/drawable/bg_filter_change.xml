@@ -2,8 +2,8 @@
 
     <item >
         <shape>
-            <solid android:color="#3F51B5"/>
-            <stroke android:color="#3F51B5"
+            <solid android:color="#26446d"/>
+            <stroke android:color="#26446d"
                 android:dashWidth="5dp"
                 android:width="1dp"/>
             <corners android:radius="4dp"/>

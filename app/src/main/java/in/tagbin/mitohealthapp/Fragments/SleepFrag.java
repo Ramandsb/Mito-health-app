@@ -28,10 +28,6 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-
-import org.joda.time.LocalDateTime;
-import org.joda.time.chrono.StrictChronology;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -188,6 +184,9 @@ RatingBar ratingBar;
 
                                 sth=hourOfDay;
                                 stm=minute;
+                                if (minute == 0){
+                                    minute = Integer.parseInt("00");
+                                }
                                     start_t=hourOfDay + ":" + minute;
                                     start_time.setText(start_t);
 
@@ -219,12 +218,16 @@ RatingBar ratingBar;
                                 public void onTimeSet(TimePicker view, int hourOfDay,
                                                       int minute) {
                                     // holder.end_tiem.setText(hourOfDay + ":" + minute);
+                                    if (minute == 0){
+                                        minute = Integer.parseInt("00");
+                                    }
                                     end_t = hourOfDay + ":" + minute;
 
                                         end_time.setText(end_t);
 
                                     eth=hourOfDay;
                                     etm=minute;
+
                                         Cursor cursor = dop.getslInformation(dop, selectedDate);
                                         int count = cursor.getCount();
                                         if (count == 1) {

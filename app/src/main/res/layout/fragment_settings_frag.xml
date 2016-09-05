@@ -1,5 +1,6 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff">
@@ -249,6 +250,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:text="Only Women    >"
+                    android:id="@+id/tvSettingPreference"
                     android:textColor="@color/colorAccent"
                     android:textSize="15sp" />
             </RelativeLayout>
@@ -284,7 +286,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="18-25 yrs"
+                    android:text="5-80 yrs"
+                    android:id="@+id/tvSettingAgeSet"
                     android:textColor="@color/colorAccent"
                     android:textSize="15sp" />
 
@@ -303,9 +306,9 @@
                     custom:selectorColor="@color/colorPrimary"
                     custom:textColor="#ffffff"
                     custom:tickColor="#000000"
-                    custom:tickEnd="100"
+                    custom:tickEnd="80"
                     custom:tickInterval="1"
-                    custom:tickStart="0" />
+                    custom:tickStart="5" />
             </RelativeLayout>
 
             <View
@@ -339,28 +342,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:text="0-100 kms"
+                    android:text="2 kms"
+                    android:id="@+id/tvSettingDistanceSet"
                     android:textColor="@color/colorAccent"
                     android:textSize="15sp" />
 
-                <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
+                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                     android:id="@+id/rangebarDistance"
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     android:layout_below="@+id/tvSettingDistance"
-                    custom:connectingLineColor="@color/colorPrimary"
-                    custom:pinColor="@color/colorPrimary"
-                    custom:pinMaxFont="20sp"
-                    custom:pinMinFont="14sp"
-                    custom:pinPadding="10dp"
-                    custom:pinRadius="17dp"
-                    custom:rangeBarColor="#d0cfcf"
-                    custom:selectorColor="@color/colorPrimary"
-                    custom:textColor="#ffffff"
-                    custom:tickColor="#000000"
-                    custom:tickEnd="500"
-                    custom:tickInterval="1"
-                    custom:tickStart="0" />
+                    app:dsb_allowTrackClickToDrag="true"
+                    app:dsb_min="2"
+                    app:dsb_max="100"
+                    app:dsb_indicatorColor="@color/colorPrimary"
+                    app:dsb_indicatorFormatter="%d"
+                    app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
+                    app:dsb_progressColor="@color/colorPrimary" />
             </RelativeLayout>
 
             <View
@@ -538,9 +536,9 @@
                 android:layout_below="@+id/tvLogout"
                 android:background="#dedede" />
             <pl.droidsonroids.gif.GifImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/progressBar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/progressBar1"
                 android:layout_below="@+id/viewSperator19"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="center"
@@ -552,7 +550,7 @@
                 android:id="@+id/tvVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/progressBar"
+                android:layout_below="@+id/progressBar1"
                 android:paddingLeft="10dp"
                 android:paddingTop="7dp"
                 android:text="Version 1.0"
@@ -562,7 +560,19 @@
                 android:layout_centerHorizontal="true"
                 android:textStyle="bold" />
         </RelativeLayout>
-
+        <pl.droidsonroids.gif.GifImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/progressBar"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginBottom="60dp"
+            android:indeterminateTintMode="src_atop"
+            android:visibility="gone"
+            android:src="@drawable/loader"
+            />
         <!--<LinearLayout-->
         <!--android:id="@+id/logout"-->
         <!--android:layout_width="match_parent"-->

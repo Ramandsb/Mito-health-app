@@ -153,7 +153,10 @@ public class BinderActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-        closeAppDialog();
+        if (getSupportFragmentManager().getBackStackEntryCount() != 0)
+            getSupportFragmentManager().popBackStack();
+        else
+            closeAppDialog();
     }
 
     public void closeAppDialog(){

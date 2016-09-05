@@ -86,7 +86,7 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
                 layoutParams.height = MyUtils.dpToPx(ProfileActivity.this,250);
                 coordinatorLayout.setLayoutParams(layoutParams);
                 coordinatorLayout.setFitsSystemWindows(true);
-                nestedScrollView.setFitsSystemWindows(true);
+                nestedScrollView.setFitsSystemWindows(false);
                 blankSpace.setVisibility(View.GONE);
                 checkod = true;
                 return false;

@@ -1,25 +1,31 @@
 {
   "project_info": {
-    "project_number": "582683963208",
-    "project_id": "mitoandroidapp-1344"
+    "project_number": "56770976470",
+    "firebase_url": "https://mito-1470727728773.firebaseio.com",
+    "project_id": "mito-1470727728773",
+    "storage_bucket": "mito-1470727728773.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:582683963208:android:caa411a264a5b9cd",
+        "mobilesdk_app_id": "1:56770976470:android:7df626d393f8fa7b",
         "android_client_info": {
-          "package_name": "in.tagbin.googlecalander"
+          "package_name": "in.tagbin.mitohealthapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "582683963208-0v4k225ss16nr9tcjqp3duisv0pgsesh.apps.googleusercontent.com",
+          "client_id": "56770976470-msjc6g2kkd1c92knhcid3ioahtm13669.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "56770976470-ltvbiaqc9hrgpe4a2n2odsarfnt31ba0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBJGuM6hzoVPUTJ4N3PG2qJYyxmHy0nmx4"
+          "current_key": "AIzaSyA7FwOEAOYLiibK6ZHHcjjUmLm2OF35Dgs"
         }
       ],
       "services": {
@@ -31,77 +37,7 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:582683963208:android:fb7d4c6c6e3e886b",
-        "android_client_info": {
-          "package_name": "in.tagbin.googlecalender"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "582683963208-0v4k225ss16nr9tcjqp3duisv0pgsesh.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBJGuM6hzoVPUTJ4N3PG2qJYyxmHy0nmx4"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:582683963208:android:27d689d63f1b7a06",
-        "android_client_info": {
-          "package_name": "com.google.samples.quickstart.signin"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "582683963208-3k0iip28pof9f35cntub8mf4fq7vpm8i.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.google.samples.quickstart.signin",
-            "certificate_hash": "1777EA549809B050451FE2C6B51F1FC8F0A4D5C6"
-          }
-        },
-        {
-          "client_id": "582683963208-0v4k225ss16nr9tcjqp3duisv0pgsesh.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBJGuM6hzoVPUTJ4N3PG2qJYyxmHy0nmx4"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

@@ -37,7 +37,10 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return mResources.size();
+        if (mResources.get(0) != null)
+            return mResources.size();
+        else
+            return 1;
     }
 
     @Override

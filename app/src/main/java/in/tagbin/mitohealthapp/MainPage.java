@@ -44,6 +44,9 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.clevertap.android.sdk.CleverTapAPI;
+import com.clevertap.android.sdk.exceptions.CleverTapMetaDataNotFoundException;
+import com.clevertap.android.sdk.exceptions.CleverTapPermissionsNotSatisfied;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -69,8 +72,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
 //import com.newrelic.agent.android.NewRelic;
 import com.newrelic.agent.android.NewRelic;
 import com.squareup.okhttp.Callback;
@@ -102,6 +103,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import in.tagbin.mitohealthapp.VideoView.FullscreenVideoLayout;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 
 
 public class MainPage extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
@@ -116,7 +118,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
     private GoogleApiClient mGoogleApiClient;
     private TextView mIdTokenTextView;
 
-
+    CleverTapAPI cleverTap;
 
     String profile_name, profile_picture;
 
@@ -155,7 +157,14 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
         UXCam.startWithKey("075a1785b64ccb2");
         customDialog();
         validateServerClientID();
-
+        try {
+            cleverTap = CleverTapAPI.getInstance(getApplicationContext());
+            cleverTap.enablePersonalization();
+        } catch (CleverTapMetaDataNotFoundException e) {
+            e.printStackTrace();
+        } catch (CleverTapPermissionsNotSatisfied cleverTapPermissionsNotSatisfied) {
+            cleverTapPermissionsNotSatisfied.printStackTrace();
+        }
         // [START configure_signin]
         // Request only the user's ID token, which can be used to identify the
         // user securely to your backend. This will contain the user's basic
@@ -341,6 +350,7 @@ showDialog();
                 JSONObject json = response.getJSONObject();
                 try {
                     if (json != null) {
+                        Log.d("json",json.toString());
                         String text = "<b>Name :</b> " + json.getString("name") + "<br><br><b>Email :</b> " + json.getString("email") + "<br><br><b>Profile link :</b> " + json.getString("link");
                         String id = json.getString("id");
                         profile_name = json.getString("name");
@@ -349,6 +359,23 @@ showDialog();
                         JSONObject picture = json.getJSONObject("picture");
                         JSONObject data = picture.getJSONObject("data");
                         profile_picture = data.getString("url");
+                        HashMap<String, Object> eventHashmap = new HashMap<String,Object>();
+                        eventHashmap.put("type","Social Signup");
+                        eventHashmap.put("source","facebook");
+                        eventHashmap.put("name",json.getString("name"));
+                        //eventHashmap.put("first_name",json.getString("first_name"));
+                        //eventHashmap.put("last_name",json.getString("last_name"));
+                        eventHashmap.put("email",json.getString("email"));
+                        //eventHashmap.put("age",json.getString("age_range"));
+                        //eventHashmap.put("gender",json.getString("gender"));
+                        eventHashmap.put("user_id",json.getString("id"));
+                        //eventHashmap.put("picture",json.getJSONObject("picture"));
+                        MyUtils.sendEvent(MainPage.this,"facebook_signup",eventHashmap);
+                        HashMap<String, Object> profileUpdate = new HashMap<String, Object>();
+                        profileUpdate.put("Name", profile_name);
+                        profileUpdate.put("Email2", email);
+                        profileUpdate.put("Identity",email);
+                        cleverTap.profile.push(profileUpdate);
                         Log.d("Details", profile_name + "\n" + link + "\n" + email + "\n" + profile_picture + "\n" + id);
                         Log.d("GraphResponse", response.toString());
 //                        Intent intent = new Intent(MainPage.this, ProfilePage.class);

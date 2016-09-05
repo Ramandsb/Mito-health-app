@@ -1,3 +1,9 @@
+<com.daprlabs.cardstack.SwipeFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipedeck="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,16 +18,16 @@
     <com.daprlabs.cardstack.SwipeDeck
         android:id="@+id/container"
         android:layout_width="wrap_content"
-        android:layout_height="230dp"
+        android:layout_height="250dp"
         android:clipChildren="false"
         android:background="#ffffff"
-        android:layout_marginTop="10dp"
-        swipedeck:card_spacing="10dp"
+        android:paddingTop="40dp"
+        swipedeck:card_spacing="5dp"
         swipedeck:max_visible="20"
-        swipedeck:render_above="true"
+        swipedeck:render_above="false"
         swipedeck:rotation_degrees="15"
         swipedeck:opacity_end="0.33"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true"
         android:clipToPadding="false" />
     <TextView
@@ -106,3 +112,4 @@
         <!--android:indeterminateTintMode="src_atop"-->
         <!--android:visibility="gone" />-->
 </RelativeLayout>
+    </com.daprlabs.cardstack.SwipeFrameLayout>

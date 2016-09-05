@@ -37,6 +37,7 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.LocationModel;
+import in.tagbin.mitohealthapp.service.GCMIntentService;
 
 /**
  * Created by aasaqt on 25/8/16.
@@ -64,6 +65,8 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.activity_splash);
         loginDetails = getSharedPreferences(LOGIN_DETAILS, MODE_PRIVATE);
         pref = new PrefManager(this);
+        Intent service = new Intent(this, GCMIntentService.class);
+        startService(service);
         if (hasLocationPermissionGranted()) {
             // you can do whatever you want
             getLocation();

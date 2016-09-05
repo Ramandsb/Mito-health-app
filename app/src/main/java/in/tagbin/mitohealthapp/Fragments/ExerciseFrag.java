@@ -20,7 +20,6 @@ import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
-import org.joda.time.LocalDateTime;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

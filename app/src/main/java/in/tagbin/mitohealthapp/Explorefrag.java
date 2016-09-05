@@ -97,7 +97,10 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                         //mCardAdapter.notifyDataSetChanged();
                         mCardAdapter = new CardsDataAdapter(data,getContext());
                         mCardStack.setAdapter(mCardAdapter);
-                        name.setText(data.getNearby_user_list().get(0).getUser().getFirst_name());
+                        if (data.getNearby_user_list().get(0).getUser().getLast_name() == null)
+                            name.setText(data.getNearby_user_list().get(0).getUser().getFirst_name());
+                        else
+                            name.setText(data.getNearby_user_list().get(0).getUser().getFirst_name()+" "+data.getNearby_user_list().get(0).getUser().getLast_name());
                         String gender;
                         if (data.getNearby_user_list().get(0).getGender().toLowerCase().equals("m")){
                             gender = "Male";
@@ -198,7 +201,10 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
     public void cardSwipedLeft(int position) {
         final int position1 = position+1;
         if (position1 < data.getNearby_user_list().size()) {
-            name.setText(data.getNearby_user_list().get(position1).getUser().getFirst_name());
+            if (data.getNearby_user_list().get(position1).getUser().getLast_name() == null)
+                name.setText(data.getNearby_user_list().get(position1).getUser().getFirst_name());
+            else
+                name.setText(data.getNearby_user_list().get(position1).getUser().getFirst_name()+" "+data.getNearby_user_list().get(position1).getUser().getLast_name());
             String gender;
             if (data.getNearby_user_list().get(position1).getGender().toLowerCase().equals("m")){
                 gender = "Male";
@@ -226,7 +232,10 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
     public void cardSwipedRight(int position) {
         final int position1 = position+1;
         if (position1 < data.getNearby_user_list().size()) {
-            name.setText(data.getNearby_user_list().get(position1).getUser().getFirst_name());
+            if (data.getNearby_user_list().get(position1).getUser().getLast_name() == null)
+                name.setText(data.getNearby_user_list().get(position1).getUser().getFirst_name());
+            else
+                name.setText(data.getNearby_user_list().get(position1).getUser().getFirst_name()+" "+data.getNearby_user_list().get(position1).getUser().getLast_name());
             String gender;
             if (data.getNearby_user_list().get(position1).getGender().toLowerCase().equals("m")){
                 gender = "Male";

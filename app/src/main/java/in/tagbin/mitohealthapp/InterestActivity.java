@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.ProgressBar;
@@ -48,6 +49,7 @@ public class InterestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         setContentView(R.layout.fragment_interests);
         flowLayout = (FlowLayout) findViewById(R.id.flowLayout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -71,7 +73,7 @@ public class InterestActivity extends AppCompatActivity {
         });
         searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setQueryHint("What interests you?");
-
+        searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
