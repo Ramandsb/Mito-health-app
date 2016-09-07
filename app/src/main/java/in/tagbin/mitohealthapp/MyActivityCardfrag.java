@@ -209,7 +209,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
             date.setVisibility(View.VISIBLE);
             edit.setVisibility(View.GONE);
             linearFriends.setVisibility(View.VISIBLE);
-            heading.setText("All Activities");
+            heading.setText("All Event");
             Controller.getParticipants(getContext(),data.getId(),mParticipantListener);
             selectedPeople.setVisibility(View.VISIBLE);
             date.setText(MyUtils.getValidDate(data.getTime()));
@@ -220,7 +220,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         }else{
             date.setVisibility(View.GONE);
             edit.setVisibility(View.VISIBLE);
-            heading.setText("My Activity");
+            heading.setText("My Event");
             Controller.getParticipants(getContext(),data.getId(),mParticipantListener);
             selectedPeople.setVisibility(View.VISIBLE);
             selectedPeople.setText("Interested People");

@@ -2,6 +2,7 @@ package in.tagbin.mitohealthapp.helper;
 
 import android.content.Context;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +30,11 @@ import in.tagbin.mitohealthapp.model.InterestModel;
 /**
  * Created by aasaqt on 27/8/16.
  */
-public class PlaceAutoCompleteAdapter extends ArrayAdapter<EventTypeModel.InterestListModel> {
+public class PlaceAutoCompleteAdapter extends ArrayAdapter<EventTypeModel> {
     private Context mContext;
     private static final String TAG = "PlaceAutocompleteAdapter";
 
-    private EventTypeModel mResultList;
+    private List<EventTypeModel> mResultList;
     public PlaceAutoCompleteAdapter(Context context, int resource) {
         super(context,resource);
         this.mContext = context;
@@ -41,12 +42,12 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<EventTypeModel.Intere
 
     @Override
     public int getCount() {
-        return mResultList.getList().size();
+        return mResultList.size();
     }
 
     @Override
-    public EventTypeModel.InterestListModel getItem(int position) {
-        return mResultList.getList().get(position);
+    public EventTypeModel getItem(int position) {
+        return mResultList.get(position);
     }
 
     @Override
@@ -59,7 +60,7 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<EventTypeModel.Intere
         TextView textName = (TextView) v.findViewById(R.id.tvAutocomName);
         TextView textParent = (TextView) v.findViewById(R.id.tvAutocomParent);
         textParent.setVisibility(View.GONE);
-        EventTypeModel.InterestListModel search = mResultList.getList().get(position);
+        EventTypeModel search = mResultList.get(position);
         textName.setText(search.getTitle());
         return v;
     }
@@ -77,10 +78,12 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<EventTypeModel.Intere
                     JsonArrayRequest request = new JsonArrayRequest(url, future, future);
                     requestQueue.add(request);
                     try {
-
-                        mResultList = JsonUtils.objectify(future.get().toString(),EventTypeModel.class);
+                        Log.d("values",future.get().toString());
+                        Type collectionType = new TypeToken<List<EventTypeModel>>() {}.getType();
+                        mResultList = (List<EventTypeModel>) new Gson().fromJson( future.get().toString(), collectionType);
+                        //mResultList = JsonUtils.objectify(future.get().toString(),EventTypeModel.class);
                         results.values = mResultList;
-                        results.count = mResultList.getList().size();
+                        results.count = mResultList.size();
                         return results;
                     } catch (InterruptedException e) {
                         e.printStackTrace();

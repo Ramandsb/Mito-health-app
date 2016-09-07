@@ -39,10 +39,11 @@ import pl.droidsonroids.gif.GifImageView;
 public class InterestActivity extends AppCompatActivity {
     FlowLayout flowLayout;
     Toolbar toolbar;
-    TextView next;
+    TextView next,addInterest;
     InterestModel interestModel;
     List<Integer> idFinal;
     PrefManager pref;
+    int count1= 0, count2 = 0;
     GifImageView progressBar;
     android.widget.SearchView searchView;
 
@@ -60,6 +61,7 @@ public class InterestActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Interests");
         String response = getIntent().getStringExtra("response");
         interestModel = JsonUtils.objectify(response, InterestModel.class);
+        addInterest = (TextView) findViewById(R.id.tvSuggestInterst);
         setToggleButtons(interestModel);
         next = (TextView) findViewById(R.id.tvNextInterest);
         next.setOnClickListener(new View.OnClickListener() {
@@ -75,13 +77,15 @@ public class InterestActivity extends AppCompatActivity {
         searchView.setQueryHint("What interests you?");
         searchView.setIconifiedByDefault(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(final String query) {
                 flowLayout.removeAllViews();
+                count1 = 0;
                 LayoutInflater inflater = LayoutInflater.from(InterestActivity.this);
                 for (int i = 0; i < interestModel.getList().size(); i++) {
                     if (interestModel.getList().get(i).getName().toLowerCase().contains(query)) {
+                        count1++;
+                        addInterest.setVisibility(View.GONE);
                         View layout = inflater.inflate(R.layout.interest_toggle, flowLayout, false);
                         final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
                         toggleButton.setTextOn(interestModel.getList().get(i).getName());
@@ -126,17 +130,30 @@ public class InterestActivity extends AppCompatActivity {
                         flowLayout.addView(layout);
                     }
                 }
-
+                if (count1 == 0){
+                    addInterest.setVisibility(View.VISIBLE);
+                    addInterest.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(InterestActivity.this,AddInterestActivity.class);
+                            i.putExtra("name",query);
+                            startActivity(i);
+                        }
+                    });
+                }
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
+            public boolean onQueryTextChange(final String newText) {
                 //Toast.makeText(getBaseContext(), newText, Toast.LENGTH_LONG).show();
                 flowLayout.removeAllViews();
+                count2 = 0;
                 LayoutInflater inflater = LayoutInflater.from(InterestActivity.this);
                 for (int i = 0; i < interestModel.getList().size(); i++) {
                     if (interestModel.getList().get(i).getName().toLowerCase().contains(newText)) {
+                        count2++;
+                        addInterest.setVisibility(View.GONE);
                         View layout = inflater.inflate(R.layout.interest_toggle, flowLayout, false);
                         final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
                         toggleButton.setTextOn(interestModel.getList().get(i).getName());
@@ -180,6 +197,17 @@ public class InterestActivity extends AppCompatActivity {
                         });
                         flowLayout.addView(layout);
                     }
+                }
+                if (count2 == 0){
+                    addInterest.setVisibility(View.VISIBLE);
+                    addInterest.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent i = new Intent(InterestActivity.this,AddInterestActivity.class);
+                            i.putExtra("name",newText);
+                            startActivity(i);
+                        }
+                    });
                 }
 
                 return false;
@@ -200,50 +228,62 @@ public class InterestActivity extends AppCompatActivity {
 
     public void setToggleButtons(final InterestModel interestModel) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (int i = 0; i < interestModel.getList().size(); i++) {
-            View layout = inflater.inflate(R.layout.interest_toggle, flowLayout, false);
-            final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
-            toggleButton.setTextOn(interestModel.getList().get(i).getName());
-            toggleButton.setTextOff(interestModel.getList().get(i).getName());
-            if (pref.getInterests() != null && pref.getInterests().size() >0){
-                for (int y = 0; y < pref.getInterests().size(); y++) {
-                    if (interestModel.getList().get(i).getId() == pref.getInterests().get(y)){
-                        toggleButton.setChecked(true);
-                        break;
-                    }else{
-                        toggleButton.setChecked(false);
+        if (interestModel.getList().size() >0) {
+            addInterest.setVisibility(View.GONE);
+            for (int i = 0; i < interestModel.getList().size(); i++) {
+                View layout = inflater.inflate(R.layout.interest_toggle, flowLayout, false);
+                final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
+                toggleButton.setTextOn(interestModel.getList().get(i).getName());
+                toggleButton.setTextOff(interestModel.getList().get(i).getName());
+                if (pref.getInterests() != null && pref.getInterests().size() > 0) {
+                    for (int y = 0; y < pref.getInterests().size(); y++) {
+                        if (interestModel.getList().get(i).getId() == pref.getInterests().get(y)) {
+                            toggleButton.setChecked(true);
+                            break;
+                        } else {
+                            toggleButton.setChecked(false);
+                        }
                     }
-                }
-                if (toggleButton.isChecked()) {
-                    toggleButton.setBackgroundResource(R.drawable.backtoggled);
-                    toggleButton.setTextColor(Color.parseColor("#ffffff"));
-                } else {
-                    toggleButton.setBackgroundResource(R.drawable.back);
-                    toggleButton.setTextColor(Color.parseColor("#26446d"));
-                }
-            }else{
-                toggleButton.setChecked(false);
-            }
-
-            final int finalI = i;
-            toggleButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
                     if (toggleButton.isChecked()) {
                         toggleButton.setBackgroundResource(R.drawable.backtoggled);
                         toggleButton.setTextColor(Color.parseColor("#ffffff"));
-                        idFinal.add(interestModel.getList().get(finalI).getId());
                     } else {
                         toggleButton.setBackgroundResource(R.drawable.back);
                         toggleButton.setTextColor(Color.parseColor("#26446d"));
-                        for (Integer integer : new ArrayList<>(idFinal)) {
-                            if (integer == interestModel.getList().get(finalI).getId())
-                                idFinal.remove(integer);
+                    }
+                } else {
+                    toggleButton.setChecked(false);
+                }
+
+                final int finalI = i;
+                toggleButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (toggleButton.isChecked()) {
+                            toggleButton.setBackgroundResource(R.drawable.backtoggled);
+                            toggleButton.setTextColor(Color.parseColor("#ffffff"));
+                            idFinal.add(interestModel.getList().get(finalI).getId());
+                        } else {
+                            toggleButton.setBackgroundResource(R.drawable.back);
+                            toggleButton.setTextColor(Color.parseColor("#26446d"));
+                            for (Integer integer : new ArrayList<>(idFinal)) {
+                                if (integer == interestModel.getList().get(finalI).getId())
+                                    idFinal.remove(integer);
+                            }
                         }
                     }
+                });
+                flowLayout.addView(layout);
+            }
+        }else{
+            addInterest.setVisibility(View.VISIBLE);
+            addInterest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(InterestActivity.this,AddInterestActivity.class);
+                    startActivity(i);
                 }
             });
-            flowLayout.addView(layout);
         }
     }
     RequestListener mSetInterestListener = new RequestListener() {

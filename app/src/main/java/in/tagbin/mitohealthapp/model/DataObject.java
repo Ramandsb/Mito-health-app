@@ -8,7 +8,7 @@ public class DataObject {
     public boolean all;
     public int id,capacity,total_request,total_approved;
     public EventType event_type;
-
+    public MapperObject mapper;
     public DataObject(String title,String location,String etitle,int capsty,String tme) {
         this.title =title;
         this.location=location;
@@ -17,6 +17,10 @@ public class DataObject {
         this.timer=tme;
         this.all = false;
 
+    }
+
+    public MapperObject getMapper() {
+        return mapper;
     }
 
     public String getDescription() {
@@ -94,6 +98,30 @@ public class DataObject {
         }
         public String getTitle(){
             return this.title;
+        }
+    }
+    public class MapperObject{
+        int id,user,event;
+        boolean confirm,decline;
+
+        public int getId() {
+            return id;
+        }
+
+        public int getEvent() {
+            return event;
+        }
+
+        public int getUser() {
+            return user;
+        }
+
+        public boolean isConfirm() {
+            return confirm;
+        }
+
+        public boolean isDecline() {
+            return decline;
         }
     }
 }

@@ -48,6 +48,7 @@ import in.tagbin.mitohealthapp.model.FeelingTimeConsumed;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+import in.tagbin.mitohealthapp.model.SetNewInterestModel;
 import in.tagbin.mitohealthapp.model.SettingsModel;
 import in.tagbin.mitohealthapp.model.SleepLogModel;
 import in.tagbin.mitohealthapp.model.WaterLogModel;
@@ -342,6 +343,7 @@ public class Controller {
                                       RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.CONNECT_PROFILE);
+        url += "profile/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
@@ -351,6 +353,7 @@ public class Controller {
                                          RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.CONNECT_PROFILE);
+        url += "profile/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.PUT, setConnectProfileModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
@@ -366,7 +369,18 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-
+    public static void setNewInterest(Context context,String name,
+                                    RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.INTEREST);
+        url= url+"create/";
+        SetNewInterestModel setNewInterestModel = new SetNewInterestModel();
+        setNewInterestModel.setName(name);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, setNewInterestModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
     public static void getWaterLog(Context context,WaterLogModel waterLogModels,
                                     RequestListener requestListener) {
         String url = UrlResolver
@@ -448,6 +462,16 @@ public class Controller {
         url += "settings/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.PUT, settingsModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getExtendedFacebook(Context context,String accesstoken,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.CONNECT_PROFILE);
+        url += "?access_token="+accesstoken;
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }

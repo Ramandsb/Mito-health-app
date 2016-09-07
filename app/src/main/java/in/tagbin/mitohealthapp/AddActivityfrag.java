@@ -22,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.util.Log;
@@ -213,7 +214,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             }else {
                 addImage.setImageResource(R.drawable.hotel);
             }
-            createActivity.setText("Update Activity");
+            createActivity.setText("Update Event");
             createActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -246,6 +247,19 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 }
             });
         }
+        Calendar calendar = Calendar.getInstance();
+        year1 = calendar.get(Calendar.YEAR);
+        month1 = calendar.get(Calendar.MONTH);
+        day1 = calendar.get(Calendar.DAY_OF_MONTH);
+        hour1 = calendar.get(Calendar.HOUR);
+        minute1 = calendar.get(Calendar.MINUTE);
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR);
+        minute = calendar.get(Calendar.MINUTE);
+        updateTime(hour,minute);
+        updateTime1(hour1,minute1);
         type.setOnItemClickListener(mAutocompleteClickListener);
         adapter = new PlaceAutoCompleteAdapter(getContext(), android.R.layout.simple_list_item_1);
         if (pref.getCurrentLocationAsObject() != null){
@@ -260,7 +274,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            EventTypeModel.InterestListModel interestListModel = adapter.getItem(position);
+            EventTypeModel interestListModel = adapter.getItem(position);
             type.setText(interestListModel.getTitle());
         }
     };
@@ -300,7 +314,17 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 year = calendar.get(Calendar.YEAR);
                 month = calendar.get(Calendar.MONTH);
                 day = calendar.get(Calendar.DAY_OF_MONTH);
+                Calendar[] dates = new Calendar[31];
+                int i = 0;
+                while (i < 31) {
+                    Calendar selDate = Calendar.getInstance();
+                    selDate.add(Calendar.DAY_OF_MONTH, i);
+                    dates[i] = selDate;
+                    i++;
+                }
                 com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(this, year, month, day);
+                dpd.setHighlightedDays(dates);
+                dpd.setSelectableDays(dates);
                 dpd.show(getActivity().getFragmentManager(), "DATE_PICKER_TAG");
                 break;
             case R.id.relativeTime:
@@ -308,6 +332,14 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 year1 = calendar1.get(Calendar.YEAR);
                 month1 = calendar1.get(Calendar.MONTH);
                 day1 = calendar1.get(Calendar.DAY_OF_MONTH);
+                Calendar[] dates1 = new Calendar[31];
+                int i1 = 0;
+                while (i1 < 31) {
+                    Calendar selDate = Calendar.getInstance();
+                    selDate.add(Calendar.DAY_OF_MONTH, i1);
+                    dates1[i1] = selDate;
+                    i1++;
+                }
                 com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd1 = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
@@ -323,6 +355,8 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                         tpd.show(getActivity().getFragmentManager(), "TIME_PICKER_TAG");
                     }
                 }, year1, month1, day1);
+                dpd1.setSelectableDays(dates1);
+                dpd1.setHighlightedDays(dates1);
                 dpd1.show(getActivity().getFragmentManager(), "DATE_PICKER_TAG");
                 break;
         }
@@ -544,18 +578,11 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("Event Created",responseObject.toString());
-            /*DataObject dataObject = JsonUtils.objectify(responseObject.toString(),DataObject.class);
-            dataObject.all = false;
-            Bundle bundle = new Bundle();
-            Fragment fragment = new MyActivityCardfrag();
-            String dataobject = JsonUtils.jsonify(dataObject);
-            bundle.putString("dataobject",dataobject);
-            fragment.setArguments(bundle);
+            Fragment fragment = new Lookupfrag();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frameAddActivity, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();*/
-            getFragmentManager().popBackStack();
+            transaction.commit();
+            //getFragmentManager().popBackStack();
             ((Activity) getContext()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

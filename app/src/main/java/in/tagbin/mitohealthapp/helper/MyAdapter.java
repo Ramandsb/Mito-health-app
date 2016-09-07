@@ -70,10 +70,31 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.location.setText(MyUtils.getCityName(mycontext,newlist.get(position).getLocation()));
         if (newlist.get(position).getTotal_approved() == newlist.get(position).getCapacity()){
             holder.join.setTextColor(Color.parseColor("#9b9b9b"));
+            holder.join.setText("Join Now");
+            holder.housefull.setVisibility(View.VISIBLE);
+            holder.join.setClickable(false);
+        }else if (newlist.get(position).getMapper().getId() != 0 && !newlist.get(position).getMapper().isConfirm()){
+            holder.join.setTextColor(Color.parseColor("#ffffff"));
+            holder.join.setText("Pending");
+            holder.housefull.setVisibility(View.GONE);
+            holder.join.setClickable(false);
+        }else if (newlist.get(position).getMapper().getId() != 0 && newlist.get(position).getMapper().isConfirm()){
+            holder.join.setTextColor(Color.parseColor("#ffffff"));
+            holder.join.setText("Accepted");
+            holder.housefull.setVisibility(View.GONE);
             holder.join.setClickable(false);
         }else{
             holder.join.setTextColor(Color.parseColor("#ffffff"));
+            holder.join.setText("Join Now");
             holder.join.setClickable(true);
+            holder.housefull.setVisibility(View.GONE);
+            holder.join.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    Controller.joinEvent(mycontext, newlist.get(position).getId(), mJoinEventListener);
+                }
+            });
         }
         if (newlist.get(position).isAll()) {
             holder.join.setVisibility(View.VISIBLE);
@@ -106,13 +127,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
             }
         });
-        holder.join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mProgressBar.setVisibility(View.VISIBLE);
-                Controller.joinEvent(mycontext, newlist.get(position).getId(), mJoinEventListener);
-            }
-        });
+
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

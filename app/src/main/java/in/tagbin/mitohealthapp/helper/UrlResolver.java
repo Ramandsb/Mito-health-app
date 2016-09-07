@@ -20,7 +20,7 @@ public class UrlResolver {
         endPointMapper = new SparseArray<String>();
         endPointMapper.put(EndPoints.EVENTS, "v1/events/");
         endPointMapper.put(EndPoints.USERS,"v1/users/");
-        endPointMapper.put(EndPoints.CONNECT_PROFILE,"v1/connect/profile/");
+        endPointMapper.put(EndPoints.CONNECT_PROFILE,"v1/connect/");
         endPointMapper.put(EndPoints.INTEREST,"v1/interest/list");
         endPointMapper.put(EndPoints.WATERLOG,"v1/logger/");
         endPointMapper.put(EndPoints.DATERANGEDATA,"v1/users/history/");

@@ -87,6 +87,8 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
         public void onRequestCompleted(Object responseObject) {
             Log.d("users listener",responseObject.toString());
             data = JsonUtils.objectify(responseObject.toString(),ExploreModel.class);
+            if(getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -132,9 +134,11 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("users listener error",message);
+            if(getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -142,7 +146,7 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                     }
                 });
             }else{
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);

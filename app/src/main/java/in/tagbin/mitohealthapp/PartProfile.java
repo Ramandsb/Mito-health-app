@@ -35,6 +35,7 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -47,6 +48,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -61,10 +63,12 @@ import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConnectProfileModel;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import in.tagbin.mitohealthapp.model.FacebookModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
 import in.tagbin.mitohealthapp.model.InterestModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+import pl.droidsonroids.gif.GifImageView;
 
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
@@ -79,6 +83,8 @@ public class PartProfile extends Fragment implements View.OnClickListener {
     private AccessTokenTracker accessTokenTracker;
     String fbAuthToken,fbUserID;
     PrefManager pref;
+    boolean flag1 = false,flag2 = false,flag3 = false,flag4 = false,flag5 = false,flag6 = false,flag7 = false,flag = false;
+    GifImageView progressBar,progressBar1,progressBar2,progressBar3,progressBar4,progressBar5,progressBar6,progressBar7;
     int SELECT_PICTURE1 =0,SELECT_PICTURE2 =1,SELECT_PICTURE3 =2,SELECT_PICTURE4 =3,SELECT_PICTURE5 =4,SELECT_PICTURE6 =5,SELECT_PICTURE7 =6;
 
     @Override
@@ -102,65 +108,52 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         img6 = (ImageView) layout.findViewById(R.id.userPic6);
         img7 = (ImageView) layout.findViewById(R.id.userPic7);
         etHomeTwon = (EditText) layout.findViewById(R.id.etPartnerHomeTown);
+        progressBar =(GifImageView) layout.findViewById(R.id.progressBar);
+        progressBar1 =(GifImageView) layout.findViewById(R.id.progressBar1);
+        progressBar2 =(GifImageView) layout.findViewById(R.id.progressBar2);
+        progressBar3 =(GifImageView) layout.findViewById(R.id.progressBar3);
+        progressBar4 =(GifImageView) layout.findViewById(R.id.progressBar4);
+        progressBar5 =(GifImageView) layout.findViewById(R.id.progressBar5);
+        progressBar6 =(GifImageView) layout.findViewById(R.id.progressBar6);
+        progressBar7 =(GifImageView) layout.findViewById(R.id.progressBar7);
         facebookConnect = (LoginButton) layout.findViewById(R.id.facebook_people_connect);
-        facebookConnect.setCompoundDrawablesWithIntrinsicBounds(null,null,null,null);
-        facebookConnect.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.facebook, 0, 0);
-        facebookConnect.setReadPermissions(Arrays.asList("user_photos ", "user_about_me", "user_location"));
-        callbackManager = CallbackManager.Factory.create();
-        facebookConnect.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        facebookConnect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.facebook,0,0,0);
+        facebookConnect.setText("Pick from my Facebook profile");
+//        facebookConnect.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.facebook, 0, 0);
+        facebookConnect.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
-                // App code
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("facebook", JsonUtils.jsonify(object)+"\n"+response.toString());
-                                Toast.makeText(getContext(),JsonUtils.jsonify(object),Toast.LENGTH_LONG).show();
-                            }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender,birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
+            public void onClick(View view) {
+                callbackManager = CallbackManager.Factory.create();
+                LoginManager.getInstance().logInWithReadPermissions(PartProfile.this, Arrays.asList("user_about_me", "user_location","user_hometown","user_likes","user_work_history"));
 
+                LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                        if (AccessToken.getCurrentAccessToken() != null) {
+                            Log.d("extended", loginResult.getAccessToken().getToken());
+                            progressBar.setVisibility(View.VISIBLE);
+                            Controller.getExtendedFacebook(getContext(),loginResult.getAccessToken().getToken(),mExtendedFacebookListener);
+// JsonObjReq(loginResult.getAccessToken().getToken());
+                        }
 
-            }
+                    }
 
-            @Override
-            public void onCancel() {
-                // App code
-                Log.v("LoginActivity", "cancel");
-            }
+                    @Override
+                    public void onCancel() {
+                        // App code
+                        Log.v("LoginActivity", "cancel");
+                    }
 
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
-                Log.v("LoginActivity", exception.getCause().toString());
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                        Log.v("LoginActivity", exception.getCause().toString());
+                    }
+                });
             }
         });
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(
-                    AccessToken oldAccessToken,
-                    AccessToken currentAccessToken) {
-
-                if (currentAccessToken == null){
-                    fbAuthToken = oldAccessToken.getToken();
-                    fbUserID = oldAccessToken.getUserId();
-                    Log.d("people connect1",fbAuthToken+"\n"+fbUserID);
-
-                }else{
-                    fbAuthToken = currentAccessToken.getToken();
-                    fbUserID = currentAccessToken.getUserId();
-                    Log.d("people connect",fbAuthToken+"\n"+fbUserID);
-                }
-
-
-
-            }
-        };
+        //facebookConnect.setReadPermissions(Arrays.asList("user_photos ", "user_about_me", "user_location"));
         img1.setOnClickListener(this);
         img2.setOnClickListener(this);
         img3.setOnClickListener(this);
@@ -172,6 +165,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
         etOccupation = (EditText) layout.findViewById(R.id.etPartnerOccupation);
         etGender = (EditText) layout.findViewById(R.id.etPartnerGender);
         name = (TextView) layout.findViewById(R.id.tvPartnerName);
+        progressBar.setVisibility(View.VISIBLE);
         Controller.getConnectProfile(getContext(),mConnectListener);
         return layout;
     }
@@ -189,6 +183,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
                     setProfileConnect(connectProfileModel);
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         }
@@ -200,6 +195,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -207,6 +203,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -219,7 +216,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ImageLoader.getInstance().loadImage(data.getImages().getMaster(), new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
-
+                        progressBar1.setVisibility(View.VISIBLE);
                     }
 
                     @Override
@@ -234,6 +231,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        progressBar1.setVisibility(View.GONE);
                         img1.setImageBitmap(loadedImage);
                     }
                 });
@@ -243,7 +241,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[0], new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
-
+                            progressBar2.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -258,6 +256,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar2.setVisibility(View.GONE);
                             img2.setImageBitmap(loadedImage);
                         }
                     });
@@ -271,7 +270,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[1], new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
-
+                            progressBar3.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -286,6 +285,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar3.setVisibility(View.GONE);
                             img3.setImageBitmap(loadedImage);
                         }
                     });
@@ -299,7 +299,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[2], new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
-
+                            progressBar4.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -314,6 +314,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar4.setVisibility(View.GONE);
                             img4.setImageBitmap(loadedImage);
                         }
                     });
@@ -327,7 +328,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[3], new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
-
+                            progressBar5.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -342,6 +343,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar5.setVisibility(View.GONE);
                             img5.setImageBitmap(loadedImage);
                         }
                     });
@@ -355,7 +357,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[4], new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
-
+                            progressBar6.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -370,6 +372,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar6.setVisibility(View.GONE);
                             img6.setImageBitmap(loadedImage);
                         }
                     });
@@ -383,7 +386,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[5], new ImageLoadingListener() {
                         @Override
                         public void onLoadingStarted(String imageUri, View view) {
-
+                            progressBar7.setVisibility(View.VISIBLE);
                         }
 
                         @Override
@@ -398,6 +401,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar7.setVisibility(View.GONE);
                             img7.setImageBitmap(loadedImage);
                         }
                     });
@@ -474,29 +478,47 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 setConnectProfileModel.setLocation(location);
             }
             SetConnectProfileModel.Images1Model images1Model = setConnectProfileModel.getImages();
-            if (pref.getKeyMasterImage() != null){
-                images1Model.setMaster(pref.getKeyMasterImage());
+            if (flag1) {
+                if (pref.getKeyMasterImage() != null || pref.getKeyMasterImage().isEmpty()) {
+                    images1Model.setMaster(pref.getKeyMasterImage());
+                    setConnectProfileModel.setImages(images1Model);
+                }
             }
-            ArrayList<String> other = new ArrayList<String>();
-            if (pref.getKeyUserPic1() != null){
-                other.add(pref.getKeyUserPic1());
+            if (flag) {
+                ArrayList<String> other = new ArrayList<String>();
+                if (flag2) {
+                    if (pref.getKeyUserPic1() != null) {
+                        other.add(pref.getKeyUserPic1());
+                    }
+                }
+                if (flag3) {
+                    if (pref.getKeyUserPic2() != null) {
+                        other.add(pref.getKeyUserPic2());
+                    }
+                }
+                if (flag4) {
+                    if (pref.getKeyUserPic3() != null) {
+                        other.add(pref.getKeyUserPic3());
+                    }
+                }
+                if (flag5) {
+                    if (pref.getKeyUserPic4() != null) {
+                        other.add(pref.getKeyUserPic4());
+                    }
+                }
+                if (flag6) {
+                    if (pref.getKeyUserPic5() != null) {
+                        other.add(pref.getKeyUserPic5());
+                    }
+                }
+                if (flag7) {
+                    if (pref.getKeyUserPic6() != null) {
+                        other.add(pref.getKeyUserPic6());
+                    }
+                }
+                images1Model.setOther(other);
+                setConnectProfileModel.setImages(images1Model);
             }
-            if (pref.getKeyUserPic2() != null){
-                other.add(pref.getKeyUserPic2());
-            }
-            if (pref.getKeyUserPic3() != null){
-                other.add(pref.getKeyUserPic3());
-            }
-            if (pref.getKeyUserPic4() != null){
-                other.add(pref.getKeyUserPic4());
-            }
-            if (pref.getKeyUserPic5() != null){
-                other.add(pref.getKeyUserPic5());
-            }
-            if (pref.getKeyUserPic6() != null){
-                other.add(pref.getKeyUserPic6());
-            }
-            images1Model.setOther(other);
             if (etGender.getText().toString().equals("") || etGender.getText().toString().isEmpty()){
                 Toast.makeText(getContext(),"Please enter the description",Toast.LENGTH_LONG).show();
             }else if(etOccupation.getText().toString().equals("") || etOccupation.getText().toString().isEmpty()){
@@ -505,6 +527,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 Toast.makeText(getContext(),"Please enter the home town",Toast.LENGTH_LONG).show();
             }else {
                 Log.d("profile", JsonUtils.jsonify(setConnectProfileModel));
+                progressBar.setVisibility(View.VISIBLE);
                 Controller.setConnectProfile(getContext(), setConnectProfileModel, msetProfileListener);
             }
 //            InitActivity.change(2);
@@ -550,12 +573,14 @@ public class PartProfile extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent result) {
         super.onActivityResult(requestCode, resultCode, result);
-        callbackManager.onActivityResult(requestCode, resultCode, result);
+
         if (requestCode == SELECT_PICTURE1 ) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
+                flag1 = true;
+                progressBar1.setVisibility(View.VISIBLE);
                 Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener);
                 img1.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -570,6 +595,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
+                progressBar2.setVisibility(View.VISIBLE);
+                flag2 = true;
+                flag = true;
                 Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener1);
                 img2.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -584,6 +612,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
+                progressBar3.setVisibility(View.VISIBLE);
+                flag3 = true;
+                flag = true;
                 Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener2);
                 img3.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -597,6 +628,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
+                progressBar4.setVisibility(View.VISIBLE);
+                flag4 = true;
+                flag = true;
                 Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener3);
                 img4.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -610,6 +644,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
+                flag5 = true;
+                flag = true;
+                progressBar5.setVisibility(View.VISIBLE);
                 Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener4);
                 img5.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -623,6 +660,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
+                flag6  =true;
+                flag = true;
+                progressBar6.setVisibility(View.VISIBLE);
                 Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener5);
                 img6.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -636,6 +676,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
+                flag7 = true;
+                flag = true;
+                progressBar7.setVisibility(View.VISIBLE);
                 Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener6);
                 img7.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -644,6 +687,8 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 String errorMsg = result.getStringExtra(ImageCropActivity.ERROR_MSG);
                 Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
             }
+        }else{
+            callbackManager.onActivityResult(requestCode, resultCode, result);
         }
 
 
@@ -661,12 +706,19 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             ((Activity) getContext()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(getContext(),"Profile submitted succesfully",Toast.LENGTH_LONG).show();
                 }
             });
             if (getArguments() != null && getArguments().getString("profile_connect") != null){
                 PrefManager pref = new PrefManager(getContext());
                 pref.setTutorial(true);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                });
                 Controller.getInterests(getContext(),mInterestListener);
             }else {
                 BinderActivity i = (BinderActivity) getActivity();
@@ -682,6 +734,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -689,6 +742,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -731,6 +785,13 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 //                    setToggleButtons(interestModel);
 //                }
 //            });
+            Log.d("intersts",responseObject.toString());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
             Intent i = new Intent(getContext(),InterestActivity.class);
             i.putExtra("response",responseObject.toString());
             startActivity(i);
@@ -738,11 +799,13 @@ public class PartProfile extends Fragment implements View.OnClickListener {
 
         @Override
         public void onRequestError(int errorCode, String message) {
+            Log.d("intersts",message);
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -750,6 +813,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -767,6 +831,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             Log.d("uploaded file",responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
             pref.setKeyMasterImage(imageUploadResponseModel.getUrl());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar1.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
@@ -777,6 +847,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar1.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -801,6 +872,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             Log.d("uploaded file",responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
             pref.setKeyUserPic1(imageUploadResponseModel.getUrl());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar2.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
@@ -811,6 +888,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar2.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -818,6 +896,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar2.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -835,6 +914,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             Log.d("uploaded file",responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
             pref.setKeyUserPic2(imageUploadResponseModel.getUrl());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar3.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
@@ -845,6 +930,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar3.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -852,6 +938,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar3.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -869,6 +956,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             Log.d("uploaded file",responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
             pref.setKeyUserPic3(imageUploadResponseModel.getUrl());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar4.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
@@ -879,6 +972,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar4.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -886,6 +980,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar4.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -903,6 +998,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             Log.d("uploaded file",responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
             pref.setKeyUserPic4(imageUploadResponseModel.getUrl());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar5.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
@@ -913,6 +1014,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar5.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -920,6 +1022,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar5.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -937,6 +1040,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             Log.d("uploaded file",responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
             pref.setKeyUserPic5(imageUploadResponseModel.getUrl());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar6.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
@@ -947,6 +1056,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar6.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -954,6 +1064,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar6.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -971,6 +1082,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             Log.d("uploaded file",responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
             pref.setKeyUserPic6(imageUploadResponseModel.getUrl());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar7.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
@@ -981,6 +1098,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar7.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -988,6 +1106,56 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar7.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+
+    };
+    RequestListener mExtendedFacebookListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("facebook ",responseObject.toString());
+            final FacebookModel facebookModel = JsonUtils.objectify(responseObject.toString(),FacebookModel.class);
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    if (facebookModel.getHome_town() != null)
+                        etHomeTwon.setText(facebookModel.getHome_town());
+                    if (facebookModel.getDescription() != null)
+                        etGender.setText(facebookModel.getDescription());
+                    if (facebookModel.getOccupation() != null)
+                        etOccupation.setText(facebookModel.getOccupation());
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("facebook connect error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });

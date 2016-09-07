@@ -129,6 +129,7 @@
         <activity
             android:name=".BinderActivity"
             android:label="@string/title_activity_binder"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ProfileActivity"
@@ -137,6 +138,10 @@
         <activity
             android:name=".InterestActivity"
             android:label="Interests"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddInterestActivity"
+            android:label="Add Interests"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SliderActivity"

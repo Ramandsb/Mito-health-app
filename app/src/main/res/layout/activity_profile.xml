@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sliding_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:gravity="bottom"
+    sothree:umanoDragView="@+id/dragView"
+    sothree:umanoOverlay="true"
+    sothree:umanoPanelHeight="200dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <android.support.v4.view.ViewPager
         android:id="@+id/pagerProfile"
         android:layout_width="fill_parent"
@@ -12,12 +19,11 @@
         android:layout_centerInParent="true" />
 
     <RelativeLayout
+        android:id="@+id/relativePagerHeading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignTop="@+id/pagerProfile"
-        android:layout_marginTop="15dp"
-        android:id="@+id/relativePagerHeading"
         android:background="#50000000"
         android:padding="10dp">
 
@@ -34,192 +40,174 @@
             android:id="@+id/ivProfileBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
             android:layout_alignParentLeft="true"
+            android:padding="5dp"
             android:src="@drawable/back_button" />
     </RelativeLayout>
+    </RelativeLayout>
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/main_content"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/relativePagerHeading"
-        android:layout_alignTop="@+id/pagerProfile"
-        android:fitsSystemWindows="true">
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:id="@+id/dragView"
+        android:focusable="false">
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/scrollView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="0dp"
-            android:clipToPadding="false"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:id="@+id/viewPagerCountDots"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="10dp"
+                android:orientation="horizontal" />
 
             <RelativeLayout
+                android:id="@+id/relativeProfileAllInfo"
                 android:layout_width="match_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/viewPagerCountDots"
+                android:background="#40000000">
 
                 <TextView
-                    android:id="@+id/tvProfileBlank"
-                    android:layout_width="match_parent"
-                    android:layout_height="430dp" />
+                    android:id="@+id/tvProfileAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="8dp"
+                    android:text="23, Male"
+                    android:textColor="#ffffff" />
+
+                <TextView
+                    android:id="@+id/tvProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Varun Dhawan"
+                    android:textColor="#ffffff" />
 
                 <RelativeLayout
+                    android:id="@+id/relativeProfileTime"
                     android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_below="@+id/tvProfileBlank">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvProfileAge"
+                    android:layout_centerHorizontal="true"
+                    android:background="#ff4c516d"
+                    android:textAlignment="center">
 
-                    <LinearLayout
-                        android:id="@+id/viewPagerCountDots"
+                    <TextView
+                        android:id="@+id/tvProfileTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:layout_centerHorizontal="true"
-                        android:orientation="horizontal" />
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="40dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="8dp"
+                        android:text="Active 2 hours ago"
+                        android:textColor="#ffffff" />
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
+                    <View
+                        android:id="@+id/viewSperator"
+                        android:layout_width="2dp"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_toRightOf="@+id/tvProfileTime"
+                        android:background="#ffffff" />
+
+                    <TextView
+                        android:id="@+id/tvProfileDistance"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/relativeProfileAllInfo"
-                        android:layout_below="@+id/viewPagerCountDots"
-                        android:background="#a0000000">
-
-                        <TextView
-                            android:id="@+id/tvProfileAge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="8dp"
-                            android:text="23, Male"
-                            android:textColor="#ffffff" />
-
-                        <TextView
-                            android:id="@+id/tvProfileName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginRight="20dp"
-                            android:layout_marginTop="8dp"
-                            android:text="Varun Dhawan"
-                            android:textColor="#ffffff" />
-
-                        <RelativeLayout
-                            android:id="@+id/relativeProfileTime"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tvProfileAge"
-                            android:layout_centerHorizontal="true"
-                            android:background="#ff4c516d"
-                            android:textAlignment="center">
-
-                            <TextView
-                                android:id="@+id/tvProfileTime"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginLeft="40dp"
-                                android:layout_marginRight="20dp"
-                                android:layout_marginTop="8dp"
-                                android:text="Active 2 hours ago"
-                                android:textColor="#ffffff" />
-
-                            <View
-                                android:id="@+id/viewSperator"
-                                android:layout_width="2dp"
-                                android:layout_height="20dp"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginLeft="15dp"
-                                android:layout_marginRight="15dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_toRightOf="@+id/tvProfileTime"
-                                android:background="#ffffff" />
-
-                            <TextView
-                                android:id="@+id/tvProfileDistance"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginLeft="20dp"
-                                android:layout_marginTop="8dp"
-                                android:layout_toRightOf="@+id/viewSperator"
-                                android:text="2 miles away"
-                                android:textColor="#ffffff" />
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/relativeInterestsProfile"
-                            android:layout_below="@+id/relativeProfileTime">
-
-                            <in.tagbin.mitohealthapp.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                xmlns:app="http://schemas.android.com/apk/res-auto"
-                                xmlns:tools="http://schemas.android.com/tools"
-                                android:id="@+id/flowLayoutProfile"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="vertical"
-                                android:layout_margin="20dp"
-                                android:textAlignment="center"
-                                android:layout_centerHorizontal="true"
-                                app:horizontalSpacing="5dp"
-                                app:verticalSpacing="4dp">
-
-                            </in.tagbin.mitohealthapp.FlowLayout>
-                        </RelativeLayout>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/relativeInterestsProfile"
-                            android:text="Description"
-                            android:id="@+id/tvProfileDescriptionHeading"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="5dp"
-                            android:textStyle="bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/colorPrimary"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tvProfileDescriptionHeading"
-                            android:text="Description"
-                            android:id="@+id/tvProfileDescription"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginLeft="30dp"
-                            android:textSize="12sp"
-                            android:textColor="#ffffff"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tvProfileDescription"
-                            android:text="Occupation"
-                            android:id="@+id/tvProfileOccupationHeading"
-                            android:layout_marginBottom="3dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="5dp"
-                            android:textStyle="bold"
-                            android:textSize="14sp"
-                            android:textColor="@color/colorPrimary"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/tvProfileOccupationHeading"
-                            android:text="Occupation"
-                            android:id="@+id/tvProfileOccupation"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginLeft="30dp"
-                            android:textSize="12sp"
-                            android:textColor="#ffffff"/>
-                    </RelativeLayout>
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_toRightOf="@+id/viewSperator"
+                        android:text="2 miles away"
+                        android:textColor="#ffffff" />
                 </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/relativeInterestsProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relativeProfileTime">
+
+                    <in.tagbin.mitohealthapp.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/flowLayoutProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_margin="20dp"
+                        android:orientation="vertical"
+                        android:textAlignment="center"
+                        app:horizontalSpacing="5dp"
+                        app:verticalSpacing="4dp">
+
+                    </in.tagbin.mitohealthapp.FlowLayout>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/tvProfileDescriptionHeading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/relativeInterestsProfile"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Description"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvProfileDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvProfileDescriptionHeading"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="30dp"
+                    android:text="Description"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvProfileOccupationHeading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvProfileDescription"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Occupation"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvProfileOccupation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvProfileOccupationHeading"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="30dp"
+                    android:text="Occupation"
+                    android:textColor="#ffffff"
+                    android:textSize="12sp" />
             </RelativeLayout>
-
-        </android.support.v4.widget.NestedScrollView>
-
-    </android.support.design.widget.CoordinatorLayout>
+        </RelativeLayout>
+    </RelativeLayout>
 
 
-</RelativeLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

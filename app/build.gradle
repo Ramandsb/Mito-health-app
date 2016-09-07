@@ -90,7 +90,7 @@ dependencies {
     compile 'com.clevertap.android:clevertap-android-sdk:2.1.2'
     compile 'com.google.firebase:firebase-crash:9.0.2'
     compile 'com.android.support:multidex:1.0.0'
-//    compile 'com.timehop.stickyheadersrecyclerview:library:0.4.3'
+    compile 'com.sothree.slidinguppanel:library:3.3.0'
 }
 apply plugin: 'com.google.gms.google-services'
 

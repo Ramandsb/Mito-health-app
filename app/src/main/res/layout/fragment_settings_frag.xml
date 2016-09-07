@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="Customize Notification"
+                android:text="Custom Reminders"
                 android:textColor="@color/colorPrimary"
                 android:textAllCaps="true"
                 android:textStyle="bold" />
@@ -559,20 +559,21 @@
                 android:textAlignment="center"
                 android:layout_centerHorizontal="true"
                 android:textStyle="bold" />
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/progressBar"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:layout_marginBottom="60dp"
+                android:indeterminateTintMode="src_atop"
+                android:visibility="gone"
+                android:src="@drawable/loader"
+                />
         </RelativeLayout>
-        <pl.droidsonroids.gif.GifImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/progressBar"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="60dp"
-            android:indeterminateTintMode="src_atop"
-            android:visibility="gone"
-            android:src="@drawable/loader"
-            />
+
         <!--<LinearLayout-->
         <!--android:id="@+id/logout"-->
         <!--android:layout_width="match_parent"-->

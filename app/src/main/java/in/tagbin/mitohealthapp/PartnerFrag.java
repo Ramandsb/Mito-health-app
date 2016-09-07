@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
@@ -52,18 +54,18 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
         View layout = inflater.inflate(R.layout.partnerfrag,container,false);
         tabLayout = (TabLayout) layout.findViewById(R.id.tabLayout);
 
-        viewPager = (ViewPager) layout.findViewById(R.id.pager);
-        viewpageradapter adapter = new viewpageradapter(getActivity().getSupportFragmentManager());
-
-        viewPager.setAdapter(adapter);
-        tabLayout.setupWithViewPager(viewPager);
+//        viewPager = (ViewPager) layout.findViewById(R.id.pager);
+//        viewpageradapter adapter = new viewpageradapter(getActivity().getSupportFragmentManager());
+//
+//        viewPager.setAdapter(adapter);
+        //tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
-        viewPager.setCurrentItem(1,true);
+//        viewPager.setCurrentItem(1,true);
         tabLayout.setOnTabSelectedListener(this);
-        tabLayout.setTabsFromPagerAdapter(adapter);
+        //tabLayout.setTabsFromPagerAdapter(adapter);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        viewPager.setOffscreenPageLimit(3);
+        //viewPager.setOffscreenPageLimit(3);
 
         setupTab();
         return layout;
@@ -79,7 +81,8 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
             tabOne = (TextView) relativeLayout.findViewById(R.id.tabtext);
             tabOne.setText("Explore");
             tabOne.setGravity(Gravity.CENTER);
-            tabLayout.getTabAt(0).setCustomView(relativeLayout);
+            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout));
+            //tabLayout.getTabAt(0).setCustomView(relativeLayout);
 
             RelativeLayout relativeLayout1 = (RelativeLayout)
                     LayoutInflater.from(getActivity()).inflate(R.layout.tab, tabLayout, false);
@@ -88,8 +91,8 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
             tabTwo = (TextView) relativeLayout1.findViewById(R.id.tabtext);
             tabTwo.setText("Lookup");
             tabTwo.setGravity(Gravity.CENTER);
-
-            tabLayout.getTabAt(1).setCustomView(relativeLayout1);
+            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout1),true);
+            //tabLayout.getTabAt(1).setCustomView(relativeLayout1);
 
             RelativeLayout relativeLayout2 = (RelativeLayout)
                     LayoutInflater.from(getActivity()).inflate(R.layout.tab, tabLayout, false);
@@ -97,7 +100,8 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
 
             tabThree.setText("Chat");
             tabThree.setGravity(Gravity.CENTER);
-            tabLayout.getTabAt(2).setCustomView(relativeLayout2);
+            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout2));
+            //tabLayout.getTabAt(2).setCustomView(relativeLayout2);
 
 
 
@@ -108,7 +112,7 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
     }
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
-
+        setCurrentTabFragment(tab.getPosition());
     }
 
     @Override
@@ -119,5 +123,27 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+    private void setCurrentTabFragment(int tabPosition)
+    {
+        switch (tabPosition)
+        {
+            case 0 :
+                replaceFragment(new Explorefrag());
+                break;
+            case 1 :
+                replaceFragment(new Lookupfrag());
+                break;
+            case 2 :
+                replaceFragment(new Chatfrag());
+                break;
+        }
+    }
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.pager, fragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.commit();
     }
 }

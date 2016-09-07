@@ -186,7 +186,9 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
                 da.get(i).all = true;
                 mylist.add(da.get(i));
             }
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
+            if(getActivity() == null)
+                return;
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     adapter.notifyDataSetChanged();
@@ -199,9 +201,11 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("all events error",message);
+            if(getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -209,7 +213,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
                     }
                 });
             }else{
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);

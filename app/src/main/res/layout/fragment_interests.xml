@@ -51,6 +51,17 @@
         android:layout_below="@+id/linearUpperInterests"
         android:layout_height="wrap_content">
     </SearchView>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Suggest Interest"
+        android:id="@+id/tvSuggestInterst"
+        android:layout_below="@+id/searchView"
+        android:textColor="@color/colorPrimary"
+        android:drawableRight="@drawable/add_interest"
+        android:textSize="17sp"
+        android:visibility="gone"
+        android:layout_margin="20dp"/>
     <in.tagbin.mitohealthapp.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"

@@ -251,7 +251,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                     //User has deny from permission dialog
                     final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
                     alertDialog1.setTitle("Location Permission Denied");
-                    alertDialog1.setMessage("Hate2Wait uses this permission to detect your current location and show you nearby restaurants around you. Are you sure you want to deny this permission?");
+                    alertDialog1.setMessage(" Are you sure you want to deny this permission?");
                     alertDialog1.setPositiveButton("I'M SURE", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             requestLocationPermission();
@@ -266,7 +266,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                 } else {
                     // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
                     AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
-                    alertDialog1.setMessage("It looks like you have turned off permission required for this feature. It can be enabled under Phone Settings > Apps > Hate2Wait > Permissions");
+                    alertDialog1.setMessage("It looks like you have turned off permission required for this feature. It can be enabled under Phone Settings > Apps > Mito > Permissions");
                     alertDialog1.setPositiveButton("GO TO SETTINGS", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent();

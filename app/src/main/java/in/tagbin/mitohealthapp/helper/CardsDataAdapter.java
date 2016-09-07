@@ -59,7 +59,7 @@ public class CardsDataAdapter extends BaseAdapter {
         }
         compatibility.setText(""+compatibilty1);
         personCard.setBorderWidth(MyUtils.dpToPx(mContext,3));
-        personCard.setBorderColor(Color.parseColor("#a0c894"));
+        personCard.setBorderColor(Color.parseColor("#26446d"));
         if (mData.getNearby_user_list().get(position).getImages() != null){
             if (mData.getNearby_user_list().get(position).getImages().getMaster() != null){
                 ImageLoader.getInstance().loadImage(mData.getNearby_user_list().get(position).getImages().getMaster(), new ImageLoadingListener() {

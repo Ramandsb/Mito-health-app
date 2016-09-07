@@ -40,6 +40,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import in.tagbin.mitohealthapp.BinderActivity;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.R;
@@ -108,7 +109,9 @@ public class Settings_frag extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        BinderActivity i = (BinderActivity) getActivity();
         setHasOptionsMenu(true);
+        i.invalidateOptionsMenu();
     }
 
     @Override

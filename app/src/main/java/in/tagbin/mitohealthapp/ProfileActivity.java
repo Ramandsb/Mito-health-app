@@ -7,6 +7,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -41,11 +44,12 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
     FlowLayout flowLayout;
     String response;
     RelativeLayout allInfo;
-    CoordinatorLayout coordinatorLayout;
+    private SlidingUpPanelLayout mLayout;
+    //CoordinatorLayout coordinatorLayout;
     ConnectProfileModel data;
     PrefManager pref;
     double latitde = 0.0,longitude = 0.0;
-    NestedScrollView nestedScrollView;
+    //NestedScrollView nestedScrollView;
     boolean checkod = false;
 
     @Override
@@ -64,10 +68,10 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         occupation = (TextView) findViewById(R.id.tvProfileOccupation);
         description = (TextView) findViewById(R.id.tvProfileDescription);
         flowLayout = (FlowLayout) findViewById(R.id.flowLayoutProfile);
-        blankSpace = (TextView) findViewById(R.id.tvProfileBlank);
+        //blankSpace = (TextView) findViewById(R.id.tvProfileBlank);
         allInfo = (RelativeLayout) findViewById(R.id.relativeProfileAllInfo);
-        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
-        nestedScrollView = (NestedScrollView) findViewById(R.id.scrollView);
+//        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_content);
+//        nestedScrollView = (NestedScrollView) findViewById(R.id.scrollView);
         pref = new PrefManager(this);
         if (pref.getCurrentLocationAsObject() != null){
             if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
@@ -75,42 +79,62 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
                 longitude = pref.getCurrentLocationAsObject().getLongitude();
             }
         }
-        blankSpace.setOnTouchListener(new View.OnTouchListener() {
+        mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        mLayout.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) coordinatorLayout.getLayoutParams();
-                layoutParams.addRule(RelativeLayout.BELOW,0);
-                layoutParams.addRule(RelativeLayout.ALIGN_TOP,0);
-                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,1);
-                layoutParams.width= layoutParams.MATCH_PARENT;
-                layoutParams.height = MyUtils.dpToPx(ProfileActivity.this,250);
-                coordinatorLayout.setLayoutParams(layoutParams);
-                coordinatorLayout.setFitsSystemWindows(true);
-                nestedScrollView.setFitsSystemWindows(false);
-                blankSpace.setVisibility(View.GONE);
-                checkod = true;
-                return false;
+            public void onPanelSlide(View panel, float slideOffset) {
+                Log.i("sliding", "onPanelSlide, offset " + slideOffset);
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                Log.i("sliding", "onPanelStateChanged " + newState);
             }
         });
-        if (!checkod) {
-            allInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    layoutParams.addRule(RelativeLayout.BELOW, R.id.relativePagerHeading);
-                    layoutParams.addRule(RelativeLayout.ALIGN_TOP, R.id.pagerProfile);
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
-                    coordinatorLayout.setLayoutParams(layoutParams);
-                    coordinatorLayout.setFitsSystemWindows(true);
-                    blankSpace.setVisibility(View.VISIBLE);
-                    checkod = true;
-                }
-            });
-        }
+        mLayout.setFadeOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            }
+        });
+//        blankSpace.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) coordinatorLayout.getLayoutParams();
+//                layoutParams.addRule(RelativeLayout.BELOW,0);
+//                layoutParams.addRule(RelativeLayout.ALIGN_TOP,0);
+//                layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM,1);
+//                layoutParams.width= layoutParams.MATCH_PARENT;
+//                layoutParams.height = MyUtils.dpToPx(ProfileActivity.this,250);
+//                coordinatorLayout.setLayoutParams(layoutParams);
+//                coordinatorLayout.setFitsSystemWindows(true);
+//                nestedScrollView.setFitsSystemWindows(false);
+//                blankSpace.setVisibility(View.GONE);
+//                checkod = true;
+//                return false;
+//            }
+//        });
+//        if (!checkod) {
+//            allInfo.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+//                    layoutParams.addRule(RelativeLayout.BELOW, R.id.relativePagerHeading);
+//                    layoutParams.addRule(RelativeLayout.ALIGN_TOP, R.id.pagerProfile);
+//                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, 0);
+//                    coordinatorLayout.setLayoutParams(layoutParams);
+//                    coordinatorLayout.setFitsSystemWindows(true);
+//                    blankSpace.setVisibility(View.VISIBLE);
+//                    checkod = true;
+//                }
+//            });
+//        }
         mImageResources = new ArrayList<String>();
         if (data.getImages() != null){
             if (data.getImages().getMaster() != null){
                 mImageResources.add(data.getImages().getMaster());
+            }else {
+                mImageResources.add(null);
             }
             if (data.getImages().getOthers() != null){
                 for (int i = 0;i<data.getImages().getOthers().length;i++){
@@ -192,5 +216,14 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+    @Override
+    public void onBackPressed() {
+        if (mLayout != null &&
+                (mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED || mLayout.getPanelState() == SlidingUpPanelLayout.PanelState.ANCHORED)) {
+            mLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        } else {
+            super.onBackPressed();
+        }
     }
 }

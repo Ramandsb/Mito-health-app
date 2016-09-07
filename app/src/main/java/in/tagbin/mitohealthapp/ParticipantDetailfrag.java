@@ -144,6 +144,9 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
         if (data.getUser().getProfile().getImages() != null){
             if (data.getUser().getProfile().getImages().getMaster() != null)
                 mImageResources.add(data.getUser().getProfile().getImages().getMaster());
+            else{
+                mImageResources.add(null);
+            }
             if (data.getUser().getProfile().getImages().getOthers() != null && data.getUser().getProfile().getImages().getOthers().length >0){
                 for (int i= 0;i<data.getUser().getProfile().getImages().getOthers().length;i++){
                     mImageResources.add(data.getUser().getProfile().getImages().getOthers()[i]);

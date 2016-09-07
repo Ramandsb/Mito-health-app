@@ -14,7 +14,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 
     TextView title,eventtitle,join;
     ImageView backimage,edit,delete;
-    RelativeLayout linearCard;
+    RelativeLayout linearCard,housefull;
     TextView time;
     TextView capacity;
     LinearLayout bottomBar;
@@ -28,6 +28,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         eventtitle= (TextView) itemView.findViewById(R.id.event_title);
         join = (TextView) itemView.findViewById(R.id.joinEvent);
         linearCard = (RelativeLayout) itemView.findViewById(R.id.linearLookupCard);
+        housefull = (RelativeLayout) itemView.findViewById(R.id.relativeHousefull);
         bottomBar = (LinearLayout) itemView.findViewById(R.id.linearBottomBar);
         backimage= (ImageView) itemView.findViewById(R.id.setimage);
         delete = (ImageView) itemView.findViewById(R.id.ivDelete);
