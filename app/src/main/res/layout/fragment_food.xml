@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
@@ -34,12 +34,17 @@
                 />
         </android.support.v7.widget.CardView>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
         android:id="@+id/food_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </android.support.v7.widget.RecyclerView>
+
+        </FrameLayout>
     </LinearLayout>
 
-</android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

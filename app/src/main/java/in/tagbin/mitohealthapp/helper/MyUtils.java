@@ -74,6 +74,7 @@ public class MyUtils {
         return 0;
     }
     public static long getUtcTimestamp(String validDate,String source) {
+        Log.d("Date to Convert",validDate);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long da = 0;
         try {

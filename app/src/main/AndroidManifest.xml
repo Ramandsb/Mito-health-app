@@ -37,6 +37,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
 
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+
         </activity>
 
 
@@ -51,11 +57,7 @@
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
 
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <service android:name=".XamppChatService">
 

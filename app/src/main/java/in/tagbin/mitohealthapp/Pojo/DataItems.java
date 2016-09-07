@@ -5,7 +5,16 @@ package in.tagbin.mitohealthapp.Pojo;
  */
 public class DataItems {
     String id, food_id, food_name, time_consumed, amount, date, synced, sleep_unique, sleep_start, sleep_end, sleep_date,sleep_hours,sleep_quality;
-    private String exercise_name,exercise_id,exercise_uniq_id,exercise_date,exercise_weight,exercise_sets,exercise_reps;
+    private String exercise_name,exercise_id,exercise_uniq_id,exercise_date,exercise_weight,exercise_sets,exercise_reps,mealtype;
+
+
+    public String getMealtype() {
+        return mealtype;
+    }
+
+    public void setMealtype(String mealtype) {
+        this.mealtype = mealtype;
+    }
 
     public String getId() {
         return id;

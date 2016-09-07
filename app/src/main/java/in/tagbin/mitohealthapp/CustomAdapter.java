@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.widget.RecyclerView;
@@ -52,20 +53,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Fragments.FoodFrag;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
+import in.tagbin.mitohealthapp.StickyHeaders.exposed.StickyHeader;
+import in.tagbin.mitohealthapp.StickyHeaders.exposed.StickyHeaderHandler;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import jp.wasabeef.recyclerview.animators.holder.AnimateViewHolder;
 
 /**
  * Created by admin pc on 13-07-2016.
  */
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHolder> {
-    ArrayList<DataItems> result;
+public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHolder> implements StickyHeaderHandler {
+    List<DataItems> result;
     Context context;
     String quant="";
     int[] imageId;
@@ -114,76 +118,87 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
         final DataItems dataItems= result.get(position);
 
         Uniqueid=dataItems.getId();
-        holder.food_name.setText(dataItems.getFood_name());
-        holder.time.setText(dataItems.getTime_consumed());
-        holder.quantity.setText(dataItems.getAmount()+" Pieces");
-        String sync= dataItems.getSynced();
-        Log.d("check sync",sync);
-        if (sync.equals("yes")){
-            holder.tick.setVisibility(View.INVISIBLE);
-            holder.cross.setVisibility(View.INVISIBLE);
-            holder.reset.setVisibility(View.INVISIBLE);
-            holder.select_time.setEnabled(false);
-            holder.quantity.setEnabled(false);
-            Log.d("yes sync",sync);
-        }else Log.d("no sync",sync);
-        holder.quantity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                quantity_dialog(dataItems.getId());
-                notifyDataSetChanged();
-            }
-        });
+        if (dataItems instanceof StickyHeader) {
+            holder.food_type.setText(dataItems.getMealtype());
+            Log.d("mealtype",dataItems.getMealtype()+"///");
+            holder.foodcard.setVisibility(View.GONE);
+            holder.headercard.setVisibility(View.VISIBLE);
+//            holder.messageTextView.setText(item.message);
+        }else {
+            holder.foodcard.setVisibility(View.VISIBLE);
+            holder.headercard.setVisibility(View.GONE);
+            holder.food_name.setText(dataItems.getFood_name());
+            holder.time.setText(dataItems.getTime_consumed());
+            holder.quantity.setText(dataItems.getAmount() + " Pieces");
+            String sync = dataItems.getSynced();
+            Log.d("check sync", sync);
+            if (sync.equals("yes")) {
+                holder.tick.setVisibility(View.INVISIBLE);
+                holder.cross.setVisibility(View.INVISIBLE);
+                holder.reset.setVisibility(View.INVISIBLE);
+                holder.select_time.setEnabled(false);
+                holder.quantity.setEnabled(false);
+                Log.d("yes sync", sync);
+            } else Log.d("no sync", sync);
+            holder.quantity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    quantity_dialog(dataItems.getId());
+                    notifyDataSetChanged();
+                }
+            });
 
 //        Picasso.with(context).load(url).into(holder.food_image);
-        holder.select_time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            holder.select_time.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                TimePickerDialog tpd = new TimePickerDialog(context,
-                        new TimePickerDialog.OnTimeSetListener() {
+                    TimePickerDialog tpd = new TimePickerDialog(context,
+                            new TimePickerDialog.OnTimeSetListener() {
 
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-                                holder.time.setText(hourOfDay + ":" + minute);
-                                String time=hourOfDay + ":" + minute;
-                                ContentValues cv = new ContentValues();
-                                cv.put(TableData.Tableinfo.TIME_CONSUMED, time);
-                                notifyDataSetChanged();
-                                dop.updateRow(dop, cv, dataItems.getId());
-                                setData(dop.getInformation(dop, FoodFrag.selectedDate));
-                            }
-                        }, hour, min, false);
-                tpd.show();
-            }
-        });
-        holder.tick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context,"tick"+dataItems.getFood_name() ,Toast.LENGTH_LONG).show();
+                                @Override
+                                public void onTimeSet(TimePicker view, int hourOfDay,
+                                                      int minute) {
+                                    holder.time.setText(hourOfDay + ":" + minute);
+                                    String time = hourOfDay + ":" + minute;
+                                    ContentValues cv = new ContentValues();
+                                    cv.put(TableData.Tableinfo.TIME_CONSUMED, time);
+                                    notifyDataSetChanged();
+                                    dop.updateRow(dop, cv, dataItems.getId());
+                                    setData(dop.getInformation(dop, FoodFrag.selectedDate));
+                                }
+                            }, hour, min, false);
+                    tpd.show();
+                }
+            });
+            holder.tick.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "tick" + dataItems.getFood_name(), Toast.LENGTH_LONG).show();
 
 
 //
-                    time_stamp= MyUtils.getUtcTimestamp(dataItems.getDate()+" "+dataItems.getTime_consumed()+":00","s");
-                Log.d("converted time",time_stamp+"///");
+                    time_stamp = MyUtils.getUtcTimestamp(dataItems.getDate() + " " + dataItems.getTime_consumed() + ":00", "s");
+                    Log.d("converted time", time_stamp + "///");
 
-                makeJsonObjReq(dataItems.getFood_id(),String.valueOf(time_stamp),dataItems.getAmount());
-            }
-        });
-        holder.cross.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(context,"cross"+dataItems.getFood_name(),Toast.LENGTH_LONG).show();
-                Cross_dialog(dataItems.getFood_id(),dataItems.getId());
-            }
-        });
-        holder.reset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                makeResetJsonObjReq(dataItems.getFood_id(),dataItems.getId());
-            }
-        });
+                    makeJsonObjReq(dataItems.getFood_id(), String.valueOf(time_stamp), dataItems.getAmount());
+                }
+            });
+            holder.cross.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context, "cross" + dataItems.getFood_name(), Toast.LENGTH_LONG).show();
+                    Cross_dialog(dataItems.getFood_id(), dataItems.getId());
+                }
+            });
+            holder.reset.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    makeResetJsonObjReq(dataItems.getFood_id(), dataItems.getId());
+                }
+            });
+
+        }
 
     }
 
@@ -196,6 +211,11 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
     @Override
     public int getItemCount() {
         return result.size();
+    }
+
+    @Override
+    public List<?> getAdapterData() {
+        return result;
     }
 
     public class Holder {
@@ -272,9 +292,11 @@ static class MyviewHolder extends AnimateViewHolder {
     TextView food_name;
     TextView time;
     TextView quantity;
+    TextView food_type;
     ImageView tick,cross,reset;
     ImageView food_image;
     View select_time;
+    View foodcard,headercard;
 
 
     public MyviewHolder(View rowView) {
@@ -282,10 +304,13 @@ static class MyviewHolder extends AnimateViewHolder {
         food_name = (TextView) rowView.findViewById(R.id.food_name);
         time = (TextView) rowView.findViewById(R.id.time_tv);
         quantity = (TextView) rowView.findViewById(R.id.quantity);
+        food_type = (TextView) rowView.findViewById(R.id.food_type);
         tick = (ImageView) rowView.findViewById(R.id.done);
         cross = (ImageView) rowView.findViewById(R.id.cross);
         reset = (ImageView) rowView.findViewById(R.id.reset);
         select_time=rowView.findViewById(R.id.time_select);
+        foodcard=rowView.findViewById(R.id.food_card);
+        headercard=rowView.findViewById(R.id.headercard);
         food_image = (ImageView) rowView.findViewById(R.id.food_image);
 
     }

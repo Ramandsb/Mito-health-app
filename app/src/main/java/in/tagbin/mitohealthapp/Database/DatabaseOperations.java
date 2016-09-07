@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import in.tagbin.mitohealthapp.CustomPojo;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
+import in.tagbin.mitohealthapp.Pojo.FoodHeaders;
 import in.tagbin.mitohealthapp.model.ChatAccounts;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 
@@ -263,9 +264,11 @@ return cursor;
     public ArrayList<DataItems> getInformation(DatabaseOperations dop,String date){
         ArrayList<DataItems> listData = new ArrayList<>();
 
+        int i=0;
+        boolean b=false,l=false,d=false;
         SQLiteDatabase SQ = dop.getReadableDatabase();
         Log.d("DatabasRead", "is it null  //  "+date);
-        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FOOD + " WHERE " + TableData.Tableinfo.DATE + "='" + date + "'", null);
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FOOD + " WHERE " + TableData.Tableinfo.DATE + "='" + date + "' ORDER BY "+ TableData.Tableinfo.TIME_CONSUMED +" ASC", null);
 
 //        String[] coloumns = {TableData.Tableinfo.DISH, TableData.Tableinfo.DATE,TableData.Tableinfo.TIME,TableData.Tableinfo.DISH_ID,};
 //        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
@@ -273,6 +276,8 @@ return cursor;
             do {
                 //create a new movie object and retrieve the data from the cursor to be stored in this movie object
                 DataItems item = new DataItems();
+                FoodHeaders headers= new FoodHeaders();
+
                 item.setId(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.ID)));
                 item.setFood_id(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.FOOD_ID)));
                 item.setFood_name(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.FOOD_NAME)));
@@ -280,7 +285,32 @@ return cursor;
                 item.setTime_consumed(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.TIME_CONSUMED)));
                 item.setDate(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.DATE)));
                 item.setSynced(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.SYNCED)));
+
+//                headers.setMealtype("headers");
+//                item.setMealtype("item");
                 Log.d("Database read", listData.toString());
+
+
+                if (compareTime(item.getTime_consumed(),"1473152434","1473156034")){
+
+                    headers.setHeader("header");
+                    headers.setMealtype("BreakFast");
+                    listData.add(headers);
+
+                }else if (compareTime(item.getTime_consumed(),"1473123634","1473127234")){
+                    headers.setHeader("header");
+                    headers.setMealtype("Lunch");
+                    listData.add(headers);
+
+                }else {
+                    headers.setHeader("header");
+                    headers.setMealtype("Meal "+(i++));
+                    listData.add(headers);
+
+
+                }
+
+
                 listData.add(item);
 
             }
@@ -289,6 +319,21 @@ return cursor;
         return listData;
 
     }
+
+    public boolean compareTime(String time,String lower,String higher){
+        int input =Integer.valueOf(time);
+        int lowerinput =Integer.valueOf(lower);
+        int higherinput =Integer.valueOf(higher);
+
+        if (input>=lowerinput && input<=higherinput){
+
+            return true;
+
+        }
+        return false;
+    }
+
+
 
     public ArrayList<CustomPojo> getCMInformation(DatabaseOperations dop,String user){
         ArrayList<CustomPojo> listData = new ArrayList<>();
@@ -363,7 +408,6 @@ String da="2016-08-23 00:00:00";
 //        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CHART + " WHERE " + TableData.Tableinfo.CHART_DATE + "='" + da + "'", null);
         Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CHART , null,null);
 //        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
-
 //        String[] coloumns = {TableData.Tableinfo.DISH, TableData.Tableinfo.DATE,TableData.Tableinfo.TIME,TableData.Tableinfo.DISH_ID,};
 //        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
         if (cursor != null && cursor.moveToFirst()) {

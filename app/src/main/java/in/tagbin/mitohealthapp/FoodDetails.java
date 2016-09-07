@@ -359,7 +359,7 @@ public class FoodDetails extends AppCompatActivity {
 
 
                         unique_id = String.valueOf(System.currentTimeMillis());
-                        dop.putInformation(dop, unique_id, FoodDetailsFrag.mParam2, FoodDetailsFrag.dishName, FoodDetailsFrag.time, FoodDetailsFrag.quantity, FoodFrag.selectedDate, "yes");
+                        dop.putInformation(dop, unique_id, FoodDetailsFrag.mParam2, FoodDetailsFrag.dishName, String.valueOf(MyUtils.getUtcTimestamp(FoodFrag.selectedDate+" "+FoodDetailsFrag.time+":00","s")), FoodDetailsFrag.quantity, FoodFrag.selectedDate, "yes");
                         startActivity(new Intent(FoodDetails.this,DishSearch.class).putExtra("back","food"));
                         finish();
                         dismissDialog();
