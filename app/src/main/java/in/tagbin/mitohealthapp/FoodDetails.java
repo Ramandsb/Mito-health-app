@@ -168,7 +168,7 @@ public class FoodDetails extends AppCompatActivity {
 
 
 
-                                   time_stamp= MyUtils.getUtcTimestamp(FoodFrag.selectedDate+" "+FoodDetailsFrag.time+":00","s");
+                                   time_stamp= MyUtils.getUtcTimestamp(""+" "+FoodDetailsFrag.time+":00","s");
                                     makeJsonObjReq(food_id,String.valueOf(time_stamp),FoodDetailsFrag.quantity);
 
 //
@@ -243,7 +243,7 @@ public class FoodDetails extends AppCompatActivity {
 
 
 
-                    time_stamp= MyUtils.getUtcTimestamp(FoodFrag.selectedDate+" "+FoodDetailsFrag.time+":00","s");
+                    time_stamp= MyUtils.getUtcTimestamp(""+" "+FoodDetailsFrag.time+":00","s");
                     makeJsonObjReq(food_id,String.valueOf(time_stamp),FoodDetailsFrag.quantity);
 
 //
@@ -359,7 +359,7 @@ public class FoodDetails extends AppCompatActivity {
 
 
                         unique_id = String.valueOf(System.currentTimeMillis());
-                        dop.putInformation(dop, unique_id, FoodDetailsFrag.mParam2, FoodDetailsFrag.dishName, String.valueOf(MyUtils.getUtcTimestamp(FoodFrag.selectedDate+" "+FoodDetailsFrag.time+":00","s")), FoodDetailsFrag.quantity, FoodFrag.selectedDate, "yes");
+                        //dop.putInformation(dop, unique_id, FoodDetailsFrag.mParam2, FoodDetailsFrag.dishName, String.valueOf(MyUtils.getUtcTimestamp(""+" "+FoodDetailsFrag.time+":00","s")), FoodDetailsFrag.quantity, "", "yes");
                         startActivity(new Intent(FoodDetails.this,DishSearch.class).putExtra("back","food"));
                         finish();
                         dismissDialog();
@@ -403,8 +403,16 @@ public class FoodDetails extends AppCompatActivity {
     public static String unique_id = "";
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(FoodDetailsFrag.newInstance("food_id",food_id), "Nutrition Value");
-        adapter.addFragment(RecipeDetailsFrag.newInstance("food_id",food_id), "Recipe");
+        Fragment detailsFrag = new FoodDetailsFrag();
+        Bundle bundle = new Bundle();
+        bundle.putString("response",getIntent().getStringExtra("response"));
+        detailsFrag.setArguments(bundle);
+        Fragment recipeFrag = new RecipeDetailsFrag();
+        Bundle bundle1 = new Bundle();
+        bundle1.putString("response",getIntent().getStringExtra("response"));
+        recipeFrag.setArguments(bundle1);
+        adapter.addFragment(detailsFrag, "Nutrition Value");
+        adapter.addFragment(recipeFrag, "Recipe");
         viewPager.setAdapter(adapter);
     }
 

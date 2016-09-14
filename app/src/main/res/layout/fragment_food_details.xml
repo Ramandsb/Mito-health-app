@@ -65,15 +65,8 @@
                     android:id="@+id/set_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10:54"
-                    android:textSize="30sp"/>
-                <TextView
-                    android:id="@+id/set_ampm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="am"
-                    android:layout_marginLeft="7dp"
-                    android:textSize="12sp"/>
+                    android:text="10:54 AM"
+                    android:textSize="20sp"/>
 
 
 

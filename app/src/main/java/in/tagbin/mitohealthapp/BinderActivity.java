@@ -14,6 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.TextureView;
@@ -26,14 +27,26 @@ import android.widget.Toast;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+
+import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import in.tagbin.mitohealthapp.Fragments.CartFrag;
 import in.tagbin.mitohealthapp.Fragments.Settings_frag;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter1;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import in.tagbin.mitohealthapp.model.UserInterestModel;
 
 public class BinderActivity extends AppCompatActivity{
 
@@ -41,6 +54,7 @@ public class BinderActivity extends AppCompatActivity{
     FragmentTransaction fraTra;
     Toolbar toolbar;
     TextView toolbar_title;
+    Intent i;
     public AHBottomNavigation bottomNavigation;
 
 
@@ -270,9 +284,10 @@ public class BinderActivity extends AppCompatActivity{
 //                    setToggleButtons(interestModel);
 //                }
 //            });
-            Intent i = new Intent(BinderActivity.this,InterestActivity.class);
+            Controller.getUserInterests(BinderActivity.this,mUserInterestListener);
+            i = new Intent(BinderActivity.this,InterestActivity.class);
             i.putExtra("response",responseObject.toString());
-            startActivity(i);
+
         }
 
         @Override
@@ -287,6 +302,43 @@ public class BinderActivity extends AppCompatActivity{
         fragment.onActivityResult(requestCode, resultCode, data);
 
     }
+    RequestListener mUserInterestListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
 
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("user interests ",responseObject.toString());
+            Type collectionType = new TypeToken<ArrayList<UserInterestModel>>() {
+            }.getType();
+            List<UserInterestModel> userInterestModel = (ArrayList<UserInterestModel>) new Gson().fromJson(responseObject.toString(), collectionType);
+            i.putExtra("userinterests",responseObject.toString());
+            startActivity(i);
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("user interests",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Toast.makeText(BinderActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(BinderActivity.this, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
 
 }

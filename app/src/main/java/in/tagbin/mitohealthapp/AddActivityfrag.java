@@ -613,18 +613,10 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("Event Updated",responseObject.toString());
-            /*DataObject dataObject = JsonUtils.objectify(responseObject.toString(),DataObject.class);
-            dataObject.all = false;
-            Bundle bundle = new Bundle();
-            Fragment fragment = new MyActivityCardfrag();
-            String dataobject = JsonUtils.jsonify(dataObject);
-            bundle.putString("dataobject",dataobject);
-            fragment.setArguments(bundle);
+            Fragment fragment = new Lookupfrag();
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frameAddActivity, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();*/
-            getFragmentManager().popBackStack();
+            transaction.commit();
             ((Activity) getContext()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

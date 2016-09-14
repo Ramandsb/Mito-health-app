@@ -75,7 +75,6 @@
                 android:layout_marginRight="6dp"
                 android:layout_alignParentRight="true"
                 android:layout_gravity="end"
-                android:visibility="gone"
                 android:src="@drawable/delete_event" />
 
             <ImageView
@@ -84,8 +83,7 @@
                 android:layout_height="25dp"
                 android:padding="4dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginRight="6dp"
-                android:layout_alignParentRight="true"
+                android:layout_toLeftOf="@+id/ivDelete"
                 android:layout_gravity="end"
                 android:src="@drawable/edit_white" />
 

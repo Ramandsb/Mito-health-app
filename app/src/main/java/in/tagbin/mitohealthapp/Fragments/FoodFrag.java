@@ -15,8 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -26,6 +29,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -34,11 +39,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import in.tagbin.mitohealthapp.AppController;
@@ -50,111 +59,61 @@ import in.tagbin.mitohealthapp.Config;
 import in.tagbin.mitohealthapp.CustomAdapter;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Interfaces.FoodInterface;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.ItemClickSupport;
 import in.tagbin.mitohealthapp.MainPage;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.StickyHeaders.exposed.StickyLayoutManager;
+import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.helper.RecommendationAdapter;
+import in.tagbin.mitohealthapp.model.DataObject;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
+import in.tagbin.mitohealthapp.model.RecommendationModel;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
 
 
 public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
-    ArrayList<DataItems> database_list;
-    RecyclerView food_list;
-    CustomAdapter customAdapter;
-    DatabaseOperations dop;
-    SharedPreferences login_details;
-    String auth_key;
-
-    private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
-
     MaterialCalendarView widget;
-    public static String selectedDate = "";
-
-
-
-    public FoodFrag() {
-        // Required empty public constructor
-    }
-
-
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        dop = new DatabaseOperations(getActivity());
-        login_details = getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, getActivity().MODE_PRIVATE);
-      Calendar  calendar = Calendar.getInstance();
-
-      int  year = calendar.get(Calendar.YEAR);
-      int  month = calendar.get(Calendar.MONTH);
-       int day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = month+1;
-        if (month<=9 && day <=9){
-            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else  if (month<=9 && day >9){
-            selectedDate = year + "-" + "0"+month + "-" + day;
-            Log.d("date",selectedDate);
-        }else  if (day <=9 && month >9){
-            selectedDate = year + "-" +month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else if (day >9 && month >9){
-            selectedDate = year + "-" + month + "-" + day;
-            Log.d("date", selectedDate);
-
-        }
-        makeJsonArrayReq(selectedDate);
-        Log.d("date",selectedDate);
-       String dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
-//        dop.putFeelingsInformation(dop, dateTimeStamp,"0.0","0.0","0.0","0.0","0.0","no");
-
-
-    }
-
+    Spinner spinner;
+    LinearLayoutManager linearLayoutManager;
+    RecyclerView rvRecommendations;
+    RecommendationAdapter mAdapter;
+    LinearLayout tvTopRecommended,linearFoodLogger;
+    List<RecommendationModel> data;
+    List<String> measuring_units;
+    int hour1,minute1;
+    ArrayAdapter<String> adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragView = inflater.inflate(R.layout.fragment_food, container, false);
-
-        food_list = (RecyclerView) fragView.findViewById(R.id.food_list);
+        rvRecommendations = (RecyclerView) fragView.findViewById(R.id.rvRecommendation);
+        spinner = (Spinner) fragView.findViewById(R.id.spinnerRecommended);
+        tvTopRecommended = (LinearLayout) fragView.findViewById(R.id.linearTopRecommended);
+        linearFoodLogger = (LinearLayout) fragView.findViewById(R.id.linearFoodLogger);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rvRecommendations.setLayoutManager(linearLayoutManager);
+        rvRecommendations.setHasFixedSize(true);
+        //food_list = (RecyclerView) fragView.findViewById(R.id.food_list);
         widget= (MaterialCalendarView) fragView.findViewById(R.id.calendarView);
-        food_list.setItemAnimator(new SlideInLeftAnimator());
-        food_list.getItemAnimator().setRemoveDuration(1000);
-        SlideInLeftAnimator animator = new SlideInLeftAnimator();
-        animator.setInterpolator(new OvershootInterpolator());
-// or recyclerView.setItemAnimator(new SlideInUpAnimator(new OvershootInterpolator(1f));
-        food_list.setItemAnimator(animator);
-        getAllDataforchart();
-
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        customAdapter = new CustomAdapter(getActivity());
-        StickyLayoutManager layoutManager = new StickyLayoutManager(getContext(), customAdapter);
-        layoutManager.elevateHeaders(true);
-        layoutManager.elevateHeaders(10);
-        food_list.setLayoutManager(layoutManager);
-        database_list = new ArrayList<>();
-        dop = new DatabaseOperations(getActivity());
-
-
-        food_list.setAdapter(customAdapter);
-        food_list.setHasFixedSize(true);
-        database_list = dop.getInformation(dop, selectedDate);
-        customAdapter.setData(database_list);
-        customAdapter.notifyDataSetChanged();
-/////////////////////
+        data = new ArrayList<RecommendationModel>();
 
         Calendar calendar = Calendar.getInstance();
+        hour1 = calendar.get(Calendar.HOUR);
+        minute1 = calendar.get(Calendar.MINUTE);
         widget.setSelectedDate(calendar.getTime());
-
+        Date date1 = calendar.getTime();
+        long timestamp = date1.getTime()/1000L;
+        Controller.getLogger(getContext(),timestamp,mGetFoodLoggerListener);
+        String dateFormat = MyUtils.getDateFormat(date1,"yyyy-MM-dd");
+        Controller.getFoodRecommendation(getContext(),timestamp,mRecommendationListener);
         Calendar instance1 = Calendar.getInstance();
         instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
-
         Calendar instance2 = Calendar.getInstance();
         instance2.set(instance2.get(Calendar.YEAR) + 2, Calendar.OCTOBER, 31);
         widget.setOnDateChangedListener(this);
@@ -163,34 +122,50 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
                 .setMaximumDate(instance2.getTime())
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
                 .commit();
-
-        //////////////////
-
-
-        ItemClickSupport.addTo(food_list).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+        measuring_units = new ArrayList<>();
+//        measuring_units.add("Breakfast");
+//        measuring_units.add("Lunch");
+//        measuring_units.add("Dinner");
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        final String[] unit = {"Kg"};
+        mAdapter = new RecommendationAdapter(getContext(), data, "",0);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(measuring_units.size() >0 && data.size() > 0) {
+                    Log.d("item selected", measuring_units.get(i));
+                    unit[0] = measuring_units.get(i);
+                    mAdapter = new RecommendationAdapter(getContext(), data, measuring_units.get(i),i);
+                    rvRecommendations.setAdapter(mAdapter);
+                }
+            }
 
-             DataItems dataItems=   dop.getInformation(dop,selectedDate).get(position);
-                startActivity(new Intent(getActivity(), FoodDetails.class).putExtra("food_id",dataItems.getFood_id()).putExtra("source","food_frag"));
-
-
-//
-// akshayluthra12@
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
         });
-        if (database_list.isEmpty()) {
+        //////////////////
 
-        } else {
 
-        }
-        Log.d("final selected date", selectedDate);
+//        ItemClickSupport.addTo(food_list).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+//            @Override
+//            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+//
+//             DataItems dataItems=   dop.getInformation(dop,selectedDate).get(position);
+//                startActivity(new Intent(getActivity(), FoodDetails.class).putExtra("food_id",dataItems.getFood_id()).putExtra("source","food_frag"));
+//
+//
+////
+//// akshayluthra12@
+//
+//            }
+//        });
 
         return fragView;
     }
-
-
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -201,168 +176,114 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         //Sets the selected date from Picker
     }
 
-    private void makeJsonObjReq(String date) {
+    public void setFoodLogger(){
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View loggerView = inflater.inflate(R.layout.item_food_logger,linearFoodLogger,false);
+        TextView mealType = (TextView) loggerView.findViewById(R.id.tvRecommendedMealType);
+        TextView mealTime = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTime);
+        TextView mealCalories = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTotalCalories);
+        RecyclerView rvLogger = (RecyclerView) loggerView.findViewById(R.id.rvFoodLogger);
 
-        auth_key = login_details.getString("key", "");
-        Map<String, String> postParam = new HashMap<String, String>();
-        postParam.put("day", date);
-
-
-        JSONObject jsonObject = new JSONObject(postParam);
-        Log.d("postpar", jsonObject.toString());
-
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET,
-                Config.url + "logger/food/", jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
-
-
-                    }
-
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-
-                Log.d("error", error.toString());
-            }
-        }) {
-
-            //
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("charset", "utf-8");
-                headers.put("Authorization", "JWT " + auth_key);
-                return headers;
-            }
-
-
-        };
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onAttach(Activity activity){
-        super.onAttach(activity);
-    }
-
-
-
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        Calendar calendar = date.getCalendar();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH)+1;
+        int hours = calendar.get(Calendar.HOUR);
+        int minute = calendar.get(Calendar.MINUTE);
+        Date date1 = new Date(year-1900,month,day,hours,minute);
+//        Date date1 = date.g;
+//        //date1.setTime(43200000);
+//        date1.setDate(date1.getDay()+1);
+        long timestamp = date1.getTime()/1000L;
+        Log.d("timestamp",String.valueOf(timestamp));
+        Controller.getLogger(getContext(),timestamp,mGetFoodLoggerListener);
 
-//
-     int day=   date.getDay();
-     int month=   date.getMonth()+1;
-     int year=   date.getYear();
-        if (month<=9 && day <=9){
-            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else  if (month<=9 && day >9){
-            selectedDate = year + "-" + "0"+month + "-" + day;
-            Log.d("date",selectedDate);
-        }else  if (day <=9 && month >9){
-            selectedDate = year + "-" +month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else if (day >9 && month >9){
-            selectedDate = year + "-" + month + "-" + day;
-            Log.d("date", selectedDate);
-        }
-        makeJsonArrayReq(selectedDate);
-        database_list = dop.getInformation(dop, selectedDate);
-        customAdapter.setData(database_list);
-        customAdapter.notifyDataSetChanged();
-        Log.d("date",selectedDate);
+        long timestamp1 = date.getDate().getTime()/1000L;
+        Log.d("dateformat", String.valueOf(timestamp1));
+        Controller.getFoodRecommendation(getContext(),timestamp1,mRecommendationListener);
+//        if (month<=9 && day <=9){
+//            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
+//            Log.d("date",selectedDate);
+//        }else  if (month<=9 && day >9){
+//            selectedDate = year + "-" + "0"+month + "-" + day;
+//            Log.d("date",selectedDate);
+//        }else  if (day <=9 && month >9){
+//            selectedDate = year + "-" +month + "-" + "0"+day;
+//            Log.d("date",selectedDate);
+//        }else if (day >9 && month >9){
+//            selectedDate = year + "-" + month + "-" + day;
+//            Log.d("date", selectedDate);
+//        }
+//        makeJsonArrayReq(selectedDate);
+//        database_list = dop.getInformation(dop, selectedDate);
+//        customAdapter.setData(database_list);
+//        customAdapter.notifyDataSetChanged();
+//        Log.d("date",selectedDate);
     }
-    private String getSelectedDatesString() {
-        CalendarDay date = widget.getSelectedDate();
-        if (date == null) {
-            return "No Selection";
+
+    RequestListener mGetFoodLoggerListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
         }
-        return FORMATTER.format(date.getDate());
-    }
-    private void makeJsonArrayReq(String s) {
-        auth_key = login_details.getString("key", "");
-        Map<String, String> postParam = new HashMap<String, String>();
-        postParam.put("day", s);
 
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("get food",responseObject.toString());
 
-        JSONObject jsonObject = new JSONObject(postParam);
-        Log.d("postpar", jsonObject.toString());
-        JsonArrayRequest jsonObjReq = new JsonArrayRequest(
-                Config.url + "logger/food/?day="+s,
-                new Response.Listener<JSONArray>() {
+        }
 
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("get food error",message);
+        }
+    };
+    RequestListener mRecommendationListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("recommended food",responseObject.toString());
+            Type collectionType = new TypeToken<ArrayList<RecommendationModel>>() {}.getType();
+            List<RecommendationModel> da = (ArrayList<RecommendationModel>) new Gson()
+                    .fromJson(responseObject.toString(), collectionType);
+            data.clear();
+            measuring_units.clear();
+            for (int i=0;i<da.size();i++){
+                data.add(da.get(i));
+                measuring_units.add(da.get(i).getMeal_type().getFood_time());
+            }
+            if (data.size() <= 0){
+
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void onResponse(JSONArray response) {
-
-                        Log.d("ArrayRequest Response",response.toString());
-
-
-
+                    public void run() {
+                        tvTopRecommended.setVisibility(View.GONE);
                     }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-                Log.d("error", error.toString());
+                });
+            }else {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvTopRecommended.setVisibility(View.VISIBLE);
+                        mAdapter.notifyDataSetChanged();
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
-        })
-        {
-
-            //
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put("charset", "utf-8");
-                headers.put("Authorization", "JWT " + auth_key);
-                return headers;
-            }
-
-
-//
-
-
-        };
-
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
-
-    public void getAllDataforchart(){
-
-        ArrayList<DateRangeDataModel> list= new ArrayList<>();
-        DateRangeDataModel dm= new DateRangeDataModel();
-      list= dop.getChartInformation(dop,selectedDate+" 00:00:00");
-        for (int i=0;i<list.size();i++){
-            dm=list.get(i);
-            Log.d("detailsfromdb",dm.getDate()+"//"+dm.getFood_req()+"//"+dm.getFood_con()+"//"+dm.getExer_con()+"//"+dm.getTimestamp()+"//"+dm.getWater_con());
         }
 
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("recommended food error",message);
+        }
+    };
 
-
-    }
 
 }

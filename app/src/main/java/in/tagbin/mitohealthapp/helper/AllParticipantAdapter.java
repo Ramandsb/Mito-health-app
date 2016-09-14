@@ -121,7 +121,6 @@ public class AllParticipantAdapter extends RecyclerView.Adapter<AllParticipantAd
                     fragment.setArguments(bundle);
                     FragmentTransaction transaction = pFragment.beginTransaction();
                     transaction.add(R.id.frameAddActivity, fragment);
-                    transaction.addToBackStack(null);
                     transaction.commit();
                 }
             });

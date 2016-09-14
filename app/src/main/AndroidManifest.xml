@@ -148,6 +148,14 @@
             android:label="Interests"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".SetGoalsActivity"
+            android:label="Set Goals"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SelectCuisineActivity"
+            android:label="Select Cuisines"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -6,7 +6,7 @@ import android.util.SparseArray;
  * Created by aasaqt on 9/8/16.
  */
 public class UrlResolver {
-    public static final String BASE_URL = "http://api.mitoapp.com/";
+    public static final String BASE_URL = "https://api.mitoapp.com/";
     public static SparseArray<String> endPointMapper = null;
 
     public static final String withAppendedPath(int endPoint) {
@@ -22,12 +22,15 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.USERS,"v1/users/");
         endPointMapper.put(EndPoints.CONNECT_PROFILE,"v1/connect/");
         endPointMapper.put(EndPoints.INTEREST,"v1/interest/list");
-        endPointMapper.put(EndPoints.WATERLOG,"v1/logger/");
+        endPointMapper.put(EndPoints.LOGGER,"v1/logger/");
         endPointMapper.put(EndPoints.DATERANGEDATA,"v1/users/history/");
         endPointMapper.put(EndPoints.INTEREST,"v1/interest/");
         endPointMapper.put(EndPoints.UPLOAD,"v1/uploads/");
         endPointMapper.put(EndPoints.SLEEPLOG,"v1/logger/sleep/mass/");
         endPointMapper.put(EndPoints.FEELINGSLOG,"v1/logger/feeling/mass/");
+        endPointMapper.put(EndPoints.GOALS,"v1/goals/");
+        endPointMapper.put(EndPoints.DIET_PREFERENCE,"v1/diet_pref/");
+        endPointMapper.put(EndPoints.CUISINES,"v1/cuisines/");
     }
 
     public interface EndPoints {
@@ -36,10 +39,13 @@ public class UrlResolver {
         int USERS = 1;
         int CONNECT_PROFILE = 2;
         int INTEREST= 3;
-        int WATERLOG= 4;
+        int LOGGER = 4;
         int DATERANGEDATA =5;
         int UPLOAD = 6;
         int SLEEPLOG = 7;
         int FEELINGSLOG = 10;
+        int GOALS = 11;
+        int DIET_PREFERENCE = 12;
+        int CUISINES = 13;
     }
 }

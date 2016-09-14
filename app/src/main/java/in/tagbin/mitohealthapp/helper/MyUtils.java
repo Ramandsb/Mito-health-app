@@ -62,6 +62,11 @@ public class MyUtils {
         }
         return null;
     }
+    public static String getDateFormat(Date date,String format) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+        String da = dateFormat.format(date);
+        return da;
+    }
     public static long getTimeinMillis(String validDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {

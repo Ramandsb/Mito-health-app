@@ -35,8 +35,9 @@
                         <ImageView
                             android:id="@+id/userPic1"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="180dp"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic" />
                         <pl.droidsonroids.gif.GifImageView
@@ -81,8 +82,9 @@
                         <ImageView
                             android:id="@+id/userPic2"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="75dp"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
                         <pl.droidsonroids.gif.GifImageView
@@ -108,8 +110,9 @@
                         <ImageView
                             android:id="@+id/userPic3"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="75dp"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
                         <pl.droidsonroids.gif.GifImageView
@@ -134,8 +137,9 @@
                         <ImageView
                             android:id="@+id/userPic4"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="75dp"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
                         <pl.droidsonroids.gif.GifImageView
@@ -169,8 +173,9 @@
                         <ImageView
                             android:id="@+id/userPic5"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="75dp"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
                         <pl.droidsonroids.gif.GifImageView
@@ -196,8 +201,9 @@
                         <ImageView
                             android:id="@+id/userPic6"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="75dp"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
                         <pl.droidsonroids.gif.GifImageView
@@ -222,8 +228,9 @@
                         <ImageView
                             android:id="@+id/userPic7"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="75dp"
                             android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
                         <pl.droidsonroids.gif.GifImageView

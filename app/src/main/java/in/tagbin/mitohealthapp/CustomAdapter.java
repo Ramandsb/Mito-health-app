@@ -165,7 +165,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
                                     cv.put(TableData.Tableinfo.TIME_CONSUMED, time);
                                     notifyDataSetChanged();
                                     dop.updateRow(dop, cv, dataItems.getId());
-                                    setData(dop.getInformation(dop, FoodFrag.selectedDate));
+                                    setData(dop.getInformation(dop,"" ));
                                 }
                             }, hour, min, false);
                     tpd.show();
@@ -242,7 +242,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
                     public void onClick(DialogInterface dialog, int which) {
 
                         dop.deleteRow(dop, TableData.Tableinfo.TABLE_NAME_FOOD, TableData.Tableinfo.ID,id);
-                        setData(dop.getInformation(dop,FoodFrag.selectedDate));
+                        setData(dop.getInformation(dop,""));
                         dialog.cancel();
                     }
                 });
@@ -272,7 +272,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyviewHold
                         cv.put(TableData.Tableinfo.AMOUNT, quant + "");
                         dop.updateRow(dop, cv, id);
                         Log.d("quant", quant + "");
-                        setData(dop.getInformation(dop, FoodFrag.selectedDate));
+                        setData(dop.getInformation(dop, ""));
 
                     }
                 });
@@ -446,7 +446,7 @@ static class MyviewHolder extends AnimateViewHolder {
                             cv.put(TableData.Tableinfo.FOOD_NAME,new_name);
                             cv.put(TableData.Tableinfo.FOOD_ID,new_id);
                             dop.updateRow(dop,cv,uniqueid);
-                            setData(dop.getInformation(dop,FoodFrag.selectedDate));
+                            setData(dop.getInformation(dop,""));
                             dismissDialog();
                         } catch (JSONException e) {
                             e.printStackTrace();

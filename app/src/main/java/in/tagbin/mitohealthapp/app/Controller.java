@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.android.internal.http.multipart.MultipartEntity;
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -16,7 +15,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
-import com.squareup.okhttp.MultipartBuilder;
+
 import org.json.JSONException;
 import java.text.ParseException;
 import org.apache.http.entity.ContentType;
@@ -34,19 +33,19 @@ import java.util.Map;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Interfaces.VolleyErrorListener;
 import in.tagbin.mitohealthapp.MainPage;
-import in.tagbin.mitohealthapp.ProfileImage.L;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.NetworkUtils;
 import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConfirmParticipantModel;
 import in.tagbin.mitohealthapp.model.ConnectUserModel;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
-import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 import in.tagbin.mitohealthapp.model.ElasticSearchModel;
 import in.tagbin.mitohealthapp.model.FeelingLogModel;
-import in.tagbin.mitohealthapp.model.FeelingTimeConsumed;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
+import in.tagbin.mitohealthapp.model.SendCuisineModel;
+import in.tagbin.mitohealthapp.model.SendEditProfileModel;
+import in.tagbin.mitohealthapp.model.SendGoalModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
 import in.tagbin.mitohealthapp.model.SetNewInterestModel;
 import in.tagbin.mitohealthapp.model.SettingsModel;
@@ -231,10 +230,81 @@ public class Controller {
             mRequestQueue.add(request);
         }
     }
+    public static void getGoals(Context context,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.GOALS);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setGoal(Context context,int id,String user_id,
+                                RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        SendGoalModel sendGoalModel = new SendGoalModel();
+        sendGoalModel.setGoal(id);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, sendGoalModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setCuisines(Context context,List<Integer> selectedCuisnes,String user_id,
+                               RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        SendCuisineModel sendCuisineModel = new SendCuisineModel();
+        sendCuisineModel.setCuisines(selectedCuisnes);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, sendCuisineModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getUserDetails(Context context,String id,
+                                     RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserDetails(Context context,String id,SendEditProfileModel sendEditProfileModel,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, sendEditProfileModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
     public static void getEventsByMe(Context context,
                                        RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.EVENTS);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getDietPrefernce(Context context,
+                                     RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.DIET_PREFERENCE);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getCuisines(Context context,
+                                        RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.CUISINES);
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
@@ -292,7 +362,28 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-
+    public static void archiveEvent(Context context,int event_id,
+                                 RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.EVENTS);
+        url = url+"archive/";
+        JoinEventModel joinEventModel = new JoinEventModel();
+        joinEventModel.setEvent_id(event_id);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, joinEventModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void deleteEvent(Context context,int event_id,
+                                    RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.EVENTS);
+        url = url+event_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.DELETE, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
     public static void getParticipants(Context context,int id,
                                  RequestListener requestListener) {
         String url = UrlResolver
@@ -369,6 +460,16 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
+    public static void getUserInterests(Context context,
+                                    RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.INTEREST);
+        //url= url+"list/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
     public static void setNewInterest(Context context,String name,
                                     RequestListener requestListener) {
         String url = UrlResolver
@@ -384,7 +485,7 @@ public class Controller {
     public static void getWaterLog(Context context,WaterLogModel waterLogModels,
                                     RequestListener requestListener) {
         String url = UrlResolver
-                .withAppendedPath(UrlResolver.EndPoints.WATERLOG);
+                .withAppendedPath(UrlResolver.EndPoints.LOGGER);
         url=url+"water/mass/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.POST, waterLogModels, url, requestListener);
@@ -427,7 +528,7 @@ public class Controller {
                 .withAppendedPath(UrlResolver.EndPoints.INTEREST);
         url = url+"mass/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
-                context, Request.Method.POST, integers, url, requestListener);
+                context, Request.Method.PUT, integers, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
@@ -480,6 +581,26 @@ public class Controller {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.USERS);
         url += "settings/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getLogger(Context context,long timestamp,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.LOGGER);
+        url += "history/?day="+timestamp+"&ltype=food";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getFoodRecommendation(Context context,long date,
+                                 RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += "diet/day/?start="+date;
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);

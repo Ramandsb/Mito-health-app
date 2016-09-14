@@ -38,6 +38,8 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -48,9 +50,11 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.ProfileImage.GOTOConstants;
@@ -68,6 +72,7 @@ import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
 import in.tagbin.mitohealthapp.model.InterestModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+import in.tagbin.mitohealthapp.model.UserInterestModel;
 import pl.droidsonroids.gif.GifImageView;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -83,6 +88,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
     private AccessTokenTracker accessTokenTracker;
     String fbAuthToken,fbUserID;
     PrefManager pref;
+    Intent i;
     boolean flag1 = false,flag2 = false,flag3 = false,flag4 = false,flag5 = false,flag6 = false,flag7 = false,flag = false;
     GifImageView progressBar,progressBar1,progressBar2,progressBar3,progressBar4,progressBar5,progressBar6,progressBar7;
     int SELECT_PICTURE1 =0,SELECT_PICTURE2 =1,SELECT_PICTURE3 =2,SELECT_PICTURE4 =3,SELECT_PICTURE5 =4,SELECT_PICTURE6 =5,SELECT_PICTURE7 =6;
@@ -210,9 +216,10 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             }
         }
     };
-    public void setProfileConnect(ConnectProfileModel data){
+    public void setProfileConnect(final ConnectProfileModel data){
         if (data.getImages() != null) {
-            if (data.getImages().getMaster()!= null){
+            if (data.getImages().getMaster() != null) {
+
                 ImageLoader.getInstance().loadImage(data.getImages().getMaster(), new ImageLoadingListener() {
                     @Override
                     public void onLoadingStarted(String imageUri, View view) {
@@ -232,11 +239,13 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         progressBar1.setVisibility(View.GONE);
+                        pref.setKeyMasterImage(data.getImages().getMaster());
+                        flag1 = true;
                         img1.setImageBitmap(loadedImage);
                     }
                 });
             }
-            if (data.getImages().getOthers() != null ) {
+            if (data.getImages().getOthers() != null) {
                 try {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[0], new ImageLoadingListener() {
                         @Override
@@ -257,15 +266,17 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar2.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[0]);
+                            flag2 = true;
                             img2.setImageBitmap(loadedImage);
                         }
                     });
-                }catch (Exception e) {
+                } catch (Exception e) {
                     //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
                     //restImage.setImageBitmap(icon);
                 }
             }
-            if (data.getImages().getOthers() != null ) {
+            if (data.getImages().getOthers() != null) {
                 try {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[1], new ImageLoadingListener() {
                         @Override
@@ -286,10 +297,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar3.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[1]);
+                            flag3 = true;
                             img3.setImageBitmap(loadedImage);
                         }
                     });
-                }catch (Exception e) {
+                } catch (Exception e) {
                     //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
                     //restImage.setImageBitmap(icon);
                 }
@@ -315,15 +328,17 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar4.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[2]);
+                            flag4 = true;
                             img4.setImageBitmap(loadedImage);
                         }
                     });
-                }catch (Exception e) {
+                } catch (Exception e) {
                     //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
                     //restImage.setImageBitmap(icon);
                 }
             }
-            if (data.getImages().getOthers() != null ) {
+            if (data.getImages().getOthers() != null) {
                 try {
                     ImageLoader.getInstance().loadImage(data.getImages().getOthers()[3], new ImageLoadingListener() {
                         @Override
@@ -344,10 +359,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar5.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[3]);
+                            flag5 = true;
                             img5.setImageBitmap(loadedImage);
                         }
                     });
-                }catch (Exception e) {
+                } catch (Exception e) {
                     //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
                     //restImage.setImageBitmap(icon);
                 }
@@ -373,10 +390,12 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar6.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[4]);
+                            flag6 = true;
                             img6.setImageBitmap(loadedImage);
                         }
                     });
-                }catch (Exception e) {
+                } catch (Exception e) {
                     //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
                     //restImage.setImageBitmap(icon);
                 }
@@ -402,14 +421,17 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar7.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[5]);
+                            flag7 = true;
                             img7.setImageBitmap(loadedImage);
                         }
                     });
-                }catch (Exception e) {
+                } catch (Exception e) {
                     //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
                     //restImage.setImageBitmap(icon);
                 }
             }
+        }
             if (data.getUser() != null){
                 if (data.getUser().getFirst_name() != null){
                     if (data.getUser().getLast_name() != null){
@@ -439,7 +461,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     }
                 }
             }
-        }
+
 
     }
     @Override
@@ -792,9 +814,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                     progressBar.setVisibility(View.GONE);
                 }
             });
-            Intent i = new Intent(getContext(),InterestActivity.class);
+            Controller.getUserInterests(getContext(),mUserInterestListener);
+            i = new Intent(getContext(),InterestActivity.class);
             i.putExtra("response",responseObject.toString());
-            startActivity(i);
         }
 
         @Override
@@ -1129,12 +1151,7 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    if (facebookModel.getHome_town() != null)
-                        etHomeTwon.setText(facebookModel.getHome_town());
-                    if (facebookModel.getDescription() != null)
-                        etGender.setText(facebookModel.getDescription());
-                    if (facebookModel.getOccupation() != null)
-                        etOccupation.setText(facebookModel.getOccupation());
+                    setProfileConnect(facebookModel);
                 }
             });
         }
@@ -1162,4 +1179,290 @@ public class PartProfile extends Fragment implements View.OnClickListener {
             }
         }
     };
+    RequestListener mUserInterestListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("user interests ",responseObject.toString());
+            Type collectionType = new TypeToken<ArrayList<UserInterestModel>>() {
+            }.getType();
+            List<UserInterestModel> userInterestModel = (ArrayList<UserInterestModel>) new Gson().fromJson(responseObject.toString(), collectionType);
+            i.putExtra("userinterests",responseObject.toString());
+            startActivity(i);
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("user interests",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    public void setProfileConnect(final FacebookModel data){
+        if (data.getImages() != null) {
+            if (data.getImages().getMaster() != null) {
+
+                ImageLoader.getInstance().loadImage(data.getImages().getMaster(), new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+                        progressBar1.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        progressBar1.setVisibility(View.GONE);
+                        pref.setKeyMasterImage(data.getImages().getMaster());
+                        flag1 = true;
+                        img1.setImageBitmap(loadedImage);
+                    }
+                });
+            }
+            if (data.getImages().getOthers() != null) {
+                try {
+                    ImageLoader.getInstance().loadImage(data.getImages().getOthers()[0], new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            progressBar2.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar2.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[0]);
+                            flag2 = true;
+                            img2.setImageBitmap(loadedImage);
+                        }
+                    });
+                } catch (Exception e) {
+                    //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
+                    //restImage.setImageBitmap(icon);
+                }
+            }
+            if (data.getImages().getOthers() != null) {
+                try {
+                    ImageLoader.getInstance().loadImage(data.getImages().getOthers()[1], new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            progressBar3.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar3.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[1]);
+                            flag3 = true;
+                            img3.setImageBitmap(loadedImage);
+                        }
+                    });
+                } catch (Exception e) {
+                    //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
+                    //restImage.setImageBitmap(icon);
+                }
+            }
+            if (data.getImages().getOthers() != null) {
+                try {
+                    ImageLoader.getInstance().loadImage(data.getImages().getOthers()[2], new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            progressBar4.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar4.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[2]);
+                            flag4 = true;
+                            img4.setImageBitmap(loadedImage);
+                        }
+                    });
+                } catch (Exception e) {
+                    //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
+                    //restImage.setImageBitmap(icon);
+                }
+            }
+            if (data.getImages().getOthers() != null) {
+                try {
+                    ImageLoader.getInstance().loadImage(data.getImages().getOthers()[3], new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            progressBar5.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar5.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[3]);
+                            flag5 = true;
+                            img5.setImageBitmap(loadedImage);
+                        }
+                    });
+                } catch (Exception e) {
+                    //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
+                    //restImage.setImageBitmap(icon);
+                }
+            }
+            if (data.getImages().getOthers() != null) {
+                try {
+                    ImageLoader.getInstance().loadImage(data.getImages().getOthers()[4], new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            progressBar6.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar6.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[4]);
+                            flag6 = true;
+                            img6.setImageBitmap(loadedImage);
+                        }
+                    });
+                } catch (Exception e) {
+                    //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
+                    //restImage.setImageBitmap(icon);
+                }
+            }
+            if (data.getImages().getOthers() != null) {
+                try {
+                    ImageLoader.getInstance().loadImage(data.getImages().getOthers()[5], new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            progressBar7.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            progressBar7.setVisibility(View.GONE);
+                            pref.setKeyMasterImage(data.getImages().getOthers()[5]);
+                            flag7 = true;
+                            img7.setImageBitmap(loadedImage);
+                        }
+                    });
+                } catch (Exception e) {
+                    //Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.raasta_gurgaon);
+                    //restImage.setImageBitmap(icon);
+                }
+            }
+        }
+            if (data != null){
+//                if (data.getUser().getFirst_name() != null){
+//                    if (data.getUser().getLast_name() != null){
+//                        if (data.getAge() > 0 )
+//                            name.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name()+", "+data.getAge());
+//                        else
+//                            name.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name());
+//                    }else {
+//                        if (data.getAge() > 0)
+//                            name.setText(data.getUser().getFirst_name()+", "+data.getAge());
+//                        else
+//                            name.setText(data.getUser().getFirst_name());
+//                    }
+//                }
+                if (data.getOccupation() != null){
+                    etOccupation.setText(data.getOccupation());
+                }
+                if (data.getDescription() != null){
+                    etGender.setText(data.getDescription());
+                }
+                if (data.getHome_town() != null){
+                    etHomeTwon.setText(data.getHome_town());
+                }
+                if (pref.getCurrentLocationAsObject() != null){
+                    if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
+                        etLocation.setText(MyUtils.getCityNameFromLatLng(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
+                    }
+                }
+            }
+
+
+    }
 }

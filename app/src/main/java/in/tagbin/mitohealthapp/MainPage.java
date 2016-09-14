@@ -202,15 +202,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (loginDetails.getString("login",null) != null){
-            Intent intent = new Intent(MainPage.this, BinderActivity.class);
-            intent.putExtra("name", profile_name);
-            intent.putExtra("picture", profile_picture);
-            intent.putExtra("selection", 1);
-            intent.putExtra("source","indirect");
-            startActivity(intent);
-            finish();
-        }
+
         TextView loginTv = (TextView) findViewById(R.id.login);
         loginTv.setOnClickListener(new View.OnClickListener() {
                                        @Override
@@ -547,10 +539,7 @@ showDialog();
                             editor.putString("user_id", response.getString("user_id"));
                             editor.putString("key", response.getString("key"));
                             editor.commit();
-                            Intent intent = new Intent(MainPage.this, BinderActivity.class);
-                            intent.putExtra("name", profile_name);
-                            intent.putExtra("picture", profile_picture);
-                            intent.putExtra("selection", 1);
+                            Intent intent = new Intent(MainPage.this, SetGoalsActivity.class);
                             startActivity(intent);
                             finish();
                         } catch (JSONException e) {

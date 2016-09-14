@@ -1,7 +1,9 @@
 package in.tagbin.mitohealthapp.helper;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import java.util.Calendar;
 
 import in.tagbin.mitohealthapp.AddActivityfrag;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.Lookupfrag;
 import in.tagbin.mitohealthapp.MyActivityCardfrag;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.Controller;
@@ -106,7 +109,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             holder.edit.setVisibility(View.GONE);
         } else {
             holder.join.setVisibility(View.GONE);
-            holder.delete.setVisibility(View.GONE);
+            holder.delete.setVisibility(View.VISIBLE);
             holder.bottomBar.setWeightSum(1);
             //holder.delete.setVisibility(View.VISIBLE);
             holder.edit.setVisibility(View.VISIBLE);
@@ -140,6 +143,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
                 transaction.add(R.id.frameAddActivity, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(mycontext,R.style.AppCompatAlertDialogStyle);
+                alertDialog1.setTitle("Delete Event");
+                alertDialog1.setMessage(" Are you sure you want to delete this event?");
+                alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        if (newlist.get(position).isAll())
+                            Controller.archiveEvent(mycontext,newlist.get(position).getId(),mArchiveListener);
+                        else
+                            Controller.deleteEvent(mycontext,newlist.get(position).getId(),mArchiveListener);
+                    }
+                });
+                alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog1.show();
+
             }
         });
         if (newlist.get(position).getPicture() != null) {
@@ -201,6 +228,52 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("join event error", message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) mycontext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mycontext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity) mycontext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mycontext, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    RequestListener mArchiveListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("archive event", responseObject.toString());
+            Fragment fragment = new Lookupfrag();
+            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+            transaction.add(R.id.frameAddActivity, fragment);
+            transaction.commit();
+            ((Activity)mycontext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setVisibility(View.GONE);
+
+                    Toast.makeText(mycontext,"Event removed successfully",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("archive event error", message);
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 ((Activity) mycontext).runOnUiThread(new Runnable() {

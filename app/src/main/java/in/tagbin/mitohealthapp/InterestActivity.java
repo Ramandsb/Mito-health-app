@@ -21,6 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.Inflater;
@@ -31,6 +35,9 @@ import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.InterestModel;
+import in.tagbin.mitohealthapp.model.PrefernceModel;
+import in.tagbin.mitohealthapp.model.SendInterestModel;
+import in.tagbin.mitohealthapp.model.UserInterestModel;
 import pl.droidsonroids.gif.GifImageView;
 
 /**
@@ -42,6 +49,7 @@ public class InterestActivity extends AppCompatActivity {
     TextView next,addInterest;
     InterestModel interestModel;
     List<Integer> idFinal;
+    List<UserInterestModel> userInterestModels;
     PrefManager pref;
     int count1= 0, count2 = 0;
     GifImageView progressBar;
@@ -61,13 +69,14 @@ public class InterestActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Interests");
         String response = getIntent().getStringExtra("response");
         interestModel = JsonUtils.objectify(response, InterestModel.class);
+        Type collectionType = new TypeToken<ArrayList<UserInterestModel>>() {}.getType();
+        userInterestModels = (ArrayList<UserInterestModel>) new Gson().fromJson(getIntent().getStringExtra("userinterests"), collectionType);
         addInterest = (TextView) findViewById(R.id.tvSuggestInterst);
         setToggleButtons(interestModel);
         next = (TextView) findViewById(R.id.tvNextInterest);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pref.setKeyInterests(idFinal);
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.setInterests(InterestActivity.this,idFinal,mSetInterestListener);
 
@@ -235,9 +244,10 @@ public class InterestActivity extends AppCompatActivity {
                 final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
                 toggleButton.setTextOn(interestModel.getList().get(i).getName());
                 toggleButton.setTextOff(interestModel.getList().get(i).getName());
-                if (pref.getInterests() != null && pref.getInterests().size() > 0) {
-                    for (int y = 0; y < pref.getInterests().size(); y++) {
-                        if (interestModel.getList().get(i).getId() == pref.getInterests().get(y)) {
+                if (userInterestModels != null && userInterestModels.size() > 0) {
+                    for (int y = 0; y < userInterestModels.size(); y++) {
+                        idFinal.add(userInterestModels.get(y).getInterest().getId());
+                        if (interestModel.getList().get(i).getId() == userInterestModels.get(y).getInterest().getId()) {
                             toggleButton.setChecked(true);
                             break;
                         } else {

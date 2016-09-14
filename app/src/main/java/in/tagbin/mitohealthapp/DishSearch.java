@@ -80,14 +80,13 @@ public class DishSearch extends AppCompatActivity {
     ArrayList<String> names, sql_ids, add_dish;
     ArrayAdapter<String> adapter;
     ListView food_list;
-    CustomAdapter customAdapter;
     public static String unique_id = "";
     String back = "";
     SharedPreferences login_details;
     View layout;
     DatabaseOperations dop;
     private static int hour = 0, min = 0, day = 0;
-    private static final String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/mito/recipe/_search";
+    private static final String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/recipe_data_2/recipe_data_2/_search";
 
     ProgressBar loadingProgress;
     static String food_id = "";
@@ -324,7 +323,7 @@ public class DishSearch extends AppCompatActivity {
                 "         \"must\":[  \n" +
                 "            {  \n" +
                 "               \"match_phrase_prefix\":{  \n" +
-                "                  \"recipe_name\":'"+s+
+                "                  \"name\":'"+s+
                 "'               }\n" +
                 "            }\n" +
                 "         ],\n" +
@@ -354,6 +353,7 @@ public class DishSearch extends AppCompatActivity {
 JSONObject jsonObject = null;
         try {
              jsonObject = new JSONObject(json);
+            Log.d("json object",jsonObject.toString());
         }catch (JSONException e){
             Log.d("JsonObject",e.toString());
 
@@ -378,8 +378,8 @@ JSONObject jsonObject = null;
                                     sql_ids.clear();
                                     for (int i = 0; i < ja.length(); i++) {
                                         JSONObject c = ja.getJSONObject(i);
-                                        String Restraunt = c.getJSONObject("_source").getString("recipe_name");
-                                        String event_id = c.getJSONObject("_source").getString("sql_id");
+                                        String Restraunt = c.getJSONObject("_source").getString("name");
+                                        String event_id = c.getJSONObject("_source").getString("recipe_id");
 
 
                                         Log.d("description", Restraunt);

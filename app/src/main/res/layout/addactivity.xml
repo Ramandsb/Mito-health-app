@@ -79,6 +79,7 @@
                 android:hint="Search for event type"
                 android:singleLine="true"
                 android:ellipsize="end"
+                android:inputType="textCapWords"
                 android:textColor="#474747"
                 android:textColorHint="#b7b7b7"
                 android:textSize="14sp" />

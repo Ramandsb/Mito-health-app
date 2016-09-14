@@ -5,7 +5,7 @@ package in.tagbin.mitohealthapp;
  */
 public class Config {
 
-    public static String url="http://api.mitoapp.com/v1/";
+    public static String url="https://api.mitoapp.com/v1/";
 //    public static String url="http://192.168.150.1:8080/v1/";
 //    public static String url="http://api.mitoapp.com/v1/";
 }

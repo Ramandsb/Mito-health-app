@@ -32,14 +32,22 @@ public class FacebookModel {
         return occupation;
     }
 
+    public Images4Model getImages() {
+        return images;
+    }
+
     public boolean isFacebook_connected() {
         return facebook_connected;
     }
     public class Images4Model{
         String master;
-
+        String[] others;
         public String getMaster() {
             return master;
+        }
+
+        public String[] getOthers() {
+            return others;
         }
     }
 
