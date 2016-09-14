@@ -161,6 +161,7 @@ RatingBar ratingBar;
                 .setMinimumDate(instance1.getTime())
                 .setMaximumDate(instance2.getTime())
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
+                .setFirstDayOfWeek(calendar.get(Calendar.DAY_OF_WEEK))
                 .commit();
 
 

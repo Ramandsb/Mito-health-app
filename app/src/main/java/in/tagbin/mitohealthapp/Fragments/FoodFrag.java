@@ -121,6 +121,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
                 .setMinimumDate(instance1.getTime())
                 .setMaximumDate(instance2.getTime())
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
+                .setFirstDayOfWeek(calendar.get(Calendar.DAY_OF_WEEK))
                 .commit();
         measuring_units = new ArrayList<>();
 //        measuring_units.add("Breakfast");

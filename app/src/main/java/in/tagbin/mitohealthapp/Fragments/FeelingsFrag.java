@@ -150,6 +150,7 @@ public class FeelingsFrag extends Fragment  implements OnDateSelectedListener {
                 .setMinimumDate(instance1.getTime())
                 .setMaximumDate(instance2.getTime())
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
+                .setFirstDayOfWeek(calendar.get(Calendar.DAY_OF_WEEK))
                 .commit();
 
         //////////////////

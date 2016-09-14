@@ -96,6 +96,8 @@ public class Controller {
         final String url_recieved = buffer.toString();
         // end
 
+        Log.d("Post Json",JsonUtils.jsonify(newRequest));
+
         Request<String> tempRequest = new JsonRequest<String>(
                 request_method_type, url, JsonUtils.jsonify(newRequest),
                 new Response.Listener<String>() {

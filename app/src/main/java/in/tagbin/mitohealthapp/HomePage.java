@@ -19,6 +19,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.telecom.Call;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -130,15 +131,12 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         View v = inflater.inflate(R.layout.content_home_page,container,false);
         Calendar  calendar = Calendar.getInstance();
         customDialog();
-        int  year = calendar.get(Calendar.YEAR);
-        int  month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         Calendar  current_cal = Calendar.getInstance();
         Date currentDate = current_cal.getTime();
+        Log.d("weekValue",current_cal.get(Calendar.DAY_OF_WEEK)+"///");
         selectedDate=sdf.format(currentDate);
      //////////////////////////////////////////
         Calendar  p_cal = Calendar.getInstance();
@@ -168,6 +166,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
 
         widget.setSelectedDate(calendar.getTime());
 
+
         Calendar instance1 = Calendar.getInstance();
         instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
 
@@ -178,7 +177,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
                 .setMinimumDate(instance1.getTime())
                 .setMaximumDate(instance2.getTime())
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
-                .setFirstDayOfWeek(Calendar.MONDAY)
+                .setFirstDayOfWeek(current_cal.get(Calendar.DAY_OF_WEEK))
                 .commit();
 
 
@@ -198,33 +197,6 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         cal_left = (TextView) v.findViewById(R.id.cal_left);
         cal_burned = (TextView) v.findViewById(R.id.cal_burned);
         login_details=getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
-
-////        makeJsonObjGETReq();
-//            String water_amount=   login_details.getString("water_amount","");
-//            String food_cal=   login_details.getString("food_cal","");
-//            String calorie_burnt=   login_details.getString("calorie_burnt","");
-//            String total_calorie_required=   login_details.getString("total_calorie_required","");
-//
-////            Float left= Float.valueOf(total_calorie_required)-Float.valueOf(food_cal);
-//            if (water_amount.equals("") ||food_cal.equals("")||calorie_burnt.equals("")||total_calorie_required.equals("")){
-//
-//            }else {
-//                double wat_int=(Double.valueOf(water_amount));
-//                int i=Integer.valueOf((int) wat_int);
-//                double wat_int1=(Double.valueOf(food_cal));
-//                int j=Integer.valueOf((int) wat_int1);
-//                double wat_int2=(Double.valueOf(calorie_burnt));
-//                int k=Integer.valueOf((int) wat_int2);
-//                double wat_int3=(Double.valueOf(total_calorie_required));
-//                int l=Integer.valueOf((int) wat_int3);
-//                int fcal_int=j;
-//                int calbur_int=k;
-//                int totcal_int=l;
-////                cal_consumed.setText(fcal_int+"");
-////                cal_left.setText(fcal_int+"/"+totcal_int+"");
-////                cal_burned.setText(calbur_int+"");
-//
-//            }
 
 
         setHomepageDetails();

@@ -86,20 +86,12 @@ public class CollapsableLogging extends AppCompatActivity implements OnChartValu
     private ViewPager viewPager;
     static SheetLayout mSheetLayout;
     DatabaseOperations dop;
-    Drawable myDrawable;
     FloatingActionButton fab;
-    String title;
-    RWeekCalendar rCalendarFragment;
-   public ExerciseInterface exerciseInterface;
-public FoodInterface foodInterface;
-    public WaterInterface waterInterface;
-    public SleepInterface sleepInterface;
     public static String selectedDate="";
 
     CollapsingToolbarLayout appBarLayout;
     int a=0,b=0,c=0;
     int i = 0;
-    int mBgColor=0;
     Intent sendDate;
     public static String SENDDATE="sendDate";
     private int[] tabIcons= {
@@ -205,7 +197,7 @@ public FoodInterface foodInterface;
         mChart.setScaleEnabled(true);
         mChart.setPinchZoom(false);
         Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART_INSIDE);
+        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
 
 
 

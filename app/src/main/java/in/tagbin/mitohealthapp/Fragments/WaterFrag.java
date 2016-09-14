@@ -58,7 +58,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
     MaterialCalendarView widget;
     public static String selectedDate="";
     public static String unique_id="";
-    int glass_size=100;
+    int glass_size=250;
     TextView ml;
     int a=0,b=0,c=0;
     int i = 0;
@@ -119,6 +119,7 @@ public class WaterFrag extends Fragment implements WaterInterface,OnDateSelected
                 .setMinimumDate(instance1.getTime())
                 .setMaximumDate(instance2.getTime())
                 .setCalendarDisplayMode(CalendarMode.WEEKS)
+                .setFirstDayOfWeek(calendar.get(Calendar.DAY_OF_WEEK))
                 .commit();
 
         //////////////////
