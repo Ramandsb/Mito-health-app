@@ -30,13 +30,16 @@
             android:drawablePadding="10dp"
             android:drawableLeft="@drawable/search_svg"
             android:layout_gravity="center"/>
-
-       <ProgressBar
-           android:id="@+id/loading_progress"
-           android:layout_width="50dp"
-           android:layout_height="50dp"
-           android:layout_below="@+id/autoCompleteTextView1"
-           android:layout_centerHorizontal="true"
-           android:layout_marginTop="44dp" />
+    <pl.droidsonroids.gif.GifImageView
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:id="@+id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        android:indeterminateTintMode="src_atop"
+        android:visibility="gone"
+        android:src="@drawable/loader"
+        />
 
 </RelativeLayout>

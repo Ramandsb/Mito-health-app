@@ -49,6 +49,19 @@ public class MyUtils {
         }
         return null;
     }
+    public static String getValidTimeForMeal(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("hh:mm a");
+            String time = dateFormat1.format(date);
+            return time;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static String getValidDate(String validDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {
@@ -152,6 +165,71 @@ public class MyUtils {
         else
             cityName = "";
         return cityName;
+    }
+    public static String getMinute(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("mm");
+            String time = dateFormat1.format(date);
+            return time;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String getHour(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("HH");
+            String time = dateFormat1.format(date);
+            return time;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String getDay(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd");
+            String time = dateFormat1.format(date);
+            return time;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String getYear(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy");
+            String time = dateFormat1.format(date);
+            return time;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String getMonth(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat1 = new SimpleDateFormat("MM");
+            String time = dateFormat1.format(date);
+            return time;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     public static double calculateDistance(double lat1, double lon1, double lat2, double lon2, String unit) {
         double theta = lon1 - lon2;

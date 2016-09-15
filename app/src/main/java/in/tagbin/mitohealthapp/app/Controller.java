@@ -43,10 +43,12 @@ import in.tagbin.mitohealthapp.model.ElasticSearchModel;
 import in.tagbin.mitohealthapp.model.FeelingLogModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
+import in.tagbin.mitohealthapp.model.RecipeFavouriteModel;
 import in.tagbin.mitohealthapp.model.SendCuisineModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
 import in.tagbin.mitohealthapp.model.SendGoalModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+import in.tagbin.mitohealthapp.model.SetFoodLoggerModel;
 import in.tagbin.mitohealthapp.model.SetNewInterestModel;
 import in.tagbin.mitohealthapp.model.SettingsModel;
 import in.tagbin.mitohealthapp.model.SleepLogModel;
@@ -603,6 +605,47 @@ public class Controller {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.USERS);
         url += "diet/day/?start="+date;
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setFavourite(Context context,String like,int recipe_id,
+                                             RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.RECIPE);
+        url += like;
+        RecipeFavouriteModel recipeFavouriteModel = new RecipeFavouriteModel();
+        recipeFavouriteModel.setRecipe_id(recipe_id);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, recipeFavouriteModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setLogger(Context context,SetFoodLoggerModel setFoodLoggerModel,
+                                    RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.LOGGER);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, setFoodLoggerModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void updateLogFood(Context context,SetFoodLoggerModel setFoodLoggerModel,int id,
+                                 RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.LOGGER);
+        url += id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, setFoodLoggerModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getFoodDetails(Context context,int id,
+                                     RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.FOOD);
+        url += id+"/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);

@@ -64,6 +64,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import in.tagbin.mitohealthapp.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
@@ -72,32 +73,20 @@ import in.tagbin.mitohealthapp.Fragments.FoodFrag;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PlaceAutoCompleteAdapter1;
 import in.tagbin.mitohealthapp.model.ElasticSearchModel;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import in.tagbin.mitohealthapp.model.EventTypeModel;
+import in.tagbin.mitohealthapp.model.HitsArrayModel;
 import in.tagbin.mitohealthapp.model.MustModel;
+import pl.droidsonroids.gif.GifImageView;
 
 public class DishSearch extends AppCompatActivity {
     AutoCompleteTextView auto_tv;
-    ArrayList<String> names, sql_ids, add_dish;
-    ArrayAdapter<String> adapter;
-    ListView food_list;
-    public static String unique_id = "";
     String back = "";
-    SharedPreferences login_details;
-    View layout;
-    DatabaseOperations dop;
-    private static int hour = 0, min = 0, day = 0;
-    private static final String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/recipe_data_2/recipe_data_2/_search";
-
-    ProgressBar loadingProgress;
-    static String food_id = "";
-    String searchUrl = "";
-    String exerUrl = "http://api.mitoapp.com/v1/data/exercise?name=";
-    static String dishName = "", time = "", quantity = "";
-    TextView messageView;
-    ProgressBar progressBar;
-    android.app.AlertDialog alert;
-
-    ImageView search_icon;
+    GifImageView progressBar;
+    PlaceAutoCompleteAdapter1 adapter1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,24 +96,15 @@ public class DishSearch extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        customDialog();
+        //customDialog();
 
         back = getIntent().getStringExtra("back");
-        layout = findViewById(R.id.layout);
-        names = new ArrayList<String>();
-        sql_ids = new ArrayList<String>();
-        add_dish = new ArrayList<String>();
-        login_details = getSharedPreferences(MainPage.LOGIN_DETAILS, MODE_PRIVATE);
         auto_tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
         auto_tv.setFocusable(true);
         auto_tv.setThreshold(1);
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(auto_tv, InputMethodManager.SHOW_FORCED);
-        loadingProgress = (ProgressBar) findViewById(R.id.loading_progress);
-        loadingProgress.setVisibility(View.GONE);
-//        search_icon = (ImageView) findViewById(R.id.search_icon);
-//        search_icon.setColorFilter(Color.parseColor("#cecece"));
-
+        progressBar = (GifImageView) findViewById(R.id.progressBar);
         auto_tv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -143,71 +123,10 @@ public class DishSearch extends AppCompatActivity {
             }
         });
 
+        auto_tv.setOnItemClickListener(mAutocompleteClickListener);
+        adapter1 = new PlaceAutoCompleteAdapter1(this, android.R.layout.simple_list_item_1);
+        auto_tv.setAdapter(adapter1);
 
-        auto_tv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(DishSearch.this, i + " itemClicked" + "value got is" + adapterView.getItemAtPosition(i), Toast.LENGTH_LONG).show();
-
-                Log.d("Item Clicked", "true");
-
-                unique_id = String.valueOf(System.currentTimeMillis());
-                add_dish.add(adapterView.getItemAtPosition(i).toString());
-                food_id = sql_ids.get(i);
-
-                dishName = adapterView.getItemAtPosition(i).toString();
-                dop = new DatabaseOperations(DishSearch.this);
-
-                if (back.equals("food")) {
-//                    Timepick();
-                    startActivity(new Intent(DishSearch.this,FoodDetails.class).putExtra("food_id",food_id).putExtra("source","dish_search"));
-                finish();
-                } else if (back.equals("exercise")) {
-//                    WheelDialog("Select Weight");
-                    dop.putExerciseInformation(dop, unique_id, food_id, dishName, ExerciseFrag.selectedDate, "1", "1", "1");
-//                    makeJsonObjReq(food_id,"");
-                    Snackbar.make(layout, "Exercise Logged Successfuly", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-
-                }
-
-
-
-            }
-        });
-        auto_tv.addTextChangedListener(new TextWatcher() {
-            public void afterTextChanged(Editable s) {
-//                Toast.makeText(getActivity(), "changed", Toast.LENGTH_LONG).show();
-            }
-
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before,
-                                      int count) {
-                Log.d("tagbhi", count + "");
-                loadingProgress.setVisibility(View.VISIBLE);
-                if (count==0){
-                    loadingProgress.setVisibility(View.GONE);
-                }
-//                if (s.toString().length() <= 1) {
-//                    Log.d("tagbhi", s.toString().length() + "");
-//                } else {
-                    if (back.equals("food")) {
-                        searchUrl = url + "?q=" + s.toString();
-                        names = new ArrayList<String>();
-                        makeJsonObjReq(s.toString());
-                        Log.d("length", s.toString().length() + "" + back);
-                    } else if (back.equals("exercise")) {
-                        names = new ArrayList<String>();
-                        searchUrl = exerUrl + s.toString();
-                        makeJsonArrayReq(searchUrl);
-                        Log.d("length", s.toString().length() + "" + back);
-                    }
-//                }
-            }
-        });
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,7 +143,17 @@ public class DishSearch extends AppCompatActivity {
             }
         });
     }
+    private AdapterView.OnItemClickListener mAutocompleteClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+            HitsArrayModel hitsArrayModel = adapter1.getItem(position);
+            auto_tv.setText(hitsArrayModel.get_source().getName());
+            progressBar.setVisibility(View.VISIBLE);
+            Controller.getFoodDetails(DishSearch.this,hitsArrayModel.get_source().getRecipe_id(),mFoodDetailListener);
+        }
+    };
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
@@ -235,9 +164,7 @@ public class DishSearch extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-
             case android.R.id.home: {
-                startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",0));
                 finish();
                 break;
             }
@@ -245,63 +172,9 @@ public class DishSearch extends AppCompatActivity {
         return true;
     }
 
-    RequestListener mRequestListener = new RequestListener() {
-        @Override
-        public void onRequestStarted() {
-
-        }
-
-        @Override
-        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
-
-            try{
-            JSONArray ja = new JSONObject(responseObject.toString()).getJSONObject("hits").getJSONArray("hits");
-            names.clear();
-            sql_ids.clear();
-            for (int i = 0; i < ja.length(); i++) {
-                JSONObject c = ja.getJSONObject(i);
-                String Restraunt = c.getJSONObject("_source").getString("recipe_name");
-                String event_id = c.getJSONObject("_source").getString("sql_id");
-
-
-                Log.d("description", Restraunt);
-                names.add(Restraunt);
-                sql_ids.add(event_id);
-
-            }
-
-            adapter = new ArrayAdapter<String>(
-                    DishSearch.this, android.R.layout.simple_dropdown_item_1line, names) {
-                @Override
-                public View getView(int position,
-                                    View convertView, ViewGroup parent) {
-                    View view = super.getView(position,
-                            convertView, parent);
-                    TextView text = (TextView) view
-                            .findViewById(android.R.id.text1);
-                    text.setTextColor(Color.BLACK);
-                    return view;
-                }
-            };
-            auto_tv.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
-        } catch (Exception e) {
-//                            Toast.makeText(getActivity(), "try vala expe" + e.toString(), Toast.LENGTH_LONG).show();
-            Log.d("tag", "onERROR: " + e.toString());
-        }
-
-        }
-
-        @Override
-        public void onRequestError(int errorCode, String message) {
-            Log.d("tag", "onERROR: " + message);
-        }
-    };
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(DishSearch.this,CollapsableLogging.class).putExtra("selection",0));
         finish();
     }
 
@@ -312,243 +185,46 @@ public class DishSearch extends AppCompatActivity {
         super.onPause();
     }
 
-    private void makeJsonObjReq(String s) {
-
-
-        Log.d("checkString", s.toString());
-
-        String json="{  \n" +
-                "   \"query\":{  \n" +
-                "      \"bool\":{  \n" +
-                "         \"must\":[  \n" +
-                "            {  \n" +
-                "               \"match_phrase_prefix\":{  \n" +
-                "                  \"name\":'"+s+
-                "'               }\n" +
-                "            }\n" +
-                "         ],\n" +
-                "         \"must_not\":[  \n" +
-                "\n" +
-                "         ],\n" +
-                "         \"should\":[  \n" +
-                "\n" +
-                "         ]\n" +
-                "      }\n" +
-                "   },\n" +
-                "   \"from\":0,\n" +
-                "   \"size\":10,\n" +
-                "   \"sort\":[  \n" +
-                "\n" +
-                "   ],\n" +
-                "   \"aggs\":{  \n" +
-                "\n" +
-                "   }\n" +
-                "}";
-
-//        Map<String, String> postParam = new HashMap<String, String>();
-//        postParam.put("access_token",s);
-//        postParam.put("source", "facebook");
-//        postParam.put("is_nutritionist", "1");
-//
-JSONObject jsonObject = null;
-        try {
-             jsonObject = new JSONObject(json);
-            Log.d("json object",jsonObject.toString());
-        }catch (JSONException e){
-            Log.d("JsonObject",e.toString());
+    RequestListener mFoodDetailListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
 
         }
-//        Log.d("postpar", jsonObject.toString());
-//
-        JsonObjectRequest jsonObjReq = null;
-            jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                    url, jsonObject,
-                    new Response.Listener<JSONObject>() {
 
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d("response", response.toString());
-                            try {
-                                if (back.equals("food")) {
-                                    JSONArray ja = response.getJSONObject("hits").getJSONArray("hits");
-                                    if (ja.length()==0){
-                                        loadingProgress.setVisibility(View.GONE);
-                                    }
-                                    names.clear();
-                                    sql_ids.clear();
-                                    for (int i = 0; i < ja.length(); i++) {
-                                        JSONObject c = ja.getJSONObject(i);
-                                        String Restraunt = c.getJSONObject("_source").getString("name");
-                                        String event_id = c.getJSONObject("_source").getString("recipe_id");
-
-
-                                        Log.d("description", Restraunt);
-                                        names.add(Restraunt);
-                                        sql_ids.add(event_id);
-                                        loadingProgress.setVisibility(View.GONE);
-
-                                    }
-                                } else if (back.equals("exercise")) {
-
-                                }
-    //                            Toast.makeText(getActivity(), names.toString(), Toast.LENGTH_LONG).show();
-                                adapter = new ArrayAdapter<String>(
-                                        DishSearch.this, android.R.layout.simple_dropdown_item_1line, names) {
-                                    @Override
-                                    public View getView(int position,
-                                                        View convertView, ViewGroup parent) {
-                                        View view = super.getView(position,
-                                                convertView, parent);
-                                        TextView text = (TextView) view
-                                                .findViewById(android.R.id.text1);
-                                        text.setTextColor(Color.BLACK);
-                                        return view;
-                                    }
-                                };
-                                auto_tv.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-                            } catch (Exception e) {
-    //                            Toast.makeText(getActivity(), "try vala expe" + e.toString(), Toast.LENGTH_LONG).show();
-                                Log.d("tag", "onERROR: " + e.toString());
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Intent i = new Intent(DishSearch.this, FoodDetails.class);
+            i.putExtra("response", responseObject.toString());
+            i.putExtra("foodsearch","foodsearch");
+            startActivity(i);
+            runOnUiThread(new Runnable() {
                 @Override
-                public void onErrorResponse(VolleyError error) {
-                    VolleyLog.d("error", "Error: " + error.getMessage());
-
-                    Log.d("error", error.toString());
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
                 }
-            }) {
-
-    //
-
-
-            };
-
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
-
-    private void makeJsonArrayReq(String s) {
-
-//        Map<String, String> postParam = new HashMap<String, String>();
-//        postParam.put("access_token",s);
-//        postParam.put("source", "facebook");
-//        postParam.put("is_nutritionist", "1");
-//
-//
-//        JSONObject jsonObject = new JSONObject(postParam);
-//        Log.d("postpar", jsonObject.toString());
-
-        JsonArrayRequest jsonObjReq = new JsonArrayRequest(
-                s,
-                new Response.Listener<JSONArray>() {
-
-                    @Override
-                    public void onResponse(JSONArray response) {
-
-                        Log.d("ArrayRequest Response", response.toString());
-                        names.clear();
-                        sql_ids.clear();
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                String activity = jsonObject.getString("activity");
-                                String id = jsonObject.getString("id");
-                                Log.d("activity", activity);
-                                names.add(activity);
-                                sql_ids.add(id);
-                                adapter = new ArrayAdapter<String>(
-                                        DishSearch.this, android.R.layout.simple_dropdown_item_1line, names) {
-                                    @Override
-                                    public View getView(int position,
-                                                        View convertView, ViewGroup parent) {
-                                        View view = super.getView(position,
-                                                convertView, parent);
-                                        TextView text = (TextView) view
-                                                .findViewById(android.R.id.text1);
-                                        text.setTextColor(Color.BLACK);
-                                        return view;
-                                    }
-                                };
-                                auto_tv.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-                Log.d("error", error.toString());
-            }
-        }) {
-
-//
-
-
-        };
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
-
-
-
-
-
-
-
-
-    public void customDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-
-        View customView = inflater.inflate(R.layout.dialog, null);
-        builder.setView(customView);
-        messageView = (TextView) customView.findViewById(R.id.tvdialog);
-        progressBar = (ProgressBar) customView.findViewById(R.id.progress);
-        alert = builder.create();
-
-    }
-
-    public void showDialog() {
-
-        progressBar.setVisibility(View.VISIBLE);
-        alert.show();
-        messageView.setText("Loading");
-    }
-
-    public void dismissDialog() {
-        alert.dismiss();
-    }
-
-    public void displayErrors(VolleyError error) {
-        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("Connection failed");
-        } else if (error instanceof AuthFailureError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("AuthFailureError");
-        } else if (error instanceof ServerError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ServerError");
-        } else if (error instanceof NetworkError) {
-            messageView.setText("NetworkError");
-        } else if (error instanceof ParseError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ParseError");
+            });
         }
-    }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(DishSearch.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(DishSearch.this, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
 }

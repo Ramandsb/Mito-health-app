@@ -41,15 +41,23 @@ public class RecommendationModel {
 
     public class MealsModel {
         ComponentModel component;
-        int amount, id;
+        int amount, id,meal_id,flag;
         String type, time;
 
         public MealsModel() {
             component = new ComponentModel();
         }
 
+        public int getMeal_id() {
+            return meal_id;
+        }
+
         public int getId() {
             return id;
+        }
+
+        public int getFlag() {
+            return flag;
         }
 
         public ComponentModel getComponent() {

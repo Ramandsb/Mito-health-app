@@ -21,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -41,6 +42,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,12 +68,16 @@ import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.StickyHeaders.exposed.StickyLayoutManager;
 import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.FoodLoggerAdapter;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.RecommendationAdapter;
 import in.tagbin.mitohealthapp.model.DataObject;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.RecommendationModel;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import pl.droidsonroids.gif.GifImageView;
 
 
 public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
@@ -81,9 +87,10 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
     RecyclerView rvRecommendations;
     RecommendationAdapter mAdapter;
     LinearLayout tvTopRecommended,linearFoodLogger;
-    List<RecommendationModel> data;
+    List<RecommendationModel> data,loggerModel;
     List<String> measuring_units;
-    int hour1,minute1;
+    int pos;
+    GifImageView progressBar;
     ArrayAdapter<String> adapter;
 
     @Override
@@ -95,6 +102,8 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         spinner = (Spinner) fragView.findViewById(R.id.spinnerRecommended);
         tvTopRecommended = (LinearLayout) fragView.findViewById(R.id.linearTopRecommended);
         linearFoodLogger = (LinearLayout) fragView.findViewById(R.id.linearFoodLogger);
+        progressBar = (GifImageView) fragView.findViewById(R.id.progressBar);
+
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvRecommendations.setLayoutManager(linearLayoutManager);
@@ -102,15 +111,18 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         //food_list = (RecyclerView) fragView.findViewById(R.id.food_list);
         widget= (MaterialCalendarView) fragView.findViewById(R.id.calendarView);
         data = new ArrayList<RecommendationModel>();
-
+        loggerModel = new ArrayList<RecommendationModel>();
         Calendar calendar = Calendar.getInstance();
-        hour1 = calendar.get(Calendar.HOUR);
-        minute1 = calendar.get(Calendar.MINUTE);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
         widget.setSelectedDate(calendar.getTime());
-        Date date1 = calendar.getTime();
+        Date date1 = new Date(year-1900,month,day,0,0);
         long timestamp = date1.getTime()/1000L;
+        progressBar.setVisibility(View.VISIBLE);
+        Log.d("timestamop",""+timestamp);
         Controller.getLogger(getContext(),timestamp,mGetFoodLoggerListener);
-        String dateFormat = MyUtils.getDateFormat(date1,"yyyy-MM-dd");
+        progressBar.setVisibility(View.VISIBLE);
         Controller.getFoodRecommendation(getContext(),timestamp,mRecommendationListener);
         Calendar instance1 = Calendar.getInstance();
         instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
@@ -131,14 +143,15 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         final String[] unit = {"Kg"};
-        mAdapter = new RecommendationAdapter(getContext(), data, "",0);
+        mAdapter = new RecommendationAdapter(getContext(), data, "",measuring_units,progressBar);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(measuring_units.size() >0 && data.size() > 0) {
+                    pos = i;
                     Log.d("item selected", measuring_units.get(i));
                     unit[0] = measuring_units.get(i);
-                    mAdapter = new RecommendationAdapter(getContext(), data, measuring_units.get(i),i);
+                    mAdapter = new RecommendationAdapter(getContext(), data, measuring_units.get(i),measuring_units,progressBar);
                     rvRecommendations.setAdapter(mAdapter);
                 }
             }
@@ -148,23 +161,6 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
 
             }
         });
-        //////////////////
-
-
-//        ItemClickSupport.addTo(food_list).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-//            @Override
-//            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-//
-//             DataItems dataItems=   dop.getInformation(dop,selectedDate).get(position);
-//                startActivity(new Intent(getActivity(), FoodDetails.class).putExtra("food_id",dataItems.getFood_id()).putExtra("source","food_frag"));
-//
-//
-////
-//// akshayluthra12@
-//
-//            }
-//        });
-
         return fragView;
     }
 
@@ -177,52 +173,46 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         //Sets the selected date from Picker
     }
 
-    public void setFoodLogger(){
+    public void setFoodLogger(List<RecommendationModel> foodLogger){
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View loggerView = inflater.inflate(R.layout.item_food_logger,linearFoodLogger,false);
-        TextView mealType = (TextView) loggerView.findViewById(R.id.tvRecommendedMealType);
-        TextView mealTime = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTime);
-        TextView mealCalories = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTotalCalories);
-        RecyclerView rvLogger = (RecyclerView) loggerView.findViewById(R.id.rvFoodLogger);
+        linearFoodLogger.removeAllViews();
+        for (int i=0;i<foodLogger.size();i++) {
+            View loggerView = inflater.inflate(R.layout.item_food_logger, linearFoodLogger, false);
+            TextView mealType = (TextView) loggerView.findViewById(R.id.tvRecommendedMealType);
+            TextView mealTime = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTime);
+            TextView mealCalories = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTotalCalories);
+            RecyclerView rvLogger = (RecyclerView) loggerView.findViewById(R.id.rvFoodLogger);
+            linearFoodLogger.addView(loggerView);
+            mealType.setText("Meal Type "+i);
+            mealTime.setText("");
+            float totalCalories = 0;
+            for (int y=0;y<foodLogger.get(i).getMeals().size();y++){
+                totalCalories += foodLogger.get(i).getMeals().get(y).getComponent().getTotal_energy()*foodLogger.get(i).getMeals().get(y).getAmount();
+            }
+            mealCalories.setText(new DecimalFormat("##.#").format(totalCalories).toString()+" calories");
+            LinearLayoutManager linear1 = new LinearLayoutManager(getContext());
+            linear1.setOrientation(LinearLayoutManager.VERTICAL);
+            rvLogger.setLayoutManager(linear1);
+            rvLogger.setHasFixedSize(false);
+            FoodLoggerAdapter adapter = new FoodLoggerAdapter(getContext(),foodLogger.get(i).getMeals());
+            rvLogger.setAdapter(adapter);
+            //rvLogger.setLayoutManager(linearLayoutManager);
+        }
 
     }
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-        Calendar calendar = date.getCalendar();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH)+1;
-        int hours = calendar.get(Calendar.HOUR);
-        int minute = calendar.get(Calendar.MINUTE);
-        Date date1 = new Date(year-1900,month,day,hours,minute);
-//        Date date1 = date.g;
-//        //date1.setTime(43200000);
-//        date1.setDate(date1.getDay()+1);
-        long timestamp = date1.getTime()/1000L;
-        Log.d("timestamp",String.valueOf(timestamp));
+        long timestamp = date.getDate().getTime()/1000L;
+        progressBar.setVisibility(View.VISIBLE);
         Controller.getLogger(getContext(),timestamp,mGetFoodLoggerListener);
-
         long timestamp1 = date.getDate().getTime()/1000L;
+        measuring_units.clear();
+        adapter.notifyDataSetChanged();
+        data.clear();
+        mAdapter.notifyDataSetChanged();
         Log.d("dateformat", String.valueOf(timestamp1));
+        progressBar.setVisibility(View.VISIBLE);
         Controller.getFoodRecommendation(getContext(),timestamp1,mRecommendationListener);
-//        if (month<=9 && day <=9){
-//            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
-//            Log.d("date",selectedDate);
-//        }else  if (month<=9 && day >9){
-//            selectedDate = year + "-" + "0"+month + "-" + day;
-//            Log.d("date",selectedDate);
-//        }else  if (day <=9 && month >9){
-//            selectedDate = year + "-" +month + "-" + "0"+day;
-//            Log.d("date",selectedDate);
-//        }else if (day >9 && month >9){
-//            selectedDate = year + "-" + month + "-" + day;
-//            Log.d("date", selectedDate);
-//        }
-//        makeJsonArrayReq(selectedDate);
-//        database_list = dop.getInformation(dop, selectedDate);
-//        customAdapter.setData(database_list);
-//        customAdapter.notifyDataSetChanged();
-//        Log.d("date",selectedDate);
     }
 
     RequestListener mGetFoodLoggerListener = new RequestListener() {
@@ -234,12 +224,54 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("get food",responseObject.toString());
-
+            Type collectionType = new TypeToken<ArrayList<RecommendationModel>>() {}.getType();
+            List<RecommendationModel> da = (ArrayList<RecommendationModel>) new Gson()
+                    .fromJson(responseObject.toString(), collectionType);
+            loggerModel.clear();
+            for (int i=0;i<da.size();i++){
+                loggerModel.add(da.get(i));
+            }
+            if (loggerModel.size() <= 0){
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        linearFoodLogger.setVisibility(View.GONE);
+                    }
+                });
+            }else {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        linearFoodLogger.setVisibility(View.VISIBLE);
+                        setFoodLogger(loggerModel);
+                    }
+                });
+            }
         }
 
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("get food error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
     RequestListener mRecommendationListener = new RequestListener() {
@@ -265,6 +297,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         tvTopRecommended.setVisibility(View.GONE);
                     }
                 });
@@ -272,6 +305,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.GONE);
                         tvTopRecommended.setVisibility(View.VISIBLE);
                         mAdapter.notifyDataSetChanged();
                         adapter.notifyDataSetChanged();
@@ -283,6 +317,24 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("recommended food error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
 
