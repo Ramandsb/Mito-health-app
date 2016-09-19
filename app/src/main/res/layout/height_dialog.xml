@@ -47,6 +47,7 @@
             android:layout_height="wrap_content"
             android:text="Measuring unit"
             android:textSize="20sp"
+            android:id="@+id/dialogHeading"
             android:layout_marginLeft="20dp"
             android:textColor="@color/colorPrimary"/>
     </LinearLayout>
@@ -78,7 +79,6 @@
             android:id="@+id/height_seekbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="3"
             android:hint="Height"
             android:textColorHint="@android:color/transparent"/>
         </android.support.design.widget.TextInputLayout>
@@ -94,6 +94,22 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="30dp"
             android:layout_weight="1"></Spinner>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textLayoutHeight1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:textSize="15sp">
+            <EditText
+                android:id="@+id/height_seekbar1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Height"
+                android:textColorHint="@android:color/transparent"/>
+        </android.support.design.widget.TextInputLayout>
 
     </LinearLayout>
 

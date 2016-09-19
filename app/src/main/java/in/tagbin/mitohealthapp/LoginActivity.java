@@ -32,10 +32,13 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.StreamHandler;
@@ -45,7 +48,7 @@ import in.tagbin.mitohealthapp.Fragments.FoodFrag;
 public class LoginActivity extends AppCompatActivity {
 
     EditText username_ed,password_ed;
-    String username_str,password_str;
+    String username_str,password_str,token;
     SharedPreferences loginDetails;
     TextView forgotPassword;
     boolean signup=false;
@@ -62,6 +65,18 @@ public class LoginActivity extends AppCompatActivity {
         if (signup){
             Snackbar.make(view,"Sign up Success",Snackbar.LENGTH_LONG).show();
 
+        }
+        InstanceID instanceID = InstanceID.getInstance(this);
+        String senderId = "56770976470";
+        try {
+            // request token that will be used by the server to send push notifications
+            token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+            Log.d("token",token);
+            //pref.setGcmToken(token);
+            // pass along this data
+        } catch (IOException e) {
+            e.printStackTrace();
+            //pref.setSentTokenToServer(false);
         }
         loginDetails= getSharedPreferences(MainPage.LOGIN_DETAILS,MODE_PRIVATE);
         username_ed= (EditText) findViewById(R.id.username);
@@ -129,6 +144,8 @@ showDialog();
         if (source.equals("login")) {
             postParam.put("username", username);
             postParam.put("password", password);
+            postParam.put("mobile_id",token);
+            postParam.put("mobile_os","Android");
          localUrl=   Config.url+"login/";
         }else if (source.equals("forgot")){
             postParam.put("username",username);

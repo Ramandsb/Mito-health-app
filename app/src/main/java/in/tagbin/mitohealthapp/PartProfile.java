@@ -266,8 +266,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar2.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[0]);
+                            pref.setKeyUserPic1(data.getImages().getOthers()[0]);
                             flag2 = true;
+                            flag = true;
                             img2.setImageBitmap(loadedImage);
                         }
                     });
@@ -297,8 +298,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar3.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[1]);
+                            pref.setKeyUserPic2(data.getImages().getOthers()[1]);
                             flag3 = true;
+                            flag = true;
                             img3.setImageBitmap(loadedImage);
                         }
                     });
@@ -328,8 +330,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar4.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[2]);
+                            pref.setKeyUserPic3(data.getImages().getOthers()[2]);
                             flag4 = true;
+                            flag = true;
                             img4.setImageBitmap(loadedImage);
                         }
                     });
@@ -359,8 +362,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar5.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[3]);
+                            pref.setKeyUserPic4(data.getImages().getOthers()[3]);
                             flag5 = true;
+                            flag = true;
                             img5.setImageBitmap(loadedImage);
                         }
                     });
@@ -390,8 +394,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar6.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[4]);
+                            pref.setKeyUserPic5(data.getImages().getOthers()[4]);
                             flag6 = true;
+                            flag = true;
                             img6.setImageBitmap(loadedImage);
                         }
                     });
@@ -421,8 +426,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar7.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[5]);
+                            pref.setKeyUserPic6(data.getImages().getOthers()[5]);
                             flag7 = true;
+                            flag = true;
                             img7.setImageBitmap(loadedImage);
                         }
                     });
@@ -1267,8 +1273,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar2.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[0]);
+                            pref.setKeyUserPic1(data.getImages().getOthers()[0]);
                             flag2 = true;
+                            flag = true;
                             img2.setImageBitmap(loadedImage);
                         }
                     });
@@ -1298,8 +1305,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar3.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[1]);
+                            pref.setKeyUserPic2(data.getImages().getOthers()[1]);
                             flag3 = true;
+                            flag = true;
                             img3.setImageBitmap(loadedImage);
                         }
                     });
@@ -1329,8 +1337,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar4.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[2]);
+                            pref.setKeyUserPic3(data.getImages().getOthers()[2]);
                             flag4 = true;
+                            flag = true;
                             img4.setImageBitmap(loadedImage);
                         }
                     });
@@ -1360,8 +1369,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar5.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[3]);
+                            pref.setKeyUserPic4(data.getImages().getOthers()[3]);
                             flag5 = true;
+                            flag = true;
                             img5.setImageBitmap(loadedImage);
                         }
                     });
@@ -1391,8 +1401,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar6.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[4]);
+                            pref.setKeyUserPic5(data.getImages().getOthers()[4]);
                             flag6 = true;
+                            flag = true;
                             img6.setImageBitmap(loadedImage);
                         }
                     });
@@ -1422,8 +1433,9 @@ public class PartProfile extends Fragment implements View.OnClickListener {
                         @Override
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar7.setVisibility(View.GONE);
-                            pref.setKeyMasterImage(data.getImages().getOthers()[5]);
+                            pref.setKeyUserPic6(data.getImages().getOthers()[5]);
                             flag7 = true;
+                            flag = true;
                             img7.setImageBitmap(loadedImage);
                         }
                     });

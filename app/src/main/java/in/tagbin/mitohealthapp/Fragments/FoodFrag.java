@@ -102,8 +102,8 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         spinner = (Spinner) fragView.findViewById(R.id.spinnerRecommended);
         tvTopRecommended = (LinearLayout) fragView.findViewById(R.id.linearTopRecommended);
         linearFoodLogger = (LinearLayout) fragView.findViewById(R.id.linearFoodLogger);
-        progressBar = (GifImageView) fragView.findViewById(R.id.progressBar);
-
+        //progressBar = (GifImageView) fragView.findViewById(R.id.progressBar);
+        progressBar = CollapsableLogging.progressBar;
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvRecommendations.setLayoutManager(linearLayoutManager);
@@ -183,7 +183,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
             TextView mealCalories = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTotalCalories);
             RecyclerView rvLogger = (RecyclerView) loggerView.findViewById(R.id.rvFoodLogger);
             linearFoodLogger.addView(loggerView);
-            mealType.setText("Meal Type "+i);
+            mealType.setText("Meal Type "+(i+1));
             mealTime.setText("");
             float totalCalories = 0;
             for (int y=0;y<foodLogger.get(i).getMeals().size();y++){
@@ -231,6 +231,8 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
             for (int i=0;i<da.size();i++){
                 loggerModel.add(da.get(i));
             }
+            if(getActivity() == null)
+                return;
             if (loggerModel.size() <= 0){
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -256,6 +258,8 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
             Log.d("get food error",message);
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                if(getActivity() == null)
+                    return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -264,6 +268,8 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
                     }
                 });
             }else{
+                if(getActivity() == null)
+                    return;
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollView"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:id="@+id/nested_scroll_view"
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -76,19 +75,6 @@
                 android:layout_margin="10dp">
 
             </android.support.v7.widget.RecyclerView>
-
-            <pl.droidsonroids.gif.GifImageView
-                android:id="@+id/progressBar"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:layout_marginBottom="60dp"
-                android:indeterminateTintMode="src_atop"
-                android:src="@drawable/loader"
-                android:visibility="gone" />
         </RelativeLayout>
     </ScrollView>
-</android.support.design.widget.CoordinatorLayout>
+</android.support.v4.widget.NestedScrollView>

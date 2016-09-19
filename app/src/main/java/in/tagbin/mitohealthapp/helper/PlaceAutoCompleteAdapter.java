@@ -74,7 +74,7 @@ public class PlaceAutoCompleteAdapter extends ArrayAdapter<EventTypeModel> {
                 if (constraint != null) {
                     RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                     RequestFuture<JSONArray> future = RequestFuture.newFuture();
-                    String url = "http://api.mitoapp.com/v1/eventtype/search/?title="+constraint.toString();
+                    String url = "https://api.mitoapp.com/v1/eventtype/search/?title="+constraint.toString();
                     JsonArrayRequest request = new JsonArrayRequest(url, future, future);
                     requestQueue.add(request);
                     try {

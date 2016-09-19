@@ -65,8 +65,8 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         setContentView(R.layout.activity_splash);
         loginDetails = getSharedPreferences(LOGIN_DETAILS, MODE_PRIVATE);
         pref = new PrefManager(this);
-        Intent service = new Intent(this, GCMIntentService.class);
-        startService(service);
+//        Intent service = new Intent(this, GCMIntentService.class);
+//        startService(service);
         if (hasLocationPermissionGranted()) {
             // you can do whatever you want
             getLocation();

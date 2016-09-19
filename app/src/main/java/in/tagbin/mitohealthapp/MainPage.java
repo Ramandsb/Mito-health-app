@@ -73,6 +73,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 //import com.newrelic.agent.android.NewRelic;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.newrelic.agent.android.NewRelic;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.FormEncodingBuilder;
@@ -104,6 +106,7 @@ import java.util.Map;
 import java.util.Set;
 import in.tagbin.mitohealthapp.VideoView.FullscreenVideoLayout;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 
 
 public class MainPage extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
@@ -120,7 +123,7 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
 
     CleverTapAPI cleverTap;
 
-    String profile_name, profile_picture;
+    String profile_name, profile_picture,token;
 
 
     ///////////////////////////////////
@@ -185,7 +188,18 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         Fblogin = (Button) findViewById(R.id.login_button);
-
+        InstanceID instanceID = InstanceID.getInstance(this);
+        String senderId = "56770976470";
+        try {
+            // request token that will be used by the server to send push notifications
+            token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
+            Log.d("token",token);
+            //pref.setGcmToken(token);
+            // pass along this data
+        } catch (IOException e) {
+            e.printStackTrace();
+            //pref.setSentTokenToServer(false);
+        }
         Fblogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,8 +241,6 @@ public class MainPage extends AppCompatActivity implements GoogleApiClient.OnCon
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client2 = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
-
-
 
     private void onFblogin() {
 
@@ -518,7 +530,8 @@ showDialog();
         postParam.put("access_token", s);
         postParam.put("source", source);
         postParam.put("is_nutritionist", "0");
-
+        postParam.put("mobile_id",token);
+        postParam.put("mobile_os","Android");
 
         JSONObject jsonObject = new JSONObject(postParam);
         Log.d("postpar", jsonObject.toString());

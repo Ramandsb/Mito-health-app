@@ -42,11 +42,13 @@ import in.tagbin.mitohealthapp.model.CreateEventSendModel;
 import in.tagbin.mitohealthapp.model.ElasticSearchModel;
 import in.tagbin.mitohealthapp.model.FeelingLogModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
+import in.tagbin.mitohealthapp.model.GcmSendModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
 import in.tagbin.mitohealthapp.model.RecipeFavouriteModel;
 import in.tagbin.mitohealthapp.model.SendCuisineModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
 import in.tagbin.mitohealthapp.model.SendGoalModel;
+import in.tagbin.mitohealthapp.model.SendPrefernceModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
 import in.tagbin.mitohealthapp.model.SetFoodLoggerModel;
 import in.tagbin.mitohealthapp.model.SetNewInterestModel;
@@ -264,6 +266,18 @@ public class Controller {
         sendCuisineModel.setCuisines(selectedCuisnes);
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.PUT, sendCuisineModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setPreferences(Context context,int prefernce_id,String user_id,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        SendPrefernceModel sendPrefernceModel = new SendPrefernceModel();
+        sendPrefernceModel.setPreferences(prefernce_id);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, sendPrefernceModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
@@ -648,6 +662,18 @@ public class Controller {
         url += id+"/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void sendToken(Context context,String gcm_id,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.GCM);
+        GcmSendModel gcmSendModel = new GcmSendModel();
+        gcmSendModel.setMobile_id(gcm_id);
+        gcmSendModel.setMobile_os("Android");
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, gcmSendModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }

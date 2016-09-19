@@ -58,7 +58,7 @@ public class GCMIntentService extends IntentService implements RequestListener {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        //Controller.setGCM(getApplicationContext(),auth,token,android_id,version_name,this);
+        Controller.sendToken(getApplicationContext(),token,this);
     }
 
     @Override

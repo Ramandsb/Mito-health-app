@@ -10,9 +10,9 @@ android {
         applicationId "in.tagbin.mitohealthapp"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
+        versionName '1.1'
         multiDexEnabled true
+        versionCode 10
     }
     buildTypes {
         release {
@@ -34,7 +34,6 @@ android {
             url "https://jitpack.io"
         }
         mavenCentral()
-
 
 
     }

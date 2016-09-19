@@ -4,10 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -31,6 +35,7 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         setContentView(R.layout.actvity_addinterest);
         etInterestName = (EditText) findViewById(R.id.etInterestName);
         sendInterst = (Button) findViewById(R.id.buttonSendInterest);
@@ -40,6 +45,16 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
             response = getIntent().getStringExtra("name");
             etInterestName.setText(response);
         }
+        etInterestName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    Controller.setNewInterest(AddInterestActivity.this,etInterestName.getText().toString(),mSetInterstListener);
+                }
+                return false;
+            }
+        });
     }
 
     @Override

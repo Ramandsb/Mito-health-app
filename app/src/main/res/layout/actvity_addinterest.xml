@@ -27,6 +27,7 @@
         android:layout_marginRight="10dp"
         android:hint="Please enter your interest"
         android:textColor="#474747"
+        android:selectAllOnFocus="true"
         android:textColorHint="#b7b7b7"
         android:singleLine="true"
         android:ellipsize="end"

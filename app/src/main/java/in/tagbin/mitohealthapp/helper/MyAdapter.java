@@ -216,6 +216,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("join event", responseObject.toString());
+            if ((Activity) mycontext != null){
+                return;
+            }
             ((Activity)mycontext).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -228,6 +231,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("join event error", message);
+            if ((Activity) mycontext != null){
+                return;
+            }
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 ((Activity) mycontext).runOnUiThread(new Runnable() {
@@ -261,6 +267,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
             transaction.add(R.id.frameAddActivity, fragment);
             transaction.commit();
+            if ((Activity) mycontext != null){
+                return;
+            }
             ((Activity)mycontext).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -274,6 +283,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("archive event error", message);
+            if ((Activity) mycontext != null){
+                return;
+            }
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 ((Activity) mycontext).runOnUiThread(new Runnable() {

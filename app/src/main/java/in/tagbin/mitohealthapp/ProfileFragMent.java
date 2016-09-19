@@ -35,13 +35,13 @@ public class ProfileFragMent extends Fragment implements TabLayout.OnTabSelected
         vPager = (ViewPager) ProfileView.findViewById(R.id.ProfilePager);
 
         if ( getArguments() !=null && getArguments().getString("profile_connect") != null){
-            adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager(),"profile_connect");
+            adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager(),"profile_connect",getContext());
             vPager.setAdapter(adapter);
             tablayout.setupWithViewPager(vPager);
 
             vPager.setCurrentItem(1,true);
         }else{
-            adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager(),"");
+            adapter = new ProfilePagerAdapter(getActivity().getSupportFragmentManager(),"",getContext());
             vPager.setAdapter(adapter);
             tablayout.setupWithViewPager(vPager);
 

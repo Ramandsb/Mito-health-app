@@ -1,7 +1,9 @@
 package in.tagbin.mitohealthapp.helper;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -128,46 +130,64 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.ivFoodAccept:
-                    SetFoodLoggerModel setFoodLoggerModel = new SetFoodLoggerModel();
-                    setFoodLoggerModel.setLtype("food");
-                    setFoodLoggerModel.setC_id(mModel.getComponent().getId());
-                    Calendar calendar = Calendar.getInstance();
-                    long time = calendar.getTime().getTime()/1000L;
-                    Log.d("timesatmap",""+time);
-                    setFoodLoggerModel.setTime_consumed(time);
-                    setFoodLoggerModel.setAmount(mModel.getAmount());
-                    setFoodLoggerModel.setFlag(1);
-                    setFoodLoggerModel.setMeal_id(mModel.getMeal_id());
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    Controller.setLogger(mContext,setFoodLoggerModel,mFoodLoggerListener);
+                    Intent i1 = new Intent(mContext, FoodDetails.class);
+                    i1.putExtra("response",JsonUtils.jsonify(mModel));
+                    mContext.startActivity(i1);
                     break;
                 case R.id.ivFoodDecline:
-                    SetFoodLoggerModel setFoodLoggerModel1 = new SetFoodLoggerModel();
-                    setFoodLoggerModel1.setLtype("food");
-                    setFoodLoggerModel1.setC_id(mModel.getComponent().getId());
-                    Calendar calendar1 = Calendar.getInstance();
-                    long time1 = calendar1.getTime().getTime()/1000L;
-                    Log.d("timesatmap",""+time1);
-                    setFoodLoggerModel1.setTime_consumed(time1);
-                    setFoodLoggerModel1.setAmount(mModel.getAmount());
-                    setFoodLoggerModel1.setFlag(2);
-                    setFoodLoggerModel1.setMeal_id(mModel.getMeal_id());
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    Controller.setLogger(mContext,setFoodLoggerModel1,mFoodLoggerListener);
+                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
+                    alertDialog1.setTitle("Delete Recommended food");
+                    alertDialog1.setMessage(" Are you sure you want to delete this recommended food?");
+                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            SetFoodLoggerModel setFoodLoggerModel1 = new SetFoodLoggerModel();
+                            setFoodLoggerModel1.setLtype("food");
+                            setFoodLoggerModel1.setC_id(mModel.getComponent().getId());
+                            Calendar calendar1 = Calendar.getInstance();
+                            long time1 = calendar1.getTime().getTime()/1000L;
+                            Log.d("timesatmap",""+time1);
+                            setFoodLoggerModel1.setTime_consumed(time1);
+                            setFoodLoggerModel1.setAmount(mModel.getAmount());
+                            setFoodLoggerModel1.setFlag(2);
+                            setFoodLoggerModel1.setMeal_id(mModel.getMeal_id());
+                            mProgressBar.setVisibility(View.VISIBLE);
+                            Controller.setLogger(mContext,setFoodLoggerModel1,mFoodLoggerListener1);
+                        }
+                    });
+                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialog1.show();
+
                     break;
                 case R.id.ivFoodRefresh:
-                    SetFoodLoggerModel setFoodLoggerModel2 = new SetFoodLoggerModel();
-                    setFoodLoggerModel2.setLtype("food");
-                    setFoodLoggerModel2.setC_id(mModel.getComponent().getId());
-                    Calendar calendar2 = Calendar.getInstance();
-                    long time2 = calendar2.getTime().getTime()/1000L;
-                    Log.d("timesatmap",""+time2);
-                    setFoodLoggerModel2.setTime_consumed(time2);
-                    setFoodLoggerModel2.setAmount(mModel.getAmount());
-                    setFoodLoggerModel2.setFlag(3);
-                    setFoodLoggerModel2.setMeal_id(mModel.getMeal_id());
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    Controller.setLogger(mContext,setFoodLoggerModel2,mFoodLoggerListener);
+                    final AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
+                    alertDialog2.setTitle("Refresh Recommended food");
+                    alertDialog2.setMessage(" Are you sure you want to refresh this recommended food?");
+                    alertDialog2.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            SetFoodLoggerModel setFoodLoggerModel2 = new SetFoodLoggerModel();
+                            setFoodLoggerModel2.setLtype("food");
+                            setFoodLoggerModel2.setC_id(mModel.getComponent().getId());
+                            Calendar calendar2 = Calendar.getInstance();
+                            long time2 = calendar2.getTime().getTime()/1000L;
+                            Log.d("timesatmap",""+time2);
+                            setFoodLoggerModel2.setTime_consumed(time2);
+                            setFoodLoggerModel2.setAmount(mModel.getAmount());
+                            setFoodLoggerModel2.setFlag(3);
+                            setFoodLoggerModel2.setMeal_id(mModel.getMeal_id());
+                            mProgressBar.setVisibility(View.VISIBLE);
+                            Controller.setLogger(mContext,setFoodLoggerModel2,mFoodLoggerListener2);
+                        }
+                    });
+                    alertDialog2.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialog2.show();
                     break;
                 case R.id.relativeViewRecommend:
                     Intent i = new Intent(mContext, FoodDetails.class);
@@ -194,6 +214,94 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                 public void run() {
                     mProgressBar.setVisibility(View.GONE);
                     Toast.makeText(mContext,"Food successfully logged",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("food logger error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    static RequestListener mFoodLoggerListener1 = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("food logger",responseObject.toString());
+            Intent i = new Intent(mContext,CollapsableLogging.class);
+            i.putExtra("selection",0);
+            mContext.startActivity(i);
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(mContext,"Food removed successfully",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("food logger error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    static RequestListener mFoodLoggerListener2 = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("food logger",responseObject.toString());
+            Intent i = new Intent(mContext,CollapsableLogging.class);
+            i.putExtra("selection",0);
+            mContext.startActivity(i);
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(mContext,"Food successfully refreshed",Toast.LENGTH_LONG).show();
                 }
             });
         }

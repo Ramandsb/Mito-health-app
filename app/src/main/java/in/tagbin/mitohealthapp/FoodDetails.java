@@ -264,6 +264,7 @@ public class FoodDetails extends AppCompatActivity {
             Log.d("timesatmap",""+time);
             setFoodLoggerModel.setTime_consumed(time);
             setFoodLoggerModel.setAmount(Integer.parseInt(FoodDetailsFrag.quantity));
+            Log.d("model2",JsonUtils.jsonify(setFoodLoggerModel));
             progressBar.setVisibility(View.VISIBLE);
             Controller.updateLogFood(FoodDetails.this,setFoodLoggerModel,data.getId(),mFoodLoggerListener);
         }else if (getIntent().getStringExtra("foodsearch") != null){
@@ -274,7 +275,9 @@ public class FoodDetails extends AppCompatActivity {
              long time = date.getTime()/1000L;
              Log.d("timesatmap",""+time);
              setFoodLoggerModel.setTime_consumed(time);
+            setFoodLoggerModel.setFlag(1);
              setFoodLoggerModel.setAmount(Integer.parseInt(FoodDetailsFrag.quantity));
+            Log.d("model",JsonUtils.jsonify(setFoodLoggerModel));
              progressBar.setVisibility(View.VISIBLE);
              Controller.setLogger(FoodDetails.this,setFoodLoggerModel,mFoodLoggerListener);
          }else {
@@ -287,7 +290,9 @@ public class FoodDetails extends AppCompatActivity {
             setFoodLoggerModel.setTime_consumed(time);
              setFoodLoggerModel.setMeal_id(data.getMeal_id());
              setFoodLoggerModel.setFlag(1);
+
             setFoodLoggerModel.setAmount(Integer.parseInt(FoodDetailsFrag.quantity));
+            Log.d("model1",JsonUtils.jsonify(setFoodLoggerModel));
             progressBar.setVisibility(View.VISIBLE);
             Controller.setLogger(FoodDetails.this,setFoodLoggerModel,mFoodLoggerListener);
         }

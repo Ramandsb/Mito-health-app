@@ -70,11 +70,25 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         myview.setAdapter(adapter);
         progressBar.setVisibility(View.VISIBLE);
         pref = new PrefManager(getContext());
-        if (pref.getCurrentLocationAsObject() != null){
-            if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
-                Controller.getAllEventsNearby(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude(),mAllEventsListener);
-            }else{
-                Controller.getAllEvents(getContext(),mAllEventsListener);
+
+        if (getArguments() != null && getArguments().getString("addactivity") != null){
+            myActivity.setTextColor(Color.parseColor("#ffffff"));
+            myActivity.setBackgroundResource(R.drawable.bg_filter_change);
+            allActivity.setTextColor(Color.parseColor("#26446d"));
+            allActivity.setBackgroundResource(R.drawable.bg_filter);
+            progressBar.setVisibility(View.VISIBLE);
+            Controller.getEventsByMe(getContext(),mNearbyEvents);
+        }else {
+            allActivity.setTextColor(Color.parseColor("#ffffff"));
+            allActivity.setBackgroundResource(R.drawable.bg_filter_change);
+            myActivity.setTextColor(Color.parseColor("#26446d"));
+            myActivity.setBackgroundResource(R.drawable.bg_filter);
+            if (pref.getCurrentLocationAsObject() != null) {
+                if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0) {
+                    Controller.getAllEventsNearby(getContext(), pref.getCurrentLocationAsObject().getLatitude(), pref.getCurrentLocationAsObject().getLongitude(), mAllEventsListener);
+                } else {
+                    Controller.getAllEvents(getContext(), mAllEventsListener);
+                }
             }
         }
 
@@ -127,6 +141,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("nearby events",responseObject.toString());
+
             mylist.clear();
             Type collectionType = new TypeToken<ArrayList<DataObject>>() {
             }.getType();
@@ -148,6 +163,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("nearby events error",message);
+
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
@@ -178,6 +194,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         public void onRequestCompleted(Object responseObject) {
             Log.d("all events",responseObject.toString());
             mylist.clear();
+
             Type collectionType = new TypeToken<ArrayList<DataObject>>() {
             }.getType();
             da = (ArrayList<DataObject>) new Gson()
@@ -201,8 +218,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("all events error",message);
-            if(getActivity() == null)
-                return;
+
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {

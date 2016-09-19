@@ -9,6 +9,25 @@ public class SendEditProfileModel {
     String first_name,last_name,email,dob,gender,height,waist,weight,goal_weight;
     List<Integer> cuisines;
     int preferences;
+    ImagesModel images;
+    public SendEditProfileModel(){
+        images = new ImagesModel();
+    }
+    public class ImagesModel{
+        String master;
+
+        public void setMaster(String master) {
+            this.master = master;
+        }
+    }
+
+    public void setImages(ImagesModel images) {
+        this.images = images;
+    }
+
+    public ImagesModel getImages() {
+        return images;
+    }
 
     public void setCuisines(List<Integer> cuisines) {
         this.cuisines = cuisines;

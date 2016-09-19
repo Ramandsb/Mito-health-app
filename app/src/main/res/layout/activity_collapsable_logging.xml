@@ -9,8 +9,7 @@
         android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
@@ -39,36 +38,36 @@
                     android:id="@+id/chart1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layout_collapseMode="parallax"
+                    android:layout_marginBottom="40dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="40dp"/>
+                    app:layout_collapseMode="parallax" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:layout_collapseMode="parallax"
-                android:visibility="visible"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-            </android.support.v7.widget.Toolbar>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    android:visibility="visible"
+                    app:layout_collapseMode="parallax"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"></android.support.v7.widget.Toolbar>
 
 
-</android.support.design.widget.CollapsingToolbarLayout>
+            </android.support.design.widget.CollapsingToolbarLayout>
+
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="parallax"
-                app:tabSelectedTextColor="@android:color/white"
-                app:tabIndicatorColor="@android:color/white">
-            </android.support.design.widget.TabLayout>
-    </android.support.design.widget.AppBarLayout>
+                app:tabIndicatorColor="@android:color/white"
+                app:tabSelectedTextColor="@android:color/white"></android.support.design.widget.TabLayout>
+        </android.support.design.widget.AppBarLayout>
 
 
-        <include layout="@layout/content_collapsable_logging" />
+        <include layout="@layout/content_collapsable_logging"
+            android:id="@+id/main_layout"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
@@ -76,6 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
+            app:layout_anchorGravity="bottom|right|end"
             android:src="@drawable/plus_svg" />
 
         <com.github.fabtransitionactivity.SheetLayout
@@ -83,12 +83,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
-            app:ft_container_gravity="center"
+            android:elevation="2dp"
             app:ft_color="@color/colorPrimary"
-            android:elevation="2dp"/>
+            app:ft_container_gravity="center" />
 
 
     </android.support.design.widget.CoordinatorLayout>
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        android:indeterminateTintMode="src_atop"
+        android:src="@drawable/loader"
+        android:visibility="gone" />
 
-
-    </RelativeLayout>
+</RelativeLayout>

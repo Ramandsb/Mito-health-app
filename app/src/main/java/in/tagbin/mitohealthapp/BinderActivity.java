@@ -47,6 +47,7 @@ import in.tagbin.mitohealthapp.helper.ViewPagerAdapter;
 import in.tagbin.mitohealthapp.helper.ViewPagerAdapter1;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.UserInterestModel;
+import in.tagbin.mitohealthapp.service.GCMIntentService;
 
 public class BinderActivity extends AppCompatActivity{
 
@@ -70,7 +71,8 @@ public class BinderActivity extends AppCompatActivity{
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
 
 
-
+        Intent intent = new Intent(this, GCMIntentService.class);
+        startService(intent);
 // Create items
         startService(new Intent(this,XamppChatService.class));
 
@@ -225,9 +227,26 @@ public class BinderActivity extends AppCompatActivity{
 //                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                toolbar_title.setText("Mito");
-                toolbar.setTitle("");
-                fra = new HomePage();
+                if (ProfilePage.height == 0 && ProfilePage.weight == 0){
+                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
+                    alertDialog1.setTitle("Enter Details");
+                    alertDialog1.setMessage("Please enter your height and weight to proceed");
+                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialog1.show();
+                }else {
+                    toolbar_title.setText("Mito");
+                    toolbar.setTitle("");
+                    fra = new HomePage();
+                }
                 //bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
@@ -238,9 +257,26 @@ public class BinderActivity extends AppCompatActivity{
 //                //bottomNavigation.setCurrentItem(3);
 //                break;
             case 3:
-                toolbar_title.setText("Settings");
-                toolbar.setTitle("");
-                fra = new Settings_frag();
+                if (ProfilePage.height == 0 && ProfilePage.weight == 0){
+                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
+                    alertDialog1.setTitle("Enter Details");
+                    alertDialog1.setMessage("Please enter your height and weight to proceed");
+                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialog1.show();
+                }else {
+                    toolbar_title.setText("Settings");
+                    toolbar.setTitle("");
+                    fra = new Settings_frag();
+                }
                 //bottomNavigation.setCurrentItem(4);
                 break;
             default:

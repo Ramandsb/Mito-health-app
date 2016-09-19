@@ -75,6 +75,19 @@ public class MyUtils {
         }
         return null;
     }
+    public static String getValidDate1(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
+            String da = dateFormat.format(date);
+            return da;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static String getDateFormat(Date date,String format) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(format);
         String da = dateFormat.format(date);

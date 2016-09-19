@@ -3,6 +3,7 @@ package in.tagbin.mitohealthapp;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -26,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -59,6 +61,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -74,9 +77,12 @@ import in.tagbin.mitohealthapp.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.ProfileImage.PicModeSelectDialogFragment;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.CuisineModel;
 import in.tagbin.mitohealthapp.model.DataObject;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import in.tagbin.mitohealthapp.model.FileUploadModel;
+import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
 import in.tagbin.mitohealthapp.model.PrefernceModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
 import in.tagbin.mitohealthapp.model.UserModel;
@@ -101,9 +107,11 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     public static String myurl = "";
     public static Bitmap profileImage;
     View male_view;
+    PrefManager pref;
     int prefernce_final;
+    GifImageView progressBar1;
     Spinner diet_preference;
-    LinearLayout mygoals;
+    LinearLayout mygoals,editName;
     View female_view;
     List<CuisineModel> cuisineModels;
     String first_name = "",last_name = "",email = "";
@@ -131,13 +139,16 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 //
 //        }
         View Fragview = inflater.inflate(R.layout.content_profile_page, container, false);
-
+        pref = new PrefManager(getActivity());
         progressBar = (GifImageView) Fragview.findViewById(R.id.progressBar);
         choose_image = (Button) Fragview.findViewById(R.id.choose_image);
         View select_date = Fragview.findViewById(R.id.select_date);
         View select_height = Fragview.findViewById(R.id.select_height);
         View select_weight = Fragview.findViewById(R.id.select_weight);
         View select_waist = Fragview.findViewById(R.id.select_waist);
+        editName = (LinearLayout) Fragview.findViewById(R.id.linearEditName);
+        editName.setOnClickListener(this);
+        progressBar1 = (GifImageView) Fragview.findViewById(R.id.progressBar1);
         View select_goal_weight = Fragview.findViewById(R.id.select_goal_weight);
         male_view = Fragview.findViewById(R.id.male_view);
         female_view = Fragview.findViewById(R.id.female_view);
@@ -308,6 +319,10 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         if (requestCode == REQUEST_CODE_UPDATE_PIC) {
             if (resultCode == RESULT_OK) {
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
+                FileUploadModel fileUploadModel = new FileUploadModel();
+                fileUploadModel.setFile(new File(imagePath));
+                progressBar1.setVisibility(View.VISIBLE);
+                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener);
                 showCroppedImage(imagePath);
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
@@ -319,7 +334,47 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         }
 
     }
+    RequestListener mUploadListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
 
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("uploaded file",responseObject.toString());
+            ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
+            pref.setKeyMasterImage(imageUploadResponseModel.getUrl());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar1.setVisibility(View.GONE);
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("uploaded file error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar1.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
 
     private void showCroppedImage(String mImagePath) {
         if (mImagePath != null) {
@@ -413,6 +468,11 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                 sendEditProfileModel.setWaist(String.valueOf(waist));
                 sendEditProfileModel.setWeight(String.valueOf(weight));
                 sendEditProfileModel.setPreferences(prefernce_final);
+                if (pref.getKeyMasterImage() != null){
+                    SendEditProfileModel.ImagesModel imagesModel = sendEditProfileModel.getImages();
+                    imagesModel.setMaster(pref.getKeyMasterImage());
+                    sendEditProfileModel.setImages(imagesModel);
+                }
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.setUserDetails(getContext(),user_id,sendEditProfileModel,mSendUserListener);
                 //makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight), String.valueOf(goal_weight));
@@ -478,7 +538,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         measuring_units.add("Centimeters");
         measuring_units.add("Inches");
         //measuring_units.add("Meters");
-
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
         //final TextView value = (TextView) dialog.findViewById(R.id.height_value);
@@ -486,23 +546,33 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         dialog_name.setText("Height");
         final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
         if (height != 0.0) {
-            int hei = (int) height;
-            seekBar.setText("" + hei);
+            seekBar.setText(new DecimalFormat("##.#").format(height).toString());
         }
-        seekBar.setInputType(InputType.TYPE_CLASS_NUMBER);
+        seekBar.setSelectAllOnFocus(true);
+        seekBar.setInputType(InputType.TYPE_CLASS_PHONE);
         View done = dialog.findViewById(R.id.height_done);
         TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
         textInputLayout.setHint("Height");
-        final String[] unit = {"Feets"};
+        final String[] unit = {"Centimeters"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(0,false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("item selected", measuring_units.get(i));
                 unit[0] = measuring_units.get(i);
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()){
+                    if (unit[0].equals("Inches")) {
+                        seekBar.setSelectAllOnFocus(true);
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString())/2.54).toString());
+                    } else if (unit[0].equals("Centimeters")) {
+                        seekBar.setSelectAllOnFocus(true);
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString())*2.54).toString());
+                    }
+                }
             }
 
             @Override
@@ -514,46 +584,19 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                int i = Integer.parseInt(seekBar.getText().toString());
-                /*if (unit[0].equals("Feets")) {
-//                  double feet = i*0.083;
-//                  DecimalFormat df = new DecimalFormat("#.##");
-//                  String val   =  df.format(feet);
-                    //value.setText("Feets");
-                    height_new = i + " Feets";
-
-                } else*/ if (unit[0].equals("Inches")) {
-                    double inches = i;
-                    height_new = inches + " Inches";
-                    height = Integer.parseInt(seekBar.getText().toString()) * 2.54;
-                    //value.setText("Inches");
-
-                } else if (unit[0].equals("Centimeters")) {
-
-
-//                  double cm= i*2.53;
-//                  DecimalFormat df = new DecimalFormat("#.##");
-//                  String val   =  df.format(cm);
-                    height_new = i + " cms";
-                    height = Integer.parseInt(seekBar.getText().toString());
-                    //value.setText("Centimeters");
-
-
-                } /*else if (unit[0].equals("Meters")) {
-
-//                  double meters= i*0.025;
-//
-//                  DecimalFormat df = new DecimalFormat("#.##");
-//                  String val   =  df.format(meters);
-                    height_new = i + " Meters";
-                    //value.setText("Meters");
-
-
-                }*/
-                height_tv.setText(height_new);
-                Log.d("height value", height_new);
-                if (height == 0 || waist == 0 || weight == 0) {
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()) {
+                    float i = Float.parseFloat(seekBar.getText().toString());
+                    if (unit[0].equals("Inches")) {
+                        height_new = new DecimalFormat("##.#").format(i).toString() + " Inches";
+                        height = Float.parseFloat(seekBar.getText().toString()) * 2.54;
+                    } else if (unit[0].equals("Centimeters")) {
+                        height_new = new DecimalFormat("##.#").format(i).toString() + " cms";
+                        height = Float.parseFloat(seekBar.getText().toString());
+                    }
+                    height_tv.setText(height_new);
+                    Log.d("height value", height_new);
+                }
+                if (height == 0 || waist == 0 || weight == 0 || goal_weight ==0) {
 
 
                     if (height == 0) {
@@ -587,6 +630,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         final List<String> measuring_units = new ArrayList<>();
         measuring_units.add("Kg");
         measuring_units.add("Pounds");
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
         //final TextView value = (TextView) dialog.findViewById(R.id.height_value);
         final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
@@ -597,19 +641,27 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         textInputLayout.setHint("Weight");
         final String[] unit = {"Kg"};
         if (weight != 0.0) {
-            int we  = (int) weight/1000;
-            seekBar.setText("" + we);
+            seekBar.setText(new DecimalFormat("##.#").format(weight/1000).toString());
         }
-        seekBar.setInputType(InputType.TYPE_CLASS_NUMBER);
+        seekBar.setSelectAllOnFocus(true);
+        seekBar.setInputType(InputType.TYPE_CLASS_PHONE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(0,false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("item selected", measuring_units.get(i));
                 unit[0] = measuring_units.get(i);
-
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()) {
+                    if (unit[0].equals("Kg")) {
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString()) * 0.453592).toString());
+                        seekBar.setSelectAllOnFocus(true);
+                    } else if (unit[0].equals("Pounds")) {
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString()) * 2.20462).toString());
+                        seekBar.setSelectAllOnFocus(true);
+                    }
+                }
             }
 
             @Override
@@ -617,38 +669,21 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
             }
         });
-        //seekBar.setMax(200000);
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                int i = Integer.parseInt(seekBar.getText().toString());
-
-                if (unit[0].equals("Kg")) {
-
-//                    double kg = i*0.001;
-//                    DecimalFormat df = new DecimalFormat("#.##");
-//                    String val   =  df.format(kg);
-                    weight_new = i + " Kg";
-                    weight = Integer.parseInt(seekBar.getText().toString()) * 1000;
-                    //value.setText(val+" Kg");
-
-                } else if (unit[0].equals("Pounds")) {
-
-//                    double meters= i*0.00220462;
-//
-//                    DecimalFormat df = new DecimalFormat("#.##");
-//                    String val   =  df.format(meters);
-                    weight_new = i + " Pounds";
-                    weight = Integer.parseInt(seekBar.getText().toString()) * 453.592;
-                    //value.setText(val+" Pounds");
-
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()) {
+                    float i = Float.parseFloat(seekBar.getText().toString());
+                    if (unit[0].equals("Kg")) {
+                        weight_new = new DecimalFormat("##.#").format(i).toString() + " Kg";
+                        weight = Float.parseFloat(seekBar.getText().toString()) * 1000;
+                    } else if (unit[0].equals("Pounds")) {
+                        weight_new = new DecimalFormat("##.#").format(i).toString() + " Pounds";
+                        weight = Float.parseFloat(seekBar.getText().toString()) * 453.592;
+                    }
+                    weight_tv.setText(weight_new);
                 }
-                Log.d("weight value", weight_new);
-                weight_tv.setText(weight_new);
-                if (height == 0 || waist == 0 || weight == 0) {
-
-
+                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0) {
                     if (height == 0) {
                         dialog.dismiss();
                         showHeightDialog();
@@ -681,29 +716,39 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         measuring_units.add("Kg");
         measuring_units.add("Pounds");
 
-
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
         //final TextView value = (TextView) dialog.findViewById(R.id.height_value);
         final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
         dialog_name.setText("Goal Weight");
+
         final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
         View done = dialog.findViewById(R.id.height_done);
         TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
         textInputLayout.setHint("Goal Weight");
+        seekBar.setSelectAllOnFocus(true);
         final String[] unit = {"Kg"};
         if (goal_weight != 0.0) {
-            int goal = (int) goal_weight/1000;
-            seekBar.setText("" + goal);
+            seekBar.setText(new DecimalFormat("##.#").format(goal_weight/1000).toString());
         }
-        seekBar.setInputType(InputType.TYPE_CLASS_NUMBER);
+        seekBar.setInputType(InputType.TYPE_CLASS_PHONE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(0,false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("item selected", measuring_units.get(i));
                 unit[0] = measuring_units.get(i);
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()) {
+                    if (unit[0].equals("Kg")) {
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString()) * 0.453592).toString());
+                        seekBar.setSelectAllOnFocus(true);
+                    } else if (unit[0].equals("Pounds")) {
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString()) * 2.20462).toString());
+                        seekBar.setSelectAllOnFocus(true);
+                    }
+                }
             }
 
             @Override
@@ -711,36 +756,22 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
             }
         });
-        //seekBar.setMax(200000);
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()) {
+                    float i = Float.parseFloat(seekBar.getText().toString());
 
-                int i = Integer.parseInt(seekBar.getText().toString());
-
-                if (unit[0].equals("Kg")) {
-
-//                    double kg = i*0.001;
-//                    DecimalFormat df = new DecimalFormat("#.##");
-//                    String val   =  df.format(kg);
-                    goal_weight_new = i + " Kg";
-                    goal_weight = Integer.parseInt(seekBar.getText().toString()) * 1000;
-                    //value.setText(val+" Kg");
-
-                } else if (unit[0].equals("Pounds")) {
-
-//                    double meters= i*0.00220462;
-//
-//                    DecimalFormat df = new DecimalFormat("#.##");
-//                    String val   =  df.format(meters);
-                    goal_weight_new = i + " Pounds";
-                    goal_weight = Integer.parseInt(seekBar.getText().toString()) * 453.592;
-                    //value.setText(val+" Pounds");
-
+                    if (unit[0].equals("Kg")) {
+                        goal_weight_new = new DecimalFormat("##.#").format(i).toString() + " Kg";
+                        goal_weight = Float.parseFloat(seekBar.getText().toString()) * 1000;
+                    } else if (unit[0].equals("Pounds")) {
+                        goal_weight_new = new DecimalFormat("##.#").format(i).toString() + " Pounds";
+                        goal_weight = Float.parseFloat(seekBar.getText().toString()) * 453.592;
+                    }
+                    goal_weight_tv.setText(goal_weight_new);
                 }
-                Log.d("weight value", goal_weight_new);
-                goal_weight_tv.setText(goal_weight_new);
-                if (height == 0 || waist == 0 || weight == 0) {
+                if (height == 0 || waist == 0 || weight == 0 || goal_weight ==0) {
 
 
                     if (height == 0) {
@@ -779,29 +810,38 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         measuring_units.add("Centimeters");
         measuring_units.add("Inches");
 
-
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
         //final TextView value = (TextView) dialog.findViewById(R.id.height_value);
         final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
         dialog_name.setText("Waist");
         final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
         View done = dialog.findViewById(R.id.height_done);
+        seekBar.setSelectAllOnFocus(true);
         TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
         textInputLayout.setHint("Waist");
-        final String[] unit = {"Inches"};
+        final String[] unit = {"Centimeters"};
         if (waist != 0.0) {
-            int wai = (int) waist;
-            seekBar.setText("" + wai);
+            seekBar.setText(new DecimalFormat("##.#").format(waist).toString());
         }
-        seekBar.setInputType(InputType.TYPE_CLASS_NUMBER);
+        seekBar.setInputType(InputType.TYPE_CLASS_PHONE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        spinner.setSelection(0,false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("item selected", measuring_units.get(i));
                 unit[0] = measuring_units.get(i);
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()) {
+                    if (unit[0].equals("Inches")) {
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString()) / 2.54).toString());
+                        seekBar.setSelectAllOnFocus(true);
+                    } else if (unit[0].equals("Centimeters")) {
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString()) * 2.54).toString());
+                        seekBar.setSelectAllOnFocus(true);
+                    }
+                }
             }
 
             @Override
@@ -813,30 +853,18 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                int i = Integer.parseInt(seekBar.getText().toString());
-
-                if (unit[0].equals("Inches")) {
-
-
-                    //value.setText(i+" Inches");
-                    waist_new = i + " Inches";
-                    waist = Integer.parseInt(seekBar.getText().toString()) * 2.54;
-
-                } else if (unit[0].equals("Centimeters")) {
-
-//                    double meters= i*2.54;
-//
-//                    DecimalFormat df = new DecimalFormat("#.##");
-//                    String val   =  df.format(meters);
-                    waist_new = i + " cms";
-                    waist = Integer.parseInt(seekBar.getText().toString());
-                    //value.setText(val+" Centimeters");
-
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()) {
+                    float i = Float.parseFloat(seekBar.getText().toString());
+                    if (unit[0].equals("Inches")) {
+                        waist_new = new DecimalFormat("##.#").format(i).toString() + " Inches";
+                        waist = Float.parseFloat(seekBar.getText().toString()) * 2.54;
+                    } else if (unit[0].equals("Centimeters")) {
+                        waist_new = new DecimalFormat("##.#").format(i).toString() + " cms";
+                        waist = Float.parseFloat(seekBar.getText().toString());
+                    }
+                    waist_tv.setText(waist_new);
                 }
-                Log.d("waist value", waist_new);
-                waist_tv.setText(waist_new);
-                if (height == 0 || waist == 0 || weight == 0) {
+                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0) {
 
 
                     if (height == 0) {
@@ -874,7 +902,12 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         weight = userModel.getProfile().getWeight();
         goal_weight = userModel.getProfile().getGoal_weight();
         waist = userModel.getProfile().getWaist();
-        profile_name.setText(userModel.getUser().getFirst_name());
+        if (userModel.getUser().getFirst_name() != null) {
+            if (userModel.getUser().getLast_name() != null) {
+                profile_name.setText(userModel.getUser().getFirst_name() + " " + userModel.getUser().getLast_name());
+            }else
+                profile_name.setText(userModel.getUser().getFirst_name());
+        }
         if (gender.equals("M")) {
             male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
             female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
@@ -990,6 +1023,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                     }
                     if (userModel != null && userModel.getProfile().getImages() != null && userModel.getProfile().getImages().getMaster() != null) {
                         editor.putString("master_image", userModel.getProfile().getImages().getMaster());
+                        pref.setKeyMasterImage(userModel.getProfile().getImages().getMaster());
                         ImageLoader.getInstance().loadImage(userModel.getProfile().getImages().getMaster(), new ImageLoadingListener() {
                             @Override
                             public void onLoadingStarted(String imageUri, View view) {
@@ -1048,6 +1082,65 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                 Intent i = new Intent(getContext(),SetGoalsActivity.class);
                 startActivity(i);
                 break;
+            case R.id.linearEditName:
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.setContentView(R.layout.height_dialog);
+                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+                Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
+                //final TextView value = (TextView) dialog.findViewById(R.id.height_value);
+                final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
+                final TextView dialog_heading = (TextView) dialog.findViewById(R.id.dialogHeading);
+                dialog_name.setText("Name");
+                dialog_heading.setText("Enter Name");
+                spinner.setVisibility(View.GONE);
+                final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
+                final EditText seekBar1 = (EditText) dialog.findViewById(R.id.height_seekbar1);
+                if (first_name != null){
+                    seekBar.setText(first_name);
+                }
+                if (last_name != null){
+                    seekBar1.setText(last_name);
+                }
+                seekBar.setSelectAllOnFocus(true);
+                seekBar.setInputType(InputType.TYPE_CLASS_TEXT);
+                seekBar1.setSelectAllOnFocus(true);
+                seekBar1.setInputType(InputType.TYPE_CLASS_TEXT);
+                View done = dialog.findViewById(R.id.height_done);
+                TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
+                TextInputLayout textInputLayout1 = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight1);
+                textInputLayout1.setVisibility(View.VISIBLE);
+                textInputLayout.setHint("First Name");
+                textInputLayout1.setHint("Last Name");
+
+                //seekBar.setMax(200);
+                done.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        first_name = seekBar.getText().toString();
+                        last_name = seekBar1.getText().toString();
+                        profile_name.setText(first_name + " " + last_name);
+                        if (height == 0 || waist == 0 || weight == 0) {
+                            if (height == 0) {
+                                dialog.dismiss();
+                                showHeightDialog();
+                            } else if (weight == 0) {
+                                dialog.dismiss();
+                                showWeightDialog();
+                            } else if (waist == 0) {
+                                dialog.dismiss();
+                                showWaistDialog();
+                            } else if (goal_weight == 0) {
+                                dialog.dismiss();
+                                showGoal_WeightDialog();
+                            }
+                        } else {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                dialog.show();
+                break;
         }
     }
     RequestListener mDietListener = new RequestListener() {
@@ -1082,6 +1175,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                                     prefernce_final = diet_options.get(y).getId();
                                 }
                             }
+                            Controller.setPreferences(getContext(),prefernce_final,user_id,mPreferenceListener);
                         }
 
                         @Override
@@ -1091,6 +1185,39 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                     });
                 }
             });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    RequestListener mPreferenceListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+
         }
 
         @Override

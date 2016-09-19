@@ -101,7 +101,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
     private static final int MINUTE = 60 * SECOND;
     private static final int HOUR = 60 * MINUTE;
     private static final int DAY = 24 * HOUR;
-    int hour,minute,year,month,day,hour1,minute1,year1,month1,day1,memberValueFinal;
+    int hour,minute,year,month,day,hour1,minute1,year1,month1,day1,memberValueFinal,event_type = 1;
     private static String[] PERMISSIONS_LOCATION = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Nullable
@@ -150,15 +150,45 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
 
             }
         });
+
+        Calendar calendar = Calendar.getInstance();
+        year1 = calendar.get(Calendar.YEAR);
+        month1 = calendar.get(Calendar.MONTH);
+        day1 = calendar.get(Calendar.DAY_OF_MONTH);
+        hour1 = calendar.get(Calendar.HOUR_OF_DAY);
+        minute1 = calendar.get(Calendar.MINUTE);
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
+        updateTime(hour,minute);
+        updateTime1(hour1,minute1);
+        type.setOnItemClickListener(mAutocompleteClickListener);
+        adapter = new PlaceAutoCompleteAdapter(getContext(), android.R.layout.simple_list_item_1);
+        if (pref.getCurrentLocationAsObject() != null){
+            if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
+                location.setText(MyUtils.getCityNameFromLatLng(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
+            }
+        }
+        type.setAdapter(adapter);
         if (getArguments() != null){
             response = getArguments().getString("response");
+            Log.d("edit event",response);
             dataObject = JsonUtils.objectify(response,DataObject.class);
             title.setText(dataObject.getTitle());
             type.setText(dataObject.getEvent_type().getTitle());
             description.setText(dataObject.getDescription());
+            location.setText(MyUtils.getCityName(getContext(),dataObject.getLocation()));
             rangeBar.setProgress(dataObject.getCapacity());
+            memberValueFinal = dataObject.getCapacity();
             if (dataObject.getEvent_time() != null) {
-                activityDate.setText(MyUtils.getValidDate(dataObject.getEvent_time()));
+                year1 = Integer.parseInt(MyUtils.getYear(dataObject.getEvent_time()));
+                month1 = Integer.parseInt(MyUtils.getMonth(dataObject.getEvent_time()));
+                day1 = Integer.parseInt(MyUtils.getDay(dataObject.getEvent_time()));
+                hour1 = Integer.parseInt(MyUtils.getHour(dataObject.getEvent_time()));
+                minute1 = Integer.parseInt(MyUtils.getMinute(dataObject.getEvent_time()));
+                activityDate.setText(MyUtils.getValidDate1(dataObject.getEvent_time()));
                 activityTime.setText(MyUtils.getValidTime(dataObject.getEvent_time()));
             }
             if (dataObject.getPicture() != null){
@@ -183,37 +213,42 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                         addImage.setImageBitmap(loadedImage);
                     }
                 });
-                long endTime = MyUtils.getTimeinMillis(dataObject.getTime());
-                long currentTime = System.currentTimeMillis();
-                countDownTimer = new CountDownTimer(endTime - currentTime, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        long ms = millisUntilFinished;
-                        StringBuffer text = new StringBuffer("");
-                        if (ms > DAY) {
-                            text.append(ms / DAY).append("d ");
-                            ms %= DAY;
-                        }
-                        if (ms > HOUR) {
-                            text.append(ms / HOUR).append("hr ");
-                            ms %= HOUR;
-                        }
-                        if (ms > MINUTE) {
-                            text.append(ms / MINUTE).append("min ");
-                            ms %= MINUTE;
-                        }
-                        time.setText(text.toString()+"left");
-                    }
-
-                    @Override
-                    public void onFinish() {
-
-                    }
-                };
-                countDownTimer.start();
             }else {
                 addImage.setImageResource(R.drawable.hotel);
             }
+            long endTime = MyUtils.getTimeinMillis(dataObject.getTime());
+            year = Integer.parseInt(MyUtils.getYear(dataObject.getTime()));
+            month = Integer.parseInt(MyUtils.getMonth(dataObject.getTime()));
+            day = Integer.parseInt(MyUtils.getDay(dataObject.getTime()));
+            hour = Integer.parseInt(MyUtils.getHour(dataObject.getTime()));
+            minute = Integer.parseInt(MyUtils.getMinute(dataObject.getTime()));
+            long currentTime = System.currentTimeMillis();
+            countDownTimer = new CountDownTimer(endTime - currentTime, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    long ms = millisUntilFinished;
+                    StringBuffer text = new StringBuffer("");
+                    if (ms > DAY) {
+                        text.append(ms / DAY).append("d ");
+                        ms %= DAY;
+                    }
+                    if (ms > HOUR) {
+                        text.append(ms / HOUR).append("hr ");
+                        ms %= HOUR;
+                    }
+                    if (ms > MINUTE) {
+                        text.append(ms / MINUTE).append("min ");
+                        ms %= MINUTE;
+                    }
+                    time.setText(text.toString()+"left");
+                }
+
+                @Override
+                public void onFinish() {
+
+                }
+            };
+            countDownTimer.start();
             createActivity.setText("Update Event");
             createActivity.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -231,6 +266,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                         createEventSendModel.type = editType;
                     if (memberValueFinal != dataObject.getCapacity())
                         createEventSendModel.capacity = memberValueFinal;
+                    if (pref.getCurrentLocationAsObject() != null){
+                        if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
+                            double[] location = {pref.getCurrentLocationAsObject().getLongitude(),pref.getCurrentLocationAsObject().getLatitude()};
+                            createEventSendModel.setLocation(location);
+                        }
+                    }
                     Date date1 = new Date(year - 1900, month, day, hour, minute);
                     long output = date1.getTime() / 1000L;
                     Date date2 =new Date(year1-1900,month1,day1,hour1,minute1);
@@ -240,34 +281,13 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                     }
                     createEventSendModel.event_time = output1;
                     createEventSendModel.timer = String.valueOf(output);
-                    createEventSendModel.event_type = "1";
+                    createEventSendModel.event_type = event_type;
                     Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
                     progressBar.setVisibility(View.VISIBLE);
                     Controller.updateEvent(getActivity(),createEventSendModel,dataObject.getId(),mUpdateListener);
                 }
             });
         }
-        Calendar calendar = Calendar.getInstance();
-        year1 = calendar.get(Calendar.YEAR);
-        month1 = calendar.get(Calendar.MONTH);
-        day1 = calendar.get(Calendar.DAY_OF_MONTH);
-        hour1 = calendar.get(Calendar.HOUR);
-        minute1 = calendar.get(Calendar.MINUTE);
-        year = calendar.get(Calendar.YEAR);
-        month = calendar.get(Calendar.MONTH);
-        day = calendar.get(Calendar.DAY_OF_MONTH);
-        hour = calendar.get(Calendar.HOUR);
-        minute = calendar.get(Calendar.MINUTE);
-        updateTime(hour,minute);
-        updateTime1(hour1,minute1);
-        type.setOnItemClickListener(mAutocompleteClickListener);
-        adapter = new PlaceAutoCompleteAdapter(getContext(), android.R.layout.simple_list_item_1);
-        if (pref.getCurrentLocationAsObject() != null){
-            if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
-                location.setText(MyUtils.getCityNameFromLatLng(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
-            }
-        }
-        type.setAdapter(adapter);
         return layout;
     }
     private AdapterView.OnItemClickListener mAutocompleteClickListener
@@ -276,6 +296,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             EventTypeModel interestListModel = adapter.getItem(position);
             type.setText(interestListModel.getTitle());
+            event_type = interestListModel.getId();
         }
     };
     @Override
@@ -290,7 +311,14 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 createEventSendModel.title = editTitle;
                 createEventSendModel.description = editDescription;
                 createEventSendModel.type = editType;
+                createEventSendModel.event_type = event_type;
                 createEventSendModel.capacity = memberValueFinal;
+                if (pref.getCurrentLocationAsObject() != null){
+                    if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
+                        double[] location = {pref.getCurrentLocationAsObject().getLongitude(),pref.getCurrentLocationAsObject().getLatitude()};
+                        createEventSendModel.setLocation(location);
+                    }
+                }
                 Date date1 = new Date(year - 1900, month, day, hour, minute);
                 long output = date1.getTime() / 1000L;
                 Date date2 =new Date(year1-1900,month1,day1,hour1,minute1);
@@ -300,7 +328,6 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 }
                 createEventSendModel.event_time = output1;
                 createEventSendModel.timer = String.valueOf(output);
-                createEventSendModel.event_type = "1";
                 Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.createEvent(getContext(),createEventSendModel,mCreateListener);
@@ -579,6 +606,9 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         public void onRequestCompleted(Object responseObject) {
             Log.d("Event Created",responseObject.toString());
             Fragment fragment = new Lookupfrag();
+            Bundle bundle = new Bundle();
+            bundle.putString("addactivity","addactivity");
+            fragment.setArguments(bundle);
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frameAddActivity, fragment);
             transaction.commit();
@@ -614,6 +644,9 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         public void onRequestCompleted(Object responseObject) {
             Log.d("Event Updated",responseObject.toString());
             Fragment fragment = new Lookupfrag();
+            Bundle bundle = new Bundle();
+            bundle.putString("addactivity","addactivity");
+            fragment.setArguments(bundle);
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frameAddActivity, fragment);
             transaction.commit();

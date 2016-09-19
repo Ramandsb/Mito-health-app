@@ -62,8 +62,8 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
         mCardStack.setEventCallback(this);
         mCardStack.setHardwareAccelerationEnabled(true);
         //interests.setText(list.get(position).getInterests());
-        mCardStack.setLeftImage(R.id.left_image);
-        mCardStack.setRightImage(R.id.right_image);
+        mCardStack.setLeftImage(R.id.right_image);
+        mCardStack.setRightImage(R.id.left_image);
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -113,7 +113,7 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                         double lat2 = MyUtils.getLatitude(getContext(),data.getNearby_user_list().get(0).getLocation());
                         double long2 = MyUtils.getLongitude(getContext(),data.getNearby_user_list().get(0).getLocation());
                         double result = MyUtils.calculateDistance(latitde, longitude, lat2, long2, "K");
-                        distance.setText("less "+new DecimalFormat("##.#").format(result).toString() + " kms away");
+                        distance.setText("less than "+new DecimalFormat("##.#").format(result).toString() + " kms away");
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
