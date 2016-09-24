@@ -35,6 +35,7 @@ import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.CuisineModel;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import in.tagbin.mitohealthapp.model.UserModel;
 import pl.droidsonroids.gif.GifImageView;
 
 /**
@@ -205,6 +206,8 @@ public class SelectCuisineActivity extends AppCompatActivity implements View.OnC
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("send goal",responseObject.toString());
+            PrefManager pref = new PrefManager(SelectCuisineActivity.this);
+            pref.setKeyUserDetails(JsonUtils.objectify(responseObject.toString(), UserModel.class));
             Intent intent = new Intent(SelectCuisineActivity.this, BinderActivity.class);
             intent.putExtra("selection", 1);
             startActivity(intent);

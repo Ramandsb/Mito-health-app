@@ -194,7 +194,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
             linear1.setOrientation(LinearLayoutManager.VERTICAL);
             rvLogger.setLayoutManager(linear1);
             rvLogger.setHasFixedSize(false);
-            FoodLoggerAdapter adapter = new FoodLoggerAdapter(getContext(),foodLogger.get(i).getMeals());
+            FoodLoggerAdapter adapter = new FoodLoggerAdapter(getContext(),foodLogger.get(i).getMeals(),progressBar);
             rvLogger.setAdapter(adapter);
             //rvLogger.setLayoutManager(linearLayoutManager);
         }

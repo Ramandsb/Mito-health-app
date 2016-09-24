@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,11 +41,17 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
     GifImageView imageView;
     ExploreModel data;
     RelativeLayout mainContent;
-    TextView name,age,distance,noData;
+    TextView name,age,distance,noData,coins;
     GifImageView progressBar;
     PrefManager pref;
-    int page =1;
+    int page =1,coinsFinal = 0;
     double latitde=0.0,longitude=0.0;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -76,6 +84,39 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
 
         Controller.getUsersNearBy(getContext(),longitude,latitde,page,mUsersListener);
         return viewGroup;
+    }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("PREPDUG", "hereProfile");
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setVisible(false);
+        }
+        //InitActivity i = (InitActivity) getActivity();
+        //i.getActionBar().setTitle("Profile");
+        menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        View view = menu.findItem(R.id.action_coin).getActionView();
+        coins = (TextView) view.findViewById(R.id.tvCoins);
+        coinsFinal = pref.getKeyCoins();
+        coins.setText(""+coinsFinal);
+        super.onPrepareOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_requests) {
+            Intent i = new Intent(getContext(),FriendRequestActivity.class);
+            startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
     }
     RequestListener mUsersListener = new RequestListener() {
         @Override
@@ -219,7 +260,7 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
             double lat2 = MyUtils.getLatitude(getContext(),data.getNearby_user_list().get(position1).getLocation());
             double long2 = MyUtils.getLongitude(getContext(),data.getNearby_user_list().get(position1).getLocation());
             double result = MyUtils.calculateDistance(latitde, longitude, lat2, long2, "K");
-            distance.setText("less "+new DecimalFormat("##.#").format(result).toString() + " kms away");
+            distance.setText("less than "+new DecimalFormat("##.#").format(result).toString() + " kms away");
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -250,7 +291,7 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
             double lat2 = MyUtils.getLatitude(getContext(),data.getNearby_user_list().get(position1).getLocation());
             double long2 = MyUtils.getLongitude(getContext(),data.getNearby_user_list().get(position1).getLocation());
             double result = MyUtils.calculateDistance(latitde, longitude, lat2, long2, "K");
-            distance.setText("less "+new DecimalFormat("##.#").format(result).toString() + " kms away");
+            distance.setText("less than "+new DecimalFormat("##.#").format(result).toString() + " kms away");
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

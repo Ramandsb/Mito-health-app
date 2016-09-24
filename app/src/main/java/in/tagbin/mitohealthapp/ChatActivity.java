@@ -81,24 +81,27 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        customDialog();
+        //customDialog();
         registerReceiver(Recievemsgs, new IntentFilter(XamppChatService.RECIEVEDMSGS));
         SendMessages= new Intent(XamppChatService.SENTMSGS);
         recyclerView=(RecyclerView)findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter=new ChatActivityAdapter(this);
+        //adapter=new ChatActivityAdapter(this);
 
         dop=new DatabaseOperations(this);
-        recyclerView.setAdapter(adapter);
+
 
         textMessage = (EditText) this.findViewById(R.id.chatET);
         user_name=getIntent().getExtras().getString("user_name");
+        getSupportActionBar().setTitle(user_name);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         list=dop.getCMInformation(dop,user_name);
         if (list.isEmpty()){
 
         }else {
             customPojos_list=list;
-            adapter.setListContent(list);
+            adapter = new ChatActivityAdapter(this,customPojos_list);
+            recyclerView.setAdapter(adapter);
         }
         toolbar.setTitle(user_name);
 //        recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
@@ -117,7 +120,8 @@ public class ChatActivity extends AppCompatActivity {
                 pojo.setMessages(text);
 
                 customPojos_list.add(pojo);
-                adapter.setListContent(customPojos_list);
+                //adapter.setListContent(customPojos_list);
+                adapter.notifyDataSetChanged();
                 textMessage.setText(null);
                 recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
                 SendMessages.putExtra("user_name",user_name);
@@ -160,8 +164,9 @@ public class ChatActivity extends AppCompatActivity {
             pojo.setUser_id(username);
             pojo.setMessages(msg);
             dop.putCMInformation(dop,"from",time,msg,user_name);
+            adapter.notifyDataSetChanged();
             customPojos_list.add(pojo);
-            adapter.setListContent(customPojos_list);
+            adapter.notifyDataSetChanged();
             recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
 
             Log.d("Message Recieved","From"+ username+" Message :"+msg);
@@ -177,180 +182,38 @@ public class ChatActivity extends AppCompatActivity {
 //        Log.d("Ramandeep",activeNetworkInfo.isConnected()+"///");
 //        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 //    }
-    public void setConnection(XMPPConnection connection) {
-        this.connection = connection;
-        if (connection != null) {
-            // Add a packet listener to get messages sent to us
-            PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
-            connection.addPacketListener(new PacketListener() {
-                @Override
-                public void processPacket(Packet packet) {
-                    Message message = (Message) packet;
-                    CustomPojo pojo = new CustomPojo();
-                    if (message.getBody() != null) {
-                        String fromName = StringUtils.parseBareAddress(message
-                                .getFrom());
-                        Log.i("XMPPChatDemoActivity", "Text Recieved " + message.getBody()
-                                + " from " + fromName );
-
-                        pojo.setMessages(message.getBody());
-                        messages.add(fromName + ":");
-                        messages.add(message.getBody());
-                        customPojos_list.add(pojo);
-                        adapter.setListContent(customPojos_list);
-                        // Add the incoming message to the list view
-                        mHandler.post(new Runnable() {
-                            public void run() {
-//setListAdapter();
-                            }
-                        });
-                    }
-                }
-            }, filter);
-        }
-    }
-    class Connector extends AsyncTask {
-
-
-
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            showDialog();
-            ConnectionConfiguration connConfig = new ConnectionConfiguration(
-                    HOST, PORT, SERVICE);
-            XMPPConnection connection = new XMPPConnection(connConfig);
-
-            try {
-                connection.connect();
-                Log.i("XMPPChatDemoActivity",
-                        "Connected to " + connection.getHost());
-            } catch (XMPPException ex) {
-                Log.e("XMPPChatDemoActivity", "Failed to connect to "
-                        + connection.getHost());
-                Log.e("XMPPChatDemoActivity", ex.toString());
-                setConnection(null);
-            }
-            try {
-                // SASLAuthentication.supportSASLMechanism("PLAIN", 0);
-                connection.login(USERNAME, PASSWORD);
-                Log.i("XMPPChatDemoActivity",
-                        "Logged in as " + connection.getUser());
-
-                // Set the status to available
-                Presence presence = new Presence(Presence.Type.available);
-                connection.sendPacket(presence);
-                setConnection(connection);
-
-                Roster roster = connection.getRoster();
-                Collection<RosterEntry> entries = roster.getEntries();
-                for (RosterEntry entry : entries) {
-                    Log.d("XMPPChatDemoActivity",
-                            "--------------------------------------");
-                    Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
-                    Log.d("XMPPChatDemoActivity",
-                            "User: " + entry.getUser());
-                    Log.d("XMPPChatDemoActivity",
-                            "Name: " + entry.getName());
-
-                    String name = entry.getName();
-                    String content = entry.getUser();
-
-
-                    Log.d("XMPPChatDemoActivity",
-                            "Status: " + entry.getStatus());
-                    Log.d("XMPPChatDemoActivity",
-                            "Type: " + entry.getType());
-                    Presence entryPresence = roster.getPresence(entry
-                            .getUser());
-
-                    Log.d("XMPPChatDemoActivity", "Presence Status: "
-                            + entryPresence.getStatus());
-                    Log.d("XMPPChatDemoActivity", "Presence Type: "
-                            + entryPresence.getType());
-                    Presence.Type type = entryPresence.getType();
-                    if (type == Presence.Type.available)
-                        Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
-                    Log.d("XMPPChatDemoActivity", "Presence : "
-                            + entryPresence);
-
-//                    CustomPojo pojoObject = new CustomPojo();
-//                    DateFormat df = new SimpleDateFormat("HH:mm");
-//                    Calendar calobj = Calendar.getInstance();
+//    public void setConnection(XMPPConnection connection) {
+//        this.connection = connection;
+//        if (connection != null) {
+//            // Add a packet listener to get messages sent to us
+//            PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
+//            connection.addPacketListener(new PacketListener() {
+//                @Override
+//                public void processPacket(Packet packet) {
+//                    Message message = (Message) packet;
+//                    CustomPojo pojo = new CustomPojo();
+//                    if (message.getBody() != null) {
+//                        String fromName = StringUtils.parseBareAddress(message
+//                                .getFrom());
+//                        Log.i("XMPPChatDemoActivity", "Text Recieved " + message.getBody()
+//                                + " from " + fromName );
 //
-//                    pojoObject.setName(content);
-//                    pojoObject.setContent(content);
-//                    pojoObject.setTime(df.format(calobj.getTime()));
-//                    listContentArr.add(pojoObject);
-
-                }
-
-//
-            } catch (XMPPException ex) {
-                Log.e("XMPPChatDemoActivity", "Failed to log in as "
-                        + USERNAME);
-                Log.e("XMPPChatDemoActivity", ex.toString());
-                setConnection(null);
-            }
-
-            //
-            // dialog.dismiss();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Object o) {
-            super.onPostExecute(o);
-            dismissDialog();
-        }
-
-        //    }
+//                        pojo.setMessages(message.getBody());
+//                        messages.add(fromName + ":");
+//                        messages.add(message.getBody());
+//                        customPojos_list.add(pojo);
+//                        adapter.setListContent(customPojos_list);
+//                        // Add the incoming message to the list view
+//                        mHandler.post(new Runnable() {
+//                            public void run() {
+////setListAdapter();
+//                            }
+//                        });
+//                    }
+//                }
+//            }, filter);
+//        }
+//    }
 
 
-    }
-
-    TextView messageView;
-    ProgressBar progressBar;
-    android.app.AlertDialog alert;
-
-
-    public void customDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-
-        View customView = inflater.inflate(R.layout.dialog, null);
-        builder.setView(customView);
-        messageView = (TextView) customView.findViewById(R.id.tvdialog);
-        progressBar = (ProgressBar) customView.findViewById(R.id.progress);
-        alert = builder.create();
-
-    }
-
-    public void showDialog() {
-
-        progressBar.setVisibility(View.VISIBLE);
-        alert.show();
-        messageView.setText("Loading");
-    }
-
-    public void dismissDialog() {
-        alert.dismiss();
-    }
-
-    public void displayErrors(VolleyError error) {
-        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("Connection failed");
-        } else if (error instanceof AuthFailureError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("AuthFailureError");
-        } else if (error instanceof ServerError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ServerError");
-        } else if (error instanceof NetworkError) {
-            messageView.setText("NetworkError");
-        } else if (error instanceof ParseError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ParseError");
-        }
-    }
 }

@@ -34,22 +34,7 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
                     ProfilePage tab1=new ProfilePage();
                     return tab1;
                 case 1:
-                    if (ProfilePage.height == 0 && ProfilePage.weight == 0){
-                        final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
-                        alertDialog1.setTitle("Enter Details");
-                        alertDialog1.setMessage("Please enter your height and weight to proceed");
-                        alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
 
-                            }
-                        });
-                        alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        alertDialog1.show();
-                    }else {
                         PartProfile tab2 = new PartProfile();
                         if (!profile.equals("") || !profile.isEmpty() || profile != null) {
                             Bundle bundle = new Bundle();
@@ -57,7 +42,6 @@ public class ProfilePagerAdapter extends FragmentStatePagerAdapter {
                             tab2.setArguments(bundle);
                         }
                         return tab2;
-                    }
                 default:
             }
         }catch (Exception e){

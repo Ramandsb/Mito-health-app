@@ -103,7 +103,9 @@ public class FoodDetails extends AppCompatActivity {
         response = getIntent().getStringExtra("response");
         if (getIntent().getStringExtra("logger") != null)
             logged = true;
+        Log.d("food details",response);
         data = JsonUtils.objectify(response, RecommendationModel.MealsModel.class);
+        getSupportActionBar().setTitle(data.getComponent().getName());
         MaterialFavoriteButton toolbarFavorite = (MaterialFavoriteButton) toolbar.findViewById(R.id.favorite_nice); //
         toolbarFavorite.setOnFavoriteChangeListener(
                 new MaterialFavoriteButton.OnFavoriteChangeListener() {
@@ -147,7 +149,10 @@ public class FoodDetails extends AppCompatActivity {
 
 
         ImageView imageView = (ImageView) findViewById(R.id.seeFood);
-        Picasso.with(this).load(url).into(imageView);
+        if (data.getComponent().getImage() != null)
+            Picasso.with(this).load(data.getComponent().getImage()).into(imageView);
+        else
+            Picasso.with(this).load(url).into(imageView);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -259,6 +264,7 @@ public class FoodDetails extends AppCompatActivity {
             SetFoodLoggerModel setFoodLoggerModel = new SetFoodLoggerModel();
             setFoodLoggerModel.setLtype("food");
             setFoodLoggerModel.setC_id(data.getComponent().getId());
+            setFoodLoggerModel.setServing_unit(FoodDetailsFrag.servingUnit);
             Date date = new Date(FoodDetailsFrag.year - 1900,FoodDetailsFrag.month,FoodDetailsFrag.day,FoodDetailsFrag.hour,FoodDetailsFrag.minute);
             long time = date.getTime()/1000L;
             Log.d("timesatmap",""+time);
@@ -266,10 +272,11 @@ public class FoodDetails extends AppCompatActivity {
             setFoodLoggerModel.setAmount(Integer.parseInt(FoodDetailsFrag.quantity));
             Log.d("model2",JsonUtils.jsonify(setFoodLoggerModel));
             progressBar.setVisibility(View.VISIBLE);
-            Controller.updateLogFood(FoodDetails.this,setFoodLoggerModel,data.getId(),mFoodLoggerListener);
+            Controller.updateLogFood(FoodDetails.this,setFoodLoggerModel,data.getId(),mFoodUpdateListener);
         }else if (getIntent().getStringExtra("foodsearch") != null){
              SetFoodLoggerModel setFoodLoggerModel = new SetFoodLoggerModel();
              setFoodLoggerModel.setLtype("food");
+            setFoodLoggerModel.setServing_unit(FoodDetailsFrag.servingUnit);
              setFoodLoggerModel.setC_id(data.getComponent().getId());
              Date date = new Date(FoodDetailsFrag.year - 1900,FoodDetailsFrag.month,FoodDetailsFrag.day,FoodDetailsFrag.hour,FoodDetailsFrag.minute);
              long time = date.getTime()/1000L;
@@ -290,7 +297,7 @@ public class FoodDetails extends AppCompatActivity {
             setFoodLoggerModel.setTime_consumed(time);
              setFoodLoggerModel.setMeal_id(data.getMeal_id());
              setFoodLoggerModel.setFlag(1);
-
+            setFoodLoggerModel.setServing_unit(FoodDetailsFrag.servingUnit);
             setFoodLoggerModel.setAmount(Integer.parseInt(FoodDetailsFrag.quantity));
             Log.d("model1",JsonUtils.jsonify(setFoodLoggerModel));
             progressBar.setVisibility(View.VISIBLE);
@@ -399,6 +406,52 @@ public class FoodDetails extends AppCompatActivity {
                 public void run() {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(FoodDetails.this,"Food successfully logged",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("food logger error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(FoodDetails.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(FoodDetails.this, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    RequestListener mFoodUpdateListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("food logger",responseObject.toString());
+            Intent i = new Intent(FoodDetails.this,CollapsableLogging.class);
+            i.putExtra("selection",0);
+            startActivity(i);
+            finish();
+            logged = true;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(FoodDetails.this,"Food successfully updated",Toast.LENGTH_LONG).show();
                 }
             });
         }

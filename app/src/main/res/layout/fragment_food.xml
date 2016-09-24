@@ -36,12 +36,7 @@
                     app:mcv_showOtherDates="all" />
             </android.support.v7.widget.CardView>
 
-            <LinearLayout
-                android:id="@+id/linearFoodLogger"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/cvTopFood"
-                android:orientation="vertical" />
+
 
             <LinearLayout
                 android:id="@+id/linearTopRecommended"
@@ -66,7 +61,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
             </LinearLayout>
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvRecommendation"
                 android:layout_width="match_parent"
@@ -75,6 +69,12 @@
                 android:layout_margin="10dp">
 
             </android.support.v7.widget.RecyclerView>
+            <LinearLayout
+                android:id="@+id/linearFoodLogger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cvTopFood"
+                android:orientation="vertical" />
         </RelativeLayout>
     </ScrollView>
 </android.support.v4.widget.NestedScrollView>

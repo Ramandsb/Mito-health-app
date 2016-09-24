@@ -11,7 +11,7 @@ public class ConnectProfileModel {
     String gender;
     ImagesModel images;
     String occupation,description,last_login,location,home_town;
-    int age,compatibility;
+    int age,compatibility,total_coins;
 
     List<InterestProfileModel> interests;
     User1Model user;
@@ -19,6 +19,10 @@ public class ConnectProfileModel {
         user = new User1Model();
         images = new ImagesModel();
         interests = new ArrayList<InterestProfileModel>();
+    }
+
+    public int getTotal_coins() {
+        return total_coins;
     }
 
     public List<InterestProfileModel> getInterests() {

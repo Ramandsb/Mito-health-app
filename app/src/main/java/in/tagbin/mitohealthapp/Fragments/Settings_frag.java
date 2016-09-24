@@ -70,13 +70,14 @@ public class Settings_frag extends Fragment {
     Switch meals,water,sleep,exercise,weeklyProgress,healthTips,explore,chatNotifications;
     RangeBar age;
     DiscreteSeekBar distance;
-    TextView ageSet,distanceSet,version;
+    TextView ageSet,distanceSet,version,coins;
     SettingsModel settingsModel;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     GifImageView progressBar;
     TextView prefernce;
+    int coinsFinal = 0;
     RelativeLayout preferenceLayout;
     private OnFragmentInteractionListener mListener;
 
@@ -353,7 +354,12 @@ public class Settings_frag extends Fragment {
                 .setVisible(false);
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(true);
-
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        View view = menu.findItem(R.id.action_coin).getActionView();
+        coins = (TextView) view.findViewById(R.id.tvCoins);
+        PrefManager pref = new PrefManager(getContext());
+        coinsFinal = pref.getKeyCoins();
+        coins.setText(""+coinsFinal);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -502,5 +508,8 @@ public class Settings_frag extends Fragment {
         }else if (setting.getPeople_connect_preference() == 2){
             prefernce.setText("Only Women    >");
         }
+        coinsFinal = setting.getTotal_coins();
+        PrefManager pref = new PrefManager(getContext());
+        pref.setKeyCoins(coinsFinal);
     }
 }

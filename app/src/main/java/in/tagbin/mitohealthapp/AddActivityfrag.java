@@ -184,7 +184,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             memberValueFinal = dataObject.getCapacity();
             if (dataObject.getEvent_time() != null) {
                 year1 = Integer.parseInt(MyUtils.getYear(dataObject.getEvent_time()));
-                month1 = Integer.parseInt(MyUtils.getMonth(dataObject.getEvent_time()));
+                month1 = Integer.parseInt(MyUtils.getMonth(dataObject.getEvent_time()))-1;
                 day1 = Integer.parseInt(MyUtils.getDay(dataObject.getEvent_time()));
                 hour1 = Integer.parseInt(MyUtils.getHour(dataObject.getEvent_time()));
                 minute1 = Integer.parseInt(MyUtils.getMinute(dataObject.getEvent_time()));
@@ -218,7 +218,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             }
             long endTime = MyUtils.getTimeinMillis(dataObject.getTime());
             year = Integer.parseInt(MyUtils.getYear(dataObject.getTime()));
-            month = Integer.parseInt(MyUtils.getMonth(dataObject.getTime()));
+            month = Integer.parseInt(MyUtils.getMonth(dataObject.getTime()))-1;
             day = Integer.parseInt(MyUtils.getDay(dataObject.getTime()));
             hour = Integer.parseInt(MyUtils.getHour(dataObject.getTime()));
             minute = Integer.parseInt(MyUtils.getMinute(dataObject.getTime()));

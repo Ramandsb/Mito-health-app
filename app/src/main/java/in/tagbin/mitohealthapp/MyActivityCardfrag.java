@@ -1,5 +1,6 @@
 package in.tagbin.mitohealthapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,12 +8,16 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -56,7 +61,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
     LinearLayout linearFriends;
     RecyclerView recyclerView;
     List<ParticipantModel> mModel,da;
-    FrameLayout frameLayout;
+    FrameLayout frameLayout,wholeLayout;
     GifImageView progressBar;
     StaggeredGridLayoutManager mylayoutmanager;
     ParticipantAdapter mAdapter;
@@ -67,6 +72,13 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
     private static final int DAY = 24 * HOUR;
     CountDownTimer countDownTimer;
 
+    public MyActivityCardfrag(){
+
+    }
+    @SuppressLint("ValidFragment")
+    public MyActivityCardfrag(FrameLayout whole){
+        wholeLayout = whole;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -98,6 +110,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                frameLayout.setVisibility(View.VISIBLE);
                 Bundle bundle = new Bundle();
                 Fragment fragment = new AddActivityfrag();
                 bundle.putString("response",dataobject);
@@ -106,6 +119,23 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
                 transaction.add(R.id.frameAddActivity, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
+            }
+        });
+        heading.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+
+
+                    if (event.getRawX() <= (heading.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width())) {
+                        wholeLayout.setVisibility(View.GONE);
+                        getActivity().getSupportFragmentManager().popBackStack();
+                        return true;
+                    }
+                return false;
             }
         });
         join.setOnClickListener(this);
@@ -200,7 +230,7 @@ public class MyActivityCardfrag extends Fragment implements View.OnClickListener
 //        mModel.add(new ParticipantModel(13,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",26,13));
 //        mModel.add(new ParticipantModel(14,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",25,14));
 
-        mAdapter = new ParticipantAdapter(getContext(),mModel,getActivity().getSupportFragmentManager(),frameLayout,dataobject);
+        mAdapter = new ParticipantAdapter(getContext(),mModel,getActivity().getSupportFragmentManager(),wholeLayout,dataobject);
         recyclerView.setLayoutManager(this.mylayoutmanager);
         recyclerView.setHasFixedSize(true);
 

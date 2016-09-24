@@ -10,7 +10,9 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import in.tagbin.mitohealthapp.model.LocationModel;
+import in.tagbin.mitohealthapp.model.LoginModel;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
+import in.tagbin.mitohealthapp.model.UserModel;
 
 /**
  * Created by aasaqt on 13/8/16.
@@ -25,13 +27,16 @@ public class PrefManager {
     private static final String KEY_TUT_SHOWN1= "tut_shown1";
     private static final String KEY_MASTER_IMAGE = "master_image";
     private static final String KEY_MASTER_CREATE = "create_image";
+    private static final String KEY_USER_DETAILS = "user_model";
     private static final String KEY_USER_PIC1 = "user_pic1";
     private static final String KEY_USER_PIC2 = "user_pic2";
     private static final String KEY_USER_PIC3 = "user_pic3";
     private static final String KEY_USER_PIC4 = "user_pic4";
     private static final String KEY_USER_PIC5 = "user_pic5";
     private static final String KEY_USER_PIC6 = "user_pic6";
+    private static final String KEY_COINS = "user_coins";
     private static final String KEY_INTERESTS = "key_interests";
+    private static final String KEY_LOGIN = "login_object";
     private static String LOCATION_OBJECT = "location_object";
 
     public PrefManager(Context ctx){
@@ -96,6 +101,13 @@ public class PrefManager {
         editor.putString(KEY_MASTER_CREATE,keyUserPic1);
         editor.commit();
     }
+    public void setKeyCoins(int keyUserPic1) {
+        editor.putInt(KEY_COINS,keyUserPic1);
+        editor.commit();
+    }
+    public int getKeyCoins(){
+        return pref.getInt(KEY_COINS,0);
+    }
     public String getKeyMasterImage() {
         return pref.getString(KEY_MASTER_IMAGE,null);
     }
@@ -139,5 +151,24 @@ public class PrefManager {
         String userJson = pref.getString(LOCATION_OBJECT, null);
         LocationModel locationModel = JsonUtils.objectify(userJson,LocationModel.class);
         return locationModel;
+    }
+    public void saveLoginModel (LoginModel loginModel) {
+        String userJson = JsonUtils.jsonify(loginModel);
+        editor.putString(KEY_LOGIN, userJson);
+        editor.apply();
+    }
+    public LoginModel getLoginModel(){
+        String userJson = pref.getString(KEY_LOGIN, null);
+        LoginModel locationModel = JsonUtils.objectify(userJson,LoginModel.class);
+        return locationModel;
+    }
+    public void setKeyUserDetails(UserModel userModel){
+        editor.putString(KEY_USER_DETAILS,JsonUtils.jsonify(userModel));
+        editor.commit();
+    }
+    public UserModel getKeyUserDetails(){
+        String response = pref.getString(KEY_USER_DETAILS,null);
+        UserModel userModel = JsonUtils.objectify(response,UserModel.class);
+        return userModel;
     }
 }

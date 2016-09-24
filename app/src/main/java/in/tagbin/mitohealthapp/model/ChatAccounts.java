@@ -1,11 +1,25 @@
 package in.tagbin.mitohealthapp.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by hp on 8/27/2016.
  */
 public class ChatAccounts {
+    String name,user,status,type,presence,presence_status,image;
+    public ChatAccounts(){
 
-    String name,user,status,type,presence,presence_status;
+    }
+    public ChatAccounts(String name,String user,String status,String type,String presence,String presence_status,String image){
+        this.name = name;
+        this.user = user;
+        this.status = status;
+        this.type = type;
+        this.presence = presence;
+        this.presence_status = presence_status;
+        this.image = image;
+    }
+
 
     public String getName() {
         return name;
@@ -16,6 +30,13 @@ public class ChatAccounts {
     }
 
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getStatus() {
         return status;

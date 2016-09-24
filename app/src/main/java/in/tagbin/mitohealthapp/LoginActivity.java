@@ -44,6 +44,9 @@ import java.util.Map;
 import java.util.logging.StreamHandler;
 
 import in.tagbin.mitohealthapp.Fragments.FoodFrag;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
+import in.tagbin.mitohealthapp.model.LoginModel;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -167,6 +170,9 @@ showDialog();
                         Log.d("response", response.toString());
 
                         if (source.equals("login")) {
+                            LoginModel loginModel = JsonUtils.objectify(response.toString(),LoginModel.class);
+                            PrefManager pref = new PrefManager(LoginActivity.this);
+                            pref.saveLoginModel(loginModel);
                             SharedPreferences.Editor editor1 = loginDetails.edit();
                             editor1.clear();
                             editor1.commit();

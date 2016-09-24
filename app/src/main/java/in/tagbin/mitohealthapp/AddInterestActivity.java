@@ -10,9 +10,12 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 
@@ -30,17 +33,30 @@ import pl.droidsonroids.gif.GifImageView;
 public class AddInterestActivity extends AppCompatActivity implements View.OnClickListener {
     EditText etInterestName;
     Button sendInterst;
+    TextView heading;
+    ImageView image;
     GifImageView progressBar;
-    String response;
+    String response,url = "http:\\/\\/mito-django-api.s3.amazonaws.com\\/uploads\\/3\\/ce9b7db32e94401dac770276796d628aShaktiman.jpg";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         setContentView(R.layout.actvity_addinterest);
         etInterestName = (EditText) findViewById(R.id.etInterestName);
+        heading = (TextView) findViewById(R.id.tvAddIneterstNameHeading);
         sendInterst = (Button) findViewById(R.id.buttonSendInterest);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
+        image = (ImageView) findViewById(R.id.ivAddInterestimage);
+
         sendInterst.setOnClickListener(this);
+        if (getIntent().getStringExtra("food") != null){
+            etInterestName.setHint("Suggest Food");
+            heading.setText("Food Name");
+            Picasso.with(this).load(url).into(image);
+        }else{
+            etInterestName.setHint("Suggest Interest");
+            heading.setText("Interest Name");
+        }
         if (getIntent().getStringExtra("name") != null) {
             response = getIntent().getStringExtra("name");
             etInterestName.setText(response);
@@ -50,7 +66,11 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                     progressBar.setVisibility(View.VISIBLE);
-                    Controller.setNewInterest(AddInterestActivity.this,etInterestName.getText().toString(),mSetInterstListener);
+                    if (getIntent().getStringExtra("food") != null){
+
+                    }else {
+                        Controller.setNewInterest(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
+                    }
                 }
                 return false;
             }

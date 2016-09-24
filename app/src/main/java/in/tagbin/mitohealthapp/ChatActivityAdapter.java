@@ -22,9 +22,10 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
     MyViewHolder holder;
     private Context context;
 
-    public ChatActivityAdapter(Context context){
+    public ChatActivityAdapter(Context context,ArrayList<CustomPojo> list_memb){
         this.context=context;
         inflater=LayoutInflater.from(context);
+        list_members=list_memb;
     }
     //This method inflates view present in the RecyclerView
     @Override
@@ -57,13 +58,6 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
 
     }
 
-    //Setting the arraylist
-    public   void setListContent(ArrayList<CustomPojo> list_memb){
-        list_members=list_memb;
-//        list_members(0,list_members.size());
-        notifyDataSetChanged();
-
-    }
 
     @Override
     public int getItemCount() {

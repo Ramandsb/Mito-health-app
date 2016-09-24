@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,7 +25,7 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
     private TabLayout tabLayout;
     private ViewPager viewPager;
     TextView tabOne,tabTwo,tabThree;
-
+    FrameLayout frameLayout;
 
 
     @Override
@@ -53,7 +54,7 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.partnerfrag,container,false);
         tabLayout = (TabLayout) layout.findViewById(R.id.tabLayout);
-
+        frameLayout = (FrameLayout) layout.findViewById(R.id.frameLayoutWhole);
 //        viewPager = (ViewPager) layout.findViewById(R.id.pager);
 //        viewpageradapter adapter = new viewpageradapter(getActivity().getSupportFragmentManager());
 //
@@ -132,7 +133,7 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
                 replaceFragment(new Explorefrag());
                 break;
             case 1 :
-                replaceFragment(new Lookupfrag());
+                replaceFragment(new Lookupfrag(frameLayout));
                 break;
             case 2 :
                 replaceFragment(new Chatfrag());

@@ -1,6 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="false">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -37,9 +38,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="180dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
+                            android:scaleType="centerCrop"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/delete_event"
+                            android:id="@+id/deletePhoto"
+                            android:visibility="gone"
+                            android:layout_alignRight="@+id/userPic1"/>
                         <pl.droidsonroids.gif.GifImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
@@ -84,9 +92,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="75dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
+                            android:scaleType="centerCrop"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/delete_event"
+                            android:id="@+id/deletePhoto1"
+                            android:visibility="gone"
+                            android:layout_alignRight="@+id/userPic2"/>
                         <pl.droidsonroids.gif.GifImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
@@ -112,9 +127,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="75dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
+                            android:scaleType="centerCrop"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/delete_event"
+                            android:id="@+id/deletePhoto2"
+                            android:visibility="gone"
+                            android:layout_alignRight="@+id/userPic3"/>
                         <pl.droidsonroids.gif.GifImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
@@ -139,9 +161,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="75dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
+                            android:scaleType="centerCrop"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/delete_event"
+                            android:id="@+id/deletePhoto3"
+                            android:visibility="gone"
+                            android:layout_alignRight="@+id/userPic4"/>
                         <pl.droidsonroids.gif.GifImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
@@ -175,9 +204,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="75dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
+                            android:scaleType="centerCrop"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/delete_event"
+                            android:id="@+id/deletePhoto4"
+                            android:visibility="gone"
+                            android:layout_alignRight="@+id/userPic5"/>
                         <pl.droidsonroids.gif.GifImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
@@ -203,9 +239,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="75dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
+                            android:scaleType="centerCrop"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/delete_event"
+                            android:id="@+id/deletePhoto5"
+                            android:visibility="gone"
+                            android:layout_alignRight="@+id/userPic6"/>
                         <pl.droidsonroids.gif.GifImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
@@ -230,9 +273,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="75dp"
                             android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
+                            android:scaleType="centerCrop"
                             android:background="@color/colorPrimary"
                             android:src="@drawable/userpic1" />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/delete_event"
+                            android:id="@+id/deletePhoto6"
+                            android:visibility="gone"
+                            android:layout_alignRight="@+id/userPic7"/>
                         <pl.droidsonroids.gif.GifImageView
                             android:layout_width="30dp"
                             android:layout_height="30dp"
@@ -269,7 +319,6 @@
                 android:layout_below="@+id/tvLocationHeading"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:inputType="textCapSentences"
                 android:editable="false"
                 android:ellipsize="end"
                 android:hint="Please enter your location"

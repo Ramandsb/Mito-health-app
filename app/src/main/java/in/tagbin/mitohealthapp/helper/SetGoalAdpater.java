@@ -39,6 +39,7 @@ import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
 import in.tagbin.mitohealthapp.model.SetGoalModel;
+import in.tagbin.mitohealthapp.model.UserModel;
 import pl.droidsonroids.gif.GifImageView;
 
 /**
@@ -125,6 +126,8 @@ public class SetGoalAdpater extends RecyclerView.Adapter<SetGoalAdpater.ViewHold
             @Override
             public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
                 Log.d("send goal",responseObject.toString());
+                PrefManager pref = new PrefManager(mContext);
+                pref.setKeyUserDetails(JsonUtils.objectify(responseObject.toString(), UserModel.class));
                 Intent intent = new Intent(mContext, BinderActivity.class);
                 intent.putExtra("selection", 1);
                 mContext.startActivity(intent);

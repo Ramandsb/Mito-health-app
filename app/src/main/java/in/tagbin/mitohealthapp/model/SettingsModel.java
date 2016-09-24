@@ -6,11 +6,15 @@ package in.tagbin.mitohealthapp.model;
 public class SettingsModel {
     boolean meals_notification,water_notification,sleep_notification,exercise_notification,weekly_progress_notification;
     boolean daily_health_tips_notification,show_me_on_explore,chat_notification;
-    int people_connect_preference,maximum_distance;
+    int people_connect_preference,maximum_distance,total_coins;
     int[] age_range;
 
     public int getPeople_connect_preference() {
         return people_connect_preference;
+    }
+
+    public int getTotal_coins() {
+        return total_coins;
     }
 
     public int[] getAge_range() {

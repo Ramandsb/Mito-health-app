@@ -120,7 +120,7 @@ public class AllParticipantAdapter extends RecyclerView.Adapter<AllParticipantAd
                     bundle.putInt("positon",position);
                     fragment.setArguments(bundle);
                     FragmentTransaction transaction = pFragment.beginTransaction();
-                    transaction.add(R.id.frameAddActivity, fragment);
+                    transaction.add(R.id.frameLayoutWhole, fragment);
                     transaction.commit();
                 }
             });

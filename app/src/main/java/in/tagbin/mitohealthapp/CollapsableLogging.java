@@ -96,7 +96,7 @@ public class CollapsableLogging extends AppCompatActivity implements OnChartValu
     Intent sendDate;
     public static String SENDDATE="sendDate";
     private int[] tabIcons= {
-            R.drawable.foodicon_svg,R.drawable.watericon_svg,R.drawable.exericon_svg,R.drawable.sleepicon_svg,R.drawable.feeling
+            R.drawable.foodicon_svg,R.drawable.watericon_svg,R.drawable.exericon_svg,R.drawable.sleep_menu,R.drawable.feeling
     };
     public static GifImageView progressBar;
     int currentFrag = 0;

@@ -4,7 +4,7 @@ package in.tagbin.mitohealthapp.model;
  * Created by aasaqt on 5/9/16.
  */
 public class FacebookModel {
-    int id;
+    int id,total_coins;
     String facebook_id,facebook_email,facebook_access_token,home_town,occupation,description;
     boolean facebook_connected;
     Images4Model images;
@@ -14,6 +14,10 @@ public class FacebookModel {
 
     public int getId() {
         return id;
+    }
+
+    public int getTotal_coins() {
+        return total_coins;
     }
 
     public String getFacebook_access_token() {

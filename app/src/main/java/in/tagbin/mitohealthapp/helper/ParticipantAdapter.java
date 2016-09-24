@@ -113,7 +113,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                     mFrameLayout.setVisibility(View.VISIBLE);
 
                     Bundle bundle = new Bundle();
-                    Fragment fragment = new ParticipantDetailfrag();
+                    Fragment fragment = new ParticipantDetailfrag(mFrameLayout);
                     String dataobject = JsonUtils.jsonify(mModel);
                     String allModels = JsonUtils.jsonify(data);
                     bundle.putString("participantModel",dataobject);
@@ -122,8 +122,7 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
                     bundle.putInt("position",position);
                     fragment.setArguments(bundle);
                     FragmentTransaction transaction = pFragment.beginTransaction();
-                    transaction.add(R.id.frameAddActivity, fragment);
-                    transaction.addToBackStack(null);
+                    transaction.add(R.id.frameLayoutWhole, fragment);
                     transaction.commit();
                 }
             });

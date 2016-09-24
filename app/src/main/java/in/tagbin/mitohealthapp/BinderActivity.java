@@ -54,8 +54,10 @@ public class BinderActivity extends AppCompatActivity{
     static Fragment fra;
     FragmentTransaction fraTra;
     Toolbar toolbar;
-    TextView toolbar_title;
+    TextView toolbar_title,coins;
     Intent i;
+    int coinsFinal = 0;
+    PrefManager pref;
     public AHBottomNavigation bottomNavigation;
 
 
@@ -80,7 +82,7 @@ public class BinderActivity extends AppCompatActivity{
         AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.profile_final);
         AHBottomNavigationItem item3 = new AHBottomNavigationItem("", R.drawable.big_mito);
         AHBottomNavigationItem item5 = new AHBottomNavigationItem("", R.drawable.settings_final);
-
+        pref = new PrefManager(this);
 // Add itemsF63D2B
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
@@ -200,10 +202,11 @@ public class BinderActivity extends AppCompatActivity{
     public void change (int position){
 
         switch (position){
+
             case 0:
                 toolbar_title.setText("Partner Connect");
                 toolbar.setTitle("");
-                PrefManager pref = new PrefManager(this);
+
 
                 if (!pref.isTutorialShown()) {
                     Intent i = new Intent(this,SliderActivity.class);
@@ -227,7 +230,12 @@ public class BinderActivity extends AppCompatActivity{
 //                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                if (ProfilePage.height == 0 && ProfilePage.weight == 0){
+
+                if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+                    toolbar_title.setText("Mito");
+                    toolbar.setTitle("");
+                    fra = new HomePage();
+                }else {
                     final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
                     alertDialog1.setTitle("Enter Details");
                     alertDialog1.setMessage("Please enter your height and weight to proceed");
@@ -242,10 +250,6 @@ public class BinderActivity extends AppCompatActivity{
                         }
                     });
                     alertDialog1.show();
-                }else {
-                    toolbar_title.setText("Mito");
-                    toolbar.setTitle("");
-                    fra = new HomePage();
                 }
                 //bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
@@ -257,7 +261,11 @@ public class BinderActivity extends AppCompatActivity{
 //                //bottomNavigation.setCurrentItem(3);
 //                break;
             case 3:
-                if (ProfilePage.height == 0 && ProfilePage.weight == 0){
+                if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+                    toolbar_title.setText("Settings");
+                    toolbar.setTitle("");
+                    fra = new Settings_frag();
+                }else {
                     final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
                     alertDialog1.setTitle("Enter Details");
                     alertDialog1.setMessage("Please enter your height and weight to proceed");
@@ -272,10 +280,6 @@ public class BinderActivity extends AppCompatActivity{
                         }
                     });
                     alertDialog1.show();
-                }else {
-                    toolbar_title.setText("Settings");
-                    toolbar.setTitle("");
-                    fra = new Settings_frag();
                 }
                 //bottomNavigation.setCurrentItem(4);
                 break;
@@ -303,6 +307,7 @@ public class BinderActivity extends AppCompatActivity{
             MenuItem itm = menu.getItem(i);
             itm.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
+
         return super.onCreateOptionsMenu(menu);
     }
     RequestListener mInterestListener = new RequestListener() {

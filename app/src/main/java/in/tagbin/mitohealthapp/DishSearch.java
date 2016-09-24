@@ -73,6 +73,7 @@ import in.tagbin.mitohealthapp.Fragments.FoodFrag;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.CustomAutoCompleteTextView;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PlaceAutoCompleteAdapter1;
 import in.tagbin.mitohealthapp.model.ElasticSearchModel;
@@ -83,8 +84,9 @@ import in.tagbin.mitohealthapp.model.MustModel;
 import pl.droidsonroids.gif.GifImageView;
 
 public class DishSearch extends AppCompatActivity {
-    AutoCompleteTextView auto_tv;
+    CustomAutoCompleteTextView auto_tv;
     String back = "";
+    TextView suggestFood;
     GifImageView progressBar;
     PlaceAutoCompleteAdapter1 adapter1;
 
@@ -94,12 +96,13 @@ public class DishSearch extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dish_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        suggestFood = (TextView) findViewById(R.id.tvSuggestFood);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //customDialog();
 
         back = getIntent().getStringExtra("back");
-        auto_tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
+        auto_tv = (CustomAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
         auto_tv.setFocusable(true);
         auto_tv.setThreshold(1);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -126,7 +129,39 @@ public class DishSearch extends AppCompatActivity {
         auto_tv.setOnItemClickListener(mAutocompleteClickListener);
         adapter1 = new PlaceAutoCompleteAdapter1(this, android.R.layout.simple_list_item_1);
         auto_tv.setAdapter(adapter1);
+        auto_tv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(final Editable editable) {
+                if (editable.length() > 2) {
+                    if (!auto_tv.isPopupShowing()) {
+                        suggestFood.setVisibility(View.VISIBLE);
+                        suggestFood.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent i = new Intent(DishSearch.this,AddInterestActivity.class);
+                                i.putExtra("food","food");
+                                i.putExtra("name",editable.toString());
+                                startActivity(i);
+                            }
+                        });
+                    } else {
+                        suggestFood.setVisibility(View.GONE);
+                    }
+                }else{
+                    suggestFood.setVisibility(View.GONE);
+                }
+            }
+        });
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,12 +207,14 @@ public class DishSearch extends AppCompatActivity {
         return true;
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
 
+    public void hideSoftKeyPad(){
+        if(getCurrentFocus()!=null && getCurrentFocus() instanceof EditText)
+        {
+            InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+        }
+    }
     @Override
     protected void onPause() {
 //        exitToBottomAnimation();

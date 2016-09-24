@@ -105,8 +105,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import in.tagbin.mitohealthapp.VideoView.FullscreenVideoLayout;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
+import in.tagbin.mitohealthapp.model.LoginModel;
 
 
 public class MainPage extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
@@ -544,6 +546,9 @@ showDialog();
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response", response.toString());
+                        LoginModel loginModel = JsonUtils.objectify(response.toString(),LoginModel.class);
+                        PrefManager pref = new PrefManager(MainPage.this);
+                        pref.saveLoginModel(loginModel);
                         SharedPreferences.Editor editor1 = loginDetails.edit();
                         editor1.clear();
                         editor1.commit();

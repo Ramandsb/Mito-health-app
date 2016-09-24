@@ -1,5 +1,6 @@
 package in.tagbin.mitohealthapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -54,7 +55,7 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
     LinearLayoutManager mLayoutManager;
     RecyclerView rvAllParticipants;
     AllParticipantAdapter allAdapter;
-    FrameLayout frameLayout;
+    FrameLayout frameLayout,wholeLayout;
     ImageView addParticipant;
     GifImageView progressBar;
     CountDownTimer countDownTimer;
@@ -63,6 +64,13 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
     private static final int HOUR = 60 * MINUTE;
     private static final int DAY = 24 * HOUR;
 
+    public ParticipantDetailfrag(){
+
+    }
+    @SuppressLint("ValidFragment")
+    public ParticipantDetailfrag(FrameLayout whole){
+        wholeLayout = whole;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -169,7 +177,7 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
             rvAllParticipants.scrollToPosition(getArguments().getInt("position")-2);
         }
 
-        allAdapter = new AllParticipantAdapter(getActivity(),participantModels,getArguments().getString("dataobject"),getActivity().getSupportFragmentManager(),frameLayout);
+        allAdapter = new AllParticipantAdapter(getActivity(),participantModels,getArguments().getString("dataobject"),getActivity().getSupportFragmentManager(),wholeLayout);
         rvAllParticipants.setAdapter(allAdapter);
         return layout;
 

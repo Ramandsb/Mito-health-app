@@ -96,11 +96,11 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     private int year, month, day;
     private DatePicker datePicker;
     private Calendar calendar;
-    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv;
+    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv,coins;
     ImageView profile_pic;
     SharedPreferences login_details;
     static double height = 0.0,weight = 0.0,waist = 0.0,goal_weight = 0.0;
-    String height_new = "",weight_new = "",goal_weight_new = "",waist_new = "",dob = "",user_id, auth_key,url = "",name = "default",gender = "";
+    String height_new = "",weight_new = "",goal_weight_new = "",waist_new = "",dob = "",user_id,url = "",name = "default",gender = "";
     Button choose_image;
     GifImageView progressBar;
     RelativeLayout cusines;
@@ -108,7 +108,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     public static Bitmap profileImage;
     View male_view;
     PrefManager pref;
-    int prefernce_final;
+    int prefernce_final,coinsFinal = 0;
     GifImageView progressBar1;
     Spinner diet_preference;
     LinearLayout mygoals,editName;
@@ -162,10 +162,11 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         mygoals = (LinearLayout) Fragview.findViewById(R.id.select_goals);
         goal_tv = (TextView) Fragview.findViewById(R.id.goals_tv);
         cusineSize = (TextView) Fragview.findViewById(R.id.tvCuisinesSize);
+        profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
+        profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
         mygoals.setOnClickListener(this);
         login_details = getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
         user_id = login_details.getString("user_id", "");
-        auth_key = login_details.getString("key", "");
 
         calendar = Calendar.getInstance();
         cuisineModels = new ArrayList<CuisineModel>();
@@ -174,13 +175,32 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         day = calendar.get(Calendar.DAY_OF_MONTH);
         dob = year + "-" + month + "-" + day;
         //customDialog();
-        progressBar.setVisibility(View.VISIBLE);
-        Controller.getUserDetails(getContext(), user_id, mUserDetailsListener);
+
+        if (pref.getKeyUserDetails() != null){
+            updateProfile(pref.getKeyUserDetails());
+        }else {
+            progressBar.setVisibility(View.VISIBLE);
+            Controller.getUserDetails(getContext(), user_id, mUserDetailsListener);
+        }
         Controller.getDietPrefernce(getContext(),mDietListener);
+        if (login_details.getFloat("height",0) != 0) {
+            height_tv.setText(new DecimalFormat("##.#").format(height).toString() + " cms");
+        }
+        if (login_details.getFloat("weight",0) != 0) {
+            double kg = weight / 1000;
+            weight_tv.setText(new DecimalFormat("##.#").format(kg).toString() +" Kg");
+        }
+        if (login_details.getFloat("goal_weight",0) != 0) {
+            double grams = goal_weight % 1000;
+            double kg = goal_weight / 1000;
+            goal_weight_tv.setText(new DecimalFormat("##.#").format(kg).toString() +" Kg");
+        }
+        if (login_details.getFloat("waist",0) != 0) {
+            waist_tv.setText(new DecimalFormat("##.#").format(waist).toString()+ " cms");
+        }
 
         //makeJsonObjReq();
-        profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
-        profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
+
         //name = getActivity().getIntent().getStringExtra("name");
 
         Log.d("check url", "" + myurl);
@@ -430,6 +450,10 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
 
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(true);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        View view = menu.findItem(R.id.action_coin).getActionView();
+        coins = (TextView) view.findViewById(R.id.tvCoins);
+        coins.setText(""+coinsFinal);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -457,6 +481,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                 }
 
             } else {
+                pref.setKeyUserDetails(null);
                 SendEditProfileModel sendEditProfileModel = new SendEditProfileModel();
                 sendEditProfileModel.setDob(dob);
                 sendEditProfileModel.setEmail(email);
@@ -493,7 +518,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("user set", responseObject.toString());
-
+            pref.setKeyUserDetails(JsonUtils.objectify(responseObject.toString(),UserModel.class));
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -593,6 +618,8 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         height_new = new DecimalFormat("##.#").format(i).toString() + " cms";
                         height = Float.parseFloat(seekBar.getText().toString());
                     }
+                    SharedPreferences.Editor editor = login_details.edit();
+                    editor.putFloat("height", (float) height);
                     height_tv.setText(height_new);
                     Log.d("height value", height_new);
                 }
@@ -682,6 +709,8 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         weight = Float.parseFloat(seekBar.getText().toString()) * 453.592;
                     }
                     weight_tv.setText(weight_new);
+                    SharedPreferences.Editor editor = login_details.edit();
+                    editor.putFloat("weight", (float) weight);
                 }
                 if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0) {
                     if (height == 0) {
@@ -770,6 +799,8 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         goal_weight = Float.parseFloat(seekBar.getText().toString()) * 453.592;
                     }
                     goal_weight_tv.setText(goal_weight_new);
+                    SharedPreferences.Editor editor = login_details.edit();
+                    editor.putFloat("goal_weight", (float) goal_weight);
                 }
                 if (height == 0 || waist == 0 || weight == 0 || goal_weight ==0) {
 
@@ -863,6 +894,8 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                         waist = Float.parseFloat(seekBar.getText().toString());
                     }
                     waist_tv.setText(waist_new);
+                    SharedPreferences.Editor editor = login_details.edit();
+                    editor.putFloat("waist", (float) waist);
                 }
                 if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0) {
 
@@ -898,6 +931,9 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         else
             dob = "Set Date";
         gender = userModel.getProfile().getGender();
+        email = userModel.getUser().getEmail();
+        first_name = userModel.getUser().getFirst_name();
+        last_name = userModel.getUser().getLast_name();
         height = userModel.getProfile().getHeight();
         weight = userModel.getProfile().getWeight();
         goal_weight = userModel.getProfile().getGoal_weight();
@@ -982,7 +1018,31 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             });
 
         }
+        coinsFinal = userModel.getProfile().getTotal_coins();
+        pref.setKeyCoins(userModel.getProfile().getTotal_coins());
+        if (userModel != null && userModel.getProfile().getImages() != null && userModel.getProfile().getImages().getMaster() != null) {
+            pref.setKeyMasterImage(userModel.getProfile().getImages().getMaster());
+            ImageLoader.getInstance().loadImage(userModel.getProfile().getImages().getMaster(), new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                }
 
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    profile_pic.setImageBitmap(loadedImage);
+                }
+            });
+        }
     }
 
     RequestListener mUserDetailsListener = new RequestListener() {
@@ -995,57 +1055,32 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("edit profile",responseObject.toString());
             final UserModel userModel = JsonUtils.objectify(responseObject.toString(), UserModel.class);
+            pref.setKeyUserDetails(userModel);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    SharedPreferences.Editor editor = login_details.edit();
-                    if (userModel != null && userModel.getProfile() != null && userModel.getUser() != null) {
-                        editor.putString("user_username", userModel.getUser().getUsername());
-                        editor.putString("dob", userModel.getProfile().getDob());
-                        editor.putInt("height", (int) userModel.getProfile().getHeight());
-                        editor.putString("gender", userModel.getProfile().getGender());
-                        editor.putString("user_first_name", userModel.getUser().getFirst_name());
-                        editor.putString("user_last_name", userModel.getUser().getLast_name());
-                        editor.putInt("weight", (int) userModel.getProfile().getWeight());
-                        editor.putInt("goal_weight", (int) userModel.getProfile().getGoal_weight());
-                        editor.putInt("waist", (int) userModel.getProfile().getWaist());
-                        editor.putString("user_email", userModel.getUser().getEmail());
-                        email = userModel.getUser().getEmail();
-                        first_name = userModel.getUser().getFirst_name();
-                        last_name = userModel.getUser().getLast_name();
-                    }
-                    if (userModel != null && userModel.getEnergy() != null && userModel.getEnergy().size() == 5) {
-                        editor.putString("water_amount", userModel.getEnergy().get(1));
-                        editor.putString("food_cal", userModel.getEnergy().get(2));
-                        editor.putString("calorie_burnt", userModel.getEnergy().get(3));
-                        editor.putString("total_calorie_required", userModel.getEnergy().get(4));
-                    }
-                    if (userModel != null && userModel.getProfile().getImages() != null && userModel.getProfile().getImages().getMaster() != null) {
-                        editor.putString("master_image", userModel.getProfile().getImages().getMaster());
-                        pref.setKeyMasterImage(userModel.getProfile().getImages().getMaster());
-                        ImageLoader.getInstance().loadImage(userModel.getProfile().getImages().getMaster(), new ImageLoadingListener() {
-                            @Override
-                            public void onLoadingStarted(String imageUri, View view) {
-                            }
-
-                            @Override
-                            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                            }
-
-                            @Override
-                            public void onLoadingCancelled(String imageUri, View view) {
-
-                            }
-
-                            @Override
-                            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                                profile_pic.setImageBitmap(loadedImage);
-                            }
-                        });
-                    }
-                    editor.commit();
+//                    SharedPreferences.Editor editor = login_details.edit();
+//                    if (userModel != null && userModel.getProfile() != null && userModel.getUser() != null) {
+//                        editor.putString("user_username", userModel.getUser().getUsername());
+//                        editor.putString("dob", userModel.getProfile().getDob());
+//                        editor.putInt("height", (int) userModel.getProfile().getHeight());
+//                        editor.putString("gender", userModel.getProfile().getGender());
+//                        editor.putString("user_first_name", userModel.getUser().getFirst_name());
+//                        editor.putString("user_last_name", userModel.getUser().getLast_name());
+//                        editor.putInt("weight", (int) userModel.getProfile().getWeight());
+//                        editor.putInt("goal_weight", (int) userModel.getProfile().getGoal_weight());
+//                        editor.putInt("waist", (int) userModel.getProfile().getWaist());
+//                        editor.putString("user_email", userModel.getUser().getEmail());
+//                    }
+//                    if (userModel != null && userModel.getEnergy() != null && userModel.getEnergy().size() == 5) {
+//                        editor.putString("water_amount", userModel.getEnergy().get(1));
+//                        editor.putString("food_cal", userModel.getEnergy().get(2));
+//                        editor.putString("calorie_burnt", userModel.getEnergy().get(3));
+//                        editor.putString("total_calorie_required", userModel.getEnergy().get(4));
+//                    }
+//
+//                    editor.commit();
                     updateProfile(userModel);
                 }
             });
@@ -1165,6 +1200,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
                     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item, diet);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     diet_preference.setAdapter(adapter);
+                    diet_preference.setSelection(0,false);
                     diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

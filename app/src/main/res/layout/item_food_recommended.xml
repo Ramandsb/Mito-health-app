@@ -5,8 +5,8 @@
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     android:id="@+id/relativeViewRecommend"
-    android:background="@drawable/bg_filter"
     android:orientation="vertical"
+    android:background="@drawable/bg_filter"
     android:padding="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView

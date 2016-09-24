@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONException;
 
 import java.text.DecimalFormat;
@@ -22,6 +24,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.tagbin.mitohealthapp.CollapsableLogging;
 import in.tagbin.mitohealthapp.FoodDetails;
 import in.tagbin.mitohealthapp.Fragments.FoodDetailsFrag;
@@ -100,6 +103,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         String mType;
         GifImageView mProgressBar;
         RelativeLayout view;
+        CircleImageView circleImageView;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -110,6 +114,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             decline = (ImageView) itemView.findViewById(R.id.ivFoodDecline);
             refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
             view = (RelativeLayout) itemView.findViewById(R.id.relativeViewRecommend);
+            circleImageView = (CircleImageView) itemView.findViewById(R.id.civFoodLogger);
             accept.setOnClickListener(this);
             decline.setOnClickListener(this);
             refresh.setOnClickListener(this);
@@ -124,6 +129,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             foodName.setText(pModel.getComponent().getName());
             quantity.setText(pModel.getAmount()+" "+pModel.getComponent().getServing_type().getServing_type());
             calories.setText(new DecimalFormat("##.#").format(pModel.getComponent().getTotal_energy()).toString()+" calories");
+            Picasso.with(mContext).load(mModel.getComponent().getImage()).into(circleImageView);
         }
 
         @Override
@@ -147,6 +153,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                             long time1 = calendar1.getTime().getTime()/1000L;
                             Log.d("timesatmap",""+time1);
                             setFoodLoggerModel1.setTime_consumed(time1);
+                            setFoodLoggerModel1.setServing_unit(mModel.getComponent().getServing_type().getServing_type());
                             setFoodLoggerModel1.setAmount(mModel.getAmount());
                             setFoodLoggerModel1.setFlag(2);
                             setFoodLoggerModel1.setMeal_id(mModel.getMeal_id());
@@ -176,6 +183,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                             Log.d("timesatmap",""+time2);
                             setFoodLoggerModel2.setTime_consumed(time2);
                             setFoodLoggerModel2.setAmount(mModel.getAmount());
+                            setFoodLoggerModel2.setServing_unit(mModel.getComponent().getServing_type().getServing_type());
                             setFoodLoggerModel2.setFlag(3);
                             setFoodLoggerModel2.setMeal_id(mModel.getMeal_id());
                             mProgressBar.setVisibility(View.VISIBLE);

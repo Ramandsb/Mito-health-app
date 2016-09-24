@@ -23,7 +23,7 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.CONNECT_PROFILE,"v1/connect/");
         endPointMapper.put(EndPoints.INTEREST,"v1/interest/list");
         endPointMapper.put(EndPoints.LOGGER,"v1/logger/");
-        endPointMapper.put(EndPoints.DATERANGEDATA,"v1/users/history/");
+        endPointMapper.put(EndPoints.ENERGY,"v1/users/energy/");
         endPointMapper.put(EndPoints.INTEREST,"v1/interest/");
         endPointMapper.put(EndPoints.UPLOAD,"v1/uploads/");
         endPointMapper.put(EndPoints.SLEEPLOG,"v1/logger/sleep/mass/");
@@ -43,7 +43,7 @@ public class UrlResolver {
         int CONNECT_PROFILE = 2;
         int INTEREST= 3;
         int LOGGER = 4;
-        int DATERANGEDATA =5;
+        int ENERGY =5;
         int UPLOAD = 6;
         int SLEEPLOG = 7;
         int FEELINGSLOG = 10;

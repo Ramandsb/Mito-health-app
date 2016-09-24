@@ -36,6 +36,7 @@
         android:layout_below="@+id/tvAutocomParent"
         android:visibility="visible"
         android:background="@android:color/darker_gray"/>
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="60dp"

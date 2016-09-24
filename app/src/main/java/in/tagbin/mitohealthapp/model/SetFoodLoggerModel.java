@@ -4,9 +4,13 @@ package in.tagbin.mitohealthapp.model;
  * Created by aasaqt on 14/9/16.
  */
 public class SetFoodLoggerModel {
-    String ltype;
+    String ltype,serving_unit;
     int c_id,amount,meal_id,flag;
     long time_consumed;
+
+    public void setServing_unit(String serving_unit) {
+        this.serving_unit = serving_unit;
+    }
 
     public void setAmount(int amount) {
         this.amount = amount;

@@ -57,6 +57,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,7 +77,9 @@ import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
+import in.tagbin.mitohealthapp.model.EnergyGetModel;
 
 public class HomePage extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
@@ -88,7 +91,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     public static String selectedDate = "";
     SharedPreferences login_details;
     String auth_key;
-    TextView cal_consumed,cal_left,cal_burned;
+    TextView cal_consumed,cal_left,cal_burned,coins;
     TextView messageView;
     ProgressBar progressBar;
     android.app.AlertDialog alert;
@@ -96,7 +99,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     String next7Days="";
     String myurl=Config.url + "logger/history/dates/";
 
-    int a = 0, b = 0, c = 0;
+    int a = 0, b = 0, c = 0,coinsFinal = 0;
     int mBgColor = 0;
     android.support.v7.widget.CardView food_card;
     android.support.v7.widget.CardView water_card;
@@ -157,8 +160,16 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         Log.d("next 7 date",next7Days);
 
 
-
-        Controller.getDateRangeData(getActivity(),String.valueOf(MyUtils.getUtcTimestamp(last7Days+" 00:00:00","s")),String.valueOf(MyUtils.getUtcTimestamp(next7Days+" 00:00:00","s")),mDateRangelistener);
+        Calendar calendar1 = Calendar.getInstance();
+        int day = calendar1.get(Calendar.DAY_OF_MONTH);
+        int year = calendar1.get(Calendar.YEAR);
+        int month = calendar1.get(Calendar.MONTH);
+        //widget.setSelectedDate(calendar1.getTime());
+        Date date1 = new Date(year-1900,month,day,0,0);
+        long timestamp = date1.getTime()/1000L;
+        //progressBar.setVisibility(View.VISIBLE);
+        Log.d("timestamop",""+timestamp);
+        Controller.getDateRangeData(getActivity(),timestamp,mDateRangelistener);
         widget= (MaterialCalendarView) v.findViewById(R.id.calendarView);
         // Add a decorator to disable prime numbered days
 
@@ -292,44 +303,60 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("dateRange Request",responseObject.toString());
+            final EnergyGetModel energyGetModel = JsonUtils.objectify(responseObject.toString(),EnergyGetModel.class);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    coinsFinal  = energyGetModel.getTotal_coins();
+                    PrefManager pref = new PrefManager(getActivity());
+                    pref.setKeyCoins(coinsFinal);
+                    cal_consumed.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_consumed()).toString());
+                    cal_left.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_consumed()).toString()+"/"+new DecimalFormat("##.#").format(energyGetModel.getCalorie_required()).toString());
+                    cal_burned.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_burnt()).toString());
+                    String w= new DecimalFormat("##.#").format(energyGetModel.getWater()/250).toString();
+                    glasses.setText(w+"/8");
+                    foodcard_recom.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_consumed()).toString() + " Kcal");
+                    exercard_burnt.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_burnt()).toString());
+                }
+            });
 
 //            DateRangeDataModel dateRangeDataModel = JsonUtils.objectify(responseObject.toString(),DateRangeDataModel.class);
 
 //            dateRangeDataModel.getChart().get(0).
 
-            try {
-
-                dop.ClearChartTable(dop);
-
-                JSONObject object = new JSONObject(responseObject.toString());
-                JSONArray chart = object.getJSONArray("chart");
-                for (int i = 0; i < chart.length(); i++) {
-                    JSONObject obj = chart.getJSONObject(i);
-                    String water = obj.getString("water");
-                    String date = obj.getString("date");
-                    String fcal_con = obj.getString("calorie_consumed");
-                    String fcal_req = obj.getString("calorie_required");
-                    String exer_bur = obj.getString("calorie_burnt");
-                    long  time= MyUtils.getUtcTimestamp(date,"m");
-
-                    Log.d("check response prob",water+date+""+fcal_con+fcal_req+exer_bur);
-                    dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "2000", water, "100", exer_bur, "8", "6");
-
-                    int count =dop.getCount(dop, TableData.Tableinfo.TABLE_NAME_CHART, TableData.Tableinfo.CHART_DATE,selectedDate+" 00:00:00");
-
-//                  if (count==0){
-//                      dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "8", water, "100", exer_bur, "8", "6");
-//                      Log.d("count with put",count+"/////");
-//                  }else {
-//                      Log.d("count",count+"///  count without");
-//                  }
-
-                }
-            }catch (Exception e){
-
-                Log.d("exception",e.toString());
-
-            }
+//            try {
+//
+//                dop.ClearChartTable(dop);
+//
+//                JSONObject object = new JSONObject(responseObject.toString());
+//                JSONArray chart = object.getJSONArray("chart");
+//                for (int i = 0; i < chart.length(); i++) {
+//                    JSONObject obj = chart.getJSONObject(i);
+//                    String water = obj.getString("water");
+//                    String date = obj.getString("date");
+//                    String fcal_con = obj.getString("calorie_consumed");
+//                    String fcal_req = obj.getString("calorie_required");
+//                    String exer_bur = obj.getString("calorie_burnt");
+//                    long  time= MyUtils.getUtcTimestamp(date,"m");
+//
+//                    Log.d("check response prob",water+date+""+fcal_con+fcal_req+exer_bur);
+//                    dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "2000", water, "100", exer_bur, "8", "6");
+//
+//                    int count =dop.getCount(dop, TableData.Tableinfo.TABLE_NAME_CHART, TableData.Tableinfo.CHART_DATE,selectedDate+" 00:00:00");
+//
+////                  if (count==0){
+////                      dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "8", water, "100", exer_bur, "8", "6");
+////                      Log.d("count with put",count+"/////");
+////                  }else {
+////                      Log.d("count",count+"///  count without");
+////                  }
+//
+//                }
+//            }catch (Exception e){
+//
+//                Log.d("exception",e.toString());
+//
+//            }
 
 
         }
@@ -342,13 +369,22 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        Log.d("PREPDUG", "hereHOME");
         for (int i=0;i< menu.size();i++) {
             MenuItem itm = menu.getItem(i);
             itm.setVisible(false);
         }
 //        menu.findItem(R.id.action_done).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
 //                .setVisible(true);
+        menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        View view = menu.findItem(R.id.action_coin).getActionView();
+        coins = (TextView) view.findViewById(R.id.tvCoins);
+        PrefManager pref = new PrefManager(getContext());
+        coinsFinal = pref.getKeyCoins();
+        coins.setText(""+coinsFinal);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -410,6 +446,10 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
             selectedDate = year + "-" + month + "-" + day;
             Log.d("date", selectedDate);
         }
+        long timestamp = date.getDate().getTime()/1000L;
+        Log.d("timestamp", String.valueOf(timestamp));
+        //long timestamp1 = date.getDate().getTime()/1000L;
+        Controller.getDateRangeData(getActivity(),timestamp,mDateRangelistener);
         setHomepageDetails();
     }
     public void customDialog() {

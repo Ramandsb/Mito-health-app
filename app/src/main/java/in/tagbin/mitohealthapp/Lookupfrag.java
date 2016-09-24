@@ -1,6 +1,8 @@
 package in.tagbin.mitohealthapp;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,6 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -39,14 +43,28 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
     RecyclerView myview;
 
     StaggeredGridLayoutManager mylayoutmanager;
-    FrameLayout frameLayout;
-    TextView allActivity,myActivity;
+    FrameLayout frameLayout,wholeLayout;
+    TextView allActivity,myActivity,coins;
     ArrayList<DataObject> mylist=new ArrayList<DataObject>();
     ArrayList<DataObject> da=new ArrayList<DataObject>();
     FloatingActionButton fabCreateEvent;
+    int coinsFinal = 0;
     GifImageView progressBar;
     MyAdapter adapter;
     PrefManager pref;
+    public Lookupfrag(){
+
+    }
+    @SuppressLint("ValidFragment")
+    public Lookupfrag(FrameLayout frameLayout){
+        wholeLayout = frameLayout;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Nullable
     @Override
@@ -64,7 +82,7 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
         myActivity.setOnClickListener(this);
         fabCreateEvent.setOnClickListener(this);
         mylayoutmanager = new StaggeredGridLayoutManager(2, 1);
-        adapter=new MyAdapter(getContext(),mylist,frameLayout,getActivity().getSupportFragmentManager(),progressBar);
+        adapter=new MyAdapter(getContext(),mylist,frameLayout,getActivity().getSupportFragmentManager(),progressBar,wholeLayout);
         myview.setLayoutManager(this.mylayoutmanager);
         myview.setHasFixedSize(true);
         myview.setAdapter(adapter);
@@ -94,7 +112,41 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
 
         return viewGroup;
     }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("PREPDUG", "hereProfile");
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setVisible(false);
+        }
+        //InitActivity i = (InitActivity) getActivity();
+        //i.getActionBar().setTitle("Profile");
+        menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        //menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        View view = menu.findItem(R.id.action_coin).getActionView();
+        coins = (TextView) view.findViewById(R.id.tvCoins);
+        coinsFinal = pref.getKeyCoins();
+        coins.setText(""+coinsFinal);
+        super.onPrepareOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_requests) {
+            Intent i = new Intent(getContext(),FriendRequestActivity.class);
+            startActivity(i);
+        }
 
+        return super.onOptionsItemSelected(item);
+    }
     @Override
     public void onClick(View v) {
         switch (v.getId()){

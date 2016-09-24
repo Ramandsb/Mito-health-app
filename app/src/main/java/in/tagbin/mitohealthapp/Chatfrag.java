@@ -14,6 +14,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -46,8 +48,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 
+import in.tagbin.mitohealthapp.Database.ChatDatabase;
+import in.tagbin.mitohealthapp.Database.ChatRequestsDatabase;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ChatAccounts;
+import in.tagbin.mitohealthapp.model.ChatModel;
 
 public class Chatfrag extends Fragment {
 
@@ -61,7 +67,8 @@ public class Chatfrag extends Fragment {
     private XMPPConnection connection;
     private ArrayList<String> messages = new ArrayList<String>();
     private Handler mHandler = new Handler();
-
+    TextView coins;
+    int coinsFinal = 0;
     RecyclerView recyclerView;
     ChatAdapter adapter;
     private ArrayList<ChatAccounts> listContentArr= new ArrayList<>();
@@ -71,6 +78,7 @@ public class Chatfrag extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dop= new DatabaseOperations(getActivity());
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -82,7 +90,9 @@ public class Chatfrag extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter=new ChatAdapter(getActivity());
         recyclerView.setAdapter(adapter);
-        listContentArr=dop.getChatInformation(dop);
+        ChatDatabase chatDatabase = new ChatDatabase(getContext());
+
+        listContentArr=chatDatabase.getChatUsers();
         adapter.setListContent(listContentArr);
 //        if (isNetworkAvailable()) {
 //            Connector asyncTask = new Connector();
@@ -111,7 +121,40 @@ public class Chatfrag extends Fragment {
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        Log.d("PREPDUG", "hereProfile");
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setVisible(false);
+        }
+        //InitActivity i = (InitActivity) getActivity();
+        //i.getActionBar().setTitle("Profile");
+        menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        View view = menu.findItem(R.id.action_coin).getActionView();
+        coins = (TextView) view.findViewById(R.id.tvCoins);
+        PrefManager pref = new PrefManager(getContext());
+        coinsFinal = pref.getKeyCoins();
+        coins.setText(""+coinsFinal);
+        super.onPrepareOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_requests) {
+            Intent i = new Intent(getContext(),FriendRequestActivity.class);
+            startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
+    }
     public void setConnection(XMPPConnection connection) {
         this.connection = connection;
         if (connection != null) {

@@ -41,17 +41,18 @@ import pl.droidsonroids.gif.GifImageView;
 public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
     Context mycontext;
-    FrameLayout pFrameLayout;
+    FrameLayout pFrameLayout,mWholeLayout;
     FragmentManager mFragmentManager;
     GifImageView mProgressBar;
     ArrayList<DataObject> newlist = new ArrayList<DataObject>();
     int year, month, day;
 
-    public MyAdapter(Context context, ArrayList<DataObject> mylist, FrameLayout mFrameLayout, FragmentManager fragmentManager, GifImageView progressBar) {
+    public MyAdapter(Context context, ArrayList<DataObject> mylist, FrameLayout mFrameLayout, FragmentManager fragmentManager, GifImageView progressBar,FrameLayout wholeLayout) {
         mycontext = context;
         pFrameLayout = mFrameLayout;
         mFragmentManager = fragmentManager;
         newlist = mylist;
+        mWholeLayout = wholeLayout;
         mProgressBar = progressBar;
     }
 
@@ -117,14 +118,14 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.linearCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pFrameLayout.setVisibility(View.VISIBLE);
+                mWholeLayout.setVisibility(View.VISIBLE);
                 Bundle bundle = new Bundle();
-                Fragment fragment = new MyActivityCardfrag();
+                Fragment fragment = new MyActivityCardfrag(mWholeLayout);
                 String dataobject = JsonUtils.jsonify(newlist.get(position));
                 bundle.putString("dataobject", dataobject);
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                transaction.add(R.id.frameAddActivity, fragment);
+                transaction.add(R.id.frameLayoutWhole, fragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
 
@@ -134,6 +135,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                pFrameLayout.setVisibility(View.VISIBLE);
                 Bundle bundle = new Bundle();
                 Fragment fragment = new AddActivityfrag();
                 String dataobject = JsonUtils.jsonify(newlist.get(position));

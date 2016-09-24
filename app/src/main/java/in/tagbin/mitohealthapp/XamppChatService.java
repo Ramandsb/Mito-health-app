@@ -8,6 +8,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -15,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,23 +33,34 @@ import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.provider.ProviderManager;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.packet.VCard;
+import org.jivesoftware.smackx.provider.VCardProvider;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import in.tagbin.mitohealthapp.Database.ChatDatabase;
+import in.tagbin.mitohealthapp.Database.ChatRequestsDatabase;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
+import in.tagbin.mitohealthapp.model.ChatAccounts;
+import in.tagbin.mitohealthapp.model.ChatLoginModel;
+import in.tagbin.mitohealthapp.model.ChatModel;
 
 /**
  * Created by hp on 8/26/2016.
  */
 public class XamppChatService extends Service {
 
-    public static final String HOST = "chat.eazevent.in";
+    public static String HOST = "chat2.eazevent.in";
     public static final int PORT = 5222;
-    public static final String SERVICE = "chat.eazevent.in";
-    public static final String USERNAME = "ankit";
-    public static final String PASSWORD = "1234";
+    public static String SERVICE = "chat2.eazevent.in";
+    public static String USERNAME = "ankit";
+    public static String PASSWORD = "1234";
     DatabaseOperations dop;
 
     private XMPPConnection connection;
@@ -59,14 +73,17 @@ public class XamppChatService extends Service {
     }
     public static String RECIEVEDMSGS="recievedmsgs";
     public static String SENTMSGS="sentmsgs";
+    public static String SENTREQUESTS="sentrqsts";
     Intent RecivedmsgsIntent;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
+
         dop=new DatabaseOperations(getApplicationContext());
         registerReceiver(RecievePublish, new IntentFilter(SENTMSGS));
+        registerReceiver(SendRequests,new IntentFilter(SENTREQUESTS));
         RecivedmsgsIntent= new Intent(RECIEVEDMSGS);
     }
 
@@ -79,7 +96,15 @@ public class XamppChatService extends Service {
 
         }
     };
+    private BroadcastReceiver SendRequests = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+//            String username=intent.getStringExtra("user_name");
+//            String msg=intent.getStringExtra("message");
+            //sendMessages(username,msg);
 
+        }
+    };
 
             private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
@@ -92,7 +117,26 @@ public class XamppChatService extends Service {
         Log.d("Service called","///");
 
 //        Toast.makeText(getBaseContext(),"Service Started",Toast.LENGTH_LONG).show();
-
+        PrefManager pref = new PrefManager(getBaseContext());
+        if (pref.getLoginModel() != null){
+            byte[] data = Base64.decode(pref.getLoginModel().getChat_credential(), Base64.DEFAULT);
+            try {
+                String text = new String(data, "UTF-8");
+                ChatLoginModel chatLoginModel = JsonUtils.objectify(text,ChatLoginModel.class);
+                String username = chatLoginModel.getUsername().replace("u'","");
+                username = username.replace("'","");
+                String password = chatLoginModel.getPassword().replace("u'","");
+                password = password.replace("'","");
+                String server = chatLoginModel.getServer().replace("u'","");
+                server = server.replace("'","");
+                USERNAME = username;
+                PASSWORD = password;
+                SERVICE = server;
+                HOST = server;
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
         if (isNetworkAvailable()) {
             Connector asyncTask = new Connector();
             asyncTask.execute();
@@ -212,8 +256,13 @@ public class XamppChatService extends Service {
                 setConnection(connection);
 
                 Roster roster = connection.getRoster();
+
                 Collection<RosterEntry> entries = roster.getEntries();
+                ProviderManager.getInstance().addIQProvider("vCard", "vcard-temp",
+                        new VCardProvider());
+                VCard card = null;
                 for (RosterEntry entry : entries) {
+                    card = new VCard();
                     Log.d("XMPPChatDemoActivity",
                             "--------------------------------------");
                     Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
@@ -239,7 +288,6 @@ public class XamppChatService extends Service {
 //                    }
 
 
-
                     Log.d("XMPPChatDemoActivity",
                             "Status: " + entry.getStatus());
                     Log.d("XMPPChatDemoActivity",
@@ -255,25 +303,128 @@ public class XamppChatService extends Service {
                             + entryPresence.getType());
                     Presence.Type type = entryPresence.getType();
                     String pres_type="";
-
                     if (type!=null){
 
                         pres_type=type.toString();
                     }
+                    String avatarPath = null;
+                    try {
+                        card.load(connection,entry.getUser());
+                        card.getExtensions();
+                        byte[] imgs = card.getAvatar();
+
+                        if (imgs != null) {
+                            int len = imgs.length;
+                            Bitmap img = BitmapFactory.decodeByteArray(imgs, 0, len);
+                            //avatarPath = savaAvatar()
+                            avatarPath = Base64.encodeToString(imgs, Base64.DEFAULT);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     if (type == Presence.Type.available)
                         Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
                     Log.d("XMPPChatDemoActivity", "Presence : "
                             + entryPresence);
-
-                    try {
-                        dop.putChatInformation(dop,name,user,status,"null","not def",pres_type);
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
+                    ChatAccounts chatModel = new ChatAccounts(name,user,status,entry.getType().toString(),entryPresence.toString(),pres_type,avatarPath);
+                    ChatDatabase chatDatabase = new ChatDatabase(getBaseContext());
+                    chatDatabase.addChat(chatModel);
+//                    try {
+//                        dop.putChatInformation(dop,name,user,status,"null","not def",pres_type);
+//
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                    }
 
 
                 }
+//                Presence presence1 = new Presence(Presence.Type.subscribe);
+//                connection.sendPacket(presence1);
+//                setConnection(connection);
+//
+//                Roster roster1 = connection.getRoster();
+//                Collection<RosterEntry> entries1 = roster1.getEntries();
+//                for (RosterEntry entry : entries1) {
+//                    Log.d("XMPPChatDemoActivity",
+//                            "--------------------------------------");
+//                    Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
+//                    Log.d("XMPPChatDemoActivity",
+//                            "User: " + entry.getUser());
+//                    Log.d("XMPPChatDemoActivity",
+//                            "Name: " + entry.getName());
+//
+//                    String name = entry.getName();
+//                    String user = entry.getUser();
+//                    String status="";
+//                    if (entry.getStatus()!=null){
+//                        status = entry.getStatus().toString();
+//                    }else{
+//                        status="not available";
+//                    }
+//
+//                    String typee="null";
+////                    if (entry.getType()!=null){
+////                        typee = entry.getStatus().toString();
+////                    }else{
+////                        typee="not available";
+////                    }
+//
+//
+//                    Log.d("XMPPChatDemoActivity",
+//                            "Status: " + entry.getStatus());
+//                    Log.d("XMPPChatDemoActivity",
+//                            "Type: " + entry.getType());
+//                    Presence entryPresence = roster1.getPresence(entry
+//                            .getUser());
+//
+//                    Log.d("XMPPChatDemoActivity", "Presence Status: "
+//                            + entryPresence.getStatus());
+//
+//
+//                    Log.d("XMPPChatDemoActivity", "Presence Type: "
+//                            + entryPresence.getType());
+//                    Presence.Type type = entryPresence.getType();
+//                    String pres_type="";
+//
+//                    if (type!=null){
+//
+//                        pres_type=type.toString();
+//                    }
+//                    if (type == Presence.Type.available)
+//                        Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
+//                    Log.d("XMPPChatDemoActivity", "Presence : "
+//                            + entryPresence);
+//                    NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
+//                    mBuilder.setSmallIcon(R.drawable.mito_logo);
+//                    mBuilder.setContentTitle(name);
+//                    mBuilder.setContentText(name +" sends you a request");
+//                    mBuilder.setAutoCancel(true);
+//
+//                    Intent resultIntent = new Intent(getBaseContext(), BinderActivity.class);
+//                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+//                    stackBuilder.addParentStack(BinderActivity.class);
+//
+//// Adds the Intent that starts the Activity to the top of the stack
+//                    stackBuilder.addNextIntent(resultIntent);
+//                    PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//                    mBuilder.setContentIntent(resultPendingIntent);
+//                    NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//// notificationID allows you to update the notification later on.
+//                    mNotificationManager.notify(999, mBuilder.build());
+//                    ChatAccounts chatModel = new ChatAccounts(name,user,status,entry.getType().toString(),entryPresence.toString(),pres_type);
+//                    ChatRequestsDatabase chatDatabase = new ChatRequestsDatabase(getBaseContext());
+//                    chatDatabase.addChat(chatModel);
+////                    try {
+////                        dop.putChatInformation(dop,name,user,status,"null","not def",pres_type);
+////
+////                    }catch (Exception e){
+////                        e.printStackTrace();
+////                    }
+//
+//
+//                }
 
 //
             } catch (XMPPException ex) {

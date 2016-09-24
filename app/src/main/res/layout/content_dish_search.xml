@@ -14,7 +14,7 @@
 
 
 
-        <AutoCompleteTextView
+        <in.tagbin.mitohealthapp.helper.CustomAutoCompleteTextView
             android:id="@+id/autoCompleteTextView1"
             android:layout_width="match_parent"
             android:hint="Search"
@@ -30,6 +30,17 @@
             android:drawablePadding="10dp"
             android:drawableLeft="@drawable/search_svg"
             android:layout_gravity="center"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Suggest Food"
+        android:id="@+id/tvSuggestFood"
+        android:layout_below="@+id/autoCompleteTextView1"
+        android:textColor="@color/colorPrimary"
+        android:drawableRight="@drawable/add_interest"
+        android:textSize="17sp"
+        android:visibility="gone"
+        android:layout_margin="20dp"/>
     <pl.droidsonroids.gif.GifImageView
         android:layout_width="60dp"
         android:layout_height="60dp"

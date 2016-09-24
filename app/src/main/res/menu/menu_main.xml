@@ -2,6 +2,21 @@
     xmlns:app1="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
+        android:id="@+id/action_coin"
+        android:title="100"
+        android:showAsAction="always"
+        app1:actionLayout="@layout/item_coin"
+        android:orderInCategory="1"
+        android:visible="true"/>
+    <item
+        android:id="@+id/action_requests"
+        android:icon="@drawable/people"
+        android:showAsAction="always"
+        android:actionLayout="@layout/item_coin"
+        android:orderInCategory="1"
+        android:visible="true"
+        android:title="Friend Requests" />
+    <item
         android:id="@+id/action_save"
         android:title="@string/save"
         app1:showAsAction="always"

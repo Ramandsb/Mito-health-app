@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -47,12 +48,12 @@ import pl.droidsonroids.gif.GifImageView;
 public class InterestActivity extends AppCompatActivity {
     FlowLayout flowLayout;
     Toolbar toolbar;
-    TextView next,addInterest;
+    TextView next,addInterest,coins;
     InterestModel interestModel;
     List<Integer> idFinal;
     List<UserInterestModel> userInterestModels;
     PrefManager pref;
-    int count1= 0, count2 = 0;
+    int count1= 0, count2 = 0,coinsFinal = 0;
     GifImageView progressBar;
     android.widget.SearchView searchView;
 
@@ -75,15 +76,14 @@ public class InterestActivity extends AppCompatActivity {
         userInterestModels = (ArrayList<UserInterestModel>) new Gson().fromJson(getIntent().getStringExtra("userinterests"), collectionType);
         addInterest = (TextView) findViewById(R.id.tvSuggestInterst);
         setToggleButtons(interestModel);
-        next = (TextView) findViewById(R.id.tvNextInterest);
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                Controller.setInterests(InterestActivity.this,idFinal,mSetInterestListener);
-
-            }
-        });
+//        next = (TextView) findViewById(R.id.tvNextInterest);
+//        next.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//
+//            }
+//        });
         searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setQueryHint("What interests you?");
         searchView.setIconifiedByDefault(false);
@@ -241,14 +241,38 @@ public class InterestActivity extends AppCompatActivity {
         super.onBackPressed();
         this.finish();
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
 
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        for (int i=0;i< menu.size();i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+        menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(true);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        View view = menu.findItem(R.id.action_coin).getActionView();
+        coins = (TextView) view.findViewById(R.id.tvCoins);
+        PrefManager pref = new PrefManager(this);
+        coinsFinal = pref.getKeyCoins();
+        coins.setText(""+coinsFinal);
+        return super.onCreateOptionsMenu(menu);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        }else if (item.getItemId() == R.id.action_next){
+            progressBar.setVisibility(View.VISIBLE);
+            Controller.setInterests(InterestActivity.this,idFinal,mSetInterestListener);
+            return true;
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     public void setToggleButtons(final InterestModel interestModel) {

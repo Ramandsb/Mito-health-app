@@ -530,11 +530,11 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-    public static void getDateRangeData(Context context,String startDate,String endDate,
+    public static void getDateRangeData(Context context,long startDate,
                                    RequestListener requestListener) {
         String url = UrlResolver
-                .withAppendedPath(UrlResolver.EndPoints.DATERANGEDATA);
-        url=url+"?start="+startDate+"&end="+endDate;
+                .withAppendedPath(UrlResolver.EndPoints.ENERGY);
+        url=url+"?day="+startDate;
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
@@ -652,6 +652,16 @@ public class Controller {
         url += id+"/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.PUT, setFoodLoggerModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void deleteLogFood(Context context,int id,
+                                     RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.LOGGER);
+        url += id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.DELETE, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }

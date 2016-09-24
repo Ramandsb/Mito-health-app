@@ -155,6 +155,10 @@
             android:label="Select Cuisines"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".FriendRequestActivity"
+            android:label="Friend Requests"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ChatActivity"
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />

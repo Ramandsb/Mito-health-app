@@ -29,7 +29,7 @@ public class UserModel {
     }
 
     public class ProfileModel{
-        int id,user,age,goal_time;
+        int id,user,age,goal_time,total_coins;
         float weight,waist,height,goal_weight;
         String phone_number,created_timestamp,gender,dob,updated_timestamp,email_hash;
         boolean is_nutritionist,email_varified;
@@ -50,6 +50,10 @@ public class UserModel {
 
         public PrefernceModel getPreferences() {
             return preferences;
+        }
+
+        public int getTotal_coins() {
+            return total_coins;
         }
 
         public List<CuisineModel> getCuisines() {
