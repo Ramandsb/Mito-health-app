@@ -9,7 +9,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import in.tagbin.mitohealthapp.CustomPojo;
+import in.tagbin.mitohealthapp.model.MessagesModel;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.Pojo.FoodHeaders;
 import in.tagbin.mitohealthapp.model.ChatAccounts;
@@ -335,32 +335,32 @@ return cursor;
 
 
 
-    public ArrayList<CustomPojo> getCMInformation(DatabaseOperations dop,String user){
-        ArrayList<CustomPojo> listData = new ArrayList<>();
-
-        SQLiteDatabase SQ = dop.getReadableDatabase();
-        Log.d("DatabasRead", "is it null  //  "+user);
-        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CM + " WHERE " + TableData.Tableinfo.CM_USER + "='" + user + "'", null);
-
-//        String[] coloumns = {TableData.Tableinfo.DISH, TableData.Tableinfo.DATE,TableData.Tableinfo.TIME,TableData.Tableinfo.DISH_ID,};
-//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
-                CustomPojo item = new CustomPojo();
-                item.setSource(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_SOURCE)));
-                item.setTime(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_TIME)));
-                item.setMessages(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_MESSAGES)));
-                item.setUser_id(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_USER)));
-                Log.d("Database read", listData.toString());
-                listData.add(item);
-
-            }
-            while (cursor.moveToNext());
-        }
-        return listData;
-
-    }
+//    public ArrayList<MessagesModel> getCMInformation(DatabaseOperations dop, String user){
+//        ArrayList<MessagesModel> listData = new ArrayList<>();
+//
+//        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Log.d("DatabasRead", "is it null  //  "+user);
+//        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_CM + " WHERE " + TableData.Tableinfo.CM_USER + "='" + user + "'", null);
+//
+////        String[] coloumns = {TableData.Tableinfo.DISH, TableData.Tableinfo.DATE,TableData.Tableinfo.TIME,TableData.Tableinfo.DISH_ID,};
+////        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_FOOD , null, null);
+//        if (cursor != null && cursor.moveToFirst()) {
+//            do {
+//                //create a new movie object and retrieve the data from the cursor to be stored in this movie object
+//                MessagesModel item = new MessagesModel();
+//                item.setSource(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_SOURCE)));
+//                item.setTime(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_TIME)));
+//                item.setMessages(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_MESSAGES)));
+//                item.setUser_id(cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CM_USER)));
+//                Log.d("Database read", listData.toString());
+//                listData.add(item);
+//
+//            }
+//            while (cursor.moveToNext());
+//        }
+//        return listData;
+//
+//    }
 
     public ArrayList<ChatAccounts> getChatInformation(DatabaseOperations dop){
         ArrayList<ChatAccounts> listData = new ArrayList<>();

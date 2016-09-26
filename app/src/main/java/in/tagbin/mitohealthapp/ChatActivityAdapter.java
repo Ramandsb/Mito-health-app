@@ -13,16 +13,19 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.model.MessagesModel;
+
 public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapter.MyViewHolder> {
 
     //Creating an arraylist of POJO objects
-    private ArrayList<CustomPojo> list_members=new ArrayList<>();
+    private ArrayList<MessagesModel> list_members=new ArrayList<>();
     private final LayoutInflater inflater;
     View view;
     MyViewHolder holder;
     private Context context;
 
-    public ChatActivityAdapter(Context context,ArrayList<CustomPojo> list_memb){
+    public ChatActivityAdapter(Context context,ArrayList<MessagesModel> list_memb){
         this.context=context;
         inflater=LayoutInflater.from(context);
         list_members=list_memb;
@@ -35,7 +38,7 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
         return holder;
     }
 
-    CustomPojo list_items;
+    MessagesModel list_items;
     //Binding the data using get() method of POJO object
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
@@ -55,7 +58,11 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
 
         }
         holder.message.setText(list_items.getMessages());
-
+        try {
+            holder.time.setText(MyUtils.getDateCurrentTimeZone(Long.parseLong(list_items.getTime())));
+        }catch (NumberFormatException e){
+            holder.time.setText(list_items.getTime());
+        }
     }
 
 
@@ -75,7 +82,7 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
             setGravity= (LinearLayout) itemView.findViewById(R.id.set_gravity);
             setpatch= (LinearLayout) itemView.findViewById(R.id.setpatch);
             message=(TextView)itemView.findViewById(R.id.set_message);
-            time=(TextView)itemView.findViewById(R.id.time);
+            time=(TextView)itemView.findViewById(R.id.set_time);
 
 
         }

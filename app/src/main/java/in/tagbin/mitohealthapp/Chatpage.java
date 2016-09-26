@@ -264,7 +264,7 @@ public class Chatpage extends Fragment {
                     Log.d("XMPPChatDemoActivity", "Presence : "
                             + entryPresence);
 
-//                    CustomPojo pojoObject = new CustomPojo();
+//                    MessagesModel pojoObject = new MessagesModel();
 //                    DateFormat df = new SimpleDateFormat("HH:mm");
 //                    Calendar calobj = Calendar.getInstance();
 //

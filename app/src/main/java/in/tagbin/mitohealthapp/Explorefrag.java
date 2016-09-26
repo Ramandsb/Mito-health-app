@@ -44,6 +44,7 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
     TextView name,age,distance,noData,coins;
     GifImageView progressBar;
     PrefManager pref;
+    boolean connected = false;
     int page =1,coinsFinal = 0;
     double latitde=0.0,longitude=0.0;
 
@@ -160,7 +161,9 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                             public void onClick(View view) {
                                 ConnectUserModel connectUserModel = new ConnectUserModel();
                                 connectUserModel.setId(data.getNearby_user_list().get(0).getUser().getId());
+                                connectUserModel.setActivity(1);
                                 progressBar.setVisibility(View.VISIBLE);
+                                connected = true;
                                 Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
                             }
                         });
@@ -183,6 +186,8 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
+                        mainContent.setVisibility(View.GONE);
+                        noData.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -191,6 +196,8 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
+                        mainContent.setVisibility(View.GONE);
+                        noData.setVisibility(View.VISIBLE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -212,6 +219,8 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
+                    mCardStack.swipeTopCardRight(0);
+                    connected = false;
                     Toast.makeText(getContext(), "Connection request send successfully", Toast.LENGTH_LONG).show();
                 }
             });
@@ -241,9 +250,57 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
 
         }
     };
+    RequestListener mRejectListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
 
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("user passed",responseObject.toString());
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "User passed", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("user pas error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+        }
+    };
     @Override
     public void cardSwipedLeft(int position) {
+        if (!connected) {
+            ConnectUserModel connectUserModel = new ConnectUserModel();
+            connectUserModel.setId(data.getNearby_user_list().get(position).getUser().getId());
+            connectUserModel.setActivity(2);
+            progressBar.setVisibility(View.VISIBLE);
+            Controller.connectToUser(getContext(), connectUserModel, mRejectListener);
+        }
         final int position1 = position+1;
         if (position1 < data.getNearby_user_list().size()) {
             if (data.getNearby_user_list().get(position1).getUser().getLast_name() == null)
@@ -266,6 +323,8 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                 public void onClick(View view) {
                     ConnectUserModel connectUserModel = new ConnectUserModel();
                     connectUserModel.setId(data.getNearby_user_list().get(position1).getUser().getId());
+                    connectUserModel.setActivity(1);
+                    connected = true;
                     progressBar.setVisibility(View.VISIBLE);
                     Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
                 }
@@ -275,6 +334,13 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
 
     @Override
     public void cardSwipedRight(int position) {
+        if (!connected) {
+            ConnectUserModel connectUserModel = new ConnectUserModel();
+            connectUserModel.setId(data.getNearby_user_list().get(position).getUser().getId());
+            connectUserModel.setActivity(2);
+            progressBar.setVisibility(View.VISIBLE);
+            Controller.connectToUser(getContext(), connectUserModel, mRejectListener);
+        }
         final int position1 = position+1;
         if (position1 < data.getNearby_user_list().size()) {
             if (data.getNearby_user_list().get(position1).getUser().getLast_name() == null)
@@ -297,6 +363,8 @@ public class Explorefrag  extends Fragment implements SwipeDeck.SwipeEventCallba
                 public void onClick(View view) {
                     ConnectUserModel connectUserModel = new ConnectUserModel();
                     connectUserModel.setId(data.getNearby_user_list().get(position1).getUser().getId());
+                    connectUserModel.setActivity(1);
+                    connected = true;
                     progressBar.setVisibility(View.VISIBLE);
                     Controller.connectToUser(getContext(),connectUserModel,mConnectListener);
                 }

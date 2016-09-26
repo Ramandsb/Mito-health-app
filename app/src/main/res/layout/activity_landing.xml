@@ -10,8 +10,8 @@
     <include layout="@layout/content_landing" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:id="@+id/imageView"
         android:src="@drawable/mito_logo"
         android:layout_alignParentTop="true"

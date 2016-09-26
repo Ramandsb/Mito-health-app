@@ -46,9 +46,11 @@ public class ChatAdapter extends  RecyclerView.Adapter<ChatAdapter.MyViewHolder>
         holder.user_name.setText(list_items.getName());
         holder.content.setText(list_items.getUser());
         holder.time.setText(list_items.getPresence_status());
-        byte [] encodeByte=Base64.decode(list_items.getImage(), Base64.DEFAULT);
-        Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-        holder.imageView.setImageBitmap(bitmap);
+        if (list_items.getImage() != null) {
+            byte[] encodeByte = Base64.decode(list_items.getImage(), Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            holder.imageView.setImageBitmap(bitmap);
+        }
     }
 
     //Setting the arraylist

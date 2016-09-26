@@ -1,33 +1,24 @@
-package in.tagbin.mitohealthapp;
+package in.tagbin.mitohealthapp.model;
 
 
 import java.util.ArrayList;
 
-public class CustomPojo {
+public class MessagesModel {
     private String name;
     private String messages;
-    private String time_mess;
-    private String time,content;
+    private String time;
     private String source;
-    private  String user_id;
 
 
-    public CustomPojo() {
+    public MessagesModel() {
 
     }
-
-    public String getUser_id() {
-        return user_id;
+    public MessagesModel(String name,String messages,String time,String source){
+        this.name = name;
+        this.messages = messages;
+        this.time = time;
+        this.source = source;
     }
-
-    public void setUser_id(String user_id) {
-        this.user_id = user_id;
-    }
-
-    //getting content value
-    public String getContent(){return content;}
-    //setting content value
-    public void setContent(String content){this.content=content;}
 
     public String getTime(){return time;}
     public void setTime(String time){this.time=time;}
@@ -52,16 +43,7 @@ public class CustomPojo {
     public void setSource(String source) {
         this.source = source;
     }
-
-    public String getTime_mess() {
-        return time_mess;
-    }
-
     public void setMessages(String messages) {
         this.messages = messages;
-    }
-
-    public void setTime_mess(String time_mess) {
-        this.time_mess = time_mess;
     }
 }

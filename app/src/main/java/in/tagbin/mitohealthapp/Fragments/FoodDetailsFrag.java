@@ -62,7 +62,8 @@ import in.tagbin.mitohealthapp.model.RecommendationModel;
 public class FoodDetailsFrag extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
     String response;
     RecommendationModel.MealsModel data;
-    public static String time,quantity,servingUnit;
+    public static String time,quantity;
+    public static int servingUnit;
     LinearLayout foodTime;
     EditText quantity_ed;
     public static int year,month,day,hour,minute;
@@ -100,19 +101,27 @@ public class FoodDetailsFrag extends Fragment implements View.OnClickListener, D
             set_unit.setAdapter(adapter);
             set_unit.setSelection(0,false);
             final String[] unit = {data.getComponent().getServing_type().getServing_type()};
-            servingUnit = data.getComponent().getServing_type().getServing_type();
+            servingUnit = data.getComponent().getServing_type().getId();
             set_unit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Log.d("item selected", measuring_units.get(i));
                     unit[0] = measuring_units.get(i);
-                    servingUnit = unit[0];
-                    for (int y=0;y<data.getComponent().getOther_serving_detail().size();y++){
-                        if (unit[0].equals(data.getComponent().getOther_serving_detail().get(y).getServing_type().getServing_type())){
-                            set_protien.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_protein()).toString()+"g");
-                            set_fat.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_fat()).toString()+"g");
-                            set_carbo.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate()).toString()+"g");
-                            set_energy.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_energy()).toString()+"calories");
+                    if (unit[0].equals(data.getComponent().getServing_type().getServing_type())){
+                        set_protien.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_protein()).toString()+"g");
+                        set_fat.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_fat()).toString()+"g");
+                        set_carbo.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_carbohydrate()).toString()+"g");
+                        set_energy.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy()).toString()+"calories");
+                        servingUnit = data.getComponent().getServing_type().getId();
+                    }else {
+                        for (int y = 0; y < data.getComponent().getOther_serving_detail().size(); y++) {
+                            if (unit[0].equals(data.getComponent().getOther_serving_detail().get(y).getServing_type().getServing_type())) {
+                                set_protien.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_protein()).toString() + "g");
+                                set_fat.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_fat()).toString() + "g");
+                                set_carbo.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate()).toString() + "g");
+                                set_energy.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_energy()).toString() + "calories");
+                                servingUnit = data.getComponent().getOther_serving_detail().get(y).getServing_type().getId();
+                            }
                         }
                     }
                 }

@@ -95,6 +95,7 @@ public class ParticipantDetailfrag extends Fragment implements ViewPager.OnPageC
                 .fromJson(getArguments().getString("allmodels"), collectionType);
         data = JsonUtils.objectify(getArguments().getString("participantModel"),ParticipantModel.class);
         long endTime = MyUtils.getTimeinMillis(dataObject.getTime());
+
         long currentTime = System.currentTimeMillis();
         countDownTimer = new CountDownTimer(endTime - currentTime, 1000) {
             @Override

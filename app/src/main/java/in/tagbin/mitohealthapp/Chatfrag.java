@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,31 +27,20 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
-import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.Roster;
-import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 
 import in.tagbin.mitohealthapp.Database.ChatDatabase;
-import in.tagbin.mitohealthapp.Database.ChatRequestsDatabase;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ChatAccounts;
-import in.tagbin.mitohealthapp.model.ChatModel;
 
 public class Chatfrag extends Fragment {
 
@@ -106,7 +93,7 @@ public class Chatfrag extends Fragment {
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
 
                 ChatAccounts pojo = listContentArr.get(position);
-                startActivity(new Intent(getActivity(),ChatActivity.class).putExtra("user_name",pojo.getUser()));
+                startActivity(new Intent(getActivity(),ChatActivity.class).putExtra("user_name",pojo.getName()));
                 Log.d("click details",""+pojo.getName()+"//////"+pojo.getUser()+"/////"+pojo.getPresence_status());
             }
         });

@@ -29,7 +29,10 @@ public class RecipeDetailsFrag extends Fragment {
             response = getArguments().getString("response");
             data = JsonUtils.objectify(response, RecommendationModel.MealsModel.class);
             time.setText(data.getComponent().getPreparation_time()+" mins");
-            recipeDetails.setText(Html.fromHtml(data.getComponent().getRecipe()));
+            if (data.getComponent().getRecipe() != null)
+                recipeDetails.setText(Html.fromHtml(data.getComponent().getRecipe()));
+            else
+                recipeDetails.setText("Coming Soon!");
         }
         return view;
     }

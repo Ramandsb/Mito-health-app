@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -96,7 +98,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     private int year, month, day;
     private DatePicker datePicker;
     private Calendar calendar;
-    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv,coins;
+    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv,coins,months,monthsHeading;
     ImageView profile_pic;
     SharedPreferences login_details;
     static double height = 0.0,weight = 0.0,waist = 0.0,goal_weight = 0.0;
@@ -110,6 +112,7 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
     PrefManager pref;
     int prefernce_final,coinsFinal = 0;
     GifImageView progressBar1;
+    DiscreteSeekBar monthsSeekbar;
     Spinner diet_preference;
     LinearLayout mygoals,editName;
     View female_view;
@@ -164,6 +167,9 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         cusineSize = (TextView) Fragview.findViewById(R.id.tvCuisinesSize);
         profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
         profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
+        months = (TextView) Fragview.findViewById(R.id.tvMonths);
+        monthsHeading = (TextView) Fragview.findViewById(R.id.tvMonthsHeading);
+        monthsSeekbar = (DiscreteSeekBar) Fragview.findViewById(R.id.seekbarMonths);
         mygoals.setOnClickListener(this);
         login_details = getActivity().getSharedPreferences(MainPage.LOGIN_DETAILS, Context.MODE_PRIVATE);
         user_id = login_details.getString("user_id", "");
@@ -329,6 +335,22 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             public void onClick(View v) {
 //                WheelDialog("waist","select");
                 showWaistDialog();
+            }
+        });
+        if (goal_weight != 0 && weight != 0){
+            double goal = goal_weight/1000;
+            double weightFinal = weight/1000;
+            monthsHeading.setVisibility(View.VISIBLE);
+            monthsHeading.setText("You want to loose "+(weightFinal-goal)+" kgs");
+        }else{
+            monthsHeading.setVisibility(View.GONE);
+        }
+        monthsSeekbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+            @Override
+            public int transform(int value) {
+                //settingsModel.setMaximum_distance(value);
+                months.setText(value+ " weeks");
+                return value;
             }
         });
         return Fragview;

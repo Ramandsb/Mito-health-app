@@ -6,53 +6,27 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.facebook.stetho.inspector.protocol.module.Database;
-
-import org.jivesoftware.smack.ConnectionConfiguration;
-import org.jivesoftware.smack.ConnectionListener;
-import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.Roster;
-import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
-import org.jivesoftware.smack.filter.MessageTypeFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
-import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Packet;
-import org.jivesoftware.smack.packet.Presence;
-import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Calendar;
 
+import in.tagbin.mitohealthapp.Database.ChatMessagesDatabase;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.model.MessagesModel;
 
 public class ChatActivity extends AppCompatActivity {
     public static final String HOST = "chat.eazevent.in";
@@ -62,15 +36,11 @@ public class ChatActivity extends AppCompatActivity {
     public static final String PASSWORD = "1234";
     RecyclerView recyclerView;
     ChatActivityAdapter adapter;
-    private XMPPConnection connection;
-    private ArrayList<String> messages = new ArrayList<String>();
-    private Handler mHandler = new Handler();
-    private ArrayList<CustomPojo> customPojos_list= new ArrayList<>();
-    private ArrayList<CustomPojo> list= new ArrayList<>();
+    private ArrayList<MessagesModel> customPojos_list= new ArrayList<>();
+    private ArrayList<MessagesModel> list= new ArrayList<>();
     String user="rman";
     private EditText textMessage;
     Intent SendMessages;
-    DatabaseOperations dop;
 
 
 
@@ -87,22 +57,20 @@ public class ChatActivity extends AppCompatActivity {
         recyclerView=(RecyclerView)findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //adapter=new ChatActivityAdapter(this);
-
-        dop=new DatabaseOperations(this);
-
-
         textMessage = (EditText) this.findViewById(R.id.chatET);
         user_name=getIntent().getExtras().getString("user_name");
         getSupportActionBar().setTitle(user_name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        list=dop.getCMInformation(dop,user_name);
+        ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(this);
+        list=chatMessagesDatabase.getChatUsers(user_name);
         if (list.isEmpty()){
-
         }else {
             customPojos_list=list;
-            adapter = new ChatActivityAdapter(this,customPojos_list);
-            recyclerView.setAdapter(adapter);
         }
+        adapter = new ChatActivityAdapter(this,customPojos_list);
+        recyclerView.setAdapter(adapter);
+        if (adapter.getItemCount() >2)
+            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
         toolbar.setTitle(user_name);
 //        recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
 
@@ -112,13 +80,16 @@ public class ChatActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 String text = textMessage.getText().toString();
-                CustomPojo pojo = new CustomPojo();
-                String time= String.valueOf(System.currentTimeMillis());
-                pojo.setTime_mess(time);
-                pojo.setSource("to");
-                pojo.setUser_id(user_name);
-                pojo.setMessages(text);
-
+                Calendar calendar = Calendar.getInstance();
+                int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                int minutee = calendar.get(Calendar.MINUTE);
+                MessagesModel pojo = new MessagesModel(user_name,text,updateTime1(hour,minutee),"to");
+//                pojo.setTime_mess(time);
+//                pojo.setSource("to");
+//                pojo.setUser_id(user_name);
+//                pojo.setMessages(text);
+                ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(ChatActivity.this);
+                chatMessagesDatabase.addChat(pojo);
                 customPojos_list.add(pojo);
                 //adapter.setListContent(customPojos_list);
                 adapter.notifyDataSetChanged();
@@ -128,22 +99,60 @@ public class ChatActivity extends AppCompatActivity {
                 SendMessages.putExtra("message",text);
                 sendBroadcast(SendMessages);
 
-                dop.putCMInformation(dop,"to",time,text,user_name);
+                //dop.putCMInformation(dop,"to",time,text,user_name);
 
                 }
 
         });
     }
+    private String updateTime1(int hours, int mins) {
+        if (mins >= 60) {
+            //hour = hours + 1;
+            hours = hours + 1;
+            //minute1 = mins - 60;
+            mins = mins - 60;
+        } else {
+            hours = hours;
+            mins = mins;
+        }
 
+        String timeSet = "";
+        if (hours > 12) {
+            hours -= 12;
+            timeSet = "PM";
+        } else if (hours == 0) {
+            hours += 12;
+            timeSet = "AM";
+        } else if (hours == 12)
+            timeSet = "PM";
+        else
+            timeSet = "AM";
+
+
+        // Append in a StringBuilder
+        String aTime = new StringBuilder().append(hours).append(':')
+                .append(mins).append(" ").append(timeSet).toString();
+
+        return aTime;
+        //time.setText(aTime);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            if (connection != null)
-                connection.disconnect();
-        } catch (Exception e) {
 
-        }
     }
 
     private boolean isNetworkAvailable() {
@@ -157,14 +166,16 @@ public class ChatActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String username=intent.getStringExtra("user_name");
             String msg=intent.getStringExtra("message");
-            String time= String.valueOf(System.currentTimeMillis());
-            CustomPojo pojo = new CustomPojo();
-            pojo.setTime_mess(time);
-            pojo.setSource("from");
-            pojo.setUser_id(username);
-            pojo.setMessages(msg);
-            dop.putCMInformation(dop,"from",time,msg,user_name);
-            adapter.notifyDataSetChanged();
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minutee = calendar.get(Calendar.MINUTE);
+            MessagesModel pojo = new MessagesModel(username,msg,updateTime1(hour,minutee),"from");
+//            pojo.setTime_mess(time);
+//            pojo.setSource("from");
+//            pojo.setUser_id(username);
+//            pojo.setMessages(msg);
+            //dop.putCMInformation(dop,"from",time,msg,user_name);
+            //adapter.notifyDataSetChanged();
             customPojos_list.add(pojo);
             adapter.notifyDataSetChanged();
             recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
@@ -191,7 +202,7 @@ public class ChatActivity extends AppCompatActivity {
 //                @Override
 //                public void processPacket(Packet packet) {
 //                    Message message = (Message) packet;
-//                    CustomPojo pojo = new CustomPojo();
+//                    MessagesModel pojo = new MessagesModel();
 //                    if (message.getBody() != null) {
 //                        String fromName = StringUtils.parseBareAddress(message
 //                                .getFrom());
@@ -216,4 +227,9 @@ public class ChatActivity extends AppCompatActivity {
 //    }
 
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
 }

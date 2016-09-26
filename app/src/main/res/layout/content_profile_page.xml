@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginBottom="40dp"
         tools:context="in.tagbin.mitohealthapp.ProfilePage">
 
             <LinearLayout
@@ -458,12 +457,40 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="50dp"
                     android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14sp"
+                        android:id="@+id/tvMonthsHeading"
+                        android:text="You want to loose "/>
 
-                    <SeekBar
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="14sp"
+                        android:layout_below="@+id/tvMonthsHeading"
+                        android:id="@+id/tvMonths"
+                        android:text="2 Weeks"/>
+
+                    <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                        android:id="@+id/seekbarMonths"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="72dp"
+                        android:layout_below="@+id/tvMonths"
+                        app:dsb_allowTrackClickToDrag="true"
+                        app:dsb_min="2"
+                        app:dsb_max="100"
+                        app:dsb_indicatorColor="@color/colorPrimary"
+                        app:dsb_indicatorFormatter="%d"
+                        app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
+                        app:dsb_progressColor="@color/colorPrimary" />
 
                 </RelativeLayout>
             </LinearLayout>

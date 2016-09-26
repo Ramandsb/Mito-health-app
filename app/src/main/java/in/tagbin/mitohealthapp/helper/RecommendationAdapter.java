@@ -153,7 +153,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                             long time1 = calendar1.getTime().getTime()/1000L;
                             Log.d("timesatmap",""+time1);
                             setFoodLoggerModel1.setTime_consumed(time1);
-                            setFoodLoggerModel1.setServing_unit(mModel.getComponent().getServing_type().getServing_type());
+                            setFoodLoggerModel1.setServing_unit(mModel.getComponent().getServing_type().getId());
                             setFoodLoggerModel1.setAmount(mModel.getAmount());
                             setFoodLoggerModel1.setFlag(2);
                             setFoodLoggerModel1.setMeal_id(mModel.getMeal_id());
@@ -183,7 +183,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
                             Log.d("timesatmap",""+time2);
                             setFoodLoggerModel2.setTime_consumed(time2);
                             setFoodLoggerModel2.setAmount(mModel.getAmount());
-                            setFoodLoggerModel2.setServing_unit(mModel.getComponent().getServing_type().getServing_type());
+                            setFoodLoggerModel2.setServing_unit(mModel.getComponent().getServing_type().getId());
                             setFoodLoggerModel2.setFlag(3);
                             setFoodLoggerModel2.setMeal_id(mModel.getMeal_id());
                             mProgressBar.setVisibility(View.VISIBLE);

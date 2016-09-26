@@ -19,11 +19,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.ReconnectionManager;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.XMPPConnection;
@@ -39,17 +37,20 @@ import org.jivesoftware.smackx.packet.VCard;
 import org.jivesoftware.smackx.provider.VCardProvider;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 
 import in.tagbin.mitohealthapp.Database.ChatDatabase;
-import in.tagbin.mitohealthapp.Database.ChatRequestsDatabase;
+import in.tagbin.mitohealthapp.Database.ChatMessagesDatabase;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ChatAccounts;
 import in.tagbin.mitohealthapp.model.ChatLoginModel;
-import in.tagbin.mitohealthapp.model.ChatModel;
+import in.tagbin.mitohealthapp.model.MessagesModel;
 
 /**
  * Created by hp on 8/26/2016.
@@ -61,7 +62,6 @@ public class XamppChatService extends Service {
     public static String SERVICE = "chat2.eazevent.in";
     public static String USERNAME = "ankit";
     public static String PASSWORD = "1234";
-    DatabaseOperations dop;
 
     private XMPPConnection connection;
     private ArrayList<String> messages = new ArrayList<String>();
@@ -80,8 +80,6 @@ public class XamppChatService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        dop=new DatabaseOperations(getApplicationContext());
         registerReceiver(RecievePublish, new IntentFilter(SENTMSGS));
         registerReceiver(SendRequests,new IntentFilter(SENTREQUESTS));
         RecivedmsgsIntent= new Intent(RECIEVEDMSGS);
@@ -186,7 +184,13 @@ public class XamppChatService extends Service {
                                 + " from " + fromName );
                         messages.add(fromName + ":");
                         messages.add(message.getBody());
-                        dop.putCMInformation(dop,"from",String.valueOf(System.currentTimeMillis()),message.getBody(),fromName);
+                        Calendar calendar = Calendar.getInstance();
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minutee = calendar.get(Calendar.MINUTE);
+                        MessagesModel messagesModel = new MessagesModel(fromName,message.getBody(),updateTime1(hour,minutee),"from");
+                        ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(getBaseContext());
+                        chatMessagesDatabase.addChat(messagesModel);
+                        //dop.putCMInformation(dop,"from",String.valueOf(System.currentTimeMillis()),message.getBody(),fromName);
                         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext());
                         mBuilder.setSmallIcon(R.drawable.mito_logo);
                         mBuilder.setContentTitle(fromName);
@@ -222,6 +226,37 @@ public class XamppChatService extends Service {
                 }
             }, filter);
         }
+    }
+    private String updateTime1(int hours, int mins) {
+        if (mins >= 60) {
+            //hour = hours + 1;
+            hours = hours + 1;
+            //minute1 = mins - 60;
+            mins = mins - 60;
+        } else {
+            hours = hours;
+            mins = mins;
+        }
+
+        String timeSet = "";
+        if (hours > 12) {
+            hours -= 12;
+            timeSet = "PM";
+        } else if (hours == 0) {
+            hours += 12;
+            timeSet = "AM";
+        } else if (hours == 12)
+            timeSet = "PM";
+        else
+            timeSet = "AM";
+
+
+        // Append in a StringBuilder
+        String aTime = new StringBuilder().append(hours).append(':')
+                .append(mins).append(" ").append(timeSet).toString();
+
+        return aTime;
+        //time.setText(aTime);
     }
     class Connector extends AsyncTask {
 

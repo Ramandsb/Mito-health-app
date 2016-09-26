@@ -79,7 +79,7 @@ public class PlaceAutoCompleteAdapter1 extends ArrayAdapter<HitsArrayModel> {
                 if (constraint != null) {
                     RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                     RequestFuture<JSONObject> future = RequestFuture.newFuture();
-                    String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/recipe_data_2/recipe_data_2/_search";
+                    String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/recipe_data_3/recipe_data_3/_search";
                     String json = "{  \n" +
                             "   \"query\":{  \n" +
                             "      \"bool\":{  \n" +

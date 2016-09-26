@@ -5,6 +5,15 @@ package in.tagbin.mitohealthapp.model;
  */
 public class ConnectUserModel {
     int id;
+    int activity;
+
+    public void setActivity(int activity) {
+        this.activity = activity;
+    }
+
+    public int getActivity() {
+        return activity;
+    }
 
     public int getId() {
         return id;
