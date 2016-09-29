@@ -1,6 +1,8 @@
 package in.tagbin.mitohealthapp.helper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -108,20 +110,28 @@ public class AllParticipantAdapter extends RecyclerView.Adapter<AllParticipantAd
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mFrameLayout.setVisibility(View.VISIBLE);
+//                    mFrameLayout.setVisibility(View.VISIBLE);
 
-                    Bundle bundle = new Bundle();
-                    Fragment fragment = new ParticipantDetailfrag();
+//                    Bundle bundle = new Bundle();
+//                    Fragment fragment = new ParticipantDetailfrag();
+//
+//                    bundle.putString("participantModel",dataobject);
+//                    bundle.putString("allmodels",allModels);
+//                    bundle.putString("dataobject",dataObj);
+//                    bundle.putInt("positon",position);
+//                    fragment.setArguments(bundle);
+//                    FragmentTransaction transaction = pFragment.beginTransaction();
+//                    transaction.add(R.id.frameLayoutWhole, fragment);
+//                    transaction.commit();
+                    Intent i = new Intent(mContext,ParticipantDetailfrag.class);
                     String dataobject = JsonUtils.jsonify(mModel);
                     String allModels = JsonUtils.jsonify(data);
-                    bundle.putString("participantModel",dataobject);
-                    bundle.putString("allmodels",allModels);
-                    bundle.putString("dataobject",dataObj);
-                    bundle.putInt("positon",position);
-                    fragment.setArguments(bundle);
-                    FragmentTransaction transaction = pFragment.beginTransaction();
-                    transaction.add(R.id.frameLayoutWhole, fragment);
-                    transaction.commit();
+                    i.putExtra("participantModel",dataobject);
+                    i.putExtra("allmodels",allModels);
+                    i.putExtra("dataobject",dataObj);
+                    i.putExtra("positon",position);
+                    mContext.startActivity(i);
+                    ((Activity) mContext).finish();
                 }
             });
         }

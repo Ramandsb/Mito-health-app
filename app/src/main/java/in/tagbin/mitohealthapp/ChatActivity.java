@@ -29,11 +29,6 @@ import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.model.MessagesModel;
 
 public class ChatActivity extends AppCompatActivity {
-    public static final String HOST = "chat.eazevent.in";
-    public static final int PORT = 5222;
-    public static final String SERVICE = "chat.eazevent.in";
-    public static final String USERNAME = "ankit";
-    public static final String PASSWORD = "1234";
     RecyclerView recyclerView;
     ChatActivityAdapter adapter;
     private ArrayList<MessagesModel> customPojos_list= new ArrayList<>();
@@ -44,7 +39,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-    String user_name="",user_content="";
+    String user_name="",user_content="",name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +54,14 @@ public class ChatActivity extends AppCompatActivity {
         //adapter=new ChatActivityAdapter(this);
         textMessage = (EditText) this.findViewById(R.id.chatET);
         user_name=getIntent().getExtras().getString("user_name");
-        getSupportActionBar().setTitle(user_name);
+        name = getIntent().getStringExtra("name");
+        Log.d("name",name);
+        if (name != null) {
+            getSupportActionBar().setTitle(name);
+        }else {
+            getSupportActionBar().setTitle(user_name);
+        }
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(this);
         list=chatMessagesDatabase.getChatUsers(user_name);
@@ -70,12 +72,7 @@ public class ChatActivity extends AppCompatActivity {
         adapter = new ChatActivityAdapter(this,customPojos_list);
         recyclerView.setAdapter(adapter);
         if (adapter.getItemCount() >2)
-            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
-        toolbar.setTitle(user_name);
-//        recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
-
-
-        // Set a listener to send a chat text message
+            recyclerView.scrollToPosition(adapter.getItemCount()-1);
         final Button send = (Button) this.findViewById(R.id.sendBtn);
         send.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -84,10 +81,6 @@ public class ChatActivity extends AppCompatActivity {
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutee = calendar.get(Calendar.MINUTE);
                 MessagesModel pojo = new MessagesModel(user_name,text,updateTime1(hour,minutee),"to");
-//                pojo.setTime_mess(time);
-//                pojo.setSource("to");
-//                pojo.setUser_id(user_name);
-//                pojo.setMessages(text);
                 ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(ChatActivity.this);
                 chatMessagesDatabase.addChat(pojo);
                 customPojos_list.add(pojo);
@@ -149,18 +142,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onBackPressed();
         this.finish();
     }
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
     private BroadcastReceiver Recievemsgs = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -170,12 +152,6 @@ public class ChatActivity extends AppCompatActivity {
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minutee = calendar.get(Calendar.MINUTE);
             MessagesModel pojo = new MessagesModel(username,msg,updateTime1(hour,minutee),"from");
-//            pojo.setTime_mess(time);
-//            pojo.setSource("from");
-//            pojo.setUser_id(username);
-//            pojo.setMessages(msg);
-            //dop.putCMInformation(dop,"from",time,msg,user_name);
-            //adapter.notifyDataSetChanged();
             customPojos_list.add(pojo);
             adapter.notifyDataSetChanged();
             recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
@@ -185,51 +161,11 @@ public class ChatActivity extends AppCompatActivity {
 
         }
     };
-//    private boolean isNetworkAvailable() {
-//        showDialog();
-//        ConnectivityManager connectivityManager
-//                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-//        Log.d("Ramandeep",activeNetworkInfo.isConnected()+"///");
-//        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-//    }
-//    public void setConnection(XMPPConnection connection) {
-//        this.connection = connection;
-//        if (connection != null) {
-//            // Add a packet listener to get messages sent to us
-//            PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
-//            connection.addPacketListener(new PacketListener() {
-//                @Override
-//                public void processPacket(Packet packet) {
-//                    Message message = (Message) packet;
-//                    MessagesModel pojo = new MessagesModel();
-//                    if (message.getBody() != null) {
-//                        String fromName = StringUtils.parseBareAddress(message
-//                                .getFrom());
-//                        Log.i("XMPPChatDemoActivity", "Text Recieved " + message.getBody()
-//                                + " from " + fromName );
-//
-//                        pojo.setMessages(message.getBody());
-//                        messages.add(fromName + ":");
-//                        messages.add(message.getBody());
-//                        customPojos_list.add(pojo);
-//                        adapter.setListContent(customPojos_list);
-//                        // Add the incoming message to the list view
-//                        mHandler.post(new Runnable() {
-//                            public void run() {
-////setListAdapter();
-//                            }
-//                        });
-//                    }
-//                }
-//            }, filter);
-//        }
-//    }
 
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
         super.onStop();
-
+        unregisterReceiver(Recievemsgs);
     }
 }

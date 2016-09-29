@@ -53,12 +53,14 @@ public class FriendRequestActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Connection Requests");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         linearLayoutManager = new LinearLayoutManager(this);
+        progressBar = (GifImageView) findViewById(R.id.progressBar);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(false);
         data = new ArrayList<ConnectProfileModel>();
         adapter = new FriendRequestAdapter(this,data,progressBar);
         recyclerView.setAdapter(adapter);
+        progressBar.setVisibility(View.VISIBLE);
         Controller.getRequests(this,mRequestListener);
 
     }
@@ -105,6 +107,7 @@ public class FriendRequestActivity extends AppCompatActivity {
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Type collectionType = new TypeToken<ArrayList<ConnectProfileModel>>() {
             }.getType();
+            data.clear();
             List<ConnectProfileModel> da = (ArrayList<ConnectProfileModel>) new Gson()
                     .fromJson(responseObject.toString(), collectionType);
             for(int i=0;i<da.size();i++){
@@ -113,6 +116,7 @@ public class FriendRequestActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    progressBar.setVisibility(View.GONE);
                     adapter.notifyDataSetChanged();
                 }
             });

@@ -596,7 +596,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             seekBar.setText(new DecimalFormat("##.#").format(height).toString());
         }
         seekBar.setSelectAllOnFocus(true);
-        seekBar.setInputType(InputType.TYPE_CLASS_PHONE);
         View done = dialog.findViewById(R.id.height_done);
         TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
         textInputLayout.setHint("Height");
@@ -693,7 +692,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
             seekBar.setText(new DecimalFormat("##.#").format(weight/1000).toString());
         }
         seekBar.setSelectAllOnFocus(true);
-        seekBar.setInputType(InputType.TYPE_CLASS_PHONE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -782,7 +780,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         if (goal_weight != 0.0) {
             seekBar.setText(new DecimalFormat("##.#").format(goal_weight/1000).toString());
         }
-        seekBar.setInputType(InputType.TYPE_CLASS_PHONE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -877,7 +874,6 @@ public class ProfilePage extends Fragment implements PicModeSelectDialogFragment
         if (waist != 0.0) {
             seekBar.setText(new DecimalFormat("##.#").format(waist).toString());
         }
-        seekBar.setInputType(InputType.TYPE_CLASS_PHONE);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);

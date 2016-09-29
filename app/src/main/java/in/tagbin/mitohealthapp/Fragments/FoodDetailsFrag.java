@@ -57,6 +57,7 @@ import in.tagbin.mitohealthapp.FoodDetails;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.RecommendationModel;
 
 public class FoodDetailsFrag extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
@@ -66,6 +67,7 @@ public class FoodDetailsFrag extends Fragment implements View.OnClickListener, D
     public static int servingUnit;
     LinearLayout foodTime;
     EditText quantity_ed;
+    PrefManager pref;
     public static int year,month,day,hour,minute;
     TextView set_time,set_protien,set_fat,set_carbo,set_energy;
     Spinner set_unit;
@@ -77,6 +79,7 @@ public class FoodDetailsFrag extends Fragment implements View.OnClickListener, D
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_food_details, container, false);
+        pref = new PrefManager(getContext());
         quantity_ed= (EditText) view.findViewById(R.id.quantity_ed);
         set_unit= (Spinner) view.findViewById(R.id.measuring_type);
         set_time= (TextView) view.findViewById(R.id.set_time);
@@ -141,9 +144,15 @@ public class FoodDetailsFrag extends Fragment implements View.OnClickListener, D
                 minute = Integer.parseInt(MyUtils.getMinute(data.getTime()));
             }else {
                 Calendar calendar = Calendar.getInstance();
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
+                if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+                    day = pref.getKeyDay();
+                    month = pref.getKeyMonth();
+                    year = pref.getKeyYear();
+                }else {
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
+                }
                 hour = calendar.get(Calendar.HOUR_OF_DAY);
                 minute = calendar.get(Calendar.MINUTE);
                 updateTime1(hour, minute);
@@ -207,7 +216,24 @@ public class FoodDetailsFrag extends Fragment implements View.OnClickListener, D
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.linearTimeFood:
+                Calendar[] dates = new Calendar[4];
+                int i = 0;
+                while (i < 4){
+                    Calendar selDate = Calendar.getInstance();
+                    selDate.add(Calendar.DAY_OF_MONTH, -i);
+                    dates[i] = selDate;
+                    i++;
+                }
+
+//                while (i < 35) {
+//                    Calendar selDate = Calendar.getInstance();
+//                    selDate.add(Calendar.DAY_OF_MONTH, i-3);
+//                    dates[i] = selDate;
+//                    i++;
+//                }
                 com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(this, year, month, day);
+                dpd.setSelectableDays(dates);
+                dpd.setHighlightedDays(dates);
                 dpd.show(getActivity().getFragmentManager(), "DATE_PICKER_TAG");
                 break;
         }

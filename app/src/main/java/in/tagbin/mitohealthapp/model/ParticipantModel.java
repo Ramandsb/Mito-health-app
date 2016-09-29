@@ -85,9 +85,9 @@ public class ParticipantModel {
             public String getMaster(){
                 return this.master;
             }
-            String[] others;
+            String[] other;
             public String[] getOthers(){
-                return this.others;
+                return this.other;
             }
         }
     }

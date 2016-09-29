@@ -26,8 +26,9 @@ public class ChatAdapter extends  RecyclerView.Adapter<ChatAdapter.MyViewHolder>
     MyViewHolder holder;
     private Context context;
 
-    public ChatAdapter(Context context){
+    public ChatAdapter(Context context,ArrayList<ChatAccounts> list_members){
         this.context=context;
+        this.list_members=list_members;
         inflater=LayoutInflater.from(context);
     }
     //This method inflates view present in the RecyclerView
@@ -44,8 +45,9 @@ public class ChatAdapter extends  RecyclerView.Adapter<ChatAdapter.MyViewHolder>
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         list_items=list_members.get(position);
         holder.user_name.setText(list_items.getName());
-        holder.content.setText(list_items.getUser());
-        holder.time.setText(list_items.getPresence_status());
+        holder.content.setVisibility(View.GONE);
+        //holder.content.setText(list_items.getName());
+        holder.time.setText(list_items.getPresence());
         if (list_items.getImage() != null) {
             byte[] encodeByte = Base64.decode(list_items.getImage(), Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
@@ -53,13 +55,6 @@ public class ChatAdapter extends  RecyclerView.Adapter<ChatAdapter.MyViewHolder>
         }
     }
 
-    //Setting the arraylist
-    public void setListContent(ArrayList<ChatAccounts> list_members){
-        this.list_members=list_members;
-//        notifyItemRangeChanged(0,list_members.size());
-        notifyDataSetChanged();
-
-    }
 
     @Override
     public int getItemCount() {

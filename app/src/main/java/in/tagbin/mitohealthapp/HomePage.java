@@ -98,7 +98,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     String last7Days="";
     String next7Days="";
     String myurl=Config.url + "logger/history/dates/";
-
+    PrefManager pref;
     int a = 0, b = 0, c = 0,coinsFinal = 0;
     int mBgColor = 0;
     android.support.v7.widget.CardView food_card;
@@ -132,6 +132,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View v = inflater.inflate(R.layout.content_home_page,container,false);
+        pref=  new PrefManager(getContext());
         Calendar  calendar = Calendar.getInstance();
         customDialog();
 
@@ -164,6 +165,9 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         int day = calendar1.get(Calendar.DAY_OF_MONTH);
         int year = calendar1.get(Calendar.YEAR);
         int month = calendar1.get(Calendar.MONTH);
+        pref.setKeyDay(day);
+        pref.setKeyMonth(month);
+        pref.setKeyYear(year);
         //widget.setSelectedDate(calendar1.getTime());
         Date date1 = new Date(year-1900,month,day,0,0);
         long timestamp = date1.getTime()/1000L;
@@ -304,7 +308,7 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
         public void onRequestCompleted(Object responseObject) {
             Log.d("dateRange Request",responseObject.toString());
             final EnergyGetModel energyGetModel = JsonUtils.objectify(responseObject.toString(),EnergyGetModel.class);
-            getActivity().runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     coinsFinal  = energyGetModel.getTotal_coins();
@@ -431,8 +435,11 @@ public class HomePage extends Fragment implements DatePickerDialog.OnDateSetList
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
 
         int day=   date.getDay();
-        int month=   date.getMonth()+1;
+        int month=   date.getMonth();
         int year=   date.getYear();
+        pref.setKeyYear(year);
+        pref.setKeyMonth(month);
+        pref.setKeyDay(day);
         if (month<=9 && day <=9){
             selectedDate = year + "-" + "0"+month + "-" + "0"+day;
             Log.d("date",selectedDate);

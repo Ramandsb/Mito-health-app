@@ -1,6 +1,8 @@
 package in.tagbin.mitohealthapp.helper;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -110,20 +112,29 @@ public class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.
             circleImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mFrameLayout.setVisibility(View.VISIBLE);
-
-                    Bundle bundle = new Bundle();
-                    Fragment fragment = new ParticipantDetailfrag(mFrameLayout);
+//                    mFrameLayout.setVisibility(View.VISIBLE);
+//
+//                    Bundle bundle = new Bundle();
+//                    Fragment fragment = new ParticipantDetailfrag(mFrameLayout);
+//                    String dataobject = JsonUtils.jsonify(mModel);
+//                    String allModels = JsonUtils.jsonify(data);
+//                    bundle.putString("participantModel",dataobject);
+//                    bundle.putString("allmodels",allModels);
+//                    bundle.putString("dataobject",dataObj);
+//                    bundle.putInt("position",position);
+//                    fragment.setArguments(bundle);
+//                    FragmentTransaction transaction = pFragment.beginTransaction();
+//                    transaction.add(R.id.frameLayoutWhole, fragment);
+//                    transaction.commit();
+                    Intent i = new Intent(mContext,ParticipantDetailfrag.class);
                     String dataobject = JsonUtils.jsonify(mModel);
                     String allModels = JsonUtils.jsonify(data);
-                    bundle.putString("participantModel",dataobject);
-                    bundle.putString("allmodels",allModels);
-                    bundle.putString("dataobject",dataObj);
-                    bundle.putInt("position",position);
-                    fragment.setArguments(bundle);
-                    FragmentTransaction transaction = pFragment.beginTransaction();
-                    transaction.add(R.id.frameLayoutWhole, fragment);
-                    transaction.commit();
+                    i.putExtra("participantModel",dataobject);
+                    i.putExtra("allmodels",allModels);
+                    i.putExtra("dataobject",dataObj);
+                    i.putExtra("positon",position);
+                    mContext.startActivity(i);
+
                 }
             });
         }

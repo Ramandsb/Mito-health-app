@@ -133,7 +133,15 @@ public class PartnerFrag extends Fragment implements TabLayout.OnTabSelectedList
                 replaceFragment(new Explorefrag());
                 break;
             case 1 :
-                replaceFragment(new Lookupfrag(frameLayout));
+                Fragment fragment = new Lookupfrag(frameLayout);
+                if (getArguments() != null){
+                    if (getArguments().getString("addactivity") != null){
+                        Bundle bundle = new Bundle();
+                        bundle.putString("addactivity","addactivity");
+                        fragment.setArguments(bundle);
+                    }
+                }
+                replaceFragment(fragment);
                 break;
             case 2 :
                 replaceFragment(new Chatfrag());

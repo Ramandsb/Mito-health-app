@@ -332,7 +332,7 @@ public class Controller {
                                        RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.EVENTS);
-        url = url+"/location?location=["+longitude+","+latitude+"]";
+        url = url+"/location?location=["+longitude+","+latitude+"]&archive=2";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);

@@ -54,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     String username_str,password_str,token;
     SharedPreferences loginDetails;
     TextView forgotPassword;
+    int hour,minute,day,month,year;
     boolean signup=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

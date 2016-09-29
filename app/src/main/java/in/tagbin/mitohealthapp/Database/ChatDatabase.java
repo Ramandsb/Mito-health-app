@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.tagbin.mitohealthapp.model.ChatAccounts;
 import in.tagbin.mitohealthapp.model.ChatModel;
@@ -71,6 +72,10 @@ public class ChatDatabase extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
+    public void deleteData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from "+TABLE_CHATUSERS);
+    }
     public ArrayList<ChatAccounts> getChatUsers() {
         try {
             YC_LIST.clear();
@@ -81,8 +86,8 @@ public class ChatDatabase extends SQLiteOpenHelper {
             if (cursor.moveToFirst()) {
                 do {
                     ChatAccounts chatModel = new ChatAccounts();
-                    chatModel.setName(cursor.getString(1));
-                    chatModel.setUser(cursor.getString(2));
+                    chatModel.setName(cursor.getString(2));
+                    chatModel.setUser(cursor.getString(1));
                     chatModel.setStatus(cursor.getString(3));
                     chatModel.setType(cursor.getString(4));
                     chatModel.setPresence(cursor.getString(5));
@@ -110,5 +115,47 @@ public class ChatDatabase extends SQLiteOpenHelper {
         }
 
         return YC_LIST;
+    }
+    public ChatAccounts getChatUser(String username) {
+        List<ChatAccounts> chatAccounts = new ArrayList<ChatAccounts>();
+        try {
+            chatAccounts.clear();
+
+            String selectQuery = "SELECT  * FROM " + TABLE_CHATUSERS+" WHERE "+KEY_USER+" = '"+ username+"'";
+
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    ChatAccounts chatModel = new ChatAccounts();
+                    chatModel.setName(cursor.getString(2));
+                    chatModel.setUser(cursor.getString(1));
+                    chatModel.setStatus(cursor.getString(3));
+                    chatModel.setType(cursor.getString(4));
+                    chatModel.setPresence(cursor.getString(5));
+                    chatModel.setPresence_status(cursor.getString(6));
+                    chatModel.setImage(cursor.getString(7));
+//                    OfferNotificationModel dbhBean = new OfferNotificationModel();
+//                    dbhBean.setGspot(cursor.getString(0));
+//                    dbhBean.setDescription(cursor.getString(1));
+//                    dbhBean.setTitle(cursor.getString(2));
+//                    dbhBean.setDate(cursor.getString(3));
+//                    dbhBean.setRest_name(cursor.getString(4));
+//                    dbhBean.setShort_address(cursor.getString(5));
+//                    dbhBean.setVtype(cursor.getString(6));
+                    chatAccounts.add(chatModel);
+                } while (cursor.moveToNext());
+            }
+
+            // return contact list
+            cursor.close();
+            db.close();
+            return chatAccounts.get(0);
+        } catch (Exception e) {
+            // TODO: handle exception
+            Log.e("=========================================================@@@@@@@@@@@@@@@@@", "" +"");
+        }
+
+        return chatAccounts.get(0);
     }
 }

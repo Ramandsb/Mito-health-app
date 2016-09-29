@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -72,24 +73,36 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
 
         holder.capacity.setText("" +(newlist.get(position).getTotal_approved())+"/"+newlist.get(position).getCapacity());
         holder.location.setText(MyUtils.getCityName(mycontext,newlist.get(position).getLocation()));
+        Calendar calendar = Calendar.getInstance();
+        long output = calendar.getTimeInMillis();
         if (newlist.get(position).getTotal_approved() == newlist.get(position).getCapacity()){
             holder.join.setTextColor(Color.parseColor("#9b9b9b"));
             holder.join.setText("Join Now");
             holder.housefull.setVisibility(View.VISIBLE);
+            holder.expired.setVisibility(View.GONE);
+            holder.join.setClickable(false);
+        }else if (MyUtils.getTimeinMillis(newlist.get(position).getTime()) < output){
+            holder.join.setTextColor(Color.parseColor("#9b9b9b"));
+            holder.join.setText("Join Now");
+            holder.housefull.setVisibility(View.GONE);
+            holder.expired.setVisibility(View.VISIBLE);
             holder.join.setClickable(false);
         }else if (newlist.get(position).getMapper().getId() != 0 && !newlist.get(position).getMapper().isConfirm()){
             holder.join.setTextColor(Color.parseColor("#ffffff"));
             holder.join.setText("Pending");
+            holder.expired.setVisibility(View.GONE);
             holder.housefull.setVisibility(View.GONE);
             holder.join.setClickable(false);
         }else if (newlist.get(position).getMapper().getId() != 0 && newlist.get(position).getMapper().isConfirm()){
             holder.join.setTextColor(Color.parseColor("#ffffff"));
             holder.join.setText("Accepted");
+            holder.expired.setVisibility(View.GONE);
             holder.housefull.setVisibility(View.GONE);
             holder.join.setClickable(false);
         }else{
             holder.join.setTextColor(Color.parseColor("#ffffff"));
             holder.join.setText("Join Now");
+            holder.expired.setVisibility(View.GONE);
             holder.join.setClickable(true);
             holder.housefull.setVisibility(View.GONE);
             holder.join.setOnClickListener(new View.OnClickListener() {
@@ -115,19 +128,24 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
             //holder.delete.setVisibility(View.VISIBLE);
             holder.edit.setVisibility(View.VISIBLE);
         }
+
         holder.linearCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mWholeLayout.setVisibility(View.VISIBLE);
-                Bundle bundle = new Bundle();
-                Fragment fragment = new MyActivityCardfrag(mWholeLayout);
+//                mWholeLayout.setVisibility(View.VISIBLE);
+//                Bundle bundle = new Bundle();
+//                Fragment fragment = new MyActivityCardfrag(mWholeLayout);
+//                String dataobject = JsonUtils.jsonify(newlist.get(position));
+//                bundle.putString("dataobject", dataobject);
+//                fragment.setArguments(bundle);
+//                FragmentTransaction transaction = mFragmentManager.beginTransaction();
+//                transaction.add(R.id.frameLayoutWhole, fragment);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+                Intent i1 = new Intent(mycontext,MyActivityCardfrag.class);
                 String dataobject = JsonUtils.jsonify(newlist.get(position));
-                bundle.putString("dataobject", dataobject);
-                fragment.setArguments(bundle);
-                FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                transaction.add(R.id.frameLayoutWhole, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                i1.putExtra("dataobject", dataobject);
+                mycontext.startActivity(i1);
 
             }
         });
@@ -135,16 +153,20 @@ public class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                pFrameLayout.setVisibility(View.VISIBLE);
-                Bundle bundle = new Bundle();
-                Fragment fragment = new AddActivityfrag();
+//                pFrameLayout.setVisibility(View.VISIBLE);
+//                Bundle bundle = new Bundle();
+//                Fragment fragment = new AddActivityfrag();
+//
+//                bundle.putString("response",dataobject);
+//                fragment.setArguments(bundle);
+//                FragmentTransaction transaction = mFragmentManager.beginTransaction();
+//                transaction.add(R.id.frameAddActivity, fragment);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+                Intent i = new Intent(mycontext,AddActivityfrag.class);
                 String dataobject = JsonUtils.jsonify(newlist.get(position));
-                bundle.putString("response",dataobject);
-                fragment.setArguments(bundle);
-                FragmentTransaction transaction = mFragmentManager.beginTransaction();
-                transaction.add(R.id.frameAddActivity, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                i.putExtra("response",dataobject);
+                mycontext.startActivity(i);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {

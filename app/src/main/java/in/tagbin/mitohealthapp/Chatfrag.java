@@ -1,7 +1,9 @@
 package in.tagbin.mitohealthapp;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -36,24 +38,16 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import in.tagbin.mitohealthapp.Database.ChatDatabase;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ChatAccounts;
+import in.tagbin.mitohealthapp.model.MessagesModel;
 
 public class Chatfrag extends Fragment {
-
-    public static final String HOST = "chat.eazevent.in";
-    public static final int PORT = 5222;
-    public static final String SERVICE = "chat.eazevent.in";
-    public static final String USERNAME = "ankit";
-    public static final String PASSWORD = "1234";
-
     DatabaseOperations dop;
-    private XMPPConnection connection;
-    private ArrayList<String> messages = new ArrayList<String>();
-    private Handler mHandler = new Handler();
     TextView coins;
     int coinsFinal = 0;
     RecyclerView recyclerView;
@@ -72,42 +66,34 @@ public class Chatfrag extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.chat, container, false);
-        customDialog();
         recyclerView=(RecyclerView)view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter=new ChatAdapter(getActivity());
-        recyclerView.setAdapter(adapter);
+
         ChatDatabase chatDatabase = new ChatDatabase(getContext());
 
         listContentArr=chatDatabase.getChatUsers();
-        adapter.setListContent(listContentArr);
-//        if (isNetworkAvailable()) {
-//            Connector asyncTask = new Connector();
-//            asyncTask.execute();
-//            Log.d("available network","");
-//        }else {
-//            Log.d("No Network Available","");
-//        }
+        adapter=new ChatAdapter(getActivity(),listContentArr);
+        recyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
 
                 ChatAccounts pojo = listContentArr.get(position);
-                startActivity(new Intent(getActivity(),ChatActivity.class).putExtra("user_name",pojo.getName()));
+                startActivity(new Intent(getActivity(),ChatActivity.class).putExtra("user_name",pojo.getUser()).putExtra("name",pojo.getName()));
                 Log.d("click details",""+pojo.getName()+"//////"+pojo.getUser()+"/////"+pojo.getPresence_status());
             }
         });
         return view;
     }
-    private boolean isNetworkAvailable() {
-        showDialog();
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-//       Log.d("is connected",activeNetworkInfo.isConnected()+"///");
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
 
+    private BroadcastReceiver ReceiveRoosters = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ChatDatabase chatDatabase = new ChatDatabase(getContext());
+            listContentArr=chatDatabase.getChatUsers();
+            adapter.notifyDataSetChanged();
+        }
+    };
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         Log.d("PREPDUG", "hereProfile");
@@ -142,179 +128,16 @@ public class Chatfrag extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-    public void setConnection(XMPPConnection connection) {
-        this.connection = connection;
-        if (connection != null) {
-            // Add a packet listener to get messages sent to us
-            PacketFilter filter = new MessageTypeFilter(Message.Type.chat);
-            connection.addPacketListener(new PacketListener() {
-                @Override
-                public void processPacket(Packet packet) {
-                    Message message = (Message) packet;
-                    if (message.getBody() != null) {
-                        String fromName = StringUtils.parseBareAddress(message
-                                .getFrom());
-                        Log.i("XMPPChatDemoActivity", "Text Recieved " + message.getBody()
-                                + " from " + fromName );
-                        messages.add(fromName + ":");
-                        messages.add(message.getBody());
-                        // Add the incoming message to the list view
-                        mHandler.post(new Runnable() {
-                            public void run() {
 
-//                                XMPPChatDemoActivity xmppConnection=new XMPPChatDemoActivity();
-//                                xmppConnection.setListAdapter();
-                            }
-                        });
-                    }
-                }
-            }, filter);
-        }
-    }
-//    class Connector extends AsyncTask {
-//
-//
-//
-//        @Override
-//        protected Object doInBackground(Object[] objects) {
-//            showDialog();
-//            ConnectionConfiguration connConfig = new ConnectionConfiguration(
-//                    HOST, PORT, SERVICE);
-//            XMPPConnection connection = new XMPPConnection(connConfig);
-//
-//            try {
-//                connection.connect();
-//                Log.i("XMPPChatDemoActivity",
-//                        "Connected to " + connection.getHost());
-//            } catch (XMPPException ex) {
-//                Log.e("XMPPChatDemoActivity", "Failed to connect to "
-//                        + connection.getHost());
-//                Log.e("XMPPChatDemoActivity", ex.toString());
-//                setConnection(null);
-//            }
-//            try {
-//                // SASLAuthentication.supportSASLMechanism("PLAIN", 0);
-//                connection.login(USERNAME, PASSWORD);
-//                Log.i("XMPPChatDemoActivity",
-//                        "Logged in as " + connection.getUser());
-//
-//                // Set the status to available
-//                Presence presence = new Presence(Presence.Type.available);
-//                connection.sendPacket(presence);
-//                setConnection(connection);
-//
-//                Roster roster = connection.getRoster();
-//                Collection<RosterEntry> entries = roster.getEntries();
-//                for (RosterEntry entry : entries) {
-//                    Log.d("XMPPChatDemoActivity",
-//                            "--------------------------------------");
-//                    Log.d("XMPPChatDemoActivity", "RosterEntry " + entry);
-//                    Log.d("XMPPChatDemoActivity",
-//                            "User: " + entry.getUser());
-//                    Log.d("XMPPChatDemoActivity",
-//                            "Name: " + entry.getName());
-//
-//                    String name = entry.getName();
-//                    String content = entry.getUser();
-//
-//
-//                    Log.d("XMPPChatDemoActivity",
-//                            "Status: " + entry.getStatus());
-//                    Log.d("XMPPChatDemoActivity",
-//                            "Type: " + entry.getType());
-//                    Presence entryPresence = roster.getPresence(entry
-//                            .getUser());
-//
-//                    Log.d("XMPPChatDemoActivity", "Presence Status: "
-//                            + entryPresence.getStatus());
-//                    Log.d("XMPPChatDemoActivity", "Presence Type: "
-//                            + entryPresence.getType());
-//                    Presence.Type type = entryPresence.getType();
-//                    if (type == Presence.Type.available)
-//                        Log.d("XMPPChatDemoActivity", "Presence AVIALABLE");
-//                    Log.d("XMPPChatDemoActivity", "Presence : "
-//                            + entryPresence);
-//
-////                    ChatAccounts pojoObject = new ChatAccounts();
-////                    DateFormat df = new SimpleDateFormat("HH:mm");
-////                    Calendar calobj = Calendar.getInstance();
-////
-////                    pojoObject.setName(content);
-////                    pojoObject.setUser(content);
-////                    pojoObject.setPresence(df.format(calobj.getTime()));
-////                    listContentArr.add(pojoObject);
-//
-//                }
-//
-////
-//            } catch (XMPPException ex) {
-//                Log.e("XMPPChatDemoActivity", "Failed to log in as "
-//                        + USERNAME);
-//                Log.e("XMPPChatDemoActivity", ex.toString());
-//                setConnection(null);
-//            }
-//
-//            //
-//            // dialog.dismiss();
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Object o) {
-//            super.onPostExecute(o);
-//            recyclerView.setAdapter(adapter);
-//            adapter.setListContent(listContentArr);
-//            dismissDialog();
-//        }
-//
-//        //    }
-//
-//
-//    }
-
-    TextView messageView;
-    ProgressBar progressBar;
-    android.app.AlertDialog alert;
-
-
-    public void customDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-
-        View customView = inflater.inflate(R.layout.dialog, null);
-        builder.setView(customView);
-        messageView = (TextView) customView.findViewById(R.id.tvdialog);
-        progressBar = (ProgressBar) customView.findViewById(R.id.progress);
-        alert = builder.create();
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(ReceiveRoosters);
     }
 
-    public void showDialog() {
-
-//        progressBar.setVisibility(View.VISIBLE);
-//        alert.show();
-//        messageView.setText("Loading");
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(ReceiveRoosters,new IntentFilter(XamppChatService.RECEIVEROOSTER));
     }
-
-    public void dismissDialog() {
-        alert.dismiss();
-    }
-
-    public void displayErrors(VolleyError error) {
-        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("Connection failed");
-        } else if (error instanceof AuthFailureError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("AuthFailureError");
-        } else if (error instanceof ServerError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ServerError");
-        } else if (error instanceof NetworkError) {
-            messageView.setText("NetworkError");
-        } else if (error instanceof ParseError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ParseError");
-        }
-    }
-    }
+}

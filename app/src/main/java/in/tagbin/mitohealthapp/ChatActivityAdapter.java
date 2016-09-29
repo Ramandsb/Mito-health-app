@@ -43,8 +43,6 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         list_items=list_members.get(position);
-
-        Log.d("sourceeeeeee",list_items.getSource());
         String source= list_items.getSource();
         if (source.equals("to")){
 

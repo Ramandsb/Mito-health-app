@@ -37,6 +37,10 @@ public class PrefManager {
     private static final String KEY_COINS = "user_coins";
     private static final String KEY_INTERESTS = "key_interests";
     private static final String KEY_LOGIN = "login_object";
+    private static final String KEY_DAY = "selected_day";
+    private static final String KEY_MONTH = "selected_month";
+    private static final String KEY_YEAR = "selected_year";
+
     private static String LOCATION_OBJECT = "location_object";
 
     public PrefManager(Context ctx){
@@ -104,6 +108,29 @@ public class PrefManager {
     public void setKeyCoins(int keyUserPic1) {
         editor.putInt(KEY_COINS,keyUserPic1);
         editor.commit();
+    }
+    public void setKeyDay(int keyUserPic1) {
+        editor.putInt(KEY_DAY,keyUserPic1);
+        editor.commit();
+    }
+    public void setKeyMonth(int keyUserPic1) {
+        editor.putInt(KEY_MONTH,keyUserPic1);
+        editor.commit();
+    }
+    public void setKeyYear(int keyUserPic1) {
+        editor.putInt(KEY_YEAR,keyUserPic1);
+        editor.commit();
+    }
+
+    public static int getKeyDay() {
+        return pref.getInt(KEY_DAY,0);
+    }
+    public static int getKeyMonth() {
+        return pref.getInt(KEY_MONTH,0);
+    }
+
+    public static int getKeyYear() {
+        return pref.getInt(KEY_YEAR,0);
     }
     public int getKeyCoins(){
         return pref.getInt(KEY_COINS,0);

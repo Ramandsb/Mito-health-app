@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.github.fabtransitionactivity.SheetLayout;
 import com.github.mikephil.charting.charts.LineChart;
@@ -71,6 +72,7 @@ import in.tagbin.mitohealthapp.Interfaces.WaterInterface;
 import in.tagbin.mitohealthapp.Pojo.DataItems;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 import in.tagbin.mitohealthapp.model.FeelingLogModel;
 import in.tagbin.mitohealthapp.model.FeelingTimeConsumed;
@@ -89,7 +91,7 @@ public class CollapsableLogging extends AppCompatActivity implements OnChartValu
     DatabaseOperations dop;
     FloatingActionButton fab;
     public static String selectedDate="";
-
+    PrefManager pref;
     CollapsingToolbarLayout appBarLayout;
     int a=0,b=0,c=0;
     int i = 0;
@@ -107,6 +109,7 @@ public class CollapsableLogging extends AppCompatActivity implements OnChartValu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collapsable_logging);
+        pref =new PrefManager(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -211,7 +214,33 @@ public class CollapsableLogging extends AppCompatActivity implements OnChartValu
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSheetLayout.expandFab();
+                Calendar[] dates = new Calendar[4];
+                int i = 0;
+                while (i < 4){
+                    Calendar selDate = Calendar.getInstance();
+                    selDate.add(Calendar.DAY_OF_MONTH, -i);
+                    dates[i] = selDate;
+                    i++;
+                }
+                int day,month,year;
+                if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+                    day = pref.getKeyDay();
+                    month = pref.getKeyMonth();
+                    year = pref.getKeyYear();
+                }else{
+                    Calendar calendar = Calendar.getInstance();
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
+                    year = calendar.get(Calendar.YEAR);
+                    month = calendar.get(Calendar.MONTH);
+                }
+                Date date = new Date(year-1900,month,day);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                if (calendar.getTimeInMillis() > dates[0].getTimeInMillis() || calendar.getTimeInMillis() < dates[3].getTimeInMillis()){
+                    Toast.makeText(CollapsableLogging.this,"Can't log data for this date",Toast.LENGTH_LONG).show();
+                }else {
+                    mSheetLayout.expandFab();
+                }
             }
         });
     }
@@ -412,7 +441,7 @@ public class CollapsableLogging extends AppCompatActivity implements OnChartValu
 //        startActivity(new Intent(CollapsableLogging.this,DishSearch.class));
         if (currentFrag == 0) {
             Intent intent = new Intent(this, DishSearch.class);
-            intent.putExtra("back","food");
+            intent.putExtra("back", "food");
             startActivityForResult(intent, REQUEST_CODE);
         } else if (currentFrag == 1) {
 

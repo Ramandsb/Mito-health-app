@@ -151,12 +151,14 @@ public class Lookupfrag extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.createevent:
-                frameLayout.setVisibility(View.VISIBLE);
-                Fragment fragment = new AddActivityfrag();
-                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.frameAddActivity, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+//                frameLayout.setVisibility(View.VISIBLE);
+//                Fragment fragment = new AddActivityfrag();
+//                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                transaction.add(R.id.frameAddActivity, fragment);
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+                Intent i = new Intent(getContext(),AddActivityfrag.class);
+                startActivity(i);
                 break;
             case R.id.buttonAllActivity:
                 allActivity.setTextColor(Color.parseColor("#ffffff"));

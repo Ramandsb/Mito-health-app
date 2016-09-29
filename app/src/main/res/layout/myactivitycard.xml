@@ -5,17 +5,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff">
-    <TextView
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:text="My Event"
-        android:textAlignment="center"
-        android:padding="10dp"
-        android:drawableLeft="@drawable/back_black"
-        android:textColor="@color/colorPrimary"
-        android:id="@+id/tvMyActivityHeading"
-        android:textSize="18sp"/>
+        android:id="@+id/app_bar"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+    <!--<TextView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:text="My Event"-->
+        <!--android:textAlignment="center"-->
+        <!--android:padding="10dp"-->
+        <!--android:layout_below="@+id/app_bar"-->
+        <!--android:textColor="@color/colorPrimary"-->
+        <!--android:id="@+id/tvMyActivityHeading"-->
+        <!--android:textSize="18sp"/>-->
 
     <ImageView
         android:id="@+id/ivMyActivityImage"
@@ -23,7 +37,7 @@
         android:layout_height="200dp"
         android:layout_marginBottom="10dp"
         android:adjustViewBounds="true"
-        android:layout_below="@+id/tvMyActivityHeading"
+        android:layout_below="@+id/app_bar"
         android:scaleType="centerCrop" />
     <RelativeLayout
         android:layout_width="match_parent"
@@ -122,6 +136,44 @@
             android:text="New Delhi"
             android:padding="10dp"
             android:layout_alignParentLeft="true"
+            android:textColor="#ffffff"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        android:id="@+id/relativeHousefull"
+        android:layout_alignTop="@+id/ivMyActivityImage"
+        android:background="#50000000">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="HouseFull"
+            android:rotation="-15"
+            android:padding="10dp"
+            android:background="@drawable/bg_housefull"
+            android:textSize="20sp"
+            android:textColor="#ffffff"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        android:id="@+id/relativeExpired"
+        android:layout_alignTop="@+id/ivMyActivityImage"
+        android:background="#50000000">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Expired"
+            android:rotation="-15"
+            android:padding="10dp"
+            android:background="@drawable/bg_housefull"
+            android:textSize="20sp"
             android:textColor="#ffffff"/>
     </RelativeLayout>
     <RelativeLayout
@@ -256,6 +308,7 @@
                     android:layout_height="wrap_content"
                     android:text="Join"
                     android:maxLines="1"
+                    android:id="@+id/tvJoinText"
                     android:textColor="#6f87b3"
                     android:layout_below="@+id/tvJoinFriends"
                     android:layout_centerHorizontal="true"
@@ -279,6 +332,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/bg_my_activity">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvParticipants"

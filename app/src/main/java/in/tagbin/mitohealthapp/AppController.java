@@ -28,6 +28,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 
 
 public class AppController extends Application {
@@ -48,6 +49,7 @@ public class AppController extends Application {
 		mInstance = this;
 //        printKeyHash();
         Controller.init(this);
+        PrefManager.init(this);
         initUIL();
         Stetho.initialize(
                 Stetho.newInitializerBuilder(this)

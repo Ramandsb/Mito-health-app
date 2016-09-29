@@ -80,6 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Height"
+            android:inputType="numberDecimal"
             android:textColorHint="@android:color/transparent"/>
         </android.support.design.widget.TextInputLayout>
         <!--<TextView-->

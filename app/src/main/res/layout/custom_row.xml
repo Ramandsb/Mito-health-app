@@ -59,6 +59,7 @@
         android:textColor="#050505"
         android:layout_below="@+id/user_name"
         android:layout_alignRight="@+id/content"
+        android:layout_alignParentRight="true"
         android:layout_alignEnd="@+id/content" />
 
     <LinearLayout

@@ -149,6 +149,15 @@ public class BinderActivity extends AppCompatActivity{
             }else if(getIntent().getIntExtra("selection", 1) == 1) {
                 fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
                 fraTra.commit();
+            }else if (getIntent().getIntExtra("selection",1) == 0){
+                Bundle bundle = new Bundle();
+                if (getIntent().getStringExtra("addactivity") != null) {
+                    bundle.putString("addactivity", "addactivity");
+                    fra.setArguments(bundle);
+                }
+                fra = new PartnerFrag();
+                fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
+                fraTra.commit();
             }
         }
 
@@ -339,8 +348,8 @@ public class BinderActivity extends AppCompatActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Fragment fragment = new AddActivityfrag();
-        fragment.onActivityResult(requestCode, resultCode, data);
+//        Fragment fragment = new AddActivityfrag();
+//        fragment.onActivityResult(requestCode, resultCode, data);
 
     }
     RequestListener mUserInterestListener = new RequestListener() {

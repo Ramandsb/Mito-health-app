@@ -13,14 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission
-        android:name="com.google.android.c2dm.permission.RECEIVE"/>
-    <uses-permission
         android:name="android.permission.WAKE_LOCK" /> <!--if using CleverTap SDK v3.0.0+-->
-    <permission
-        android:name="com.your.package.permission.C2D_MESSAGE"
-        android:protectionLevel="signature"/>
-    <uses-permission
-        android:name="com.your.package.permission.C2D_MESSAGE"/>
 
     <application
         android:name=".AppController"
@@ -143,6 +136,21 @@
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".AddActivityfrag"
+            android:label="Create Event"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ParticipantDetailfrag"
+            android:label="Create Event"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MyActivityCardfrag"
+            android:label="My Event"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".SliderActivity"
             android:label="Interests"
             android:screenOrientation="portrait" />
@@ -169,7 +177,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
 
-                <category android:name="com.hatetowaitapp.user" />
+                <category android:name="in.tagbin.mitohealthapp" />
             </intent-filter>
         </receiver>
         <meta-data
@@ -197,10 +205,13 @@
             android:value="LaunchActivity" />
         <service
             android:name=".service.GCMIntentService"
-            android:exported="false" />
-        <service
-            android:name=".receiver.GcmMessageHandler"
             android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".receiver.GcmMessageHandler">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

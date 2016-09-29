@@ -5,14 +5,15 @@ package in.tagbin.mitohealthapp.model;
  */
 public class SetFoodLoggerModel {
     String ltype;
-    int c_id,amount,meal_id,flag,serving_unit;
+    int c_id,meal_id,flag,serving_type;
+    float amount;
     long time_consumed;
 
     public void setServing_unit(int serving_unit) {
-        this.serving_unit = serving_unit;
+        this.serving_type = serving_unit;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 

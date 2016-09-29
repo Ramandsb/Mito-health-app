@@ -71,6 +71,7 @@ import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.FoodLoggerAdapter;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.RecommendationAdapter;
 import in.tagbin.mitohealthapp.model.DataObject;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
@@ -90,6 +91,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
     List<RecommendationModel> data,loggerModel;
     List<String> measuring_units;
     int pos;
+    PrefManager pref;
     GifImageView progressBar;
     ArrayAdapter<String> adapter;
 
@@ -98,6 +100,7 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragView = inflater.inflate(R.layout.fragment_food, container, false);
+        pref = new PrefManager(getContext());
         rvRecommendations = (RecyclerView) fragView.findViewById(R.id.rvRecommendation);
         spinner = (Spinner) fragView.findViewById(R.id.spinnerRecommended);
         tvTopRecommended = (LinearLayout) fragView.findViewById(R.id.linearTopRecommended);
@@ -113,11 +116,19 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
         data = new ArrayList<RecommendationModel>();
         loggerModel = new ArrayList<RecommendationModel>();
         Calendar calendar = Calendar.getInstance();
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        widget.setSelectedDate(calendar.getTime());
+        int day,month,year;
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else {
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+        }
+
         Date date1 = new Date(year-1900,month,day,0,0);
+        widget.setSelectedDate(date1);
         long timestamp = date1.getTime()/1000L;
         progressBar.setVisibility(View.VISIBLE);
         Log.d("timestamop",""+timestamp);
@@ -202,6 +213,12 @@ public class FoodFrag extends Fragment implements DatePickerDialog.OnDateSetList
     }
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+        int day=   date.getDay();
+        int month=   date.getMonth();
+        int year=   date.getYear();
+        pref.setKeyYear(year);
+        pref.setKeyMonth(month);
+        pref.setKeyDay(day);
         long timestamp = date.getDate().getTime()/1000L;
         progressBar.setVisibility(View.VISIBLE);
         Controller.getLogger(getContext(),timestamp,mGetFoodLoggerListener);

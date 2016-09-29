@@ -24,9 +24,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -80,11 +84,11 @@ import static android.app.Activity.RESULT_OK;
 /**
  * Created by aasaqt on 9/8/16.
  */
-public class AddActivityfrag extends Fragment implements View.OnClickListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
+public class AddActivityfrag extends AppCompatActivity implements View.OnClickListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     ImageView addImage;
     EditText title,description,location;
     AutoCompleteTextView type;
-    TextView time,memberValue,activityDate,activityTime;
+    TextView time,memberValue,activityDate,activityTime,coins;
     Button createActivity;
     SeekBar rangeBar;
     FloatingActionButton fabAddImage;
@@ -97,32 +101,37 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
     DataObject dataObject;
     PlaceAutoCompleteAdapter adapter;
     CountDownTimer countDownTimer;
+    Toolbar toolbar;
     private static final int SECOND = 1000;
     private static final int MINUTE = 60 * SECOND;
     private static final int HOUR = 60 * MINUTE;
     private static final int DAY = 24 * HOUR;
-    int hour,minute,year,month,day,hour1,minute1,year1,month1,day1,memberValueFinal,event_type = 1;
+    int hour,minute,year,month,day,hour1,minute1,year1,month1,day1,memberValueFinal,event_type = 1,coinsFinal;
     private static String[] PERMISSIONS_LOCATION = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.addactivity,container,false);
-        addImage = (ImageView) layout.findViewById(R.id.ivAddActivityImage);
-        title = (EditText) layout.findViewById(R.id.etAddTitle);
-        description = (EditText) layout.findViewById(R.id.etAddDesciption);
-        location = (EditText) layout.findViewById(R.id.etAddLocation);
-        type = (AutoCompleteTextView) layout.findViewById(R.id.etAddType);
-        time = (TextView) layout.findViewById(R.id.tvAddDecisionTime);
-        createActivity = (Button) layout.findViewById(R.id.buttonCreateActivity);
-        relativeTime = (RelativeLayout) layout.findViewById(R.id.relativeAddDecisionTimer);
-        relativeDate = (RelativeLayout) layout.findViewById(R.id.relativeTime);
-        rangeBar = (SeekBar) layout.findViewById(R.id.rangebar);
-        progressBar = (GifImageView) layout.findViewById(R.id.progressBar);
-        fabAddImage = (FloatingActionButton) layout.findViewById(R.id.fabAddImage);
-        activityDate = (TextView) layout.findViewById(R.id.tvAddActivityDate);
-        activityTime = (TextView) layout.findViewById(R.id.tvAddActivitytime);
-        memberValue = (TextView) layout.findViewById(R.id.tvAddMemberValue);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.addactivity);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Create Event");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        addImage = (ImageView) findViewById(R.id.ivAddActivityImage);
+        title = (EditText) findViewById(R.id.etAddTitle);
+        description = (EditText) findViewById(R.id.etAddDesciption);
+        location = (EditText) findViewById(R.id.etAddLocation);
+        type = (AutoCompleteTextView) findViewById(R.id.etAddType);
+        time = (TextView) findViewById(R.id.tvAddDecisionTime);
+        createActivity = (Button) findViewById(R.id.buttonCreateActivity);
+        relativeTime = (RelativeLayout) findViewById(R.id.relativeAddDecisionTimer);
+        relativeDate = (RelativeLayout) findViewById(R.id.relativeTime);
+        rangeBar = (SeekBar) findViewById(R.id.rangebar);
+        progressBar = (GifImageView) findViewById(R.id.progressBar);
+        fabAddImage = (FloatingActionButton) findViewById(R.id.fabAddImage);
+        activityDate = (TextView) findViewById(R.id.tvAddActivityDate);
+        activityTime = (TextView) findViewById(R.id.tvAddActivitytime);
+        memberValue = (TextView) findViewById(R.id.tvAddMemberValue);
         createActivity.setOnClickListener(this);
         fabAddImage.setOnClickListener(this);
         relativeTime.setOnClickListener(this);
@@ -130,7 +139,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
 
 
         rangeBar.setProgress(0);
-        pref = new PrefManager(getActivity());
+        pref = new PrefManager(this);
         rangeBar.incrementProgressBy(1);
         rangeBar.setMax(100);
         rangeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -165,23 +174,24 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         updateTime(hour,minute);
         updateTime1(hour1,minute1);
         type.setOnItemClickListener(mAutocompleteClickListener);
-        adapter = new PlaceAutoCompleteAdapter(getContext(), android.R.layout.simple_list_item_1);
+        adapter = new PlaceAutoCompleteAdapter(AddActivityfrag.this, android.R.layout.simple_list_item_1);
         if (pref.getCurrentLocationAsObject() != null){
             if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
-                location.setText(MyUtils.getCityNameFromLatLng(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
+                location.setText(MyUtils.getCityNameFromLatLng(AddActivityfrag.this,pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
             }
         }
         type.setAdapter(adapter);
-        if (getArguments() != null){
-            response = getArguments().getString("response");
+        if (getIntent().getStringExtra("response") != null){
+            response = getIntent().getStringExtra("response");
+            getSupportActionBar().setTitle("Edit Event");
             Log.d("edit event",response);
             dataObject = JsonUtils.objectify(response,DataObject.class);
             title.setText(dataObject.getTitle());
             type.setText(dataObject.getEvent_type().getTitle());
             description.setText(dataObject.getDescription());
-            location.setText(MyUtils.getCityName(getContext(),dataObject.getLocation()));
-            rangeBar.setProgress(dataObject.getCapacity());
+            location.setText(MyUtils.getCityName(AddActivityfrag.this,dataObject.getLocation()));
             memberValueFinal = dataObject.getCapacity();
+            rangeBar.setProgress(dataObject.getCapacity());
             if (dataObject.getEvent_time() != null) {
                 year1 = Integer.parseInt(MyUtils.getYear(dataObject.getEvent_time()));
                 month1 = Integer.parseInt(MyUtils.getMonth(dataObject.getEvent_time()))-1;
@@ -264,8 +274,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                         createEventSendModel.description = editDescription;
                     if (editType != dataObject.getEvent_type().getTitle())
                         createEventSendModel.type = editType;
-                    if (memberValueFinal != dataObject.getCapacity())
-                        createEventSendModel.capacity = memberValueFinal;
+                    createEventSendModel.capacity = memberValueFinal;
                     if (pref.getCurrentLocationAsObject() != null){
                         if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
                             double[] location = {pref.getCurrentLocationAsObject().getLongitude(),pref.getCurrentLocationAsObject().getLatitude()};
@@ -281,15 +290,22 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                     }
                     createEventSendModel.event_time = output1;
                     createEventSendModel.timer = String.valueOf(output);
+                    event_type = dataObject.getEvent_type().getId();
                     createEventSendModel.event_type = event_type;
                     Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
-                    progressBar.setVisibility(View.VISIBLE);
-                    Controller.updateEvent(getActivity(),createEventSendModel,dataObject.getId(),mUpdateListener);
+                    if (output > output1 ){
+                        Toast.makeText(AddActivityfrag.this,"Please enter the valid decission timer",Toast.LENGTH_LONG).show();
+                    }else if (memberValueFinal == 0){
+                        Toast.makeText(AddActivityfrag.this,"Please enter the capacity above 0",Toast.LENGTH_LONG).show();
+                    }else {
+                        progressBar.setVisibility(View.VISIBLE);
+                        Controller.updateEvent(AddActivityfrag.this, createEventSendModel, dataObject.getId(), mUpdateListener);
+                    }
                 }
             });
         }
-        return layout;
     }
+
     private AdapterView.OnItemClickListener mAutocompleteClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
@@ -299,6 +315,39 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             event_type = interestListModel.getId();
         }
     };
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        for (int i=0;i< menu.size();i++) {
+            MenuItem itm = menu.getItem(i);
+            itm.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+        menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(false);
+        menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        View view = menu.findItem(R.id.action_coin).getActionView();
+        coins = (TextView) view.findViewById(R.id.tvCoins);
+        PrefManager pref = new PrefManager(this);
+        coinsFinal = pref.getKeyCoins();
+        coins.setText(""+coinsFinal);
+        return super.onCreateOptionsMenu(menu);
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -323,14 +372,21 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 long output = date1.getTime() / 1000L;
                 Date date2 =new Date(year1-1900,month1,day1,hour1,minute1);
                 long output1 = date2.getTime()/1000L;
+
                 if (pref.getKeyMasterCreate() != null){
                     createEventSendModel.picture = pref.getKeyMasterCreate();
                 }
                 createEventSendModel.event_time = output1;
                 createEventSendModel.timer = String.valueOf(output);
                 Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
-                progressBar.setVisibility(View.VISIBLE);
-                Controller.createEvent(getContext(),createEventSendModel,mCreateListener);
+                if (output > output1 ){
+                    Toast.makeText(AddActivityfrag.this,"Please enter the valid decission timer",Toast.LENGTH_LONG).show();
+                }else if (memberValueFinal == 0){
+                    Toast.makeText(AddActivityfrag.this,"Please enter the capacity above 0",Toast.LENGTH_LONG).show();
+                }else {
+                    progressBar.setVisibility(View.VISIBLE);
+                    Controller.createEvent(AddActivityfrag.this, createEventSendModel, mCreateListener);
+                }
 
                 break;
             case R.id.fabAddImage:
@@ -352,7 +408,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 com.wdullaer.materialdatetimepicker.date.DatePickerDialog dpd = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(this, year, month, day);
                 dpd.setHighlightedDays(dates);
                 dpd.setSelectableDays(dates);
-                dpd.show(getActivity().getFragmentManager(), "DATE_PICKER_TAG");
+                dpd.show(getFragmentManager(), "DATE_PICKER_TAG");
                 break;
             case R.id.relativeTime:
                 Calendar calendar1 = Calendar.getInstance();
@@ -379,12 +435,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                                updateTime1(hourOfDay,minute);
                             }
                         }, 0, 0, false);
-                        tpd.show(getActivity().getFragmentManager(), "TIME_PICKER_TAG");
+                        tpd.show(getFragmentManager(), "TIME_PICKER_TAG");
                     }
                 }, year1, month1, day1);
                 dpd1.setSelectableDays(dates1);
                 dpd1.setHighlightedDays(dates1);
-                dpd1.show(getActivity().getFragmentManager(), "DATE_PICKER_TAG");
+                dpd1.show(getFragmentManager(), "DATE_PICKER_TAG");
                 break;
         }
     }
@@ -499,13 +555,13 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                 String imagePath = data.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
-                Controller.upoadPhot(getContext(),fileUploadModel,mUploadListener);
+                Controller.upoadPhot(AddActivityfrag.this,fileUploadModel,mUploadListener);
                 addImage.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
                 //TODO : Handle case
             } else {
                 String errorMsg = data.getStringExtra(ImageCropActivity.ERROR_MSG);
-                Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_LONG).show();
+                Toast.makeText(AddActivityfrag.this, errorMsg, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -517,12 +573,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
             @Override
             public void onPicModeSelected(String mode) {
                 String action = mode.equalsIgnoreCase(GOTOConstants.PicModes.CAMERA) ? GOTOConstants.IntentExtras.ACTION_CAMERA : GOTOConstants.IntentExtras.ACTION_GALLERY;
-                Intent intent = new Intent(getActivity(), ImageCropActivity.class);
+                Intent intent = new Intent(AddActivityfrag.this, ImageCropActivity.class);
                 intent.putExtra("ACTION", action);
                 startActivityForResult(intent, SELECT_PICTURE);
             }
         });
-        dialogFragment.show(getActivity().getFragmentManager(), "picModeSelector");
+        dialogFragment.show(getFragmentManager(), "picModeSelector");
     }
     private Bitmap showCroppedImage(String mImagePath) {
         if (mImagePath != null) {
@@ -533,12 +589,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         return null;
     }
     public boolean hasLocationPermissionGranted(){
-        return  ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        return  ContextCompat.checkSelfPermission(AddActivityfrag.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     public void requestLocationPermission() {
         if(Build.VERSION.SDK_INT >= 23){
-            ActivityCompat.requestPermissions(getActivity(), PERMISSIONS_LOCATION,
+            ActivityCompat.requestPermissions(AddActivityfrag.this, PERMISSIONS_LOCATION,
                     REQUEST_LOCATION);
         }
     }
@@ -553,9 +609,9 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(i, SELECT_PICTURE);
 
-                } else if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                } else if (ActivityCompat.shouldShowRequestPermissionRationale(AddActivityfrag.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     //User has deny from permission dialog
-                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(getActivity(),R.style.AppCompatAlertDialogStyle);
+                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(AddActivityfrag.this,R.style.AppCompatAlertDialogStyle);
                     alertDialog1.setTitle("Location Permission Denied");
                     alertDialog1.setMessage("Are you sure you want to deny this permission?");
                     alertDialog1.setPositiveButton("I'M SURE", new DialogInterface.OnClickListener() {
@@ -571,13 +627,13 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
                     alertDialog1.show();
                 } else {
                     // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
-                    AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(getActivity(),R.style.AppCompatAlertDialogStyle);
+                    AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(AddActivityfrag.this,R.style.AppCompatAlertDialogStyle);
                     alertDialog1.setMessage("It looks like you have turned off permission required for this feature. It can be enabled under Phone Settings > Apps > MitoHealthApp > Permissions");
                     alertDialog1.setPositiveButton("GO TO SETTINGS", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent();
                             intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                            Uri uri = Uri.fromParts("package", getPackageName(), null);
                             intent.setData(uri);
                             startActivity(intent);
                         }
@@ -594,7 +650,7 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         this.month = monthOfYear;
         this.day = dayOfMonth;
         com.wdullaer.materialdatetimepicker.time.TimePickerDialog tpd = com.wdullaer.materialdatetimepicker.time.TimePickerDialog.newInstance(this, 0, 0, false);
-        tpd.show(getActivity().getFragmentManager(), "TIME_PICKER_TAG");
+        tpd.show(getFragmentManager(), "TIME_PICKER_TAG");
     }
     RequestListener mCreateListener = new RequestListener() {
         @Override
@@ -605,15 +661,12 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("Event Created",responseObject.toString());
-            Fragment fragment = new Lookupfrag();
-            Bundle bundle = new Bundle();
-            bundle.putString("addactivity","addactivity");
-            fragment.setArguments(bundle);
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.frameAddActivity, fragment);
-            transaction.commit();
+            Intent intent = new Intent(AddActivityfrag.this, BinderActivity.class);
+            intent.putExtra("selection", 0);
+            intent.putExtra("addactivity","addactivity");
+            startActivity(intent);
             //getFragmentManager().popBackStack();
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
@@ -624,14 +677,24 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("event created error",message);
-            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
-                }
-            });
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(AddActivityfrag.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(AddActivityfrag.this, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
     RequestListener mUpdateListener = new RequestListener() {
@@ -643,14 +706,18 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("Event Updated",responseObject.toString());
-            Fragment fragment = new Lookupfrag();
-            Bundle bundle = new Bundle();
-            bundle.putString("addactivity","addactivity");
-            fragment.setArguments(bundle);
-            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.frameAddActivity, fragment);
-            transaction.commit();
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
+//            Fragment fragment = new Lookupfrag();
+//            Bundle bundle = new Bundle();
+//            bundle.putString("addactivity","addactivity");
+//            fragment.setArguments(bundle);
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            transaction.add(R.id.frameAddActivity, fragment);
+//            transaction.commit();
+            Intent intent = new Intent(AddActivityfrag.this, BinderActivity.class);
+            intent.putExtra("selection", 0);
+            intent.putExtra("addactivity","addactivity");
+            startActivity(intent);
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
@@ -661,14 +728,24 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("event updated error",message);
-            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
-                }
-            });
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(AddActivityfrag.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(AddActivityfrag.this, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
     RequestListener mUploadListener = new RequestListener() {
@@ -687,14 +764,25 @@ public class AddActivityfrag extends Fragment implements View.OnClickListener, T
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error",message);
-            final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),errorResponseModel.getMessage(),Toast.LENGTH_LONG).show();
-                }
-            });
+            //final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message,ErrorResponseModel.class);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(AddActivityfrag.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(AddActivityfrag.this, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
 }

@@ -143,14 +143,14 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                     ConnectUserModel connectUserModel = new ConnectUserModel();
                     connectUserModel.setId(mModel.getUser().getId());
                     connectUserModel.setActivity(1);
-                    //progressBar.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
                     Controller.connectToUser(mContext,connectUserModel,mConnectListener);
                     break;
                 case R.id.ivRequestDecline:
                     ConnectUserModel connectUserModel1 = new ConnectUserModel();
                     connectUserModel1.setId(mModel.getUser().getId());
                     connectUserModel1.setActivity(2);
-                    //progressBar.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
                     Controller.connectToUser(mContext,connectUserModel1,mRejectistener);
                     break;
                 case R.id.relativeFriend:
@@ -172,7 +172,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //progressBar.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(mContext, "Approved", Toast.LENGTH_LONG).show();
                         Intent i = new Intent(mContext, FriendRequestActivity.class);
                         mContext.startActivity(i);
@@ -189,7 +189,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                     ((Activity) mContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //progressBar.setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
@@ -197,7 +197,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                     ((Activity) mContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //progressBar.setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -217,7 +217,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                 ((Activity) mContext).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //progressBar.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(mContext, "Rejected", Toast.LENGTH_LONG).show();
                         Intent i = new Intent(mContext, FriendRequestActivity.class);
                         mContext.startActivity(i);
@@ -234,7 +234,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                     ((Activity) mContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //progressBar.setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     });
@@ -242,7 +242,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
                     ((Activity) mContext).runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //progressBar.setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
                         }
                     });
