@@ -6,16 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmListenerService;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import in.tagbin.mitohealthapp.R;
-import in.tagbin.mitohealthapp.SplashActivity;
+import in.tagbin.mitohealthapp.activity.SplashActivity;
 
 /**
  * Created by aasaqt on 3/9/16.

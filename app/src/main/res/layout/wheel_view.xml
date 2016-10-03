@@ -7,7 +7,7 @@
     android:orientation="horizontal"
     android:padding="20dp">
 
-    <in.tagbin.mitohealthapp.WheelView
+    <in.tagbin.mitohealthapp.helper.WheelView
         android:id="@+id/wheel_view_wv1"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
 
         />
 
-    <in.tagbin.mitohealthapp.WheelView
+    <in.tagbin.mitohealthapp.helper.WheelView
         android:id="@+id/wheel_view_wv2"
         android:layout_width="80dp"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
 
         />
 
-    <in.tagbin.mitohealthapp.WheelView
+    <in.tagbin.mitohealthapp.helper.WheelView
         android:id="@+id/wheel_view_wv3"
         android:layout_width="80dp"
         android:layout_height="wrap_content"

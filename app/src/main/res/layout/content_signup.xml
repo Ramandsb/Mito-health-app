@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="in.tagbin.mitohealthapp.SignupActivity"
+    tools:context="in.tagbin.mitohealthapp.activity.SignupActivity"
     tools:showIn="@layout/activity_signup"
     android:background="@drawable/loginback">
 

@@ -143,7 +143,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/relativeProfileTime">
 
-                    <in.tagbin.mitohealthapp.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    <in.tagbin.mitohealthapp.helper.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:app="http://schemas.android.com/apk/res-auto"
                         xmlns:tools="http://schemas.android.com/tools"
                         android:id="@+id/flowLayoutProfile"
@@ -156,7 +156,7 @@
                         app:horizontalSpacing="5dp"
                         app:verticalSpacing="4dp">
 
-                    </in.tagbin.mitohealthapp.FlowLayout>
+                    </in.tagbin.mitohealthapp.helper.FlowLayout>
                 </RelativeLayout>
 
                 <TextView

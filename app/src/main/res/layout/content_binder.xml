@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="in.tagbin.mitohealthapp.BinderActivity"
+    tools:context="in.tagbin.mitohealthapp.activity.BinderActivity"
     tools:showIn="@layout/activity_binder">
     <LinearLayout
         android:id="@+id/fragmentnew"
-        android:layout_below="@id/barcontainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_navigater"

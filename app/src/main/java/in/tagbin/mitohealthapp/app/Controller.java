@@ -32,7 +32,7 @@ import java.util.Map;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Interfaces.VolleyErrorListener;
-import in.tagbin.mitohealthapp.MainPage;
+import in.tagbin.mitohealthapp.activity.MainActivity;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.NetworkUtils;
 import in.tagbin.mitohealthapp.helper.UrlResolver;
@@ -140,7 +140,7 @@ public class Controller {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
-                loginDetails= context.getSharedPreferences(MainPage.LOGIN_DETAILS,0);
+                loginDetails= context.getSharedPreferences(MainActivity.LOGIN_DETAILS,0);
                 String key = loginDetails.getString("key",null);
                 headers.put("Authorization","JWT "+key);
                 return headers;
@@ -193,7 +193,7 @@ public class Controller {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
-                loginDetails= context.getSharedPreferences(MainPage.LOGIN_DETAILS,0);
+                loginDetails= context.getSharedPreferences(MainActivity.LOGIN_DETAILS,0);
                 String key = loginDetails.getString("key",null);
                 headers.put("Authorization","JWT "+key);
                 Log.d("key","JWT "+key);

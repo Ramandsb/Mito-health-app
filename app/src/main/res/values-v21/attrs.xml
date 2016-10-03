@@ -8,12 +8,7 @@
     	<attr name="layout_breakLine" format="boolean" />
         <attr name="layout_horizontalSpacing" format="dimension" />
     </declare-styleable>
-    <declare-styleable name="PersonCard">
-        <attr name="likability" format="float" />
-        <attr name="likepieColor" format="color" />
-        <attr name="likedivColor" format="color" />
-        <attr name="photomargin" format="integer" />
-    </declare-styleable>
+
     <declare-styleable name="GifMoviewView">
         <attr name="gif" format="reference" />
         <attr name="paused" format="boolean" />

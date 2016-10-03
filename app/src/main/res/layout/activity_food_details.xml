@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/cont"
-    tools:context="in.tagbin.mitohealthapp.FoodDetails">
+    tools:context="in.tagbin.mitohealthapp.activity.FoodDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"

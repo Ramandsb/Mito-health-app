@@ -9,9 +9,8 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
-import in.tagbin.mitohealthapp.model.MessagesModel;
-import in.tagbin.mitohealthapp.Pojo.DataItems;
-import in.tagbin.mitohealthapp.Pojo.FoodHeaders;
+import in.tagbin.mitohealthapp.model.DataItems;
+import in.tagbin.mitohealthapp.model.FoodHeaders;
 import in.tagbin.mitohealthapp.model.ChatAccounts;
 import in.tagbin.mitohealthapp.model.DateRangeDataModel;
 

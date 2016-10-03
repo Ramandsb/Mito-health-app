@@ -16,7 +16,7 @@
         android:name="android.permission.WAKE_LOCK" /> <!--if using CleverTap SDK v3.0.0+-->
 
     <application
-        android:name=".AppController"
+        android:name=".app.AppController"
         android:allowBackup="true"
         android:icon="@drawable/mito_logo"
         android:label="@string/app_name"
@@ -25,7 +25,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:label">
         <activity
-            android:name=".MainPage"
+            android:name=".activity.MainActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -40,7 +40,7 @@
             <!--</intent-filter>-->
 
         <activity
-            android:name=".SplashActivity"
+            android:name=".activity.SplashActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -50,31 +50,22 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <service android:name=".XamppChatService">
+        <service android:name=".service.XmppChatService">
 
         </service>
 
-        <receiver android:name=".Broadcast.RelaunchConnectionBroadcast">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
-                <action android:name="android.media.RINGER_MODE_CHANGED" />
-            </intent-filter>
-        </receiver>
-
         <activity
-            android:name=".LoginActivity"
+            android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ProfileImage.ImageCropActivity"
+            android:name=".helper.ProfileImage.ImageCropActivity"
             android:label="Set Profile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SignupActivity"
+            android:name=".activity.SignupActivity"
             android:label="@string/title_activity_signup"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -99,75 +90,71 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".DishSearch"
+            android:name=".activity.FoodSearchActivity"
             android:label="@string/title_activity_dish_search"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".CollapsableLogging"
+            android:name=".activity.DailyDetailsActivity"
             android:label="@string/title_activity_collapsable_logging"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".FoodDetails"
+            android:name=".activity.FoodDetailsActivity"
             android:label="@string/title_activity_food_details"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Test"
-            android:label="@string/title_activity_test"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".BinderActivity"
+            android:name=".activity.BinderActivity"
             android:label="@string/title_activity_binder"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ProfileActivity"
+            android:name=".activity.ProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".InterestActivity"
+            android:name=".activity.InterestActivity"
             android:label="Interests"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AddInterestActivity"
+            android:name=".activity.AddInterestActivity"
             android:label="Add Interests"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AddActivityfrag"
+            android:name=".activity.CreateEventActivity"
             android:label="Create Event"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ParticipantDetailfrag"
+            android:name=".activity.EventsUserDetailsActivity"
             android:label="Create Event"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".MyActivityCardfrag"
+            android:name=".activity.EventDetailsActivity"
             android:label="My Event"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SliderActivity"
+            android:name=".activity.SliderActivity"
             android:label="Interests"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SetGoalsActivity"
+            android:name=".activity.SetGoalsActivity"
             android:label="Set Goals"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SelectCuisineActivity"
+            android:name=".activity.SelectCuisineActivity"
             android:label="Select Cuisines"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FriendRequestActivity"
+            android:name=".activity.ChatRequestActivity"
             android:label="Friend Requests"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ChatActivity"
+            android:name=".activity.ChatActivity"
             android:label="@string/title_activity_chat"
             android:theme="@style/AppTheme.NoActionBar" />
         <receiver

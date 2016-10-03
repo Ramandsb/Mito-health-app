@@ -2,8 +2,6 @@ package in.tagbin.mitohealthapp.model;
 
 import java.util.ArrayList;
 
-import in.tagbin.mitohealthapp.Fragments.Profile;
-
 /**
  * Created by aasaqt on 9/8/16.
  */
