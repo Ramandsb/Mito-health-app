@@ -204,8 +204,11 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
             for (int i=0;i<da.size();i++){
                 da.get(i).all = false;
                 mylist.add(da.get(i));
+                pref.setKeyCoins(mylist.get(0).getTotal_coins());
             }
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
+            if (getActivity() == null)
+                return;
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     adapter.notifyDataSetChanged();
@@ -217,10 +220,11 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("nearby events error",message);
-
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -228,7 +232,7 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
                     }
                 });
             }else{
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -256,6 +260,7 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
             for (int i=0;i<da.size();i++){
                 da.get(i).all = true;
                 mylist.add(da.get(i));
+                pref.setKeyCoins(mylist.get(0).getTotal_coins());
             }
             if(getActivity() == null)
                 return;
@@ -272,7 +277,8 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("all events error",message);
-
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {

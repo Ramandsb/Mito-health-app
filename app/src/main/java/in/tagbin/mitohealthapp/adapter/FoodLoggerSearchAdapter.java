@@ -29,7 +29,7 @@ import in.tagbin.mitohealthapp.model.SearchFoodModel;
  */
 public class FoodLoggerSearchAdapter extends ArrayAdapter<HitsArrayModel> {
     private Context mContext;
-    private static final String TAG = "PlaceAutocompleteAdapter1";
+    private static final String TAG = "FoodLoggerSearchAdapter";
 
     private SearchFoodModel mResultList;
     public FoodLoggerSearchAdapter(Context context, int resource) {

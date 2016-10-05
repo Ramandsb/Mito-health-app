@@ -140,6 +140,55 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         //join.setOnClickListener(this);
         invite.setOnClickListener(this);
         data = JsonUtils.objectify(dataobject,DataObject.class);
+        mModel = new ArrayList<ParticipantModel>();
+        Calendar calendar = Calendar.getInstance();
+        long output = calendar.getTimeInMillis();
+        if (data.getTotal_approved() == data.getCapacity()){
+            //holder.join.setTextColor(Color.parseColor("#9b9b9b"));
+            joinText.setText("Join");
+            housefull.setVisibility(View.VISIBLE);
+            expired.setVisibility(View.GONE);
+            //holder.housefull.setVisibility(View.VISIBLE);
+            join.setClickable(false);
+        }else if (MyUtils.getTimeinMillis(data.getTime()) < output){
+            joinText.setText("Join");
+            housefull.setVisibility(View.GONE);
+            expired.setVisibility(View.VISIBLE);
+            join.setClickable(false);
+        }else if (data.getMapper().getId() != 0 && !data.getMapper().isConfirm()){
+            //holder.join.setTextColor(Color.parseColor("#ffffff"));
+            joinText.setText("Pending");
+            housefull.setVisibility(View.GONE);
+            expired.setVisibility(View.GONE);
+            join.setClickable(false);
+        }else if (data.getMapper().getId() != 0 && data.getMapper().isConfirm()){
+            //holder.join.setTextColor(Color.parseColor("#ffffff"));
+            joinText.setText("Accepted");
+            housefull.setVisibility(View.GONE);
+            expired.setVisibility(View.GONE);
+            join.setClickable(false);
+        }else{
+            //holder.join.setTextColor(Color.parseColor("#ffffff"));
+            joinText.setText("Join");
+            join.setClickable(true);
+            housefull.setVisibility(View.GONE);
+            expired.setVisibility(View.GONE);
+            join.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    Controller.joinEvent(EventDetailsActivity.this,data.getId(),mJoinEventListener);
+                }
+            });
+        }
+        Controller.getParticipants(EventDetailsActivity.this,data.getId(),mParticipantListener);
+        setData(data);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+    public void setData(final DataObject data){
         title.setText(data.getTitle());
         type.setText(data.getEvent_type().getTitle());
 //        final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(data.getTime()), getCurrentTime(getContext()), DateUtils.MINUTE_IN_MILLIS));
@@ -213,73 +262,18 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             backImage.setBackgroundResource(R.drawable.hotel);
         }
         mylayoutmanager = new StaggeredGridLayoutManager(4, 1);
-        mModel = new ArrayList<ParticipantModel>();
-//        mModel.add(new ParticipantModel(1,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",25,1));
-//        mModel.add(new ParticipantModel(2,R.drawable.hotel,"Varun Dhawan","Indian Actor","Swimming Watching movies",23,2));
-//        mModel.add(new ParticipantModel(3,R.drawable.hotel,"Varun Dhawan","Australia Actor","Swimming Watching movies",24,3));
-//        mModel.add(new ParticipantModel(4,R.drawable.hotel,"Aasaqt","Engineer","Swimming Watching movies",26,4));
-//        mModel.add(new ParticipantModel(5,R.drawable.hotel,"Chetan","IT Head","Swimming Watching movies",27,5));
-//        mModel.add(new ParticipantModel(6,R.drawable.hotel,"Arun Jaitley","Minister","Swimming Watching movies",22,6));
-//        mModel.add(new ParticipantModel(7,R.drawable.hotel,"Narendra Modi","PM","Swimming Watching movies",24,7));
-//        mModel.add(new ParticipantModel(8,R.drawable.hotel,"Pranab Mukherjee","President","Swimming Watching movies",26,8));
-//        mModel.add(new ParticipantModel(9,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",29,9));
-//        mModel.add(new ParticipantModel(10,R.drawable.hotel,"Akshay","Actor","Swimming Watching movies",20,10));
-//        mModel.add(new ParticipantModel(11,R.drawable.hotel,"Sonakshi","Indian Actress","Swimming Watching movies",21,11));
-//        mModel.add(new ParticipantModel(12,R.drawable.hotel,"Brad Pitt","Actor","Swimming Watching movies",23,12));
-//        mModel.add(new ParticipantModel(13,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",26,13));
-//        mModel.add(new ParticipantModel(14,R.drawable.hotel,"Varun Dhawan","Actor","Swimming Watching movies",25,14));
-
+        String dataobject = JsonUtils.jsonify(data);
         mAdapter = new EventUserAdapter(EventDetailsActivity.this,mModel,getSupportFragmentManager(),null,dataobject);
         recyclerView.setLayoutManager(this.mylayoutmanager);
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setAdapter(mAdapter);
-        Calendar calendar = Calendar.getInstance();
-        long output = calendar.getTimeInMillis();
-        if (data.getTotal_approved() == data.getCapacity()){
-            //holder.join.setTextColor(Color.parseColor("#9b9b9b"));
-            joinText.setText("Join");
-            housefull.setVisibility(View.VISIBLE);
-            expired.setVisibility(View.GONE);
-            //holder.housefull.setVisibility(View.VISIBLE);
-            join.setClickable(false);
-        }else if (MyUtils.getTimeinMillis(data.getTime()) < output){
-            joinText.setText("Join");
-            housefull.setVisibility(View.GONE);
-            expired.setVisibility(View.VISIBLE);
-            join.setClickable(false);
-        }else if (data.getMapper().getId() != 0 && !data.getMapper().isConfirm()){
-            //holder.join.setTextColor(Color.parseColor("#ffffff"));
-            joinText.setText("Pending");
-            housefull.setVisibility(View.GONE);
-            expired.setVisibility(View.GONE);
-            join.setClickable(false);
-        }else if (data.getMapper().getId() != 0 && data.getMapper().isConfirm()){
-            //holder.join.setTextColor(Color.parseColor("#ffffff"));
-            joinText.setText("Accepted");
-            housefull.setVisibility(View.GONE);
-            expired.setVisibility(View.GONE);
-            join.setClickable(false);
-        }else{
-            //holder.join.setTextColor(Color.parseColor("#ffffff"));
-            joinText.setText("Join");
-            join.setClickable(true);
-            housefull.setVisibility(View.GONE);
-            expired.setVisibility(View.GONE);
-            join.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    Controller.joinEvent(EventDetailsActivity.this,data.getId(),mJoinEventListener);
-                }
-            });
-        }
+
         if (data.isAll()){
             date.setVisibility(View.VISIBLE);
             edit.setVisibility(View.GONE);
             linearFriends.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("All Event");
-            Controller.getParticipants(EventDetailsActivity.this,data.getId(),mParticipantListener);
             selectedPeople.setVisibility(View.VISIBLE);
             date.setText(MyUtils.getValidDate(data.getEvent_time()));
             linearFriends.setWeightSum(5);
@@ -290,7 +284,6 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             date.setVisibility(View.GONE);
             edit.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("My Event");
-            Controller.getParticipants(EventDetailsActivity.this,data.getId(),mParticipantListener);
             selectedPeople.setVisibility(View.VISIBLE);
             selectedPeople.setText("Interested People");
             linearFriends.setVisibility(View.VISIBLE);
@@ -299,6 +292,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             approvedRelative.setClickable(true);
             interestedRelative.setClickable(true);
         }
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -353,6 +347,16 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (mModel.size() > 0) {
+                        if (data.isAll()){
+                            data = mModel.get(0).getEvent();
+                            data.all = true;
+                        }else{
+                            data = mModel.get(0).getEvent();
+                            data.all = false;
+                        }
+                        setData(data);
+                    }
                     mAdapter.notifyDataSetChanged();
                     progressBar.setVisibility(View.GONE);
                 }
@@ -421,6 +425,17 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (mModel.size() > 0) {
+                        if (data.isAll()){
+                            data = mModel.get(0).getEvent();
+                            data.all = true;
+                        }else{
+                            data = mModel.get(0).getEvent();
+                            data.all = false;
+                        }
+
+                        setData(data);
+                    }
                     mAdapter.notifyDataSetChanged();
                     progressBar.setVisibility(View.GONE);
                 }
@@ -462,6 +477,8 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
+                    joinText.setText("Pending");
+                    join.setClickable(false);
                     Toast.makeText(EventDetailsActivity.this,"Event joined succcesfully",Toast.LENGTH_LONG).show();
                 }
             });

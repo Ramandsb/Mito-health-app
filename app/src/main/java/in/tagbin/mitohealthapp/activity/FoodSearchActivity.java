@@ -48,7 +48,7 @@ public class FoodSearchActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //customDialog();
-
+        getSupportActionBar().setTitle("Search Food");
         back = getIntent().getStringExtra("back");
         auto_tv = (CustomAutoCompleteTextView) findViewById(R.id.autoCompleteTextView1);
         auto_tv.setFocusable(true);
@@ -151,14 +151,6 @@ public class FoodSearchActivity extends AppCompatActivity {
         return true;
     }
 
-
-    public void hideSoftKeyPad(){
-        if(getCurrentFocus()!=null && getCurrentFocus() instanceof EditText)
-        {
-            InputMethodManager imm =(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
-        }
-    }
     @Override
     protected void onPause() {
 //        exitToBottomAnimation();

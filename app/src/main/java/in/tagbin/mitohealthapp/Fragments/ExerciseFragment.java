@@ -1,7 +1,6 @@
 package in.tagbin.mitohealthapp.Fragments;
 
 import android.app.DatePickerDialog;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,102 +12,84 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import org.json.JSONException;
+
+import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-import in.tagbin.mitohealthapp.Database.DatabaseOperations;
-import in.tagbin.mitohealthapp.activity.MainActivity;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.activity.DailyDetailsActivity;
 import in.tagbin.mitohealthapp.adapter.ExerciseAdapter;
-import in.tagbin.mitohealthapp.helper.ItemClickSupport;
-import in.tagbin.mitohealthapp.model.DataItems;
+import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import in.tagbin.mitohealthapp.model.ExerciseLogModel;
+import in.tagbin.mitohealthapp.model.RecommendationModel;
 import jp.wasabeef.recyclerview.animators.SlideInLeftAnimator;
+import pl.droidsonroids.gif.GifImageView;
 
 public class ExerciseFragment extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
-    ArrayList<DataItems> database_list;
-    RecyclerView food_list;
-    ExerciseAdapter exerciseAdapter;
-    DatabaseOperations dop;
-    SharedPreferences login_details;
-
-    String auth_key;
-
-    private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
-
+    RecyclerView recyclerExercise;
     MaterialCalendarView widget;
-    public static String selectedDate = "";
-
-
-    public ExerciseFragment() {
-
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        dop = new DatabaseOperations(getActivity());
-        login_details = getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS, getActivity().MODE_PRIVATE);
-        Calendar  calendar = Calendar.getInstance();
-
-        int  year = calendar.get(Calendar.YEAR);
-        int  month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = month+1;
-        if (month<=9 && day <=9){
-            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else  if (month<=9 && day >9){
-            selectedDate = year + "-" + "0"+month + "-" + day;
-            Log.d("date",selectedDate);
-        }else  if (day <=9 && month >9){
-            selectedDate = year + "-" +month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else if (day >9 && month >9){
-            selectedDate = year + "-" + month + "-" + day;
-            Log.d("date", selectedDate);
-
-        }
-
-    }
-
+    PrefManager pref;
+    GifImageView progressBar;
+    ExerciseAdapter adapter;
+    List<ExerciseLogModel> data;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_exercise, container, false);
 
-        food_list = (RecyclerView) view.findViewById(R.id.food_list);
+        recyclerExercise = (RecyclerView) view.findViewById(R.id.rvExercise);
         widget= (MaterialCalendarView) view.findViewById(R.id.calendarView);
-        food_list.setItemAnimator(new SlideInLeftAnimator());
-        food_list.getItemAnimator().setRemoveDuration(1000);
+        progressBar = DailyDetailsActivity.progressBar;
+        pref = new PrefManager(getContext());
+        recyclerExercise.setItemAnimator(new SlideInLeftAnimator());
+        recyclerExercise.getItemAnimator().setRemoveDuration(1000);
         SlideInLeftAnimator animator = new SlideInLeftAnimator();
         animator.setInterpolator(new OvershootInterpolator());
+        data = new ArrayList<ExerciseLogModel>();
 // or recyclerView.setItemAnimator(new SlideInUpAnimator(new OvershootInterpolator(1f));
-        food_list.setItemAnimator(animator);
+        recyclerExercise.setItemAnimator(animator);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        food_list.setLayoutManager(linearLayoutManager);
-        database_list = new ArrayList<>();
-        dop = new DatabaseOperations(getActivity());
-        exerciseAdapter = new ExerciseAdapter(getActivity());
-        food_list.setAdapter(exerciseAdapter);
-        food_list.setHasFixedSize(true);
-        database_list = dop.getExerciseInformation(dop, selectedDate);
-        exerciseAdapter.setData(database_list);
-        exerciseAdapter.notifyDataSetChanged();
-        /////////////////////
-
+        recyclerExercise.setLayoutManager(linearLayoutManager);
+        adapter = new ExerciseAdapter(getContext(),data,progressBar);
+        recyclerExercise.setAdapter(adapter);
         Calendar calendar = Calendar.getInstance();
-        widget.setSelectedDate(calendar.getTime());
+        int day,month,year;
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else {
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+        }
 
+        Date date1 = new Date(year-1900,month,day,0,0);
+        widget.setSelectedDate(date1);
+        long timestamp = date1.getTime()/1000L;
+        progressBar.setVisibility(View.VISIBLE);
+        Log.d("timestamop",""+timestamp);
+        Controller.getExerciseLogger(getContext(),timestamp,mExerciseLogListener);
         Calendar instance1 = Calendar.getInstance();
         instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
 
@@ -122,26 +103,6 @@ public class ExerciseFragment extends Fragment implements DatePickerDialog.OnDat
                 .setFirstDayOfWeek(calendar.get(Calendar.DAY_OF_WEEK))
                 .commit();
 
-        //////////////////
-
-
-
-        ItemClickSupport.addTo(food_list).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-            @Override
-            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-
-//                startActivity(new Intent(getActivity(), FoodDetailsActivity.class));
-//
-// akshayluthra12@
-
-            }
-        });
-        if (database_list.isEmpty()) {
-
-        } else {
-
-        }
-        Log.d("final selected date", selectedDate);
 
         return view;
     }
@@ -150,11 +111,7 @@ public class ExerciseFragment extends Fragment implements DatePickerDialog.OnDat
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
+        calendar.set(year, monthOfYear, dayOfMonth);
     }
 
 
@@ -162,31 +119,82 @@ public class ExerciseFragment extends Fragment implements DatePickerDialog.OnDat
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
 
         int day=   date.getDay();
-        int month=   date.getMonth()+1;
+        int month=   date.getMonth();
         int year=   date.getYear();
-        if (month<=9 && day <=9){
-            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else  if (month<=9 && day >9){
-            selectedDate = year + "-" + "0"+month + "-" + day;
-            Log.d("date",selectedDate);
-        }else  if (day <=9 && month >9){
-            selectedDate = year + "-" +month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else if (day >9 && month >9){
-            selectedDate = year + "-" + month + "-" + day;
-            Log.d("date", selectedDate);
-        }
-        database_list = dop.getExerciseInformation(dop, selectedDate);
-        exerciseAdapter.setData(database_list);
-        exerciseAdapter.notifyDataSetChanged();
-        Log.d("date",selectedDate);
+        pref.setKeyYear(year);
+        pref.setKeyMonth(month);
+        pref.setKeyDay(day);
+        long timestamp = date.getDate().getTime()/1000L;
+        Controller.getExerciseLogger(getContext(),timestamp,mExerciseLogListener);
+        //progressBar.setVisibility(View.VISIBLE);
     }
-    private String getSelectedDatesString() {
-        CalendarDay date = widget.getSelectedDate();
-        if (date == null) {
-            return "No Selection";
+    RequestListener mExerciseLogListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
         }
-        return FORMATTER.format(date.getDate());
-    }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("exercise log ",responseObject.toString());
+            Type collectionType = new TypeToken<ArrayList<ExerciseLogModel>>() {}.getType();
+            List<ExerciseLogModel> da = (ArrayList<ExerciseLogModel>) new Gson()
+                    .fromJson(responseObject.toString(), collectionType);
+            data.clear();
+            for (int i=0;i<da.size();i++){
+                data.add(da.get(i));
+            }
+            if(getActivity() == null)
+                return;
+            if (data.size() <= 0){
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerExercise.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                        //linearFoodLogger.setVisibility(View.GONE);
+                    }
+                });
+            }else {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerExercise.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.GONE);
+                        adapter.notifyDataSetChanged();
+                        //linearFoodLogger.setVisibility(View.VISIBLE);
+                        //setFoodLogger(loggerModel);
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                if(getActivity() == null)
+                    return;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerExercise.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                if(getActivity() == null)
+                    return;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerExercise.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
 }

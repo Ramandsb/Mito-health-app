@@ -263,7 +263,9 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         public void onRequestCompleted(Object responseObject) {
             Log.d("connect profile ", responseObject.toString());
             connectProfileModel = JsonUtils.objectify(responseObject.toString(), ConnectProfileModel.class);
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
+            if (getActivity() == null)
+                return;
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     setProfileConnect(connectProfileModel);
@@ -274,9 +276,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
 
         @Override
         public void onRequestError(int errorCode, String message) {
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -284,7 +288,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -900,7 +904,9 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("partner connect", responseObject.toString());
-            ((Activity) getContext()).runOnUiThread(new Runnable() {
+            if (getActivity() == null)
+                return;
+            getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
@@ -926,9 +932,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("erro", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -936,7 +944,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -986,6 +994,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
 //                }
 //            });
             Log.d("intersts", responseObject.toString());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1000,9 +1010,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("intersts", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -1010,7 +1022,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -1031,6 +1043,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             Log.d("uploaded file", responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(), ImageUploadResponseModel.class);
             pref.setKeyMasterImage(imageUploadResponseModel.getUrl());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1042,9 +1056,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar1.setVisibility(View.GONE);
@@ -1052,7 +1068,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
@@ -1072,6 +1088,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             Log.d("uploaded file", responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(), ImageUploadResponseModel.class);
             pref.setKeyUserPic1(imageUploadResponseModel.getUrl());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1083,9 +1101,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar2.setVisibility(View.GONE);
@@ -1093,7 +1113,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar2.setVisibility(View.GONE);
@@ -1114,6 +1134,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             Log.d("uploaded file", responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(), ImageUploadResponseModel.class);
             pref.setKeyUserPic2(imageUploadResponseModel.getUrl());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1125,9 +1147,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar3.setVisibility(View.GONE);
@@ -1135,7 +1159,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar3.setVisibility(View.GONE);
@@ -1156,6 +1180,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             Log.d("uploaded file", responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(), ImageUploadResponseModel.class);
             pref.setKeyUserPic3(imageUploadResponseModel.getUrl());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1167,9 +1193,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar4.setVisibility(View.GONE);
@@ -1177,7 +1205,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar4.setVisibility(View.GONE);
@@ -1198,6 +1226,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             Log.d("uploaded file", responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(), ImageUploadResponseModel.class);
             pref.setKeyUserPic4(imageUploadResponseModel.getUrl());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1209,9 +1239,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar5.setVisibility(View.GONE);
@@ -1219,7 +1251,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar5.setVisibility(View.GONE);
@@ -1240,6 +1272,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             Log.d("uploaded file", responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(), ImageUploadResponseModel.class);
             pref.setKeyUserPic5(imageUploadResponseModel.getUrl());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1251,9 +1285,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar6.setVisibility(View.GONE);
@@ -1261,7 +1297,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar6.setVisibility(View.GONE);
@@ -1282,6 +1318,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             Log.d("uploaded file", responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(), ImageUploadResponseModel.class);
             pref.setKeyUserPic6(imageUploadResponseModel.getUrl());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1293,9 +1331,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar7.setVisibility(View.GONE);
@@ -1303,7 +1343,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar7.setVisibility(View.GONE);
@@ -1324,7 +1364,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("facebook ", responseObject.toString());
             final FacebookModel facebookModel = JsonUtils.objectify(responseObject.toString(), FacebookModel.class);
-
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1337,9 +1378,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("facebook connect error", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -1347,7 +1390,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     }
                 });
             } else {
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -1366,9 +1409,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("user interests ", responseObject.toString());
-            Type collectionType = new TypeToken<ArrayList<UserInterestModel>>() {
-            }.getType();
-            List<UserInterestModel> userInterestModel = (ArrayList<UserInterestModel>) new Gson().fromJson(responseObject.toString(), collectionType);
             i.putExtra("userinterests", responseObject.toString());
             startActivity(i);
         }
@@ -1376,6 +1416,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("user interests", message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {

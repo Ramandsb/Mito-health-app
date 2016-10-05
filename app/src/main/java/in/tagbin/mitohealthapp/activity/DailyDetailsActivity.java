@@ -108,6 +108,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         progressBar = (GifImageView) findViewById(R.id.progressBar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         int i = getIntent().getIntExtra("selection",0);
+        currentFrag = i;
         setupViewPager(viewPager);
         viewPager.setOffscreenPageLimit(3);
         viewPager.setCurrentItem(i);
@@ -421,15 +422,12 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
 //        startActivity(new Intent(DailyDetailsActivity.this,FoodSearchActivity.class));
         if (currentFrag == 0) {
             Intent intent = new Intent(this, FoodSearchActivity.class);
-            intent.putExtra("back", "food");
             startActivityForResult(intent, REQUEST_CODE);
         } else if (currentFrag == 1) {
 
         } else if (currentFrag == 2) {
-            Intent intent = new Intent(this, FoodSearchActivity.class);
-            intent.putExtra("back","exercise");
+            Intent intent = new Intent(this, ExerciseSearchActivity.class);
             startActivityForResult(intent, REQUEST_CODE);
-
         } else if (currentFrag == 3) {
 
 

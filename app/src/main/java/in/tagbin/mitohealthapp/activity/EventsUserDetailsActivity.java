@@ -140,11 +140,12 @@ public class EventsUserDetailsActivity extends AppCompatActivity implements View
         }
         //profession.setText(data.getUser().getProfession());
         if (data.getUser().getInterests() != null && data.getUser().getInterests().size() >0) {
-            String finalInterests = "";
+            List<String> finalInterests = new ArrayList<String>();
             for (int i=0;i<data.getUser().getInterests().size();i++){
-                finalInterests.concat(data.getUser().getInterests().get(i)+", ");
+                finalInterests.add(data.getUser().getInterests().get(i).getInterest().getName());
+                Log.d("name",data.getUser().getInterests().get(i).getInterest().getName());
             }
-            hobbies.setText(finalInterests);
+            hobbies.setText(finalInterests.toString().replace("[","").replace("]",""));
 
         }
         mImageResources = new ArrayList<String>();
@@ -241,6 +242,7 @@ public class EventsUserDetailsActivity extends AppCompatActivity implements View
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
+                    addParticipant.setVisibility(View.GONE);
                     Toast.makeText(EventsUserDetailsActivity.this,"Participant approved succesfully",Toast.LENGTH_LONG).show();
                 }
             });

@@ -21,6 +21,8 @@ import org.json.JSONException;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -30,6 +32,7 @@ import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.RecommendationModel;
 import pl.droidsonroids.gif.GifImageView;
@@ -93,9 +96,7 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
             refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
             circleImageView = (CircleImageView) itemView.findViewById(R.id.civFoodLogger);
             view = (RelativeLayout) itemView.findViewById(R.id.relativeViewRecommend);
-            accept.setVisibility(View.GONE);
-            decline.setVisibility(View.VISIBLE);
-            refresh.setVisibility(View.GONE);
+
             view.setOnClickListener(this);
             decline.setOnClickListener(this);
         }
@@ -108,6 +109,39 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
             quantity.setText(pModel.getAmount()+" "+pModel.getComponent().getServing_type().getServing_type());
             calories.setText(new DecimalFormat("##.#").format(pModel.getComponent().getTotal_energy()).toString()+" calories");
             Picasso.with(mContext).load(mModel.getComponent().getImage()).into(circleImageView);
+            Calendar[] dates = new Calendar[4];
+            int i = 0;
+            while (i < 4){
+                Calendar selDate = Calendar.getInstance();
+                selDate.add(Calendar.DAY_OF_MONTH, -i);
+                dates[i] = selDate;
+                i++;
+            }
+            int day,month,year;
+            PrefManager pref = new PrefManager(mContext);
+            if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+                day = pref.getKeyDay();
+                month = pref.getKeyMonth();
+                year = pref.getKeyYear();
+            }else{
+                Calendar calendar = Calendar.getInstance();
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+            }
+            Date date = new Date(year-1900,month,day);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            if (calendar.getTimeInMillis() > dates[0].getTimeInMillis() || calendar.getTimeInMillis() < dates[3].getTimeInMillis()){
+                accept.setVisibility(View.GONE);
+                decline.setVisibility(View.GONE);
+                refresh.setVisibility(View.GONE);
+            }else {
+                //mSheetLayout.expandFab();
+                accept.setVisibility(View.GONE);
+                decline.setVisibility(View.VISIBLE);
+                refresh.setVisibility(View.GONE);
+            }
         }
 
         @Override

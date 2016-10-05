@@ -6,7 +6,7 @@ package in.tagbin.mitohealthapp.model;
 public class DataObject {
     public String title,location,etitle,timer,picture,description,event_time;
     public boolean all;
-    public int id,capacity,total_request,total_approved;
+    public int id,capacity,total_request,total_approved,total_coins;
     public EventType event_type;
     public MapperObject mapper;
     public DataObject(String title,String location,String etitle,int capsty,String tme) {
@@ -21,6 +21,10 @@ public class DataObject {
 
     public MapperObject getMapper() {
         return mapper;
+    }
+
+    public int getTotal_coins() {
+        return total_coins;
     }
 
     public String getDescription() {

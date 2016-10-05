@@ -1,9 +1,12 @@
 package in.tagbin.mitohealthapp.adapter;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v7.app.AlertDialog;
@@ -12,9 +15,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -22,372 +32,406 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.activity.DailyDetailsActivity;
+import in.tagbin.mitohealthapp.activity.ExerciseSearchActivity;
+import in.tagbin.mitohealthapp.activity.FoodDetailsActivity;
 import in.tagbin.mitohealthapp.activity.MainActivity;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.helper.WheelView;
 import in.tagbin.mitohealthapp.app.AppController;
 import in.tagbin.mitohealthapp.helper.Config;
 import in.tagbin.mitohealthapp.model.DataItems;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import in.tagbin.mitohealthapp.model.ExerciseLogModel;
+import in.tagbin.mitohealthapp.model.ExerciseModel;
+import in.tagbin.mitohealthapp.model.RecommendationModel;
+import in.tagbin.mitohealthapp.model.SendExerciseLogModel;
 import jp.wasabeef.recyclerview.animators.holder.AnimateViewHolder;
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by hp on 7/26/2016.
  */
-public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.MyviewHolder> {
-    ArrayList<DataItems> result;
-    Context context;
-    String quant="";
-    int[] imageId;
-    private int hour, min, day;
-    private DatePicker datePicker;
-    private Calendar calendar;
-    DatabaseOperations dop;
-    private static LayoutInflater inflater = null;
-    SharedPreferences login_details;
-    String auth_key;
-    int current_item=0;
-    String time_stamp="";
-    ArrayList<String> weightList,setsList,repsList;
-    String weight="20",sets="4",reps="15";
-    String currentId="",currentDate="";
-    String url="http://pngimg.com/upload/small/apple_PNG12458.png";
-    public ExerciseAdapter(Context context) {
-        // TODO Auto-generated constructor stub
-        this.context = context;
-        inflater = LayoutInflater.from(context);
-        dop = new DatabaseOperations(context);
-        login_details=context.getSharedPreferences(MainActivity.LOGIN_DETAILS, context.MODE_PRIVATE);
-        weightList= new ArrayList<>();
-        setsList= new ArrayList<>();
-        repsList= new ArrayList<>();
-        setUplists();
+public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHolder> {
+    static Context mContext;
+    List<ExerciseLogModel> mModel;
+    GifImageView mProgressBar;
+    private static final int TYPE_ITEM = 1;
 
+    public ExerciseAdapter(Context pContext, List<ExerciseLogModel> pModel,GifImageView pProgressBar){
+        mContext = pContext;
+        mModel = pModel;
+        mProgressBar = pProgressBar;
     }
-
-
-    public void setData(ArrayList<DataItems> list) {
-        this.result = list;
-        //update the adapter to reflect the new set of movies
-        notifyDataSetChanged();
+    @Override
+    public ExerciseAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType == TYPE_ITEM){
+            View v = LayoutInflater.from(mContext).inflate(R.layout.item_food_recommended,parent,false);
+            ExerciseAdapter.ViewHolder vhItem = new ExerciseAdapter.ViewHolder(v,viewType);
+            return vhItem;
+        }
+        return null;
     }
 
     @Override
-    public MyviewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_exercise, parent, false);
-        MyviewHolder viewHolder = new MyviewHolder(view);
-        return viewHolder;
-    }
+    public void onBindViewHolder(ExerciseAdapter.ViewHolder holder, int position) {
+        holder.itemView.setVisibility(View.VISIBLE);
+        ((ExerciseAdapter.ViewHolder) holder).populateData(mModel.get(position), mContext,mProgressBar);
 
-
-
-    @Override
-    public void onBindViewHolder(final MyviewHolder holder, final int position) {
-        current_item = position;
-
-        final DataItems dataItems = result.get(position);
-      String[] name=  dataItems.getExerciseName().split(" ");
-currentDate=dataItems.getExercise_date();
-        holder.exercise_name.setText(name[0]);
-        holder.weight.setText("Weight "+dataItems.getExercise_weight());
-        holder.sets.setText("Sets "+dataItems.getExercise_sets());
-        holder.reps.setText("Reps "+dataItems.getExercise_reps());
-        currentId=dataItems.getExercise_uniq_id();
-        holder.weight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WheelDialog("Select Weight");
-            }
-        });
-        holder.sets.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WheelDialog("Select Sets");
-            }
-        });
-        holder.reps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WheelDialog("Select Reps");
-            }
-        });
-        holder.del.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dop.deleteRow(dop, TableData.Tableinfo.TABLE_NAME_EXERCISE, TableData.Tableinfo.EXER_UNIQUE_ID,dataItems.getExercise_uniq_id());
-
-                //setData(dop.getExerciseInformation(dop, ExerciseFragment.selectedDate));
-            }
-        });
-
-
-
-
-    }
-
-
-
-    @Override
-    public long getItemId(int position) {
-        // TODO Auto-generated method stub
-        return position;
     }
 
     @Override
     public int getItemCount() {
-        return result.size();
+        return mModel.size();
     }
-
-    public class Holder {
-
-
-
+    @Override
+    public int getItemViewType(int position) {
+        return TYPE_ITEM;
     }
-    public void setUplists(){
-        int weightint=0;
-        for (int i=0;i<25;i++){
-            weightint=i*5;
-            weightList.add(String.valueOf(weightint));
-        }
-        for (int i =0; i<20;i++){
-            setsList.add(String.valueOf(i));
-        }
-        for (int i =0; i<50;i++){
-            repsList.add(String.valueOf(i));
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        Context mContext;
+        ExerciseLogModel mModel;
+        TextView foodName,quantity,calories;
+        ImageView accept,decline,refresh;
+        String mType;
+        CircleImageView circleImageView;
+        GifImageView mProgressBar;
+        RelativeLayout view;
+        PrefManager pref;
+        int day,month,year,hour,minute;
+
+        public ViewHolder(View itemView, int viewType) {
+            super(itemView);
+            foodName = (TextView) itemView.findViewById(R.id.tvFoodName);
+            quantity = (TextView) itemView.findViewById(R.id.tvFoodQuantity);
+            calories = (TextView) itemView.findViewById(R.id.tvFoodCalories);
+            accept = (ImageView) itemView.findViewById(R.id.ivFoodAccept);
+            decline = (ImageView) itemView.findViewById(R.id.ivFoodDecline);
+            refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
+            circleImageView = (CircleImageView) itemView.findViewById(R.id.civFoodLogger);
+            view = (RelativeLayout) itemView.findViewById(R.id.relativeViewRecommend);
+
+            view.setOnClickListener(this);
+            decline.setOnClickListener(this);
         }
 
-    }
-    public void WheelDialog(final String source) {
-        String[] feets = null, inches = null, unit = null;
-
-
-        feets = new String[22];
-        inches = new String[21];
-        unit = new String[51];
-        for (int i = 0; i <= 21; i++) {
-            feets[i] = "" + (i * 5);
+        public void populateData(ExerciseLogModel pModel, Context pContext,GifImageView pProgressBar){
+            mModel = pModel;
+            mContext = pContext;
+            mProgressBar = pProgressBar;
+            pref = new PrefManager(mContext);
+            foodName.setText(pModel.getComponent().getName());
+            quantity.setText(pModel.getAmount()+" mins");
+            calories.setText(new DecimalFormat("##.#").format(pModel.getEnergy_burned()).toString()+" calories");
+            //Picasso.with(mContext).load(mModel.getComponent().getImage()).into(circleImageView);
+            Calendar[] dates = new Calendar[4];
+            int i = 0;
+            while (i < 4){
+                Calendar selDate = Calendar.getInstance();
+                selDate.add(Calendar.DAY_OF_MONTH, -i);
+                dates[i] = selDate;
+                i++;
+            }
+            int day,month,year;
+            PrefManager pref = new PrefManager(mContext);
+            if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+                day = pref.getKeyDay();
+                month = pref.getKeyMonth();
+                year = pref.getKeyYear();
+            }else{
+                Calendar calendar = Calendar.getInstance();
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+            }
+            Date date = new Date(year-1900,month,day);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            if (calendar.getTimeInMillis() > dates[0].getTimeInMillis() || calendar.getTimeInMillis() < dates[3].getTimeInMillis()){
+                accept.setVisibility(View.GONE);
+                decline.setVisibility(View.GONE);
+                refresh.setVisibility(View.GONE);
+            }else {
+                //mSheetLayout.expandFab();
+                accept.setVisibility(View.GONE);
+                decline.setVisibility(View.VISIBLE);
+                refresh.setVisibility(View.GONE);
+            }
         }
-        for (int i = 0; i <= 20; i++) {
-            inches[i] = "" + (i);
-        }
-        for (int i = 0; i <= 50; i++) {
-            unit[i] = "" + (i);
-        }
 
-
-        View outerView = View.inflate(context, R.layout.wheel_view, null);
-if (source.equals("Select Weight")){
-    WheelView wv1 = (WheelView) outerView.findViewById(R.id.wheel_view_wv1);
-    wv1.setOffset(2);
-    wv1.setItems(Arrays.asList(feets));
-    wv1.setSeletion(5);
-    wv1.setVisibility(View.VISIBLE);
-    wv1.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
         @Override
-        public void onSelected(int selectedIndex, String item) {
-            Log.d("feet", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-            weight=item;
-        }
-    });
-}
-
-        if (source.equals("Select Sets")){
-            WheelView wv2 = (WheelView) outerView.findViewById(R.id.wheel_view_wv2);
-            wv2.setOffset(2);
-            wv2.setItems(Arrays.asList(inches));
-            wv2.setSeletion(4);
-            wv2.setVisibility(View.VISIBLE);
-            wv2.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
-                @Override
-                public void onSelected(int selectedIndex, String item) {
-                    Log.d("inches", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-
-                    sets=item;
-
-                }
-            });
-        }
-
-
-        if (source.equals("Select Reps")) {
-            WheelView wv = (WheelView) outerView.findViewById(R.id.wheel_view_wv3);
-            wv.setOffset(2);
-            wv.setItems(Arrays.asList(unit));
-            wv.setSeletion(5);
-            wv.setVisibility(View.VISIBLE);
-            wv.setOnWheelViewListener(new WheelView.OnWheelViewListener() {
-                @Override
-                public void onSelected(int selectedIndex, String item) {
-                    Log.d("Tag", "[Dialog]selectedIndex: " + selectedIndex + ", item: " + item);
-
-                    reps=item;
-                }
-            });
-        }
-        new AlertDialog.Builder(context)
-                .setTitle(source)
-                .setView(outerView)
-                .setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        if (source.equals("Select Weight")) {
-
-                            Log.d("val",weight);
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(TableData.Tableinfo.WEIGHT, weight);
-                            dop.updateExerRow(dop, contentValues, currentId);
-                            setData(dop.getExerciseInformation(dop,currentDate));
-
-                        } else if (source.equals("Select Sets")) {
-                            Log.d("val",sets);
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(TableData.Tableinfo.SETS, sets);
-                            dop.updateExerRow(dop, contentValues, currentId);
-                            setData(dop.getExerciseInformation(dop,currentDate));
-                        }else  if (source.equals("Select Reps")) {
-                            Log.d("val",reps);
-                            ContentValues contentValues = new ContentValues();
-                            contentValues.put(TableData.Tableinfo.REPS, reps);
-                            dop.updateExerRow(dop, contentValues, currentId);
-                            setData(dop.getExerciseInformation(dop,currentDate));
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.relativeViewRecommend:
+//                    Intent i = new Intent(mContext, FoodDetailsActivity.class);
+//                    i.putExtra("response", JsonUtils.jsonify(mModel));
+//                    i.putExtra("logger","logger");
+//                    mContext.startActivity(i);
+                    showExerciseDialog(mModel);
+                    break;
+                case R.id.ivFoodDecline:
+                    final android.app.AlertDialog.Builder alertDialog1 = new android.app.AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
+                    alertDialog1.setTitle("Delete logged exercise");
+                    alertDialog1.setMessage(" Are you sure you want to delete this logged exercise?");
+                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            mProgressBar.setVisibility(View.VISIBLE);
+                            Controller.deleteLogFood(mContext,mModel.getId(),mDeleteListener);
                         }
-
-                    }
-                })
-                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .show();
-
-
-    }
-
-
-    static class MyviewHolder extends AnimateViewHolder {
-        TextView weight,sets,reps;
-        TextView exercise_name;
-        ImageView del;
-
-
-
-
-        public MyviewHolder(View rowView) {
-            super(rowView);
-            exercise_name = (TextView) rowView.findViewById(R.id.exercise_name);
-            weight = (TextView) rowView.findViewById(R.id.weight);
-            sets = (TextView) rowView.findViewById(R.id.sets);
-            reps = (TextView) rowView.findViewById(R.id.reps);
-            del= (ImageView) rowView.findViewById(R.id.del);
-
-
-        }
-
-        @Override
-        public void animateAddImpl(ViewPropertyAnimatorListener listener) {
-            ViewCompat.animate(itemView)
-                    .translationY(0)
-                    .alpha(1)
-                    .setDuration(300)
-                    .setListener(listener)
-                    .start();
-        }
-
-        @Override
-        public void animateRemoveImpl(ViewPropertyAnimatorListener listener) {
-            ViewCompat.animate(itemView)
-                    .translationY(-itemView.getHeight() * 0.3f)
-                    .alpha(0)
-                    .setDuration(300)
-                    .setListener(listener)
-                    .start();
-        }
-
-        @Override
-        public void preAnimateAddImpl() {
-            ViewCompat.setTranslationY(itemView, -itemView.getHeight() * 0.3f);
-            ViewCompat.setAlpha(itemView, 0);
-        }
-    }
-
-    private void makeJsonObjReq(String food_id) {
-
-        auth_key=   login_details.getString("key", "");
-        Map<String, String> postParam = new HashMap<String, String>();
-        postParam.put("ltype", "exercise");
-        postParam.put("c_id", food_id);
-
-
-
-        JSONObject jsonObject = new JSONObject(postParam);
-        Log.d("postpar", jsonObject.toString());
-
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                Config.url+"logger/", jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
-
-
-
-
-
-
-
-                    }
-
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                VolleyLog.d("error", "Error: " + error.getMessage());
-
-
-                Log.d("error", error.toString());
+                    });
+                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialog1.show();
+                    break;
             }
-        }) {
-
-            //
+        }
+        RequestListener mDeleteListener = new RequestListener() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
-                headers.put( "charset", "utf-8");
-                headers.put("Authorization","JWT "+auth_key);
-                return headers;
+            public void onRequestStarted() {
+
             }
 
+            @Override
+            public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+                Log.d("exercise deleted",responseObject.toString());
+                Intent i = new Intent(mContext,DailyDetailsActivity.class);
+                i.putExtra("selection",2);
+                mContext.startActivity(i);
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext,"Exercise successfully deleted",Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
 
-
+            @Override
+            public void onRequestError(int errorCode, String message) {
+                Log.d("exercise delete error",message);
+                if (errorCode >= 400 && errorCode < 500) {
+                    final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                    ((Activity)mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBar.setVisibility(View.GONE);
+                            Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }else{
+                    ((Activity)mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBar.setVisibility(View.GONE);
+                            Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
         };
+        public void showExerciseDialog(final ExerciseLogModel data){
+            android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(mContext);
+            if (Build.VERSION.SDK_INT >= 22) {
+                dialog = new android.app.AlertDialog.Builder(mContext, R.style.AppCompatAlertDialogStyle);
+            } else {
+                dialog = new android.app.AlertDialog.Builder(mContext);
+            }
+            LinearLayout linearLayout = new LinearLayout(mContext);
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            LayoutInflater inflater = LayoutInflater.from(mContext);
+            View view = inflater.inflate(R.layout.item_exercise_dialog,linearLayout,false);
+            //TextView heading = (TextView) view.findViewById(R.id.tvExerciseDialogName);
+            //heading.setText(data.getName());
+            final EditText time = (EditText) view.findViewById(R.id.etExerciseTime);
+            Spinner spinner = (Spinner) view.findViewById(R.id.spinnerExerciseIntensity);
+            final List<String> intensities = new ArrayList<String>();
+            intensities.add("Light");
+            intensities.add("Moderate");
+            intensities.add("Heavy");
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(mContext, android.R.layout.simple_spinner_item, intensities);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(adapter);
+
+            spinner.setSelection(1,false);
+            final String[] unit = {"Moderate"};
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    unit[0] = intensities.get(position);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+            final EditText calories = (EditText) view.findViewById(R.id.etExerciseCalories);
+            LinearLayout linearSpeed = (LinearLayout) view.findViewById(R.id.linearExerciseSpeed);
+            LinearLayout linearGradient = (LinearLayout) view.findViewById(R.id.linearExerciseGradient);
+            LinearLayout linearAllDetails = (LinearLayout) view.findViewById(R.id.linearExerciseDialogDetails);
+            if (data.getComponent().getMETS_RMR() == null){
+                spinner.setVisibility(View.VISIBLE);
+                linearAllDetails.setWeightSum(2);
+            }else{
+                spinner.setVisibility(View.GONE);
+                linearAllDetails.setWeightSum(1);
+            }
+            linearLayout.addView(view);
+            dialog.setView(linearLayout);
+            dialog.setMessage(null);
+            dialog.setTitle(data.getComponent().getName());
+            if (data.getMets() == data.getComponent().getMETS_HI_BMR()){
+                spinner.setSelection(2);
+                if (data.getAmount() != 0){
+                    time.setText(new DecimalFormat("##.#").format(data.getAmount()).toString());
+                }
+            }else if (data.getMets() == data.getComponent().getMETS_MI_BMR()){
+                spinner.setSelection(1);
+                if (data.getAmount() != 0){
+                    time.setText(new DecimalFormat("##.#").format(data.getAmount()).toString());
+                }
+            }else if (data.getMets() == data.getComponent().getMETS_LI_BMR()){
+                spinner.setSelection(0);
+                if (data.getAmount() != 0){
+                    time.setText(new DecimalFormat("##.#").format(data.getAmount()).toString());
+                }
+            }else{
+                if (data.getEnergy_burned() != 0){
+                    calories.setText(new DecimalFormat("##.#").format(data.getEnergy_burned()).toString());
+                }
+            }
 
 
 
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
+            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Calendar calendar = Calendar.getInstance();
+                    if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+                        day = pref.getKeyDay();
+                        month = pref.getKeyMonth();
+                        year = pref.getKeyYear();
+                    }else {
+                        day = calendar.get(Calendar.DAY_OF_MONTH);
+                        year = calendar.get(Calendar.YEAR);
+                        month = calendar.get(Calendar.MONTH);
+                    }
+                    hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    minute = calendar.get(Calendar.MINUTE);
+                    Date date = new Date(year-1900,month,day,hour,minute);
+                    long timestamp = date.getTime()/1000L;
+                    if (calories.getText().toString().equals("") || calories.getText().toString().equals("0") || calories.getText().toString() == null){
+                        if (time.getText().toString().equals("") || time.getText().toString() == null){
+                            Toast.makeText(mContext,"Please enter minutes to do this exercise",Toast.LENGTH_LONG).show();
+                        }else {
+                            SendExerciseLogModel sendExerciseLogModel = new SendExerciseLogModel();
+                            sendExerciseLogModel.setAmount(Float.parseFloat(time.getText().toString()));
+                            if (unit[0].equals("Light")){
+                                sendExerciseLogModel.setMets(data.getComponent().getMETS_LI_BMR());
+                            }else if (unit[0].equals("Moderate")){
+                                sendExerciseLogModel.setMets(data.getComponent().getMETS_MI_BMR());
+                            }else if (unit[0].equals("Heavy")){
+                                sendExerciseLogModel.setMets(data.getComponent().getMETS_HI_BMR());
+                            }
+                            sendExerciseLogModel.setC_id(data.getComponent().getId());
+                            sendExerciseLogModel.setCalorie(-1);
+                            sendExerciseLogModel.setLtype("exercise");
+                            sendExerciseLogModel.setTimestamp(String.valueOf(timestamp));
+                            mProgressBar.setVisibility(View.VISIBLE);
+                            Controller.updateLogExercise(mContext,sendExerciseLogModel,mModel.getId(),mExerciseLoggerListener);
+                        }
+                    }else{
+                        SendExerciseLogModel sendExerciseLogModel = new SendExerciseLogModel();
+                        sendExerciseLogModel.setAmount(-1);
+                        sendExerciseLogModel.setMets(-1);
+                        sendExerciseLogModel.setCalorie(Float.parseFloat(calories.getText().toString()));
+                        sendExerciseLogModel.setC_id(data.getComponent().getId());
+                        sendExerciseLogModel.setTimestamp(String.valueOf(timestamp));
+                        sendExerciseLogModel.setLtype("exercise");
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        Controller.updateLogExercise(mContext,sendExerciseLogModel,mModel.getId(),mExerciseLoggerListener);
+                    }
+                }
+            });
+            dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            dialog.show();
+        }
+        RequestListener mExerciseLoggerListener = new RequestListener() {
+            @Override
+            public void onRequestStarted() {
+
+            }
+
+            @Override
+            public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+                Log.d("exercise logged",responseObject.toString());
+                Intent i = new Intent(mContext,DailyDetailsActivity.class);
+                i.putExtra("selection",2);
+                mContext.startActivity(i);
+                ((Activity) mContext).finish();
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext,"Exercise updated",Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onRequestError(int errorCode, String message) {
+                Log.d("exercise log error",message);
+                if (errorCode >= 400 && errorCode < 500) {
+                    final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                    ((Activity)mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBar.setVisibility(View.GONE);
+                            Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }else{
+                    ((Activity) mContext).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mProgressBar.setVisibility(View.GONE);
+                            Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        };
     }
-
-
-
-
-
-
-
 
 }

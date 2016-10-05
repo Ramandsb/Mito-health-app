@@ -279,7 +279,7 @@ public class SettingsFragment extends Fragment {
                 etRadioGroup.setPadding(0,padding,0,padding);
                 RadioButton radioButton = new RadioButton(getContext());
                 radioButton.setText("Only Men");
-                radioButton.setId(1);
+                //radioButton.setId(1);
                 radioButton.setTextSize(18);
                 radioButton.setTextColor(Color.parseColor("#26446d"));
                 radioButton.setPadding(2, 10, 0, 10);
@@ -287,13 +287,13 @@ public class SettingsFragment extends Fragment {
                 RadioButton radioButton1 = new RadioButton(getContext());
                 radioButton1.setText("Only Women");
                 radioButton1.setTextSize(18);
-                radioButton1.setId(2);
+                //radioButton1.setId(2);
                 radioButton1.setTextColor(Color.parseColor("#26446d"));
                 radioButton1.setPadding(2, 10, 0, 10);
                 etRadioGroup.addView(radioButton1);
                 RadioButton radioButton2 = new RadioButton(getContext());
                 radioButton2.setText("Both");
-                radioButton2.setId(0);
+                //radioButton2.setId(0);
                 radioButton2.setTextSize(18);
                 radioButton2.setTextColor(Color.parseColor("#26446d"));
                 radioButton2.setPadding(2, 10, 0, 10);
@@ -403,6 +403,8 @@ public class SettingsFragment extends Fragment {
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("setting response",responseObject.toString());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -415,9 +417,11 @@ public class SettingsFragment extends Fragment {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("settings error",message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -425,7 +429,7 @@ public class SettingsFragment extends Fragment {
                     }
                 });
             }else{
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -445,6 +449,8 @@ public class SettingsFragment extends Fragment {
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("setting get",responseObject.toString());
             final SettingsModel settingsModel1 = JsonUtils.objectify(responseObject.toString(),SettingsModel.class);
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -457,9 +463,11 @@ public class SettingsFragment extends Fragment {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("settings  fetch error",message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -467,7 +475,7 @@ public class SettingsFragment extends Fragment {
                     }
                 });
             }else{
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);

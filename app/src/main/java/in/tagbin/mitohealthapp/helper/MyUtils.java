@@ -141,7 +141,7 @@ public class MyUtils {
         }
         String cityName;
         if (addresses != null)
-            cityName = addresses.get(0).getAddressLine(1);
+            cityName = addresses.get(0).getAddressLine(0);
         else
             cityName = "";
         return cityName;

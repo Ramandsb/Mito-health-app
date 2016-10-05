@@ -24,18 +24,14 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
+import org.json.JSONException;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -44,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import in.tagbin.mitohealthapp.activity.EventDetailsActivity;
 import in.tagbin.mitohealthapp.helper.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
@@ -55,9 +52,9 @@ import in.tagbin.mitohealthapp.activity.MainActivity;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.Config;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
-import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.EnergyGetModel;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 
 public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
@@ -112,7 +109,6 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         View v = inflater.inflate(R.layout.frag_mito_health,container,false);
         pref=  new PrefManager(getContext());
         Calendar  calendar = Calendar.getInstance();
-        customDialog();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -120,24 +116,6 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         Date currentDate = current_cal.getTime();
         Log.d("weekValue",current_cal.get(Calendar.DAY_OF_WEEK)+"///");
         selectedDate=sdf.format(currentDate);
-     //////////////////////////////////////////
-        Calendar  p_cal = Calendar.getInstance();
-        p_cal.add(Calendar.DATE,-7);
-        Date p_Date = p_cal.getTime();
-        last7Days=sdf.format(p_Date);
-        ///////////////////////////////////////////
-        Calendar  n_cal = Calendar.getInstance();
-        n_cal.add(Calendar.DATE,+2);
-        Date n_Date = n_cal.getTime();
-        next7Days=sdf.format(n_Date);
-
-
-
-
-        Log.d("last 7 date",last7Days);
-        Log.d("normal date",selectedDate);
-        Log.d("next 7 date",next7Days);
-
 
         Calendar calendar1 = Calendar.getInstance();
         int day = calendar1.get(Calendar.DAY_OF_MONTH);
@@ -151,12 +129,39 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         long timestamp = date1.getTime()/1000L;
         //progressBar.setVisibility(View.VISIBLE);
         Log.d("timestamop",""+timestamp);
-        Controller.getDateRangeData(getActivity(),timestamp,mDateRangelistener);
+        Calendar[] dates = new Calendar[7];
+        int i = 0;
+        while (i < 7){
+            Calendar selDate = Calendar.getInstance();
+            selDate.add(Calendar.DAY_OF_MONTH, -i);
+            dates[i] = selDate;
+            i++;
+        }
+        Calendar startCalendar = dates[6];
+        int dayStart = startCalendar.get(Calendar.DAY_OF_MONTH);
+        int monthStart = startCalendar.get(Calendar.MONTH);
+        int yearStart = startCalendar.get(Calendar.YEAR);
+        Date dateStart = new Date(yearStart-1900,monthStart,dayStart);
+        long timeStampStart = dateStart.getTime()/1000L;
+        Calendar[] dates1 = new Calendar[7];
+        int i1 = 0;
+        while (i1 < 7){
+            Calendar selDate = Calendar.getInstance();
+            selDate.add(Calendar.DAY_OF_MONTH, i1);
+            dates1[i1] = selDate;
+            i1++;
+        }
+        Calendar endCalendar = dates1[6];
+        int dayend = endCalendar.get(Calendar.DAY_OF_MONTH);
+        int monthend = endCalendar.get(Calendar.MONTH);
+        int yearend = endCalendar.get(Calendar.YEAR);
+        Date dateend = new Date(yearend-1900,monthend,dayend);
+        long timeStampEnd = dateend.getTime()/1000L;
+        //Controller.getCaloriesDateWise(getActivity(),timeStampStart,timeStampEnd, mDatesCaloriesListener);
+        Log.d("timestamp energy", String.valueOf(timestamp));
+        Controller.getCaloriesDayWise(getActivity(),timestamp, mDayCaloriesListener);
         widget= (MaterialCalendarView) v.findViewById(R.id.calendarView);
         // Add a decorator to disable prime numbered days
-
-        Log.d("start Date",MyUtils.getUtcTimestamp(last7Days+" 00:00:00","s")+"////"+MyUtils.getUtcTimestamp(next7Days+" 00:00:00","s"));
-
         widget.setSelectedDate(calendar.getTime());
 
 
@@ -192,7 +197,7 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         login_details=getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
 
 
-        setHomepageDetails();
+        //setHomepageDetails();
 
         food_card.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,40 +248,40 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         return v;
     }
 
-    private void setHomepageDetails() {
+//    private void setHomepageDetails() {
+//
+//        Cursor cursor =dop.getCompleteChartInfo(dop,selectedDate);
+//        if (cursor != null && cursor.moveToFirst()) {
+//            do {
+//  String      f_con=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_CONSUMED));
+//  String   e_bur=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_EXERCAL_BURNED));
+//  String  water=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_WATER_CONSUMED));
+//  String    f_req=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_REQ));
+//                double wat_int=(Double.valueOf(water));
+//                int i=Integer.valueOf((int) wat_int);
+//                double wat_int1=(Double.valueOf(f_con));
+//                int j=Integer.valueOf((int) wat_int1);
+//                double wat_int2=(Double.valueOf(e_bur));
+//                int k=Integer.valueOf((int) wat_int2);
+//                double wat_int3=(Double.valueOf(f_req));
+//                int l=Integer.valueOf((int) wat_int3);
+//                int fcal_int=j;
+//                int calbur_int=k;
+//                int totcal_int=l;
+//                cal_consumed.setText(fcal_int+"");
+//                cal_left.setText(fcal_int+"/"+totcal_int);
+//                cal_burned.setText(calbur_int+"");
+//                String w= String.valueOf(i/100);
+//                glasses.setText(w+"/8");
+//                foodcard_recom.setText(fcal_int + " Kcal");
+//                exercard_burnt.setText(calbur_int+"");
+//            }
+//            while (cursor.moveToNext());
+//        }
+//
+//    }
 
-        Cursor cursor =dop.getCompleteChartInfo(dop,selectedDate);
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-  String      f_con=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_CONSUMED));
-  String   e_bur=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_EXERCAL_BURNED));
-  String  water=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_WATER_CONSUMED));
-  String    f_req=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_REQ));
-                double wat_int=(Double.valueOf(water));
-                int i=Integer.valueOf((int) wat_int);
-                double wat_int1=(Double.valueOf(f_con));
-                int j=Integer.valueOf((int) wat_int1);
-                double wat_int2=(Double.valueOf(e_bur));
-                int k=Integer.valueOf((int) wat_int2);
-                double wat_int3=(Double.valueOf(f_req));
-                int l=Integer.valueOf((int) wat_int3);
-                int fcal_int=j;
-                int calbur_int=k;
-                int totcal_int=l;
-                cal_consumed.setText(fcal_int+"");
-                cal_left.setText(fcal_int+"/"+totcal_int);
-                cal_burned.setText(calbur_int+"");
-                String w= String.valueOf(i/100);
-                glasses.setText(w+"/8");
-                foodcard_recom.setText(fcal_int + " Kcal");
-                exercard_burnt.setText(calbur_int+"");
-            }
-            while (cursor.moveToNext());
-        }
-
-    }
-
-    RequestListener mDateRangelistener= new RequestListener() {
+    RequestListener mDayCaloriesListener = new RequestListener() {
         @Override
         public void onRequestStarted() {
 
@@ -286,26 +291,65 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         public void onRequestCompleted(Object responseObject) {
             Log.d("dateRange Request",responseObject.toString());
             final EnergyGetModel energyGetModel = JsonUtils.objectify(responseObject.toString(),EnergyGetModel.class);
+            if (getActivity() == null)
+                return;
                 getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     coinsFinal  = energyGetModel.getTotal_coins();
                     PrefManager pref = new PrefManager(getActivity());
                     pref.setKeyCoins(coinsFinal);
-                    cal_consumed.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_consumed()).toString());
-                    cal_left.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_consumed()).toString()+"/"+new DecimalFormat("##.#").format(energyGetModel.getCalorie_required()).toString());
-                    cal_burned.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_burnt()).toString());
-                    String w= new DecimalFormat("##.#").format(energyGetModel.getWater()/250).toString();
+                    cal_consumed.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_consumed()).toString());
+                    cal_left.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_required()-energyGetModel.getCalorie_consumed()).toString()+"/"+new DecimalFormat("##").format(energyGetModel.getCalorie_required()).toString());
+                    cal_burned.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_burnt()).toString());
+                    String w= new DecimalFormat("##").format(energyGetModel.getWater()/250).toString();
                     glasses.setText(w+"/8");
-                    foodcard_recom.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_consumed()).toString() + " Kcal");
-                    exercard_burnt.setText(new DecimalFormat("##.#").format(energyGetModel.getCalorie_burnt()).toString());
+                    foodcard_recom.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_required()).toString() + " Kcal");
+                    exercard_burnt.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_burnt()).toString());
                 }
             });
 
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                if (getActivity() == null)
+                    return;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                if (getActivity() == null)
+                    return;
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    RequestListener mDatesCaloriesListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("data range calories",responseObject.toString());
 //            DateRangeDataModel dateRangeDataModel = JsonUtils.objectify(responseObject.toString(),DateRangeDataModel.class);
-
+//
 //            dateRangeDataModel.getChart().get(0).
-
+//
 //            try {
 //
 //                dop.ClearChartTable(dop);
@@ -339,16 +383,35 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
 //                Log.d("exception",e.toString());
 //
 //            }
-
-
         }
 
         @Override
         public void onRequestError(int errorCode, String message) {
-
+                Log.d("error",message);
+//            if (errorCode >= 400 && errorCode < 500) {
+//                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+//                if (getActivity() == null)
+//                    return;
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        progressBar.setVisibility(View.GONE);
+//                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }else{
+//                if (getActivity() == null)
+//                    return;
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        progressBar.setVisibility(View.GONE);
+//                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//            }
         }
     };
-
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         for (int i=0;i< menu.size();i++) {
@@ -386,29 +449,6 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
     }
 
 
-    public  String convertTimestamp(String selectedDate) throws ParseException {
-
-
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date date = (Date)formatter.parse(selectedDate+" 00:00:00");
-       String timestamp=String.valueOf(date.getTime());
-        Log.d("converted date",timestamp);
-
-
-
-        return timestamp;
-    }
-
-
-
-
-    private String getSelectedDatesString() {
-        CalendarDay date = widget.getSelectedDate();
-        if (date == null) {
-            return "No Selection";
-        }
-        return FORMATTER.format(date.getDate());
-    }
     @Override
     public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
 
@@ -434,47 +474,8 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         long timestamp = date.getDate().getTime()/1000L;
         Log.d("timestamp", String.valueOf(timestamp));
         //long timestamp1 = date.getDate().getTime()/1000L;
-        Controller.getDateRangeData(getActivity(),timestamp,mDateRangelistener);
-        setHomepageDetails();
-    }
-    public void customDialog() {
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-
-        View customView = inflater.inflate(R.layout.dialog, null);
-        builder.setView(customView);
-        messageView = (TextView) customView.findViewById(R.id.tvdialog);
-        progressBar = (ProgressBar) customView.findViewById(R.id.progress);
-        alert = builder.create();
-
+        Controller.getCaloriesDayWise(getActivity(),timestamp, mDayCaloriesListener);
+        //setHomepageDetails();
     }
 
-    public void showDialog() {
-
-        progressBar.setVisibility(View.VISIBLE);
-        alert.show();
-        messageView.setText("Loading");
-    }
-
-    public void dismissDialog() {
-        alert.dismiss();
-    }
-
-    public void displayErrors(VolleyError error) {
-        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("Connection failed");
-        } else if (error instanceof AuthFailureError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("AuthFailureError");
-        } else if (error instanceof ServerError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ServerError");
-        } else if (error instanceof NetworkError) {
-            messageView.setText("NetworkError");
-        } else if (error instanceof ParseError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ParseError");
-        }
-    }
 }

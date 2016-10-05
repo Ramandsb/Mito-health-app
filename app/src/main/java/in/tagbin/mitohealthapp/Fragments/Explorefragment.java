@@ -215,6 +215,8 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("user connected",responseObject.toString());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -229,6 +231,8 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("user con error",message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 ((Activity) getContext()).runOnUiThread(new Runnable() {
@@ -259,6 +263,8 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("user passed",responseObject.toString());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -271,9 +277,11 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("user pas error",message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
@@ -281,7 +289,7 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
                     }
                 });
             }else{
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);

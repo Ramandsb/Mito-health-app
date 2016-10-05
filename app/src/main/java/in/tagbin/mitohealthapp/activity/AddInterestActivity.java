@@ -36,7 +36,8 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
     TextView heading;
     ImageView image;
     GifImageView progressBar;
-    String response,url = "http:\\/\\/mito-django-api.s3.amazonaws.com\\/uploads\\/3\\/ce9b7db32e94401dac770276796d628aShaktiman.jpg";
+    String response,url = "http://mito-django-api.s3.amazonaws.com/uploads/3/ce9b7db32e94401dac770276796d628aShaktiman.jpg";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +54,10 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
             etInterestName.setHint("Suggest Food");
             heading.setText("Food Name");
             Picasso.with(this).load(url).into(image);
+        }else if (getIntent().getStringExtra("exercise") != null){
+            etInterestName.setHint("Suggest Exercise");
+            heading.setText("Exercise Name");
+            Picasso.with(this).load(url).into(image);
         }else{
             etInterestName.setHint("Suggest Interest");
             heading.setText("Interest Name");
@@ -68,6 +73,8 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
                     progressBar.setVisibility(View.VISIBLE);
                     if (getIntent().getStringExtra("food") != null){
 
+                    }else if (getIntent().getStringExtra("exercise") != null){
+
                     }else {
                         Controller.setNewInterest(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
                     }
@@ -82,7 +89,13 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
         switch (view.getId()){
             case R.id.buttonSendInterest:
                 progressBar.setVisibility(View.VISIBLE);
-                Controller.setNewInterest(this,etInterestName.getText().toString(),mSetInterstListener);
+                if (getIntent().getStringExtra("food") != null){
+
+                }else if (getIntent().getStringExtra("exercise") != null){
+
+                }else {
+                    Controller.setNewInterest(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
+                }
                 break;
         }
     }

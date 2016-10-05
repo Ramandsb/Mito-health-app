@@ -29,7 +29,12 @@ public class HitsArrayModel {
     }
     public class SourceModel{
         int recipe_id;
+        int exercise_id;
         String name;
+
+        public int getExercise_id() {
+            return exercise_id;
+        }
 
         public String getName() {
             return name;

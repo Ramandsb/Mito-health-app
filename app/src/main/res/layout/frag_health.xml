@@ -11,11 +11,25 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context="in.tagbin.mitohealthapp.Fragments.HealthFragment">
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/app_bar"
+            android:visibility="gone"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_alignParentTop="true"
+                android:layout_below="@+id/app_bar"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
                 android:id="@+id/editProfileTop"
@@ -360,39 +374,30 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="My Goals"
+                        android:layout_centerHorizontal="true"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
+                        android:textSize="14sp"
+                        android:id="@+id/tvMonthsHeading"
+                        android:text="You want to loose "/>
 
-                    <LinearLayout
-                        android:id="@+id/select_goals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/goals_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/sm1"
-                            android:text="Be Healthier"
-                            android:textSize="14sp"
-                            android:textColor="#474747" />
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/edit_svg" />
-                    </LinearLayout>
+                    <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                        android:id="@+id/seekbarMonths"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:layout_below="@+id/tvMonthsHeading"
+                        app:dsb_allowTrackClickToDrag="true"
+                        app:dsb_min="0"
+                        app:dsb_max="52"
+                        app:dsb_indicatorColor="@color/colorPrimary"
+                        app:dsb_indicatorFormatter="%d"
+                        app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
+                        app:dsb_progressColor="@color/colorPrimary" />
 
                 </RelativeLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -457,40 +462,40 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="50dp"
                     android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="14sp"
-                        android:id="@+id/tvMonthsHeading"
-                        android:text="You want to loose "/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
+                        android:text="My Goals"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14sp"
-                        android:layout_below="@+id/tvMonthsHeading"
-                        android:id="@+id/tvMonths"
-                        android:text="2 Weeks"/>
+                        android:textSize="16sp"/>
 
-                    <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                        android:id="@+id/seekbarMonths"
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_below="@+id/tvMonths"
-                        app:dsb_allowTrackClickToDrag="true"
-                        app:dsb_min="2"
-                        app:dsb_max="100"
-                        app:dsb_indicatorColor="@color/colorPrimary"
-                        app:dsb_indicatorFormatter="%d"
-                        app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
-                        app:dsb_progressColor="@color/colorPrimary" />
+                    <LinearLayout
+                        android:id="@+id/select_goals"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/goals_tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableRight="@drawable/sm1"
+                            android:text="Be Healthier"
+                            android:textSize="14sp"
+                            android:textColor="#474747" />
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:src="@drawable/edit_svg" />
+                    </LinearLayout>
 
                 </RelativeLayout>
             </LinearLayout>

@@ -10,12 +10,17 @@ public class ParticipantModel {
     int id;
     boolean confirm,decline;
     UserModel user;
+    DataObject event;
 
     public ParticipantModel(int id,int drawable,String name,String profession,String hobbies,int age,int user_id){
         this.id = id;
         user = new UserModel();
-
     }
+
+    public DataObject getEvent() {
+        return event;
+    }
+
     public int getId(){
         return this.id;
     }
@@ -34,12 +39,13 @@ public class ParticipantModel {
     public class UserModel{
         public UserModel(){
             profile = new ProfileModel();
+            interest = new ArrayList<InterestModel5>();
         }
         ProfileModel profile;
         int id;
-        ArrayList<String> interests;
-        public ArrayList<String> getInterests(){
-            return this.interests;
+        ArrayList<InterestModel5> interest;
+        public ArrayList<InterestModel5> getInterests(){
+            return this.interest;
         }
         String first_name,last_name,email,username,profession,hobbies;
         public String getFirst_name(){
@@ -60,7 +66,49 @@ public class ParticipantModel {
         public ProfileModel getProfile(){
             return this.profile;
         }
+        public class InterestModel5{
+            int user,id;
+            InterestModel6 interest;
+            public InterestModel5(){
+                interest = new InterestModel6();
+            }
+            public int getId() {
+                return id;
+            }
+
+            public int getUser() {
+                return user;
+            }
+
+            public InterestModel6 getInterest() {
+                return interest;
+            }
+
+            public class InterestModel6{
+                String name;
+                int id,created_by;
+                boolean verified;
+
+                public int getId() {
+                    return id;
+                }
+
+                public int getCreated_by() {
+                    return created_by;
+                }
+
+                public String getName() {
+                    return name;
+                }
+
+                public boolean isVerified() {
+                    return verified;
+                }
+            }
+        }
     }
+
+
     public class ProfileModel{
         String gender;
         Images2Model images;

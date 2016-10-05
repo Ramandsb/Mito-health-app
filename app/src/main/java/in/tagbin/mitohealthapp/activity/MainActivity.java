@@ -5,19 +5,16 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,7 +69,6 @@ import java.util.Map;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.AppController;
 import in.tagbin.mitohealthapp.helper.Config;
-import in.tagbin.mitohealthapp.helper.FullscreenVideoLayout;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
@@ -97,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
     ///////////////////////////////////
-    FullscreenVideoLayout video_player_view;
+    //FullscreenVideoLayout video_player_view;
 
 
 ///////////////////////////////////
@@ -181,11 +177,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
 
 
-        try {
-            getInit();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            getInit();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         TextView loginTv = (TextView) findViewById(R.id.login);
         loginTv.setOnClickListener(new View.OnClickListener() {
@@ -252,40 +248,40 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
-    public void getInit() throws IOException {
-        video_player_view = (FullscreenVideoLayout) findViewById(R.id.video_view);
-        video_player_view.setActivity(this);
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) video_player_view.getLayoutParams();
-        params.width = metrics.widthPixels;
-        params.height = metrics.heightPixels;
-        video_player_view.setLayoutParams(params);
-        video_player_view.hideControls();
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.working);
-        video_player_view.setVideoURI(uri);
-        video_player_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                video_player_view.hideControls();
-            }
-        });
-
-        video_player_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                mp.start();
-            }
-        });
-        video_player_view.start();
-    }
+//    public void getInit() throws IOException {
+//        video_player_view = (FullscreenVideoLayout) findViewById(R.id.video_view);
+//        video_player_view.setActivity(this);
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) video_player_view.getLayoutParams();
+//        params.width = metrics.widthPixels;
+//        params.height = metrics.heightPixels;
+//        video_player_view.setLayoutParams(params);
+//        video_player_view.hideControls();
+//        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.working);
+//        video_player_view.setVideoURI(uri);
+//        video_player_view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                video_player_view.hideControls();
+//            }
+//        });
+//
+//        video_player_view.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mp) {
+//                mp.start();
+//            }
+//        });
+//        video_player_view.start();
+//    }
 
 
     @Override
     protected void onResume() {
         super.onResume();
-        video_player_view.start();
-        video_player_view.hideControls();
+//        video_player_view.start();
+//        video_player_view.hideControls();
 
     }
 
@@ -409,8 +405,8 @@ showDialog();
     @Override
     protected void onPause() {
         super.onPause();
-        video_player_view.pause();
-        video_player_view.hideControls();
+//        video_player_view.pause();
+//        video_player_view.hideControls();
 
 
 

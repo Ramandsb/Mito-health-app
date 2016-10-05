@@ -47,6 +47,7 @@ import in.tagbin.mitohealthapp.model.JoinEventModel;
 import in.tagbin.mitohealthapp.model.RecipeFavouriteModel;
 import in.tagbin.mitohealthapp.model.SendCuisineModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
+import in.tagbin.mitohealthapp.model.SendExerciseLogModel;
 import in.tagbin.mitohealthapp.model.SendGoalModel;
 import in.tagbin.mitohealthapp.model.SendPrefernceModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
@@ -540,11 +541,21 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
-    public static void getDateRangeData(Context context,long startDate,
-                                   RequestListener requestListener) {
+    public static void getCaloriesDayWise(Context context, long startDate,
+                                          RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.ENERGY);
         url=url+"?day="+startDate;
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getCaloriesDateWise(Context context, long startDate,long endDate,
+                                          RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.ENERGY);
+        url=url+"dates/?start="+startDate+"&end="+endDate;
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
@@ -682,6 +693,45 @@ public class Controller {
         url += id+"/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getExerciseDetails(Context context,int id,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.EXERCISE);
+        url += id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setExerciseLogger(Context context,SendExerciseLogModel sendExerciseLogModel,
+                                 RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.LOGGER);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, sendExerciseLogModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getExerciseLogger(Context context,long timestamp,
+                                 RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.LOGGER);
+        url += "history/?day="+timestamp+"&ltype=exercise";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void updateLogExercise(Context context,SendExerciseLogModel sendExerciseLogModel,int id,
+                                     RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.LOGGER);
+        url += id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, sendExerciseLogModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }

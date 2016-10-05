@@ -86,7 +86,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
     private int year, month, day;
     private DatePicker datePicker;
     private Calendar calendar;
-    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv,coins,months,monthsHeading;
+    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv,coins,monthsHeading;
     ImageView profile_pic;
     SharedPreferences login_details;
     static double height = 0.0,weight = 0.0,waist = 0.0,goal_weight = 0.0;
@@ -98,7 +98,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
     public static Bitmap profileImage;
     View male_view;
     PrefManager pref;
-    int prefernce_final,coinsFinal = 0;
+    int prefernce_final,coinsFinal = 0,monthsValue = 8;
     GifImageView progressBar1;
     DiscreteSeekBar monthsSeekbar;
     Spinner diet_preference;
@@ -155,7 +155,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         cusineSize = (TextView) Fragview.findViewById(R.id.tvCuisinesSize);
         profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
         profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
-        months = (TextView) Fragview.findViewById(R.id.tvMonths);
+        //months = (TextView) Fragview.findViewById(R.id.tvMonths);
         monthsHeading = (TextView) Fragview.findViewById(R.id.tvMonthsHeading);
         monthsSeekbar = (DiscreteSeekBar) Fragview.findViewById(R.id.seekbarMonths);
         mygoals.setOnClickListener(this);
@@ -250,51 +250,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             @TargetApi(Build.VERSION_CODES.N)
             @Override
             public void onClick(View v) {
-//                TimePickerDialog tpd = new TimePickerDialog(getActivity(),
-//                        new TimePickerDialog.OnTimeSetListener() {
-//
-//                            @Override
-//                            public void onTimeSet(TimePicker view, int hourOfDay,
-//                                                  int minute) {
-//
-//                                String time=hourOfDay + ":" + minute;
-//
-//                            }
-//                        }, hour, min, false);
-//                tpd.show();
-                int j = 0, j1 = 0, j2 = 0;
-                DatePickerDialog dpd = new DatePickerDialog(getActivity(),
-                        new DatePickerDialog.OnDateSetListener() {
-
-                            @Override
-                            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                                month = month + 1;
-                                year = i;
-                                month = i1 + 1;
-                                day = i2;
-
-                                if (month <= 9 && day <= 9) {
-                                    dob = year + "-" + "0" + month + "-" + "0" + day;
-                                    Log.d("dob", dob);
-                                } else if (month <= 9 && day > 9) {
-                                    dob = year + "-" + "0" + month + "-" + day;
-                                    Log.d("dob", dob);
-                                } else if (day <= 9 && month > 9) {
-                                    dob = year + "-" + month + "-" + "0" + day;
-                                    Log.d("dob", dob);
-                                } else if (day > 9 && month > 9) {
-                                    dob = year + "-" + month + "-" + day;
-                                    Log.d("dob", dob);
-                                }
-                                SharedPreferences.Editor saveDob = login_details.edit();
-                                saveDob.putString("dob", dob);
-                                saveDob.commit();
-                                dob_tv.setText(dob);
-
-                            }
-                        }, year, month, day);
-
-                dpd.show();
+                showDateDialog();
             }
         });
         select_weight.setOnClickListener(new View.OnClickListener() {
@@ -325,19 +281,24 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 showWaistDialog();
             }
         });
-        if (goal_weight != 0 && weight != 0){
-            double goal = goal_weight/1000;
-            double weightFinal = weight/1000;
-            monthsHeading.setVisibility(View.VISIBLE);
-            monthsHeading.setText("You want to loose "+(weightFinal-goal)+" kgs");
-        }else{
-            monthsHeading.setVisibility(View.GONE);
-        }
         monthsSeekbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
             public int transform(int value) {
                 //settingsModel.setMaximum_distance(value);
-                months.setText(value+ " weeks");
+                if (goal_weight != 0 && weight != 0){
+                    double goal = goal_weight/1000;
+                    double weightFinal = weight/1000;
+                    monthsHeading.setVisibility(View.VISIBLE);
+                    if (weightFinal - goal <0 ){
+                        monthsHeading.setText("Gaining "+new DecimalFormat("##.#").format((-(weightFinal-goal)/value)).toString()+" kgs/week");
+                    }else{
+                        monthsHeading.setText("Loosing "+new DecimalFormat("##.#").format(((weightFinal-goal)/value)).toString()+" kgs/week");
+                    }
+
+                }else{
+                    monthsHeading.setVisibility(View.GONE);
+                }
+                monthsValue = value;
                 return value;
             }
         });
@@ -375,6 +336,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             Log.d("uploaded file",responseObject.toString());
             ImageUploadResponseModel imageUploadResponseModel = JsonUtils.objectify(responseObject.toString(),ImageUploadResponseModel.class);
             pref.setKeyMasterImage(imageUploadResponseModel.getUrl());
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -386,9 +349,11 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("uploaded file error",message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar1.setVisibility(View.GONE);
@@ -396,7 +361,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                     }
                 });
             }else{
-                ((Activity) getContext()).runOnUiThread(new Runnable() {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
@@ -503,6 +468,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 sendEditProfileModel.setWaist(String.valueOf(waist));
                 sendEditProfileModel.setWeight(String.valueOf(weight));
                 sendEditProfileModel.setPreferences(prefernce_final);
+                sendEditProfileModel.setGoal_time(monthsValue*7);
                 if (pref.getKeyMasterImage() != null){
                     SendEditProfileModel.ImagesModel imagesModel = sendEditProfileModel.getImages();
                     imagesModel.setMaster(pref.getKeyMasterImage());
@@ -529,6 +495,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("user set", responseObject.toString());
             pref.setKeyUserDetails(JsonUtils.objectify(responseObject.toString(),UserModel.class));
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -543,6 +511,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("send user error",message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {
@@ -563,7 +533,62 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             }
         }
     };
+    public void  showDateDialog(){
+        int j = 0, j1 = 0, j2 = 0;
+        final DatePickerDialog dpd = new DatePickerDialog(getActivity(),
+                new DatePickerDialog.OnDateSetListener() {
 
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        month = month + 1;
+                        year = i;
+                        month = i1 + 1;
+                        day = i2;
+
+                        if (month <= 9 && day <= 9) {
+                            dob = year + "-" + "0" + month + "-" + "0" + day;
+                            Log.d("dob", dob);
+                        } else if (month <= 9 && day > 9) {
+                            dob = year + "-" + "0" + month + "-" + day;
+                            Log.d("dob", dob);
+                        } else if (day <= 9 && month > 9) {
+                            dob = year + "-" + month + "-" + "0" + day;
+                            Log.d("dob", dob);
+                        } else if (day > 9 && month > 9) {
+                            dob = year + "-" + month + "-" + day;
+                            Log.d("dob", dob);
+                        }
+                        SharedPreferences.Editor saveDob = login_details.edit();
+                        saveDob.putString("dob", dob);
+                        saveDob.commit();
+                        dob_tv.setText(dob);
+                        if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                            if (first_name == null || first_name.equals("")){
+                                showNameDialog();
+                            }else if (dob == null || dob.equals("")){
+                                showDateDialog();
+                            }else if (height == 0) {
+                                //dialog.dismiss();
+                                showHeightDialog();
+                            } else if (weight == 0) {
+                                //dialog.dismiss();
+                                showWeightDialog();
+                            } else if (waist == 0) {
+                                //dialog.dismiss();
+                                showWaistDialog();
+                            } else if (goal_weight == 0) {
+                                //dialog.dismiss();
+                                showGoal_WeightDialog();
+                            }
+                        } else {
+                            //dialog.dismiss();
+                        }
+
+                    }
+                }, year, month, day);
+
+        dpd.show();
+    }
     public void showHeightDialog() {
 
         final Dialog dialog = new Dialog(getActivity());
@@ -632,13 +657,16 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                     height_tv.setText(height_new);
                     Log.d("height value", height_new);
                 }
-                if (height == 0 || waist == 0 || weight == 0 || goal_weight ==0) {
-
-
-                    if (height == 0) {
+                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                    if (first_name == null || first_name.equals("")){
+                        dialog.dismiss();
+                        showNameDialog();
+                    }else if (dob == null || dob.equals("")){
+                        dialog.dismiss();
+                        showDateDialog();
+                    }else if (height == 0) {
                         dialog.dismiss();
                         showHeightDialog();
-
                     } else if (weight == 0) {
                         dialog.dismiss();
                         showWeightDialog();
@@ -720,11 +748,16 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("weight", (float) weight);
                 }
-                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0) {
-                    if (height == 0) {
+                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                    if (first_name == null || first_name.equals("")){
+                        dialog.dismiss();
+                        showNameDialog();
+                    }else if (dob == null || dob.equals("")){
+                        dialog.dismiss();
+                        showDateDialog();
+                    }else if (height == 0) {
                         dialog.dismiss();
                         showHeightDialog();
-
                     } else if (weight == 0) {
                         dialog.dismiss();
                         showWeightDialog();
@@ -735,7 +768,6 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                         dialog.dismiss();
                         showGoal_WeightDialog();
                     }
-
                 } else {
                     dialog.dismiss();
                 }
@@ -809,13 +841,16 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("goal_weight", (float) goal_weight);
                 }
-                if (height == 0 || waist == 0 || weight == 0 || goal_weight ==0) {
-
-
-                    if (height == 0) {
+                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                    if (first_name == null || first_name.equals("")){
+                        dialog.dismiss();
+                        showNameDialog();
+                    }else if (dob == null || dob.equals("")){
+                        dialog.dismiss();
+                        showDateDialog();
+                    }else if (height == 0) {
                         dialog.dismiss();
                         showHeightDialog();
-
                     } else if (weight == 0) {
                         dialog.dismiss();
                         showWeightDialog();
@@ -826,7 +861,6 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                         dialog.dismiss();
                         showGoal_WeightDialog();
                     }
-
                 } else {
                     dialog.dismiss();
                 }
@@ -903,13 +937,16 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("waist", (float) waist);
                 }
-                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0) {
-
-
-                    if (height == 0) {
+                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                    if (first_name == null || first_name.equals("")){
+                        dialog.dismiss();
+                        showNameDialog();
+                    }else if (dob == null || dob.equals("")){
+                        dialog.dismiss();
+                        showDateDialog();
+                    }else if (height == 0) {
                         dialog.dismiss();
                         showHeightDialog();
-
                     } else if (weight == 0) {
                         dialog.dismiss();
                         showWeightDialog();
@@ -920,9 +957,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                         dialog.dismiss();
                         showGoal_WeightDialog();
                     }
-
                 } else {
-
                     dialog.dismiss();
                 }
 
@@ -930,12 +965,78 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         });
         dialog.show();
     }
+    public void showNameDialog(){
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.item_value_picker);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
+        Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
+        //final TextView value = (TextView) dialog.findViewById(R.id.height_value);
+        final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
+        final TextView dialog_heading = (TextView) dialog.findViewById(R.id.dialogHeading);
+        dialog_name.setText("Name");
+        dialog_heading.setText("Enter Name");
+        spinner.setVisibility(View.GONE);
+        final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
+        final EditText seekBar1 = (EditText) dialog.findViewById(R.id.height_seekbar1);
+        if (first_name != null){
+            seekBar.setText(first_name);
+        }
+        if (last_name != null){
+            seekBar1.setText(last_name);
+        }
+        seekBar.setSelectAllOnFocus(true);
+        seekBar.setInputType(InputType.TYPE_CLASS_TEXT);
+        seekBar1.setSelectAllOnFocus(true);
+        seekBar1.setInputType(InputType.TYPE_CLASS_TEXT);
+        View done = dialog.findViewById(R.id.height_done);
+        TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
+        TextInputLayout textInputLayout1 = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight1);
+        textInputLayout1.setVisibility(View.VISIBLE);
+        textInputLayout.setHint("First Name");
+        textInputLayout1.setHint("Last Name");
+
+        //seekBar.setMax(200);
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                first_name = seekBar.getText().toString();
+                last_name = seekBar1.getText().toString();
+                profile_name.setText(first_name + " " + last_name);
+                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                    if (first_name == null || first_name.equals("")){
+                        dialog.dismiss();
+                        showNameDialog();
+                    }else if (dob == null || dob.equals("")){
+                        dialog.dismiss();
+                        showDateDialog();
+                    }else if (height == 0) {
+                        dialog.dismiss();
+                        showHeightDialog();
+                    } else if (weight == 0) {
+                        dialog.dismiss();
+                        showWeightDialog();
+                    } else if (waist == 0) {
+                        dialog.dismiss();
+                        showWaistDialog();
+                    } else if (goal_weight == 0) {
+                        dialog.dismiss();
+                        showGoal_WeightDialog();
+                    }
+                } else {
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.show();
+    }
     public void updateProfile(final UserModel userModel) {
-        if (userModel.getProfile().getDob() != null)
+        if (userModel.getProfile().getDob() != null) {
             dob = userModel.getProfile().getDob();
-        else
-            dob = "Set Date";
+            dob_tv.setText(dob);
+        }else {
+            dob_tv.setText("Set Date");
+        }
         gender = userModel.getProfile().getGender();
         email = userModel.getUser().getEmail();
         first_name = userModel.getUser().getFirst_name();
@@ -944,11 +1045,28 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         weight = userModel.getProfile().getWeight();
         goal_weight = userModel.getProfile().getGoal_weight();
         waist = userModel.getProfile().getWaist();
+        monthsValue = userModel.getProfile().getGoal_time()/7;
+        monthsSeekbar.setProgress(monthsValue);
+        if (goal_weight != 0 && weight != 0){
+            double goal = goal_weight/1000;
+            double weightFinal = weight/1000;
+            monthsHeading.setVisibility(View.VISIBLE);
+            if (weightFinal - goal <0 ){
+                monthsHeading.setText("Gaining "+new DecimalFormat("##.#").format((-(weightFinal-goal)/monthsValue)).toString()+" kgs/week");
+            }else{
+                monthsHeading.setText("Loosing "+new DecimalFormat("##.#").format(((weightFinal-goal)/monthsValue)).toString()+" kgs/week");
+            }
+
+        }else{
+            monthsHeading.setVisibility(View.GONE);
+        }
         if (userModel.getUser().getFirst_name() != null) {
             if (userModel.getUser().getLast_name() != null) {
                 profile_name.setText(userModel.getUser().getFirst_name() + " " + userModel.getUser().getLast_name());
             }else
                 profile_name.setText(userModel.getUser().getFirst_name());
+        }else{
+            profile_name.setText("Your Name?");
         }
         if (gender.equals("M")) {
             male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
@@ -1062,6 +1180,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             Log.d("edit profile",responseObject.toString());
             final UserModel userModel = JsonUtils.objectify(responseObject.toString(), UserModel.class);
             pref.setKeyUserDetails(userModel);
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1095,6 +1215,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("edit profile error",message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {
@@ -1124,63 +1246,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 startActivity(i);
                 break;
             case R.id.linearEditName:
-                final Dialog dialog = new Dialog(getActivity());
-                dialog.setContentView(R.layout.item_value_picker);
-                dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-
-                Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
-                //final TextView value = (TextView) dialog.findViewById(R.id.height_value);
-                final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
-                final TextView dialog_heading = (TextView) dialog.findViewById(R.id.dialogHeading);
-                dialog_name.setText("Name");
-                dialog_heading.setText("Enter Name");
-                spinner.setVisibility(View.GONE);
-                final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
-                final EditText seekBar1 = (EditText) dialog.findViewById(R.id.height_seekbar1);
-                if (first_name != null){
-                    seekBar.setText(first_name);
-                }
-                if (last_name != null){
-                    seekBar1.setText(last_name);
-                }
-                seekBar.setSelectAllOnFocus(true);
-                seekBar.setInputType(InputType.TYPE_CLASS_TEXT);
-                seekBar1.setSelectAllOnFocus(true);
-                seekBar1.setInputType(InputType.TYPE_CLASS_TEXT);
-                View done = dialog.findViewById(R.id.height_done);
-                TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
-                TextInputLayout textInputLayout1 = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight1);
-                textInputLayout1.setVisibility(View.VISIBLE);
-                textInputLayout.setHint("First Name");
-                textInputLayout1.setHint("Last Name");
-
-                //seekBar.setMax(200);
-                done.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        first_name = seekBar.getText().toString();
-                        last_name = seekBar1.getText().toString();
-                        profile_name.setText(first_name + " " + last_name);
-                        if (height == 0 || waist == 0 || weight == 0) {
-                            if (height == 0) {
-                                dialog.dismiss();
-                                showHeightDialog();
-                            } else if (weight == 0) {
-                                dialog.dismiss();
-                                showWeightDialog();
-                            } else if (waist == 0) {
-                                dialog.dismiss();
-                                showWaistDialog();
-                            } else if (goal_weight == 0) {
-                                dialog.dismiss();
-                                showGoal_WeightDialog();
-                            }
-                        } else {
-                            dialog.dismiss();
-                        }
-                    }
-                });
-                dialog.show();
+                showNameDialog();
                 break;
         }
     }
@@ -1200,6 +1266,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             for (int i= 0;i<diet_options.size();i++){
                 diet.add(diet_options.get(i).getRecipe_type());
             }
+            if (getActivity() == null)
+                return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -1231,6 +1299,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
 
         @Override
         public void onRequestError(int errorCode, String message) {
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {
@@ -1264,6 +1334,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
 
         @Override
         public void onRequestError(int errorCode, String message) {
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {

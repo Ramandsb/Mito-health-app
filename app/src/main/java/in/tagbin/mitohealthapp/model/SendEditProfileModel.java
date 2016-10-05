@@ -8,7 +8,7 @@ import java.util.List;
 public class SendEditProfileModel {
     String first_name,last_name,email,dob,gender,height,waist,weight,goal_weight;
     List<Integer> cuisines;
-    int preferences;
+    int preferences,goal_time;
     ImagesModel images;
     public SendEditProfileModel(){
         images = new ImagesModel();
@@ -19,6 +19,14 @@ public class SendEditProfileModel {
         public void setMaster(String master) {
             this.master = master;
         }
+    }
+
+    public void setGoal_time(int goal_time) {
+        this.goal_time = goal_time;
+    }
+
+    public int getGoal_time() {
+        return goal_time;
     }
 
     public void setImages(ImagesModel images) {

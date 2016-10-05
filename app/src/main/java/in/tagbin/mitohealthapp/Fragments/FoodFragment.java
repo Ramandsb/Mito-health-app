@@ -78,7 +78,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvRecommendations.setLayoutManager(linearLayoutManager);
         rvRecommendations.setHasFixedSize(true);
-        //food_list = (RecyclerView) fragView.findViewById(R.id.food_list);
+        //recyclerExercise = (RecyclerView) fragView.findViewById(R.id.recyclerExercise);
         widget= (MaterialCalendarView) fragView.findViewById(R.id.calendarView);
         data = new ArrayList<RecommendationModel>();
         loggerModel = new ArrayList<RecommendationModel>();
@@ -282,6 +282,8 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                 data.add(da.get(i));
                 measuring_units.add(da.get(i).getMeal_type().getFood_time());
             }
+            if (getActivity() == null)
+                return;
             if (data.size() <= 0){
 
                 getActivity().runOnUiThread(new Runnable() {
@@ -307,6 +309,8 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("recommended food error",message);
+            if (getActivity() == null)
+                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {
