@@ -70,6 +70,11 @@ public class InterestActivity extends AppCompatActivity {
         Type collectionType = new TypeToken<ArrayList<UserInterestModel>>() {}.getType();
         userInterestModels = (ArrayList<UserInterestModel>) new Gson().fromJson(getIntent().getStringExtra("userinterests"), collectionType);
         addInterest = (TextView) findViewById(R.id.tvSuggestInterst);
+        if (userInterestModels != null && userInterestModels.size() > 0 ){
+            for (int y = 0;y< userInterestModels.size();y++){
+                idFinal.add(userInterestModels.get(y).getInterest().getId());
+            }
+        }
         setToggleButtons(interestModel);
 //        next = (TextView) findViewById(R.id.tvNextInterest);
 //        next.setOnClickListener(new View.OnClickListener() {
@@ -274,6 +279,7 @@ public class InterestActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         if (interestModel.getList().size() >0) {
             addInterest.setVisibility(View.GONE);
+            idFinal.clear();
             for (int i = 0; i < interestModel.getList().size(); i++) {
                 View layout = inflater.inflate(R.layout.item_interests, flowLayout, false);
                 final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);
@@ -281,7 +287,6 @@ public class InterestActivity extends AppCompatActivity {
                 toggleButton.setTextOff(interestModel.getList().get(i).getName());
                 if (userInterestModels != null && userInterestModels.size() > 0) {
                     for (int y = 0; y < userInterestModels.size(); y++) {
-                        idFinal.add(userInterestModels.get(y).getInterest().getId());
                         if (interestModel.getList().get(i).getId() == userInterestModels.get(y).getInterest().getId()) {
                             toggleButton.setChecked(true);
                             break;
@@ -316,6 +321,7 @@ public class InterestActivity extends AppCompatActivity {
                                     idFinal.remove(integer);
                             }
                         }
+                        Log.d("intersts",idFinal.toString());
                     }
                 });
                 flowLayout.addView(layout);
@@ -343,7 +349,7 @@ public class InterestActivity extends AppCompatActivity {
             PrefManager pref = new PrefManager(InterestActivity.this);
             pref.setTutorial1(true);
             Intent i = new Intent(InterestActivity.this,BinderActivity.class);
-            i.putExtra("interests","interests");
+            i.putExtra("selection",0);
             startActivity(i);
             finish();
             runOnUiThread(new Runnable() {

@@ -55,6 +55,12 @@ import in.tagbin.mitohealthapp.model.SetFoodLoggerModel;
 import in.tagbin.mitohealthapp.model.SetNewInterestModel;
 import in.tagbin.mitohealthapp.model.SettingsModel;
 import in.tagbin.mitohealthapp.model.SleepLogModel;
+import in.tagbin.mitohealthapp.model.UserDateModel;
+import in.tagbin.mitohealthapp.model.UserGoalWeightModel;
+import in.tagbin.mitohealthapp.model.UserHeightModel;
+import in.tagbin.mitohealthapp.model.UserNameModel;
+import in.tagbin.mitohealthapp.model.UserWaistModel;
+import in.tagbin.mitohealthapp.model.UserWeightModel;
 import in.tagbin.mitohealthapp.model.WaterLogModel;
 
 /**
@@ -279,6 +285,66 @@ public class Controller {
         sendPrefernceModel.setPreferences(prefernce_id);
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.PUT, sendPrefernceModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserDate(Context context,UserDateModel userDateModel,String user_id,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserName(Context context, UserNameModel userDateModel, String user_id,
+                                   RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserWeight(Context context, UserWeightModel userDateModel, String user_id,
+                                     RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserHeight(Context context, UserHeightModel userDateModel, String user_id,
+                                     RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserWaist(Context context, UserWaistModel userDateModel, String user_id,
+                                    RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserGoalWeight(Context context, UserGoalWeightModel userDateModel, String user_id,
+                                         RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
@@ -732,6 +798,15 @@ public class Controller {
         url += id+"/";
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.PUT, sendExerciseLogModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void getDietician(Context context,
+                                         RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.NUTRITIONIS);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.GET, null, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }

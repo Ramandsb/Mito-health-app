@@ -75,7 +75,13 @@ import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
 import in.tagbin.mitohealthapp.model.PrefernceModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
+import in.tagbin.mitohealthapp.model.UserDateModel;
+import in.tagbin.mitohealthapp.model.UserGoalWeightModel;
+import in.tagbin.mitohealthapp.model.UserHeightModel;
 import in.tagbin.mitohealthapp.model.UserModel;
+import in.tagbin.mitohealthapp.model.UserNameModel;
+import in.tagbin.mitohealthapp.model.UserWaistModel;
+import in.tagbin.mitohealthapp.model.UserWeightModel;
 import pl.droidsonroids.gif.GifImageView;
 
 import static android.app.Activity.RESULT_CANCELED;
@@ -167,7 +173,6 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
-        dob = year + "-" + month + "-" + day;
         //customDialog();
 
         if (pref.getKeyUserDetails() != null){
@@ -442,19 +447,24 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
 
-            if (height == 0 || waist == 0 || weight == 0) {
-
-                if (height == 0) {
+            if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                if (first_name == null || first_name.equals("")){
+                    showNameDialog();
+                }else if (dob == null || dob.equals("")){
+                    showDateDialog();
+                }else if (height == 0) {
+                    //dialog.dismiss();
                     showHeightDialog();
-
                 } else if (weight == 0) {
+                    //dialog.dismiss();
                     showWeightDialog();
                 } else if (waist == 0) {
+                    //dialog.dismiss();
                     showWaistDialog();
                 } else if (goal_weight == 0) {
+                    //dialog.dismiss();
                     showGoal_WeightDialog();
                 }
-
             } else {
                 pref.setKeyUserDetails(null);
                 SendEditProfileModel sendEditProfileModel = new SendEditProfileModel();
@@ -562,7 +572,10 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                         saveDob.putString("dob", dob);
                         saveDob.commit();
                         dob_tv.setText(dob);
-                        if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                        UserDateModel userDateModel = new UserDateModel();
+                        userDateModel.setDob(dob);
+                        Controller.setUserDate(getContext(),userDateModel,user_id,mSetUserDetailsListener);
+                        if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
                             if (first_name == null || first_name.equals("")){
                                 showNameDialog();
                             }else if (dob == null || dob.equals("")){
@@ -652,12 +665,15 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                         height_new = new DecimalFormat("##.#").format(i).toString() + " cms";
                         height = Float.parseFloat(seekBar.getText().toString());
                     }
+                    UserHeightModel userDateModel = new UserHeightModel();
+                    userDateModel.setHeight(String.valueOf(height));
+                    Controller.setUserHeight(getContext(),userDateModel,user_id,mSetUserDetailsListener);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("height", (float) height);
                     height_tv.setText(height_new);
                     Log.d("height value", height_new);
                 }
-                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
                     if (first_name == null || first_name.equals("")){
                         dialog.dismiss();
                         showNameDialog();
@@ -744,11 +760,14 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                         weight_new = new DecimalFormat("##.#").format(i).toString() + " Pounds";
                         weight = Float.parseFloat(seekBar.getText().toString()) * 453.592;
                     }
+                    UserWeightModel userDateModel = new UserWeightModel();
+                    userDateModel.setWeight(String.valueOf(weight));
+                    Controller.setUserWeight(getContext(),userDateModel,user_id,mSetUserDetailsListener);
                     weight_tv.setText(weight_new);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("weight", (float) weight);
                 }
-                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
                     if (first_name == null || first_name.equals("")){
                         dialog.dismiss();
                         showNameDialog();
@@ -838,10 +857,13 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                         goal_weight = Float.parseFloat(seekBar.getText().toString()) * 453.592;
                     }
                     goal_weight_tv.setText(goal_weight_new);
+                    UserGoalWeightModel userDateModel = new UserGoalWeightModel();
+                    userDateModel.setGoal_weight(String.valueOf(goal_weight));
+                    Controller.setUserGoalWeight(getContext(),userDateModel,user_id,mSetUserDetailsListener);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("goal_weight", (float) goal_weight);
                 }
-                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
                     if (first_name == null || first_name.equals("")){
                         dialog.dismiss();
                         showNameDialog();
@@ -879,8 +901,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         final Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.item_value_picker);
         final List<String> measuring_units = new ArrayList<>();
-        measuring_units.add("Centimeters");
         measuring_units.add("Inches");
+        measuring_units.add("Centimeters");
 
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         Spinner spinner = (Spinner) dialog.findViewById(R.id.height_spinner);
@@ -892,7 +914,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         seekBar.setSelectAllOnFocus(true);
         TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
         textInputLayout.setHint("Waist");
-        final String[] unit = {"Centimeters"};
+        final String[] unit = {"Inches"};
         if (waist != 0.0) {
             seekBar.setText(new DecimalFormat("##.#").format(waist).toString());
         }
@@ -934,10 +956,13 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                         waist = Float.parseFloat(seekBar.getText().toString());
                     }
                     waist_tv.setText(waist_new);
+                    UserWaistModel userDateModel = new UserWaistModel();
+                    userDateModel.setWaist(String.valueOf(waist));
+                    Controller.setUserWaist(getContext(),userDateModel,user_id,mSetUserDetailsListener);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("waist", (float) waist);
                 }
-                if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
                     if (first_name == null || first_name.equals("")){
                         dialog.dismiss();
                         showNameDialog();
@@ -1003,6 +1028,10 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 first_name = seekBar.getText().toString();
                 last_name = seekBar1.getText().toString();
                 profile_name.setText(first_name + " " + last_name);
+                UserNameModel userDateModel = new UserNameModel();
+                userDateModel.setFirst_name(first_name);
+                userDateModel.setLast_name(last_name);
+                Controller.setUserName(getContext(),userDateModel,user_id,mSetUserDetailsListener);
                 if (height == 0 || waist == 0 || weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
                     if (first_name == null || first_name.equals("")){
                         dialog.dismiss();
@@ -1035,6 +1064,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             dob = userModel.getProfile().getDob();
             dob_tv.setText(dob);
         }else {
+            dob = "";
             dob_tv.setText("Set Date");
         }
         gender = userModel.getProfile().getGender();
@@ -1078,7 +1108,6 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
             female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
         }
-        dob_tv.setText(dob);
 
 
         if (height == 0) {
@@ -1107,7 +1136,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             waist_tv.setText("Set Waist");
         } else {
             //double inv = waist % 0.39;
-            waist_tv.setText(new DecimalFormat("##.#").format(waist).toString()+ " cms");
+            waist_tv.setText(new DecimalFormat("##.#").format(waist/2.54).toString()+ " inches");
         }
         if (userModel.getProfile().getGoal() != null)
             goal_tv.setText(userModel.getProfile().getGoal().getGoal());
@@ -1330,6 +1359,42 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
 
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            if (getActivity() == null)
+                return;
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    RequestListener mSetUserDetailsListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            final UserModel userModel = JsonUtils.objectify(responseObject.toString(), UserModel.class);
+            pref.setKeyUserDetails(userModel);
         }
 
         @Override

@@ -26,8 +26,10 @@ import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.activity.ChatActivity;
 import in.tagbin.mitohealthapp.activity.ChatRequestActivity;
 import in.tagbin.mitohealthapp.adapter.ChatFriendsAdapter;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ChatAccounts;
+import in.tagbin.mitohealthapp.model.DieticainModel;
 import in.tagbin.mitohealthapp.service.XmppChatService;
 
 public class Chatfragment extends Fragment {
@@ -38,6 +40,8 @@ public class Chatfragment extends Fragment {
     ChatFriendsAdapter adapter;
     private ArrayList<ChatAccounts> listContentArr= new ArrayList<>();
     String user="rman";
+    PrefManager pref;
+    DieticainModel dieticainModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,10 +56,10 @@ public class Chatfragment extends Fragment {
         View view= inflater.inflate(R.layout.frag_chat, container, false);
         recyclerView=(RecyclerView)view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        pref = new PrefManager(getContext());
+        dieticainModel = pref.getDietician();
         ChatDatabase chatDatabase = new ChatDatabase(getContext());
-
-        listContentArr=chatDatabase.getChatUsers();
+        listContentArr=chatDatabase.getChatUsers(dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server());
         adapter=new ChatFriendsAdapter(getActivity(),listContentArr);
         recyclerView.setAdapter(adapter);
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
@@ -74,7 +78,7 @@ public class Chatfragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             ChatDatabase chatDatabase = new ChatDatabase(getContext());
-            listContentArr=chatDatabase.getChatUsers();
+            listContentArr=chatDatabase.getChatUsers(dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server());
             adapter.notifyDataSetChanged();
         }
     };
@@ -114,14 +118,14 @@ public class Chatfragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         getActivity().unregisterReceiver(ReceiveRoosters);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         getActivity().registerReceiver(ReceiveRoosters,new IntentFilter(XmppChatService.RECEIVEROOSTER));
     }
 }

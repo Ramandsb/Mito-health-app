@@ -144,7 +144,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
             pref = new PrefManager(mContext);
             foodName.setText(pModel.getComponent().getName());
             quantity.setText(pModel.getAmount()+" mins");
-            calories.setText(new DecimalFormat("##.#").format(pModel.getEnergy_burned()).toString()+" calories");
+            calories.setText(new DecimalFormat("##").format(pModel.getEnergy_burned()).toString()+" calories");
             //Picasso.with(mContext).load(mModel.getComponent().getImage()).into(circleImageView);
             Calendar[] dates = new Calendar[4];
             int i = 0;

@@ -35,6 +35,7 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.FOOD,"v1/food/");
         endPointMapper.put(EndPoints.GCM,"v1/users/carrier/");
         endPointMapper.put(EndPoints.EXERCISE,"v1/exercise/");
+        endPointMapper.put(EndPoints.NUTRITIONIS,"v1/users/nutritionist/");
     }
 
     public interface EndPoints {
@@ -55,5 +56,6 @@ public class UrlResolver {
         int FOOD = 15;
         int GCM = 16;
         int EXERCISE = 17;
+        int NUTRITIONIS = 18;
     }
 }

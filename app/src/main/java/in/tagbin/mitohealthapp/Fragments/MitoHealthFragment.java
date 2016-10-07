@@ -68,7 +68,6 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
     String auth_key;
     TextView cal_consumed,cal_left,cal_burned,coins;
     TextView messageView;
-    ProgressBar progressBar;
     android.app.AlertDialog alert;
     String last7Days="";
     String next7Days="";
@@ -320,7 +319,6 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -330,7 +328,6 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });

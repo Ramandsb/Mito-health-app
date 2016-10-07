@@ -29,6 +29,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import in.tagbin.mitohealthapp.Fragments.ChatDieticianFragment;
 import in.tagbin.mitohealthapp.Fragments.SettingsFragment;
 import in.tagbin.mitohealthapp.Fragments.HealthFragment;
 import in.tagbin.mitohealthapp.Fragments.MitoHealthFragment;
@@ -76,12 +77,14 @@ public class BinderActivity extends AppCompatActivity{
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.partnet_final);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.profile_final);
         AHBottomNavigationItem item3 = new AHBottomNavigationItem("", R.drawable.big_mito);
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.profile_final);
         AHBottomNavigationItem item5 = new AHBottomNavigationItem("", R.drawable.settings_final);
         pref = new PrefManager(this);
 // Add itemsF63D2B
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
         bottomNavigation.addItem(item3);
+        bottomNavigation.addItem(item4);
         bottomNavigation.addItem(item5);
 
 // Set background color
@@ -107,11 +110,7 @@ public class BinderActivity extends AppCompatActivity{
         bottomNavigation.setColored(false);
         String source =getIntent().getStringExtra("source");
 // Set current item programmatically
-        if (getIntent().getStringExtra("interests") != null){
-            fra = new UserConnectFragment();
-            bottomNavigation.setCurrentItem(0);
-
-        }else if (getIntent().getStringExtra("source") != null) {
+        if (getIntent().getStringExtra("source") != null) {
 
             fra = new MitoHealthFragment();
             bottomNavigation.setCurrentItem(2);
@@ -258,13 +257,12 @@ public class BinderActivity extends AppCompatActivity{
                 //bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
-//            case 3:
-//
-//
-//                fra = new CartFrag();
-//                //bottomNavigation.setCurrentItem(3);
-//                break;
             case 3:
+                toolbar_title.setText("Dietician Chat");
+                toolbar.setTitle("");
+                fra = new ChatDieticianFragment();
+                break;
+            case 4:
                 if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
                     toolbar_title.setText("Settings");
                     toolbar.setTitle("");

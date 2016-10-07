@@ -245,7 +245,7 @@ public class ExerciseSearchActivity extends AppCompatActivity{
         //TextView heading = (TextView) view.findViewById(R.id.tvExerciseDialogName);
         //heading.setText(data.getName());
         final EditText time = (EditText) view.findViewById(R.id.etExerciseTime);
-        Spinner spinner = (Spinner) view.findViewById(R.id.spinnerExerciseIntensity);
+        final Spinner spinner = (Spinner) view.findViewById(R.id.spinnerExerciseIntensity);
         final List<String> intensities = new ArrayList<String>();
         intensities.add("Light");
         intensities.add("Moderate");
@@ -304,12 +304,18 @@ public class ExerciseSearchActivity extends AppCompatActivity{
                     }else {
                         SendExerciseLogModel sendExerciseLogModel = new SendExerciseLogModel();
                         sendExerciseLogModel.setAmount(Float.parseFloat(time.getText().toString()));
-                        if (unit[0].equals("Light")){
-                            sendExerciseLogModel.setMets(data.getMETS_LI_BMR());
-                        }else if (unit[0].equals("Moderate")){
-                            sendExerciseLogModel.setMets(data.getMETS_MI_BMR());
-                        }else if (unit[0].equals("Heavy")){
-                            sendExerciseLogModel.setMets(data.getMETS_HI_BMR());
+                        if(spinner.getVisibility() == View.VISIBLE) {
+                            if (unit[0].equals("Light")) {
+                                sendExerciseLogModel.setMets(data.getMETS_LI_BMR());
+                            } else if (unit[0].equals("Moderate")) {
+                                sendExerciseLogModel.setMets(data.getMETS_MI_BMR());
+                            } else if (unit[0].equals("Heavy")) {
+                                sendExerciseLogModel.setMets(data.getMETS_HI_BMR());
+                            }
+                        }else {
+                            if (data.getMETS_RMR() != null) {
+                                sendExerciseLogModel.setMets(Float.parseFloat(data.getMETS_RMR()));
+                            }
                         }
                         sendExerciseLogModel.setC_id(data.getId());
                         sendExerciseLogModel.setCalorie(-1);

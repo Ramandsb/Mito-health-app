@@ -107,7 +107,7 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
             mProgressBar = pProgressBar;
             foodName.setText(pModel.getComponent().getName());
             quantity.setText(pModel.getAmount()+" "+pModel.getComponent().getServing_type().getServing_type());
-            calories.setText(new DecimalFormat("##.#").format(pModel.getComponent().getTotal_energy()).toString()+" calories");
+            calories.setText(new DecimalFormat("##").format(pModel.getComponent().getTotal_energy()).toString()+" calories");
             Picasso.with(mContext).load(mModel.getComponent().getImage()).into(circleImageView);
             Calendar[] dates = new Calendar[4];
             int i = 0;

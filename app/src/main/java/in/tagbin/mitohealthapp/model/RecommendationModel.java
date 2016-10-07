@@ -41,7 +41,8 @@ public class RecommendationModel {
 
     public class MealsModel {
         ComponentModel component;
-        int amount, id,meal_id,flag;
+        int id,meal_id,flag;
+        float amount;
         String type, time;
 
         public MealsModel() {
@@ -64,7 +65,7 @@ public class RecommendationModel {
             return component;
         }
 
-        public int getAmount() {
+        public float getAmount() {
             return amount;
         }
 

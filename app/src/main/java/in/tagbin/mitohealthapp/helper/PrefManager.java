@@ -9,6 +9,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import in.tagbin.mitohealthapp.model.DieticainModel;
 import in.tagbin.mitohealthapp.model.LocationModel;
 import in.tagbin.mitohealthapp.model.LoginModel;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
@@ -40,6 +41,7 @@ public class PrefManager {
     private static final String KEY_DAY = "selected_day";
     private static final String KEY_MONTH = "selected_month";
     private static final String KEY_YEAR = "selected_year";
+    private static String KEY_DIETICIAN = "key_deitician";
 
     private static String LOCATION_OBJECT = "location_object";
 
@@ -177,6 +179,16 @@ public class PrefManager {
     public LocationModel getCurrentLocationAsObject(){
         String userJson = pref.getString(LOCATION_OBJECT, null);
         LocationModel locationModel = JsonUtils.objectify(userJson,LocationModel.class);
+        return locationModel;
+    }
+    public void saveDietician (DieticainModel locationModel) {
+        String userJson = JsonUtils.jsonify(locationModel);
+        editor.putString(KEY_DIETICIAN, userJson);
+        editor.apply();
+    }
+    public DieticainModel getDietician(){
+        String userJson = pref.getString(KEY_DIETICIAN, null);
+        DieticainModel locationModel = JsonUtils.objectify(userJson,DieticainModel.class);
         return locationModel;
     }
     public void saveLoginModel (LoginModel loginModel) {

@@ -167,7 +167,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
             for (int y=0;y<foodLogger.get(i).getMeals().size();y++){
                 totalCalories += foodLogger.get(i).getMeals().get(y).getComponent().getTotal_energy()*foodLogger.get(i).getMeals().get(y).getAmount();
             }
-            mealCalories.setText(new DecimalFormat("##.#").format(totalCalories).toString()+" calories");
+            mealCalories.setText(new DecimalFormat("##").format(totalCalories).toString()+" calories");
             LinearLayoutManager linear1 = new LinearLayoutManager(getContext());
             linear1.setOrientation(LinearLayoutManager.VERTICAL);
             rvLogger.setLayoutManager(linear1);

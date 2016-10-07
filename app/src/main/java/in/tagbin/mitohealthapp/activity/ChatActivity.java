@@ -148,11 +148,12 @@ public class ChatActivity extends AppCompatActivity {
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minutee = calendar.get(Calendar.MINUTE);
-            MessagesModel pojo = new MessagesModel(username,msg,updateTime1(hour,minutee),"from");
-            customPojos_list.add(pojo);
-            adapter.notifyDataSetChanged();
-            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
-
+            if (username.equals(user_name)) {
+                MessagesModel pojo = new MessagesModel(username, msg, updateTime1(hour, minutee), "from");
+                customPojos_list.add(pojo);
+                adapter.notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+            }
             Log.d("Message Recieved","From"+ username+" Message :"+msg);
 
 

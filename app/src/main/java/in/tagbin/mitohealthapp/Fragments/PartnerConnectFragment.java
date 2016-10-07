@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -81,7 +82,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
     GestureDetector gestureDetector1, gestureDetector2, gestureDetector3, gestureDetector4, gestureDetector5, gestureDetector6, gestureDetector7;
     Intent i;
     int coinsFinal = 0;
-    boolean flag1 = false, flag2 = false, flag3 = false, flag4 = false, flag5 = false, flag6 = false, flag7 = false, flag = false, deleteVisible = false;
+    boolean deleteVisible = false;
     GifImageView progressBar, progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, progressBar7;
     int SELECT_PICTURE1 = 0, SELECT_PICTURE2 = 1, SELECT_PICTURE3 = 2, SELECT_PICTURE4 = 3, SELECT_PICTURE5 = 4, SELECT_PICTURE6 = 5, SELECT_PICTURE7 = 6;
 
@@ -97,6 +98,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.frag_partner_connect, container, false);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         pref = new PrefManager(getActivity());
         img1 = (ImageView) layout.findViewById(R.id.userPic1);
         img2 = (ImageView) layout.findViewById(R.id.userPic2);
@@ -323,7 +325,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar1.setVisibility(View.GONE);
                             pref.setKeyMasterImage(data.getImages().getMaster());
-                            flag1 = true;
                             img1.setImageBitmap(loadedImage);
                         }
                     });
@@ -353,8 +354,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                 progressBar2.setVisibility(View.GONE);
                                 pref.setKeyUserPic1(data.getImages().getOthers()[0]);
-                                flag2 = true;
-                                flag = true;
                                 img2.setImageBitmap(loadedImage);
                             }
                         });
@@ -389,8 +388,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                 progressBar3.setVisibility(View.GONE);
                                 pref.setKeyUserPic2(data.getImages().getOthers()[1]);
-                                flag3 = true;
-                                flag = true;
                                 img3.setImageBitmap(loadedImage);
                             }
                         });
@@ -425,8 +422,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                 progressBar4.setVisibility(View.GONE);
                                 pref.setKeyUserPic3(data.getImages().getOthers()[2]);
-                                flag4 = true;
-                                flag = true;
                                 img4.setImageBitmap(loadedImage);
                             }
                         });
@@ -461,8 +456,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                 progressBar5.setVisibility(View.GONE);
                                 pref.setKeyUserPic4(data.getImages().getOthers()[3]);
-                                flag5 = true;
-                                flag = true;
                                 img5.setImageBitmap(loadedImage);
                             }
                         });
@@ -497,8 +490,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                 progressBar6.setVisibility(View.GONE);
                                 pref.setKeyUserPic5(data.getImages().getOthers()[4]);
-                                flag6 = true;
-                                flag = true;
                                 img6.setImageBitmap(loadedImage);
                             }
                         });
@@ -533,8 +524,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                                 progressBar7.setVisibility(View.GONE);
                                 pref.setKeyUserPic6(data.getImages().getOthers()[5]);
-                                flag7 = true;
-                                flag = true;
                                 img7.setImageBitmap(loadedImage);
                             }
                         });
@@ -630,50 +619,39 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 setConnectProfileModel.setLocation(location);
             }
             SetConnectProfileModel.Images1Model images1Model = setConnectProfileModel.getImages();
-            if (flag1) {
+
                 if (pref.getKeyMasterImage() != null || pref.getKeyMasterImage().isEmpty()) {
                     images1Model.setMaster(pref.getKeyMasterImage());
                     setConnectProfileModel.setImages(images1Model);
                 }
-            }
-            if (flag) {
+
+
                 ArrayList<String> other = new ArrayList<String>();
-                if (flag2) {
                     if (pref.getKeyUserPic1() != null) {
                         other.add(pref.getKeyUserPic1());
                     }
-                }
-                if (flag3) {
                     if (pref.getKeyUserPic2() != null) {
                         other.add(pref.getKeyUserPic2());
                     }
-                }
-                if (flag4) {
                     if (pref.getKeyUserPic3() != null) {
                         other.add(pref.getKeyUserPic3());
                     }
-                }
-                if (flag5) {
                     if (pref.getKeyUserPic4() != null) {
                         other.add(pref.getKeyUserPic4());
                     }
-                }
-                if (flag6) {
                     if (pref.getKeyUserPic5() != null) {
                         other.add(pref.getKeyUserPic5());
                     }
-                }
-                if (flag7) {
+
+
                     if (pref.getKeyUserPic6() != null) {
                         other.add(pref.getKeyUserPic6());
                     }
-                }
+
                 images1Model.setOther(other);
                 setConnectProfileModel.setImages(images1Model);
-            }
-            if (etGender.getText().toString().equals("") || etGender.getText().toString().isEmpty()) {
-                Toast.makeText(getContext(), "Please enter the description", Toast.LENGTH_LONG).show();
-            } else if (etOccupation.getText().toString().equals("") || etOccupation.getText().toString().isEmpty()) {
+
+            if (etOccupation.getText().toString().equals("") || etOccupation.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "Please enter the occupation", Toast.LENGTH_LONG).show();
             } else if (etHomeTwon.getText().toString().equals("") || etHomeTwon.getText().toString().isEmpty()) {
                 Toast.makeText(getContext(), "Please enter the home town", Toast.LENGTH_LONG).show();
@@ -724,49 +702,36 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 pref.setKeyMasterImage("");
                 delete.setVisibility(View.GONE);
                 img1.setImageResource(R.drawable.userpic);
-                flag1 = true;
                 break;
             case R.id.deletePhoto1:
                 pref.setKeyUserPic1("");
                 delete1.setVisibility(View.GONE);
                 img2.setImageResource(R.drawable.userpic1);
-                flag2 = true;
-                flag = true;
                 break;
             case R.id.deletePhoto2:
                 pref.setKeyUserPic2("");
                 delete2.setVisibility(View.GONE);
                 img3.setImageResource(R.drawable.userpic1);
-                flag3 = true;
-                flag = true;
                 break;
             case R.id.deletePhoto3:
                 pref.setKeyUserPic3("");
                 delete3.setVisibility(View.GONE);
                 img4.setImageResource(R.drawable.userpic1);
-                flag4 = true;
-                flag = true;
                 break;
             case R.id.deletePhoto4:
                 pref.setKeyUserPic4("");
                 delete4.setVisibility(View.GONE);
                 img5.setImageResource(R.drawable.userpic1);
-                flag5 = true;
-                flag = true;
                 break;
             case R.id.deletePhoto5:
                 pref.setKeyUserPic5("");
                 delete5.setVisibility(View.GONE);
                 img6.setImageResource(R.drawable.userpic1);
-                flag6 = true;
-                flag = true;
                 break;
             case R.id.deletePhoto6:
                 pref.setKeyUserPic6("");
                 delete6.setVisibility(View.GONE);
                 img7.setImageResource(R.drawable.userpic1);
-                flag7 = true;
-                flag = true;
                 break;
         }
     }
@@ -780,7 +745,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
-                flag1 = true;
                 progressBar1.setVisibility(View.VISIBLE);
                 Controller.upoadPhot(getContext(), fileUploadModel, mUploadListener);
                 img1.setImageBitmap(showCroppedImage(imagePath));
@@ -797,8 +761,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
                 progressBar2.setVisibility(View.VISIBLE);
-                flag2 = true;
-                flag = true;
                 Controller.upoadPhot(getContext(), fileUploadModel, mUploadListener1);
                 img2.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -814,8 +776,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
                 progressBar3.setVisibility(View.VISIBLE);
-                flag3 = true;
-                flag = true;
                 Controller.upoadPhot(getContext(), fileUploadModel, mUploadListener2);
                 img3.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -830,8 +790,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
                 progressBar4.setVisibility(View.VISIBLE);
-                flag4 = true;
-                flag = true;
                 Controller.upoadPhot(getContext(), fileUploadModel, mUploadListener3);
                 img4.setImageBitmap(showCroppedImage(imagePath));
             } else if (resultCode == RESULT_CANCELED) {
@@ -845,8 +803,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
-                flag5 = true;
-                flag = true;
                 progressBar5.setVisibility(View.VISIBLE);
                 Controller.upoadPhot(getContext(), fileUploadModel, mUploadListener4);
                 img5.setImageBitmap(showCroppedImage(imagePath));
@@ -861,8 +817,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
-                flag6 = true;
-                flag = true;
                 progressBar6.setVisibility(View.VISIBLE);
                 Controller.upoadPhot(getContext(), fileUploadModel, mUploadListener5);
                 img6.setImageBitmap(showCroppedImage(imagePath));
@@ -877,8 +831,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 String imagePath = result.getStringExtra(GOTOConstants.IntentExtras.IMAGE_PATH);
                 FileUploadModel fileUploadModel = new FileUploadModel();
                 fileUploadModel.setFile(new File(imagePath));
-                flag7 = true;
-                flag = true;
                 progressBar7.setVisibility(View.VISIBLE);
                 Controller.upoadPhot(getContext(), fileUploadModel, mUploadListener6);
                 img7.setImageBitmap(showCroppedImage(imagePath));
@@ -1462,7 +1414,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         progressBar1.setVisibility(View.GONE);
                         pref.setKeyMasterImage(data.getImages().getMaster());
-                        flag1 = true;
                         img1.setImageBitmap(loadedImage);
                     }
                 });
@@ -1489,8 +1440,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar2.setVisibility(View.GONE);
                             pref.setKeyUserPic1(data.getImages().getOthers()[0]);
-                            flag2 = true;
-                            flag = true;
                             img2.setImageBitmap(loadedImage);
                         }
                     });
@@ -1521,8 +1470,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar3.setVisibility(View.GONE);
                             pref.setKeyUserPic2(data.getImages().getOthers()[1]);
-                            flag3 = true;
-                            flag = true;
                             img3.setImageBitmap(loadedImage);
                         }
                     });
@@ -1553,8 +1500,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar4.setVisibility(View.GONE);
                             pref.setKeyUserPic3(data.getImages().getOthers()[2]);
-                            flag4 = true;
-                            flag = true;
                             img4.setImageBitmap(loadedImage);
                         }
                     });
@@ -1585,8 +1530,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar5.setVisibility(View.GONE);
                             pref.setKeyUserPic4(data.getImages().getOthers()[3]);
-                            flag5 = true;
-                            flag = true;
                             img5.setImageBitmap(loadedImage);
                         }
                     });
@@ -1617,8 +1560,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar6.setVisibility(View.GONE);
                             pref.setKeyUserPic5(data.getImages().getOthers()[4]);
-                            flag6 = true;
-                            flag = true;
                             img6.setImageBitmap(loadedImage);
                         }
                     });
@@ -1649,8 +1590,6 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             progressBar7.setVisibility(View.GONE);
                             pref.setKeyUserPic6(data.getImages().getOthers()[5]);
-                            flag7 = true;
-                            flag = true;
                             img7.setImageBitmap(loadedImage);
                         }
                     });
