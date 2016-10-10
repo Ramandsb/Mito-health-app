@@ -132,9 +132,9 @@ public class FoodSearchActivity extends AppCompatActivity {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             HitsArrayModel hitsArrayModel = adapter1.getItem(position);
-            auto_tv.setText(hitsArrayModel.get_source().getName());
+            auto_tv.setText(hitsArrayModel.getName());
             progressBar.setVisibility(View.VISIBLE);
-            Controller.getFoodDetails(FoodSearchActivity.this,hitsArrayModel.get_source().getRecipe_id(),mFoodDetailListener);
+            Controller.getFoodDetails(FoodSearchActivity.this,hitsArrayModel.getRecipe_id(),mFoodDetailListener);
         }
     };
 

@@ -17,10 +17,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import in.tagbin.mitohealthapp.Database.ChatDatabase;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.ItemClickSupport;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.activity.ChatActivity;
@@ -42,11 +47,11 @@ public class Chatfragment extends Fragment {
     String user="rman";
     PrefManager pref;
     DieticainModel dieticainModel;
+    ChatDatabase chatDatabase;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dop= new DatabaseOperations(getActivity());
         setHasOptionsMenu(true);
     }
 
@@ -57,11 +62,15 @@ public class Chatfragment extends Fragment {
         recyclerView=(RecyclerView)view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         pref = new PrefManager(getContext());
-        dieticainModel = pref.getDietician();
-        ChatDatabase chatDatabase = new ChatDatabase(getContext());
-        listContentArr=chatDatabase.getChatUsers(dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server());
-        adapter=new ChatFriendsAdapter(getActivity(),listContentArr);
-        recyclerView.setAdapter(adapter);
+        if (pref.getDietician() != null) {
+            dieticainModel = pref.getDietician();
+            chatDatabase = new ChatDatabase(getContext());
+            listContentArr = chatDatabase.getChatUsers(dieticainModel.getChat_username() + "@" + dieticainModel.getChat_server());
+            adapter = new ChatFriendsAdapter(getActivity(), listContentArr);
+            recyclerView.setAdapter(adapter);
+        }else{
+            Controller.getDietician(getContext(),mDieticianListener);
+        }
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -77,7 +86,7 @@ public class Chatfragment extends Fragment {
     private BroadcastReceiver ReceiveRoosters = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            ChatDatabase chatDatabase = new ChatDatabase(getContext());
+            chatDatabase = new ChatDatabase(getContext());
             listContentArr=chatDatabase.getChatUsers(dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server());
             adapter.notifyDataSetChanged();
         }
@@ -118,14 +127,40 @@ public class Chatfragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         getActivity().unregisterReceiver(ReceiveRoosters);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         getActivity().registerReceiver(ReceiveRoosters,new IntentFilter(XmppChatService.RECEIVEROOSTER));
     }
+    RequestListener mDieticianListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            final DieticainModel dieticainModel = JsonUtils.objectify(responseObject.toString(),DieticainModel.class);
+            pref.saveDietician(dieticainModel);
+            if (getActivity() == null)
+                return;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listContentArr=chatDatabase.getChatUsers(dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server());
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+
+        }
+    };
 }

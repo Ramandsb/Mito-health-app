@@ -39,7 +39,6 @@ import in.tagbin.mitohealthapp.helper.UrlResolver;
 import in.tagbin.mitohealthapp.model.ConfirmParticipantModel;
 import in.tagbin.mitohealthapp.model.ConnectUserModel;
 import in.tagbin.mitohealthapp.model.CreateEventSendModel;
-import in.tagbin.mitohealthapp.model.ElasticSearchModel;
 import in.tagbin.mitohealthapp.model.FeelingLogModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.GcmSendModel;
@@ -638,14 +637,6 @@ public class Controller {
         dispatchToQueue(volleyTypeRequest, context);
     }
 
-    public static void getFoodlist(Context context,ElasticSearchModel elasticSearchModel,String url1,
-                                    RequestListener requestListener) {
-
-        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
-                context, Request.Method.GET, elasticSearchModel, url1, requestListener);
-        volleyTypeRequest.setShouldCache(false);
-        dispatchToQueue(volleyTypeRequest, context);
-    }
     public static void upoadPhot(Context context,FileUploadModel fileUploadModel,
                                     RequestListener requestListener) {
         String url = UrlResolver

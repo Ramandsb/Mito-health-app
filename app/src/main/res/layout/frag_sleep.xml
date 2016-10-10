@@ -8,7 +8,7 @@
     android:clipToPadding="false"
     android:background="@color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -18,7 +18,9 @@
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="10dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:layout_marginLeft="20dp"
+            android:id="@+id/cardCalendar"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
             android:elevation="20dp">
@@ -37,11 +39,13 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
+            android:id="@+id/relativeSleepImage"
+            android:layout_below="@+id/cardCalendar"
             android:layout_marginTop="10dp">
 
             <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:src="@drawable/night_png"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
@@ -51,6 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2"
+            android:id="@+id/linearSleepStart"
+            android:layout_below="@+id/relativeSleepImage"
             android:layout_marginTop="10dp">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -63,7 +69,7 @@
                     android:layout_height="wrap_content"
                     android:text="Start Time"
                     android:textColor="#3D3D3B"
-                    android:textSize="22sp"/>
+                    android:textSize="16sp"/>
                 <TextView
                     android:id="@+id/start_time"
                     android:layout_width="wrap_content"
@@ -71,7 +77,7 @@
                     android:text="23:00"
                     android:layout_marginTop="10dp"
                     android:textColor="#8D9BAA"
-                    android:textSize="20sp"/>
+                    android:textSize="14sp"/>
 
 
             </LinearLayout>
@@ -91,7 +97,7 @@
                     android:layout_height="wrap_content"
                     android:text="End Time"
                     android:textColor="#3D3D3B"
-                    android:textSize="22sp"/>
+                    android:textSize="16sp"/>
                 <TextView
                     android:id="@+id/end_time"
                     android:layout_width="wrap_content"
@@ -99,7 +105,7 @@
                     android:text="23:00"
                     android:layout_marginTop="10dp"
                     android:textColor="#8D9BAA"
-                    android:textSize="20sp"/>
+                    android:textSize="14sp"/>
 
 
             </LinearLayout>
@@ -110,6 +116,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:id="@+id/linearSleepTime"
+            android:layout_below="@+id/linearSleepStart"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
@@ -119,20 +127,21 @@
                 android:text="7:00"
                 android:id="@+id/set_no_hours"
                 android:textColor="@color/bottombar"
-                android:textSize="30sp"/>
+                android:textSize="18sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="hours of sleep"
                 android:textColor="#8D9BAA"
-                android:textSize="18sp"/>
+                android:textSize="14sp"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_below="@+id/linearSleepTime"
             android:layout_marginTop="15dp"
             android:orientation="vertical">
 
@@ -148,13 +157,13 @@
                 android:layout_height="wrap_content"
                 android:text="Quality of Sleep"
                 android:textColor="#8D9BAA"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 />
         </LinearLayout>
 
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 </android.support.v4.widget.NestedScrollView>

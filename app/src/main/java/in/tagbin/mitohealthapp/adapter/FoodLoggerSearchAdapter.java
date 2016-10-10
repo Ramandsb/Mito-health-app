@@ -39,12 +39,12 @@ public class FoodLoggerSearchAdapter extends ArrayAdapter<HitsArrayModel> {
 
     @Override
     public int getCount() {
-        return mResultList.getHits().getHits().size();
+        return mResultList.getHits().size();
     }
 
     @Override
     public HitsArrayModel getItem(int position) {
-        return mResultList.getHits().getHits().get(position);
+        return mResultList.getHits().get(position);
     }
 
     @Override
@@ -57,8 +57,8 @@ public class FoodLoggerSearchAdapter extends ArrayAdapter<HitsArrayModel> {
         TextView textName = (TextView) v.findViewById(R.id.tvAutocomName);
         TextView textParent = (TextView) v.findViewById(R.id.tvAutocomParent);
         textParent.setVisibility(View.GONE);
-        HitsArrayModel search = mResultList.getHits().getHits().get(position);
-        textName.setText(search.get_source().getName());
+        HitsArrayModel search = mResultList.getHits().get(position);
+        textName.setText(search.getName());
         return v;
     }
 
@@ -71,48 +71,16 @@ public class FoodLoggerSearchAdapter extends ArrayAdapter<HitsArrayModel> {
                 if (constraint != null) {
                     RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                     RequestFuture<JSONObject> future = RequestFuture.newFuture();
-                    String url = "https://search-mito-food-search-7gaq5di2z6edxakcecvnd7q34a.ap-southeast-1.es.amazonaws.com/recipe_data_3/recipe_data_3/_search";
-                    String json = "{  \n" +
-                            "   \"query\":{  \n" +
-                            "      \"bool\":{  \n" +
-                            "         \"must\":[  \n" +
-                            "            {  \n" +
-                            "               \"match_phrase_prefix\":{  \n" +
-                            "                  \"name\":'" + constraint.toString() +
-                            "'               }\n" +
-                            "            }\n" +
-                            "         ],\n" +
-                            "         \"must_not\":[  \n" +
-                            "\n" +
-                            "         ],\n" +
-                            "         \"should\":[  \n" +
-                            "\n" +
-                            "         ]\n" +
-                            "      }\n" +
-                            "   },\n" +
-                            "   \"from\":0,\n" +
-                            "   \"size\":10,\n" +
-                            "   \"sort\":[  \n" +
-                            "\n" +
-                            "   ],\n" +
-                            "   \"aggs\":{  \n" +
-                            "\n" +
-                            "   }\n" +
-                            "}";
-                    JSONObject jsonObject  =null;
-                    try {
-                        jsonObject = new JSONObject(json);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    JsonObjectRequest request = new JsonObjectRequest(url,jsonObject, future, future);
+                    String url = "https://api.mitoapp.com/v1/elastic_search/recipe_search?keyword="+constraint.toString();
+
+                    JsonObjectRequest request = new JsonObjectRequest(url,null, future, future);
                     requestQueue.add(request);
                     try {
                         Log.d("values",future.get().toString());
                         mResultList = JsonUtils.objectify(future.get().toString(),SearchFoodModel.class);
                         //mResultList = JsonUtils.objectify(future.get().toString(),EventTypeModel.class);
-                        results.values = mResultList.getHits().getHits();
-                        results.count = mResultList.getHits().getHits().size();
+                        results.values = mResultList.getHits();
+                        results.count = mResultList.getHits().size();
                         return results;
                     } catch (InterruptedException e) {
                         e.printStackTrace();

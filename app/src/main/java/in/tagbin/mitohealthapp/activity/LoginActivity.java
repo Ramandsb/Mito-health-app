@@ -37,6 +37,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +53,7 @@ import in.tagbin.mitohealthapp.model.LoginModel;
 public class LoginActivity extends AppCompatActivity {
 
     EditText username_ed,password_ed;
-    String username_str,password_str,token;
+    String username_str,password_str;
     SharedPreferences loginDetails;
     TextView forgotPassword;
     int hour,minute,day,month,year;
@@ -70,18 +72,7 @@ public class LoginActivity extends AppCompatActivity {
             Snackbar.make(view,"Sign up Success",Snackbar.LENGTH_LONG).show();
 
         }
-        InstanceID instanceID = InstanceID.getInstance(this);
-        String senderId = "56770976470";
-        try {
-            // request token that will be used by the server to send push notifications
-            token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-            Log.d("token",token);
-            //pref.setGcmToken(token);
-            // pass along this data
-        } catch (IOException e) {
-            e.printStackTrace();
-            //pref.setSentTokenToServer(false);
-        }
+
         loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,MODE_PRIVATE);
         username_ed= (EditText) findViewById(R.id.username);
         password_ed= (EditText) findViewById(R.id.login_password);
@@ -144,12 +135,13 @@ public class LoginActivity extends AppCompatActivity {
 showDialog();
         String localUrl="";
         Map<String, String> postParam = new HashMap<String, String>();
-
+        Calendar calendar = Calendar.getInstance();
+        Date date  = calendar.getTime();
+        long timestamp = date.getTime()/1000L;
         if (source.equals("login")) {
             postParam.put("username", username);
             postParam.put("password", password);
-            postParam.put("mobile_id",token);
-            postParam.put("mobile_os","Android");
+            postParam.put("time_delta", String.valueOf(timestamp));
          localUrl=   Config.url+"login/";
         }else if (source.equals("forgot")){
             postParam.put("username",username);

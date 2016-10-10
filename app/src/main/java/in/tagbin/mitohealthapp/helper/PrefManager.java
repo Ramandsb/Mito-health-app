@@ -7,12 +7,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 import in.tagbin.mitohealthapp.model.DieticainModel;
 import in.tagbin.mitohealthapp.model.LocationModel;
 import in.tagbin.mitohealthapp.model.LoginModel;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
+import in.tagbin.mitohealthapp.model.PrefernceModel;
 import in.tagbin.mitohealthapp.model.UserModel;
 
 /**
@@ -44,6 +46,7 @@ public class PrefManager {
     private static String KEY_DIETICIAN = "key_deitician";
 
     private static String LOCATION_OBJECT = "location_object";
+    private static String PREFERENCE = "preference_object";
 
     public PrefManager(Context ctx){
         _context = ctx;
@@ -180,6 +183,19 @@ public class PrefManager {
         String userJson = pref.getString(LOCATION_OBJECT, null);
         LocationModel locationModel = JsonUtils.objectify(userJson,LocationModel.class);
         return locationModel;
+    }
+    public void saveCurrentPrefernces (List<PrefernceModel> locationModel) {
+        String userJson = JsonUtils.jsonify(locationModel);
+        editor.putString(PREFERENCE, userJson);
+        editor.apply();
+    }
+    public List<PrefernceModel> getCurrentPreferenceAsObject(){
+        String userJson = pref.getString(PREFERENCE, null);
+        Type collectionType = new TypeToken<ArrayList<PrefernceModel>>() {
+        }.getType();
+        final List<PrefernceModel> diet_options = (ArrayList<PrefernceModel>) new Gson()
+                .fromJson(userJson, collectionType);
+        return diet_options;
     }
     public void saveDietician (DieticainModel locationModel) {
         String userJson = JsonUtils.jsonify(locationModel);

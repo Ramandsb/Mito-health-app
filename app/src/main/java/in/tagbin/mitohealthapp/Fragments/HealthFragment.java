@@ -181,7 +181,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             progressBar.setVisibility(View.VISIBLE);
             Controller.getUserDetails(getContext(), user_id, mUserDetailsListener);
         }
-        Controller.getDietPrefernce(getContext(),mDietListener);
+
         if (login_details.getFloat("height",0) != 0) {
             height_tv.setText(new DecimalFormat("##.#").format(height).toString() + " cms");
         }
@@ -249,7 +249,37 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 saveGender.commit();
             }
         });
+        if (pref.getCurrentPreferenceAsObject() != null){
+            final List<PrefernceModel> diet_options = pref.getCurrentPreferenceAsObject();
+            final List<String> diet = new ArrayList<String>();
+            for (int i= 0;i<diet_options.size();i++){
+                diet.add(diet_options.get(i).getRecipe_type());
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.item_spinner, diet);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            diet_preference.setAdapter(adapter);
+            diet_preference.setSelection(0,false);
+            diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d("item selected", diet.get(i));
+                    //unit[0] = diet_options.get(i);
+                    for (int y= 0; y<diet_options.size();y++){
+                        if (diet.get(i).equals(diet_options.get(y).getRecipe_type())){
+                            prefernce_final = diet_options.get(y).getId();
+                        }
+                    }
+                    Controller.setPreferences(getContext(),prefernce_final,user_id,mPreferenceListener);
+                }
 
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }else{
+            Controller.getDietPrefernce(getContext(),mDietListener);
+        }
         assert select_date != null;
         select_date.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.N)
@@ -433,6 +463,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         View view = menu.findItem(R.id.action_coin).getActionView();
         coins = (TextView) view.findViewById(R.id.tvCoins);
+        coinsFinal = pref.getKeyCoins();
         coins.setText(""+coinsFinal);
         super.onPrepareOptionsMenu(menu);
     }
@@ -916,7 +947,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         textInputLayout.setHint("Waist");
         final String[] unit = {"Inches"};
         if (waist != 0.0) {
-            seekBar.setText(new DecimalFormat("##.#").format(waist).toString());
+            seekBar.setText(new DecimalFormat("##.#").format(waist/2.54).toString());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1291,10 +1322,13 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             }.getType();
             final List<PrefernceModel> diet_options = (ArrayList<PrefernceModel>) new Gson()
                     .fromJson(responseObject.toString(), collectionType);
+
+            pref.saveCurrentPrefernces(diet_options);
             final List<String> diet = new ArrayList<String>();
             for (int i= 0;i<diet_options.size();i++){
                 diet.add(diet_options.get(i).getRecipe_type());
             }
+
             if (getActivity() == null)
                 return;
             getActivity().runOnUiThread(new Runnable() {

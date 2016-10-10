@@ -268,8 +268,13 @@ public class InterestActivity extends AppCompatActivity {
             onBackPressed();
             return true;
         }else if (item.getItemId() == R.id.action_next){
-            progressBar.setVisibility(View.VISIBLE);
-            Controller.setInterests(InterestActivity.this,idFinal,mSetInterestListener);
+            Log.d("idfinal",JsonUtils.jsonify(idFinal));
+            if (idFinal.size() <= 0){
+                Toast.makeText(this,"Please select atleast one interest.",Toast.LENGTH_LONG).show();
+            }else {
+                progressBar.setVisibility(View.VISIBLE);
+                Controller.setInterests(InterestActivity.this, idFinal, mSetInterestListener);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -279,7 +284,6 @@ public class InterestActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         if (interestModel.getList().size() >0) {
             addInterest.setVisibility(View.GONE);
-            idFinal.clear();
             for (int i = 0; i < interestModel.getList().size(); i++) {
                 View layout = inflater.inflate(R.layout.item_interests, flowLayout, false);
                 final ToggleButton toggleButton = (ToggleButton) layout.findViewById(R.id.toggleButton);

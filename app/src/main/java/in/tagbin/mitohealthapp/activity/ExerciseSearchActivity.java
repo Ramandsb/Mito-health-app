@@ -163,9 +163,9 @@ public class ExerciseSearchActivity extends AppCompatActivity{
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             HitsArrayModel hitsArrayModel = adapter1.getItem(position);
-            auto_tv.setText(hitsArrayModel.get_source().getName());
+            auto_tv.setText(hitsArrayModel.getName());
             progressBar.setVisibility(View.VISIBLE);
-            Controller.getExerciseDetails(ExerciseSearchActivity.this,hitsArrayModel.get_source().getExercise_id(),mFoodDetailListener);
+            Controller.getExerciseDetails(ExerciseSearchActivity.this,hitsArrayModel.getExercise_id(),mFoodDetailListener);
         }
     };
 

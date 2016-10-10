@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -71,8 +74,9 @@ import static android.app.Activity.RESULT_OK;
 
 public class PartnerConnectFragment extends Fragment implements View.OnClickListener {
     ImageView img1, img2, img3, img4, img5, img6, img7, delete, delete1, delete2, delete3, delete4, delete5, delete6;
-    EditText etLocation, etGender, etOccupation, etHomeTwon;
+    EditText etGender, etOccupation, etHomeTwon;
     TextView name,coins;
+    TextInputLayout inputOccupation,inputHomeTown,inputDescription;
     ConnectProfileModel connectProfileModel;
     LoginButton facebookConnect;
     CallbackManager callbackManager;
@@ -131,6 +135,9 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         progressBar5 = (GifImageView) layout.findViewById(R.id.progressBar5);
         progressBar6 = (GifImageView) layout.findViewById(R.id.progressBar6);
         progressBar7 = (GifImageView) layout.findViewById(R.id.progressBar7);
+        inputDescription = (TextInputLayout) layout.findViewById(R.id.tvDescriptionHeading);
+        inputOccupation = (TextInputLayout) layout.findViewById(R.id.tvOccupationHeading);
+        inputHomeTown = (TextInputLayout) layout.findViewById(R.id.tvHomeTownHeading);
         facebookConnect = (LoginButton) layout.findViewById(R.id.facebook_people_connect);
         facebookConnect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.facebook, 0, 0, 0);
         facebookConnect.setText("Pick from my Facebook profile");
@@ -246,10 +253,13 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         } else {
             img7.setOnClickListener(this);
         }
-        etLocation = (EditText) layout.findViewById(R.id.etPartnerLocation);
+        //etLocation = (EditText) layout.findViewById(R.id.etPartnerLocation);
         etOccupation = (EditText) layout.findViewById(R.id.etPartnerOccupation);
         etGender = (EditText) layout.findViewById(R.id.etPartnerGender);
         name = (TextView) layout.findViewById(R.id.tvPartnerName);
+        etOccupation.addTextChangedListener(new MyTextWatcher(etOccupation));
+        etHomeTwon.addTextChangedListener(new MyTextWatcher(etHomeTwon));
+        etGender.addTextChangedListener(new MyTextWatcher(etGender));
         progressBar.setVisibility(View.VISIBLE);
         Controller.getConnectProfile(getContext(), mConnectListener);
         return layout;
@@ -300,7 +310,64 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             }
         }
     };
+    private class MyTextWatcher implements TextWatcher {
+        private View view;
+        private MyTextWatcher(View view){
+            this.view = view;
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            switch (view.getId()){
+                case R.id.etPartnerOccupation:
+                    validateOccuption();
+                    break;
+                case R.id.etPartnerHomeTown:
+                    validateHomeTown();
+                    break;
+                case R.id.etPartnerGender:
+                    validateDescription();
+                    break;
+
+            }
+        }
+    }
+    private boolean validateDescription(){
+        inputDescription.setErrorEnabled(false);
+        return true;
+    }
+    private boolean validateHomeTown(){
+        String hometown = etHomeTwon.getText().toString().trim();
+        if (hometown.isEmpty()){
+            inputHomeTown.setError("Please enter home town");
+            requestFocus(etHomeTwon);
+            return false;
+        }else {
+            inputHomeTown.setErrorEnabled(false);
+        }
+        return true;
+    }
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
+    private boolean validateOccuption(){
+        String hometown = etOccupation.getText().toString().trim();
+        if (hometown.isEmpty()){
+            inputOccupation.setError("Please enter occupation");
+            requestFocus(etOccupation);
+            return false;
+        }else {
+            inputOccupation.setErrorEnabled(false);
+        }
+        return true;
+    }
     public void setProfileConnect(final ConnectProfileModel data) {
         if (data.getImages() != null) {
             if (data.getImages().getMaster() != null) {
@@ -558,11 +625,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             if (data.getHome_town() != null) {
                 etHomeTwon.setText(data.getHome_town());
             }
-            if (pref.getCurrentLocationAsObject() != null) {
-                if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0) {
-                    etLocation.setText(MyUtils.getCityNameFromLatLng(getContext(), pref.getCurrentLocationAsObject().getLatitude(), pref.getCurrentLocationAsObject().getLongitude()));
-                }
-            }
+//            if (pref.getCurrentLocationAsObject() != null) {
+//                if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0) {
+//                    etLocation.setText(MyUtils.getCityNameFromLatLng(getContext(), pref.getCurrentLocationAsObject().getLatitude(), pref.getCurrentLocationAsObject().getLongitude()));
+//                }
+//            }
             coinsFinal = data.getTotal_coins();
             pref.setKeyCoins(data.getTotal_coins());
         }
@@ -650,16 +717,19 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
 
                 images1Model.setOther(other);
                 setConnectProfileModel.setImages(images1Model);
-
-            if (etOccupation.getText().toString().equals("") || etOccupation.getText().toString().isEmpty()) {
-                Toast.makeText(getContext(), "Please enter the occupation", Toast.LENGTH_LONG).show();
-            } else if (etHomeTwon.getText().toString().equals("") || etHomeTwon.getText().toString().isEmpty()) {
-                Toast.makeText(getContext(), "Please enter the home town", Toast.LENGTH_LONG).show();
-            } else {
+                if (!validateOccuption()) {
+                    return false;
+                }
+                if (!validateHomeTown()){
+                    return false;
+                }
+                if (!validateDescription()){
+                    return false;
+                }
                 Log.d("profile", JsonUtils.jsonify(setConnectProfileModel));
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.setConnectProfile(getContext(), setConnectProfileModel, msetProfileListener);
-            }
+
 //            InitActivity.change(2);
 
 
@@ -1622,11 +1692,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             if (data.getHome_town() != null) {
                 etHomeTwon.setText(data.getHome_town());
             }
-            if (pref.getCurrentLocationAsObject() != null) {
-                if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0) {
-                    etLocation.setText(MyUtils.getCityNameFromLatLng(getContext(), pref.getCurrentLocationAsObject().getLatitude(), pref.getCurrentLocationAsObject().getLongitude()));
-                }
-            }
+//            if (pref.getCurrentLocationAsObject() != null) {
+//                if (pref.getCurrentLocationAsObject().getLatitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0) {
+//                    etLocation.setText(MyUtils.getCityNameFromLatLng(getContext(), pref.getCurrentLocationAsObject().getLatitude(), pref.getCurrentLocationAsObject().getLongitude()));
+//                }
+//            }
 
         }
     }

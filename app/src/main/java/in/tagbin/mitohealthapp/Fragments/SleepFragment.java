@@ -44,25 +44,14 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
     SleepAdapter sleepAdapter;
    DatabaseOperations dop;
     SharedPreferences login_details;
-    String auth_key;
-    int hour,min;
-    DataItems dataItems;
     ArrayList<DataItems> arrayList;
     TextView start_time,end_time,no_of_hours;
-RatingBar ratingBar;
-    String start_t="";
-    String end_t="";
-
-    String test="";
+    RatingBar ratingBar;
+    String start_t="",end_t="",test="",unique,auth_key;
     public static String selectedDate="";
-    String unique;
-    int a=0,b=0,c=0;
-    int i = 0;
-    int mBgColor=0;
-   static String uniqueId="";
-    int sth=0,stm=0,eth=0,etm=0;
+    int a=0,b=0,c=0,i = 0,mBgColor=0,sth=0,stm=0,eth=0,etm=0,hour,min,hour1,min1;
+    static String uniqueId="";
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
-
     MaterialCalendarView widget;
      public SleepFragment() {
         // Required empty public constructor
@@ -153,7 +142,10 @@ RatingBar ratingBar;
                 .setFirstDayOfWeek(calendar.get(Calendar.DAY_OF_WEEK))
                 .commit();
 
-
+        hour = 22;
+        min = 0;
+        hour1 = 6;
+        min1 = 0;
 
         //////////////////
 
@@ -242,7 +234,7 @@ RatingBar ratingBar;
                                     }
 
                                 }
-                            }, hour, min, false);
+                            }, hour1, min1, false);
                     tpd.show();
 
                 }

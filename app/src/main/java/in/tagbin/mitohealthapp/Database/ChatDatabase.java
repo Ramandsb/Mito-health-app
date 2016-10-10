@@ -76,11 +76,10 @@ public class ChatDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from "+TABLE_CHATUSERS);
     }
-    public ArrayList<ChatAccounts> getChatUsers(String user) {
+    public ArrayList<ChatAccounts>  getChatUsers(String user) {
         try {
             YC_LIST.clear();
             String selectQuery = "SELECT  * FROM " + TABLE_CHATUSERS+" WHERE "+KEY_USER+" IN ( SELECT DISTINCT ( "+KEY_USER+" ) FROM "+TABLE_CHATUSERS+" ) AND "+KEY_USER +" != '"+user+"'";
-
             SQLiteDatabase db = this.getWritableDatabase();
             Cursor cursor = db.rawQuery(selectQuery, null);
             if (cursor.moveToFirst()) {

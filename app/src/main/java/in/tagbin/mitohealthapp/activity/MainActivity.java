@@ -63,6 +63,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     CleverTapAPI cleverTap;
 
-    String profile_name, profile_picture,token;
+    String profile_name, profile_picture;
 
 
     ///////////////////////////////////
@@ -154,18 +156,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         Fblogin = (Button) findViewById(R.id.login_button);
-        InstanceID instanceID = InstanceID.getInstance(this);
-        String senderId = "56770976470";
-        try {
-            // request token that will be used by the server to send push notifications
-            token = instanceID.getToken(senderId, GoogleCloudMessaging.INSTANCE_ID_SCOPE);
-            Log.d("token",token);
-            //pref.setGcmToken(token);
-            // pass along this data
-        } catch (IOException e) {
-            e.printStackTrace();
-            //pref.setSentTokenToServer(false);
-        }
+
         Fblogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -492,12 +483,14 @@ showDialog();
     private void makeJsonObjReq(String s,String source) {
 
         showDialog();
+        Calendar calendar = Calendar.getInstance();
+        Date date  = calendar.getTime();
+        long timestamp = date.getTime()/1000L;
         Map<String, String> postParam = new HashMap<String, String>();
         postParam.put("access_token", s);
         postParam.put("source", source);
         postParam.put("is_nutritionist", "0");
-        postParam.put("mobile_id",token);
-        postParam.put("mobile_os","Android");
+        postParam.put("time_delta", String.valueOf(timestamp));
 
         JSONObject jsonObject = new JSONObject(postParam);
         Log.d("postpar", jsonObject.toString());

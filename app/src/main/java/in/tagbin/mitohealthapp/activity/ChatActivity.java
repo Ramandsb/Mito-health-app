@@ -163,7 +163,7 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        super.onStop();
+        super.onPause();
         unregisterReceiver(Recievemsgs);
     }
 }
