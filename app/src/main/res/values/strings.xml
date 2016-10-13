@@ -3,6 +3,7 @@
     <string name="title_activity_login">Mito</string>
     <string name="title_activity_signup">SignupActivity</string>
     <string name="app_id">1085388164831921</string>
+    <string name="API_KEY">AIzaSyA7FwOEAOYLiibK6ZHHcjjUmLm2OF35Dgs</string>
     <string name="title_activity_profile_page"></string>
 
     <!-- TODO: Remove or change this placeholder text -->

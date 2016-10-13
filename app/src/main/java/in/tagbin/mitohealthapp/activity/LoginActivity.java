@@ -136,7 +136,12 @@ showDialog();
         String localUrl="";
         Map<String, String> postParam = new HashMap<String, String>();
         Calendar calendar = Calendar.getInstance();
-        Date date  = calendar.getTime();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        Date date  = new Date(year-1900,month,day,hour,minute);
         long timestamp = date.getTime()/1000L;
         if (source.equals("login")) {
             postParam.put("username", username);

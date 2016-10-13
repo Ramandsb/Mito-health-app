@@ -31,12 +31,12 @@ import pl.droidsonroids.gif.GifImageView;
  * Created by aasaqt on 7/9/16.
  */
 public class AddInterestActivity extends AppCompatActivity implements View.OnClickListener {
-    EditText etInterestName;
+    EditText etInterestName,etFoodCalories;
     Button sendInterst;
-    TextView heading;
+    TextView heading,foodCalories;
     ImageView image;
     GifImageView progressBar;
-    String response,url = "http://mito-django-api.s3.amazonaws.com/uploads/3/ce9b7db32e94401dac770276796d628aShaktiman.jpg";
+    String response,url = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,7 +44,10 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         setContentView(R.layout.actvity_addinterest);
         etInterestName = (EditText) findViewById(R.id.etInterestName);
+        etFoodCalories= (EditText) findViewById(R.id.etFoodCalories);
         heading = (TextView) findViewById(R.id.tvAddIneterstNameHeading);
+        foodCalories = (TextView) findViewById(R.id.tvAddFoodCaloriesHeading);
+
         sendInterst = (Button) findViewById(R.id.buttonSendInterest);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
         image = (ImageView) findViewById(R.id.ivAddInterestimage);
@@ -53,14 +56,26 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
         if (getIntent().getStringExtra("food") != null){
             etInterestName.setHint("Suggest Food");
             heading.setText("Food Name");
-            Picasso.with(this).load(url).into(image);
+            etFoodCalories.setVisibility(View.VISIBLE);
+            foodCalories.setVisibility(View.VISIBLE);
+            //Picasso.with(this).load(url).into(image);
         }else if (getIntent().getStringExtra("exercise") != null){
             etInterestName.setHint("Suggest Exercise");
             heading.setText("Exercise Name");
-            Picasso.with(this).load(url).into(image);
+            etFoodCalories.setVisibility(View.GONE);
+            foodCalories.setVisibility(View.GONE);
+            //Picasso.with(this).load(url).into(image);
+        }else if (getIntent().getStringExtra("event") != null){
+            etInterestName.setHint("Suggest Event Type");
+            heading.setText("Event Type Name");
+            etFoodCalories.setVisibility(View.GONE);
+            foodCalories.setVisibility(View.GONE);
+            //Picasso.with(this).load(url).into(image);
         }else{
             etInterestName.setHint("Suggest Interest");
             heading.setText("Interest Name");
+            etFoodCalories.setVisibility(View.GONE);
+            foodCalories.setVisibility(View.GONE);
         }
         if (getIntent().getStringExtra("name") != null) {
             response = getIntent().getStringExtra("name");
@@ -70,13 +85,34 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                    progressBar.setVisibility(View.VISIBLE);
+
                     if (getIntent().getStringExtra("food") != null){
 
                     }else if (getIntent().getStringExtra("exercise") != null){
-
+                        progressBar.setVisibility(View.VISIBLE);
+                        Controller.setNewExercise(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
+                    }else if (getIntent().getStringExtra("event") != null){
+                        progressBar.setVisibility(View.VISIBLE);
+                        Controller.setNewEventType(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
                     }else {
+                        progressBar.setVisibility(View.VISIBLE);
                         Controller.setNewInterest(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
+                    }
+                }
+                return false;
+            }
+        });
+        etFoodCalories.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    float calories = 0 ;
+                    if (!etFoodCalories.getText().toString().equals("") && etFoodCalories.getText().toString() != null && !etFoodCalories.getText().toString().isEmpty()){
+                        calories = Float.parseFloat(etFoodCalories.getText().toString());
+                    }
+                    if (getIntent().getStringExtra("food") != null){
+                        Controller.setNewFood(AddInterestActivity.this, etInterestName.getText().toString(), calories, mSetInterstListener);
                     }
                 }
                 return false;
@@ -90,9 +126,15 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
             case R.id.buttonSendInterest:
                 progressBar.setVisibility(View.VISIBLE);
                 if (getIntent().getStringExtra("food") != null){
-
+                    float calories = 0 ;
+                    if (etFoodCalories.getText().toString() != "" || etFoodCalories.getText().toString() != null){
+                        calories = Float.parseFloat(etFoodCalories.getText().toString());
+                    }
+                    Controller.setNewFood(AddInterestActivity.this, etInterestName.getText().toString(),calories, mSetInterstListener);
                 }else if (getIntent().getStringExtra("exercise") != null){
-
+                    Controller.setNewExercise(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
+                }else if (getIntent().getStringExtra("event") != null){
+                    Controller.setNewEventType(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
                 }else {
                     Controller.setNewInterest(AddInterestActivity.this, etInterestName.getText().toString(), mSetInterstListener);
                 }
@@ -113,7 +155,16 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(AddInterestActivity.this, "Your interest is submitted successfully. We will process it and update it", Toast.LENGTH_LONG).show();
+                    if (getIntent().getStringExtra("food") != null){
+                        Toast.makeText(AddInterestActivity.this, "Your food item is submitted successfully. We will process it and update it", Toast.LENGTH_LONG).show();
+                    }else if (getIntent().getStringExtra("exercise") != null){
+                        Toast.makeText(AddInterestActivity.this, "Your exercise is submitted successfully. We will process it and update it", Toast.LENGTH_LONG).show();
+                    }else if (getIntent().getStringExtra("event") != null){
+                        Toast.makeText(AddInterestActivity.this, "Your event type is submitted successfully. We will process it and update it", Toast.LENGTH_LONG).show();
+                    }else {
+                        Toast.makeText(AddInterestActivity.this, "Your interest is submitted successfully. We will process it and update it", Toast.LENGTH_LONG).show();
+                    }
+
                 }
             });
         }

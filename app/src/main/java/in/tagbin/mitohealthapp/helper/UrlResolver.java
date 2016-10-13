@@ -21,7 +21,6 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.EVENTS, "v1/events/");
         endPointMapper.put(EndPoints.USERS,"v1/users/");
         endPointMapper.put(EndPoints.CONNECT_PROFILE,"v1/connect/");
-        endPointMapper.put(EndPoints.INTEREST,"v1/interest/list");
         endPointMapper.put(EndPoints.LOGGER,"v1/logger/");
         endPointMapper.put(EndPoints.ENERGY,"v1/users/energy/");
         endPointMapper.put(EndPoints.INTEREST,"v1/interest/");
@@ -36,6 +35,7 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.GCM,"v1/users/carrier/");
         endPointMapper.put(EndPoints.EXERCISE,"v1/exercise/");
         endPointMapper.put(EndPoints.NUTRITIONIS,"v1/users/nutritionist/");
+        endPointMapper.put(EndPoints.EVENTTYPE,"v1/eventtype/");
     }
 
     public interface EndPoints {
@@ -57,5 +57,6 @@ public class UrlResolver {
         int GCM = 16;
         int EXERCISE = 17;
         int NUTRITIONIS = 18;
+        int EVENTTYPE = 19;
     }
 }

@@ -576,6 +576,43 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
+    public static void setNewEventType(Context context,String name,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.EVENTTYPE);
+        url= url+"create/";
+        SetNewInterestModel setNewInterestModel = new SetNewInterestModel();
+        setNewInterestModel.setName(name);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, setNewInterestModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setNewExercise(Context context,String name,
+                                       RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.EXERCISE);
+        url= url+"create/";
+        SetNewInterestModel setNewInterestModel = new SetNewInterestModel();
+        setNewInterestModel.setName(name);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, setNewInterestModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setNewFood(Context context,String name,float calories,
+                                      RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.FOOD);
+        url= url+"create/";
+        SetNewInterestModel setNewInterestModel = new SetNewInterestModel();
+        setNewInterestModel.setName(name);
+        setNewInterestModel.setTotal_calorie(calories);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, setNewInterestModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
     public static void getWaterLog(Context context,WaterLogModel waterLogModels,
                                     RequestListener requestListener) {
         String url = UrlResolver

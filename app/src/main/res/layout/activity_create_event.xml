@@ -93,12 +93,14 @@
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp" />
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/etAddType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvAddType"
                     android:ellipsize="end"
+                    android:clickable="true"
+                    android:editable="false"
                     android:hint="Search for event type"
                     android:inputType="textCapWords"
                     android:singleLine="true"

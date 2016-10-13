@@ -41,6 +41,7 @@ import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.adapter.FoodLoggerAdapter;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.adapter.RecommendationAdapter;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
@@ -162,7 +163,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
             RecyclerView rvLogger = (RecyclerView) loggerView.findViewById(R.id.rvFoodLogger);
             linearFoodLogger.addView(loggerView);
             mealType.setText("Meal Type "+(i+1));
-            mealTime.setText("");
+            mealTime.setText(MyUtils.getValidTimeForMeal(foodLogger.get(i).getStart_time())+" to "+MyUtils.getValidTimeForMeal(foodLogger.get(i).getEnd_time()));
             float totalCalories = 0;
             for (int y=0;y<foodLogger.get(i).getMeals().size();y++){
                 totalCalories += foodLogger.get(i).getMeals().get(y).getComponent().getTotal_energy()*foodLogger.get(i).getMeals().get(y).getAmount();

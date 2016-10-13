@@ -1202,8 +1202,10 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             });
 
         }
-        coinsFinal = userModel.getProfile().getTotal_coins();
-        pref.setKeyCoins(userModel.getProfile().getTotal_coins());
+        if(pref.getKeyCoins() == 0){
+            coinsFinal = userModel.getProfile().getTotal_coins();
+            pref.setKeyCoins(userModel.getProfile().getTotal_coins());
+        }
         if (userModel != null && userModel.getProfile().getImages() != null && userModel.getProfile().getImages().getMaster() != null) {
             pref.setKeyMasterImage(userModel.getProfile().getImages().getMaster());
             ImageLoader.getInstance().loadImage(userModel.getProfile().getImages().getMaster(), new ImageLoadingListener() {

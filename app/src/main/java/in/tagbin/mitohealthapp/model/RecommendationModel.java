@@ -7,7 +7,7 @@ import java.util.List;
  * Created by aasaqt on 10/9/16.
  */
 public class RecommendationModel {
-    String meal_time;
+    String start_time,end_time;
     MealTypeModel meal_type;
     List<MealsModel> meals;
     public RecommendationModel(){
@@ -35,8 +35,12 @@ public class RecommendationModel {
         return meal_type;
     }
 
-    public String getMeal_time() {
-        return meal_time;
+    public String getEnd_time() {
+        return end_time;
+    }
+
+    public String getStart_time() {
+        return start_time;
     }
 
     public class MealsModel {

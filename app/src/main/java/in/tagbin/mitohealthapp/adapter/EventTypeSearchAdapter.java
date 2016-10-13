@@ -76,7 +76,6 @@ public class EventTypeSearchAdapter extends ArrayAdapter<EventTypeModel> {
                     JsonArrayRequest request = new JsonArrayRequest(url, future, future);
                     requestQueue.add(request);
                     try {
-                        Log.d("values",future.get().toString());
                         Type collectionType = new TypeToken<List<EventTypeModel>>() {}.getType();
                         mResultList = (List<EventTypeModel>) new Gson().fromJson( future.get().toString(), collectionType);
                         //mResultList = JsonUtils.objectify(future.get().toString(),EventTypeModel.class);

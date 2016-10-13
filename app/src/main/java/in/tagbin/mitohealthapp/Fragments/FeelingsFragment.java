@@ -3,6 +3,7 @@ package in.tagbin.mitohealthapp.Fragments;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,7 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseException;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -46,7 +49,7 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
     private static final String ARG_PARAM2 = "param2";
     TextView stress_tv,happiness_tv,energy_tv,confidence_tv;
     double stress=0.0,happiness=0.0,energy=0.0,confidence=0.0;
-
+    RelativeLayout relativeMain;
     String dateTimeStamp="";
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -124,6 +127,7 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
         happiness_tv= (TextView) view.findViewById(R.id.hapinesstv);
         energy_tv= (TextView) view.findViewById(R.id.energytv);
         confidence_tv= (TextView) view.findViewById(R.id.confidencetv);
+        relativeMain = (RelativeLayout) view.findViewById(R.id.relativeFeelingMain);
         dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
 
         try{
@@ -163,58 +167,75 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
             while (cursor.moveToNext());
         }
 
-         stressbar = (DiscreteSeekBar) view.findViewById(R.id.stressbar);
-        stressbar.setProgress((int) stress);
-        stress_tv.setText(stress+"");
-        stressbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
-            @Override
-            public int transform(int value) {
 
-                stress=value;
-                stress_tv.setText(stress+"");
-                calculate(stress,happiness,energy,confidence);
-                return value;
-            }
-        });
-    happinessbar = (DiscreteSeekBar) view.findViewById(R.id.happinessbar);
-        happinessbar.setProgress((int) happiness);
-        happiness_tv.setText(happiness+"");
-        happinessbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
-            @Override
-            public int transform(int value) {
-
-                happiness=value;
-                happiness_tv.setText(happiness+"");
-                calculate(stress,happiness,energy,confidence);
-                return value;
-            }
-        });
-         energybar = (DiscreteSeekBar) view.findViewById(R.id.energybar);
-        energybar.setProgress((int) energy);
-        energy_tv.setText(energy+"");
-        energybar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
-            @Override
-            public int transform(int value) {
-
-                energy=value;
-                energy_tv.setText(energy+"");
-                calculate(stress,happiness,energy,confidence);
-                return value;
-            }
-        });
+        Calendar calendar1 = Calendar.getInstance();
+        int hour = calendar1.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar1.get(Calendar.MINUTE);
+        String currentTime = hour+":"+minute;
+        stressbar = (DiscreteSeekBar) view.findViewById(R.id.stressbar);
+        happinessbar = (DiscreteSeekBar) view.findViewById(R.id.happinessbar);
+        energybar = (DiscreteSeekBar) view.findViewById(R.id.energybar);
         confidencebar = (DiscreteSeekBar) view.findViewById(R.id.confidencebar);
-        confidencebar.setProgress((int) confidence);
-        confidence_tv.setText(confidence+"");
-        confidencebar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
-            @Override
-            public int transform(int value) {
+        if (currentTime.compareTo("18:00") <0){
+            Toast.makeText(getContext(),"You can log feelings after 6 pm",Toast.LENGTH_LONG).show();
+            stressbar.setNumericTransformer(null);
+            happinessbar.setNumericTransformer(null);
+            energybar.setNumericTransformer(null);
+            confidencebar.setNumericTransformer(null);
+            //relativeMain.setBackgroundResource(Color.parseColor("#9b9b9b"));
+        }else {
 
-                confidence=value;
-                confidence_tv.setText(confidence+"");
-                calculate(stress,happiness,energy,confidence);
-                return value;
-            }
-        });
+            stressbar.setProgress((int) stress);
+            stress_tv.setText(stress+"");
+            stressbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+                @Override
+                public int transform(int value) {
+
+                    stress = value;
+                    stress_tv.setText(stress + "");
+                    calculate(stress, happiness, energy, confidence);
+                    return value;
+                }
+            });
+
+            happinessbar.setProgress((int) happiness);
+            happiness_tv.setText(happiness + "");
+            happinessbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+                @Override
+                public int transform(int value) {
+
+                    happiness = value;
+                    happiness_tv.setText(happiness + "");
+                    calculate(stress, happiness, energy, confidence);
+                    return value;
+                }
+            });
+
+            energybar.setProgress((int) energy);
+            energy_tv.setText(energy + "");
+            energybar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+                @Override
+                public int transform(int value) {
+
+                    energy = value;
+                    energy_tv.setText(energy + "");
+                    calculate(stress, happiness, energy, confidence);
+                    return value;
+                }
+            });
+            confidencebar.setProgress((int) confidence);
+            confidence_tv.setText(confidence + "");
+            confidencebar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+                @Override
+                public int transform(int value) {
+
+                    confidence = value;
+                    confidence_tv.setText(confidence + "");
+                    calculate(stress, happiness, energy, confidence);
+                    return value;
+                }
+            });
+        }
         return view;
     }
 

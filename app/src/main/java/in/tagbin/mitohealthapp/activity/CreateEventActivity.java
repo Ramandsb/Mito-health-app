@@ -23,7 +23,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -69,8 +71,7 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     ImageView addImage;
-    EditText title,description,location;
-    AutoCompleteTextView type;
+    EditText title,description,location,type;
     TextView time,memberValue,activityDate,activityTime,coins;
     Button createActivity;
     SeekBar rangeBar;
@@ -82,19 +83,21 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     GifImageView progressBar;
     PrefManager pref;
     DataObject dataObject;
-    EventTypeSearchAdapter adapter;
     CountDownTimer countDownTimer;
     Toolbar toolbar;
+    boolean decesionTimer = false,eventDate = false;
     private static final int SECOND = 1000;
     private static final int MINUTE = 60 * SECOND;
     private static final int HOUR = 60 * MINUTE;
     private static final int DAY = 24 * HOUR;
-    int hour,minute,year,month,day,hour1,minute1,year1,month1,day1,memberValueFinal,event_type = 1,coinsFinal;
+    double latitude,longitude;
+    int hour,minute,year,month,day,hour1,minute1,year1,month1,day1,memberValueFinal,event_type = 0,coinsFinal;
     private static String[] PERMISSIONS_LOCATION = {Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_create_event);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -104,7 +107,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         title = (EditText) findViewById(R.id.etAddTitle);
         description = (EditText) findViewById(R.id.etAddDesciption);
         location = (EditText) findViewById(R.id.etAddLocation);
-        type = (AutoCompleteTextView) findViewById(R.id.etAddType);
+        type = (EditText) findViewById(R.id.etAddType);
         time = (TextView) findViewById(R.id.tvAddDecisionTime);
         createActivity = (Button) findViewById(R.id.buttonCreateActivity);
         relativeTime = (RelativeLayout) findViewById(R.id.relativeAddDecisionTimer);
@@ -119,8 +122,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         fabAddImage.setOnClickListener(this);
         relativeTime.setOnClickListener(this);
         relativeDate.setOnClickListener(this);
-
-
+        type.setOnClickListener(this);
+        location.setOnClickListener(this);
         rangeBar.setProgress(0);
         pref = new PrefManager(this);
         rangeBar.incrementProgressBy(1);
@@ -156,14 +159,11 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         minute = calendar.get(Calendar.MINUTE);
         updateTime(hour,minute);
         updateTime1(hour1,minute1);
-        type.setOnItemClickListener(mAutocompleteClickListener);
-        adapter = new EventTypeSearchAdapter(CreateEventActivity.this, android.R.layout.simple_list_item_1);
         if (pref.getCurrentLocationAsObject() != null){
             if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
                 location.setText(MyUtils.getCityNameFromLatLng(CreateEventActivity.this,pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
             }
         }
-        type.setAdapter(adapter);
         if (getIntent().getStringExtra("response") != null){
             response = getIntent().getStringExtra("response");
             getSupportActionBar().setTitle("Edit Event");
@@ -173,6 +173,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             type.setText(dataObject.getEvent_type().getTitle());
             description.setText(dataObject.getDescription());
             location.setText(MyUtils.getCityName(CreateEventActivity.this,dataObject.getLocation()));
+            latitude = MyUtils.getLatitude(CreateEventActivity.this,dataObject.getLocation());
+            longitude = MyUtils.getLongitude(CreateEventActivity.this,dataObject.getLocation());
             memberValueFinal = dataObject.getCapacity();
             rangeBar.setProgress(dataObject.getCapacity());
             if (dataObject.getEvent_time() != null) {
@@ -233,7 +235,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                         text.append(ms / MINUTE).append("min ");
                         ms %= MINUTE;
                     }
-                    time.setText(text.toString()+"item_chat_activity");
+                    time.setText(text.toString());
                 }
 
                 @Override
@@ -258,12 +260,16 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     if (editType != dataObject.getEvent_type().getTitle())
                         createEventSendModel.type = editType;
                     createEventSendModel.capacity = memberValueFinal;
-                    if (pref.getCurrentLocationAsObject() != null){
-                        if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
-                            double[] location = {pref.getCurrentLocationAsObject().getLongitude(),pref.getCurrentLocationAsObject().getLatitude()};
-                            createEventSendModel.setLocation(location);
-                        }
-                    }
+//                    if (pref.getCurrentLocationAsObject() != null){
+//                        if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
+//                            latitude = pref.getCurrentLocationAsObject().getLatitude();
+//                            longitude = pref.getCurrentLocationAsObject().getLongitude();
+//                            double[] location = {longitude,latitude};
+//                            createEventSendModel.setLocation(location);
+//                        }
+//                    }
+                    double[] location = {longitude,latitude};
+                    createEventSendModel.setLocation(location);
                     Date date1 = new Date(year - 1900, month, day, hour, minute);
                     long output = date1.getTime() / 1000L;
                     Date date2 =new Date(year1-1900,month1,day1,hour1,minute1);
@@ -277,27 +283,22 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     createEventSendModel.event_type = event_type;
                     Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
                     if (output > output1 ){
-                        Toast.makeText(CreateEventActivity.this,"Please enter the valid decission timer",Toast.LENGTH_LONG).show();
+                        Toast.makeText(CreateEventActivity.this,"Please enter the valid decession timer",Toast.LENGTH_LONG).show();
                     }else if (memberValueFinal == 0){
                         Toast.makeText(CreateEventActivity.this,"Please enter the capacity above 0",Toast.LENGTH_LONG).show();
+                    }else if (latitude == 0 || longitude == 0){
+                        Toast.makeText(CreateEventActivity.this,"Please click on location to enter location",Toast.LENGTH_LONG).show();
                     }else {
                         progressBar.setVisibility(View.VISIBLE);
                         Controller.updateEvent(CreateEventActivity.this, createEventSendModel, dataObject.getId(), mUpdateListener);
                     }
                 }
             });
+
         }
     }
 
-    private AdapterView.OnItemClickListener mAutocompleteClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            EventTypeModel interestListModel = adapter.getItem(position);
-            type.setText(interestListModel.getTitle());
-            event_type = interestListModel.getId();
-        }
-    };
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -345,12 +346,16 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 createEventSendModel.type = editType;
                 createEventSendModel.event_type = event_type;
                 createEventSendModel.capacity = memberValueFinal;
-                if (pref.getCurrentLocationAsObject() != null){
-                    if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
-                        double[] location = {pref.getCurrentLocationAsObject().getLongitude(),pref.getCurrentLocationAsObject().getLatitude()};
-                        createEventSendModel.setLocation(location);
-                    }
-                }
+//                if (pref.getCurrentLocationAsObject() != null){
+//                    if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
+//                        latitude = pref.getCurrentLocationAsObject().getLatitude();
+//                        longitude = pref.getCurrentLocationAsObject().getLongitude();
+//                        double[] location = {longitude,latitude};
+//                        createEventSendModel.setLocation(location);
+//                    }
+//                }
+                double[] location = {longitude,latitude};
+                createEventSendModel.setLocation(location);
                 Date date1 = new Date(year - 1900, month, day, hour, minute);
                 long output = date1.getTime() / 1000L;
                 Date date2 =new Date(year1-1900,month1,day1,hour1,minute1);
@@ -366,6 +371,14 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     Toast.makeText(CreateEventActivity.this,"Please enter the valid decission timer",Toast.LENGTH_LONG).show();
                 }else if (memberValueFinal == 0){
                     Toast.makeText(CreateEventActivity.this,"Please enter the capacity above 0",Toast.LENGTH_LONG).show();
+                }else if (!eventDate){
+                    Toast.makeText(CreateEventActivity.this,"Please enter the event date and time",Toast.LENGTH_LONG).show();
+                }else if (!decesionTimer){
+                    Toast.makeText(CreateEventActivity.this,"Please enter the decession timer of the event",Toast.LENGTH_LONG).show();
+                }else if(event_type == 0){
+                    Toast.makeText(CreateEventActivity.this,"Please click on event type to search event type",Toast.LENGTH_LONG).show();
+                }else if (latitude == 0 || longitude == 0){
+                    Toast.makeText(CreateEventActivity.this,"Please click on location to enter location",Toast.LENGTH_LONG).show();
                 }else {
                     progressBar.setVisibility(View.VISIBLE);
                     Controller.createEvent(CreateEventActivity.this, createEventSendModel, mCreateListener);
@@ -415,7 +428,8 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                         com.wdullaer.materialdatetimepicker.time.TimePickerDialog tpd = com.wdullaer.materialdatetimepicker.time.TimePickerDialog.newInstance(new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-                               updateTime1(hourOfDay,minute);
+                               eventDate = true;
+                                updateTime1(hourOfDay,minute);
                             }
                         }, 0, 0, false);
                         tpd.show(getFragmentManager(), "TIME_PICKER_TAG");
@@ -425,6 +439,31 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 dpd1.setHighlightedDays(dates1);
                 dpd1.show(getFragmentManager(), "DATE_PICKER_TAG");
                 break;
+            case R.id.etAddType:
+                Intent p = new Intent(this,EventTypeSearchActivity.class);
+                startActivity(p);
+                break;
+            case R.id.etAddLocation:
+                Intent l = new Intent(this,LocationSearchActivity.class);
+                startActivity(l);
+                break;
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d("new intent","new i   ntent");
+        if (intent.getStringExtra("eventtitle") != null) {
+            String name = intent.getStringExtra("eventtitle");
+            int id = intent.getIntExtra("eventid", 0);
+            type.setText(name);
+            event_type = id;
+        }else if (intent.getStringExtra("placename") != null){
+            String name = intent.getStringExtra("placename");
+            latitude = intent.getDoubleExtra("latitude",0);
+            longitude = intent.getDoubleExtra("longitude",0);
+            location.setText(name);
         }
     }
 
@@ -432,6 +471,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
         if (countDownTimer != null)
             countDownTimer.cancel();
+        decesionTimer = true;
         updateTime(hourOfDay, minute);
     }
     private void updateTime(int hours, int mins) {

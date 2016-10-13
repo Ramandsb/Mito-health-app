@@ -33,6 +33,32 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:textSize="14sp" />
+    <TextView
+        android:id="@+id/tvAddFoodCaloriesHeading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etInterestName"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:text="Food Calories"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/etFoodCalories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvAddFoodCaloriesHeading"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="Food Calories(optional)"
+        android:textColor="#474747"
+        android:inputType="numberDecimal"
+        android:selectAllOnFocus="true"
+        android:textColorHint="#b7b7b7"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:textSize="14sp" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
