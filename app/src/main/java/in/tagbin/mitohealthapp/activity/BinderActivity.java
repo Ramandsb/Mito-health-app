@@ -5,7 +5,6 @@ package in.tagbin.mitohealthapp.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -17,10 +16,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.luseen.spacenavigation.SpaceItem;
+import com.luseen.spacenavigation.SpaceNavigationView;
+import com.luseen.spacenavigation.SpaceOnClickListener;
 
 import org.json.JSONException;
 
@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.tagbin.mitohealthapp.Fragments.ChatDieticianFragment;
-import in.tagbin.mitohealthapp.Fragments.SettingsFragment;
 import in.tagbin.mitohealthapp.Fragments.HealthFragment;
 import in.tagbin.mitohealthapp.Fragments.MitoHealthFragment;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
@@ -54,7 +53,7 @@ public class BinderActivity extends AppCompatActivity{
     Intent i;
     int coinsFinal = 0;
     PrefManager pref;
-    public AHBottomNavigation bottomNavigation;
+    public SpaceNavigationView bottomNavigation;
 
 
     @Override
@@ -66,110 +65,91 @@ public class BinderActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar_title.setText("Mito");
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigater);
+        bottomNavigation = (SpaceNavigationView) findViewById(R.id.bottom_navigater);
 
-
+        bottomNavigation.initWithSaveInstanceState(savedInstanceState);
         Intent intent = new Intent(this, GCMIntentService.class);
         startService(intent);
 // Create items
         startService(new Intent(this,XmppChatService.class));
-
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("",R.drawable.partnet_final);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("",R.drawable.profile_final);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("", R.drawable.big_mito);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("", R.drawable.profile_final);
-        AHBottomNavigationItem item5 = new AHBottomNavigationItem("", R.drawable.settings_final);
+        bottomNavigation.addSpaceItem(new SpaceItem("", R.drawable.big_mito));
+        bottomNavigation.addSpaceItem(new SpaceItem("", R.drawable.partnet_final));
+        bottomNavigation.addSpaceItem(new SpaceItem("", R.drawable.chat_nutritionist));
+        bottomNavigation.addSpaceItem(new SpaceItem("", R.drawable.profile_final));
         pref = new PrefManager(this);
-// Add itemsF63D2B
-        bottomNavigation.addItem(item1);
-        bottomNavigation.addItem(item2);
-        bottomNavigation.addItem(item3);
-        bottomNavigation.addItem(item4);
-        bottomNavigation.addItem(item5);
-
-// Set background color
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#ffffff"));
-
-// Disable the translation inside the CoordinatorLayout
-        bottomNavigation.setBehaviorTranslationEnabled(true);
-
-// Change colors
-//        bottomNavigation.setAccentColor(R.color.colorAccent);
-//        bottomNavigation.setInactiveColor(R.color.sample_bg);
-
-
-// Force to tint the drawable (useful for font with icon for example)
-        bottomNavigation.setForceTint(true);
-//        bottomNavigation.setInactiveColor(getResources().getColor(R.color.bottombar));
-        bottomNavigation.setAccentColor(getResources().getColor(R.color.bottombar));
-
-// Force the titles to be displayed (against Material Design guidelines!)
-        bottomNavigation.setForceTitlesDisplay(true);
-
-// Use colored navigation with circle reveal effect
-        bottomNavigation.setColored(false);
-        String source =getIntent().getStringExtra("source");
-// Set current item programmatically
-        if (getIntent().getStringExtra("source") != null) {
-
-            fra = new MitoHealthFragment();
-            bottomNavigation.setCurrentItem(2);
-
-
-        }else if (getIntent().getStringExtra("profile_connect") != null){
+        bottomNavigation.setCentreButtonIcon(R.drawable.plus_svg);
+        bottomNavigation.showIconOnly();
+        bottomNavigation.hideAllBudges();
+        if (getIntent().getStringExtra("profile_connect") != null){
             fra = new UserDetailsFragment();
             Bundle bundle = new Bundle();
             bundle.putString("profile_connect", "profile");
             fra.setArguments(bundle);
-            bottomNavigation.setCurrentItem(1);
+            bottomNavigation.changeCurrentItem(1);
         }else {
             fra = new UserDetailsFragment();
-            bottomNavigation.setCurrentItem(1);
+            bottomNavigation.changeCurrentItem(1);
         }
         fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
         fraTra.commit();
 
 
-// Customize notification (title, background, typeface)
-        bottomNavigation.setNotificationBackgroundColor(getResources().getColor(R.color.bottombar));
-
-// Add or remove notification for each item68822836
-        bottomNavigation.setNotification("4", 1);
-        bottomNavigation.setNotification("", 1);
+//// Customize notification (title, background, typeface)
+//        bottomNavigation.setNotificationBackgroundColor(getResources().getColor(R.color.bottombar));
+//
+//// Add or remove notification for each item68822836
+//        bottomNavigation.setNotification("4", 1);
+//        bottomNavigation.setNotification("", 1);
         if (getIntent().hasExtra("selection")) {
             if (getIntent().getIntExtra("selection", 1) == 2) {
+                bottomNavigation.changeCurrentItem(2);
                 change(2);
-
             }else if(getIntent().getIntExtra("selection", 1) == 1) {
-                fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
-                fraTra.commit();
+                bottomNavigation.changeCurrentItem(1);
+                change(1);
             }else if (getIntent().getIntExtra("selection",1) == 0){
-                Bundle bundle = new Bundle();
-                if (getIntent().getStringExtra("activity_create_event") != null) {
-                    bundle.putString("activity_create_event", "activity_create_event");
-                    fra.setArguments(bundle);
-                }
-                fra = new UserConnectFragment();
-                fraTra =  getSupportFragmentManager().beginTransaction().replace(R.id.fragmentnew, fra);
-                fraTra.commit();
+                bottomNavigation.changeCurrentItem(0);
+                change(0);
+            }else if (getIntent().getIntExtra("selection",1) == 3){
+                bottomNavigation.changeCurrentItem(3);
+                change(3);
             }
         }
 
-
-// Set listeners
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+        bottomNavigation.setSpaceOnClickListener(new SpaceOnClickListener() {
             @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                // Do something cool here...
-                change(position);
-                return true;
+            public void onCentreButtonClick() {
+                //Toast.makeText(BinderActivity.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(BinderActivity.this,DailyDetailsActivity.class);
+                intent.putExtra("selection",0);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onItemClick(int itemIndex, String itemName) {
+                change(itemIndex);
+                //Toast.makeText(BinderActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemReselected(int itemIndex, String itemName) {
+                //Toast.makeText(BinderActivity.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
             }
         });
-        bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
-            @Override public void onPositionChange(int y) {
-                // Manage the new y position
-            }
-        });
+// Set listeners
+//        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+//            @Override
+//            public boolean onTabSelected(int position, boolean wasSelected) {
+//                // Do something cool here...
+//                change(position);
+//                return true;
+//            }
+//        });
+//        bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
+//            @Override public void onPositionChange(int y) {
+//                // Manage the new y position
+//            }
+//        });
     }
 
     @Override
@@ -202,11 +182,16 @@ public class BinderActivity extends AppCompatActivity{
         alert.show();
 
     }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        bottomNavigation.onSaveInstanceState(outState);
+    }
     public void change (int position){
 
         switch (position){
 
-            case 0:
+            case 1:
                 toolbar_title.setText("Partner Connect");
                 toolbar.setTitle("");
 
@@ -225,15 +210,14 @@ public class BinderActivity extends AppCompatActivity{
 //                Toast.makeText(BinderActivity.this, "clicked 1", Toast.LENGTH_SHORT).show();
 
                 break;
-            case 1:
+            case 3:
                 toolbar_title.setText("Profile");
                 toolbar.setTitle("");
                 fra = new UserDetailsFragment();
                 //bottomNavigation.setCurrentItem(1);
 //                Toast.makeText(BinderActivity.this, "clicked 2", Toast.LENGTH_SHORT).show();
                 break;
-            case 2:
-
+            case 0:
                 if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
                     toolbar_title.setText("Mito");
                     toolbar.setTitle("");
@@ -257,34 +241,34 @@ public class BinderActivity extends AppCompatActivity{
                 //bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;
-            case 3:
+            case 2:
                 toolbar_title.setText("Dietician Chat");
                 toolbar.setTitle("");
                 fra = new ChatDieticianFragment();
                 break;
-            case 4:
-                if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
-                    toolbar_title.setText("Settings");
-                    toolbar.setTitle("");
-                    fra = new SettingsFragment();
-                }else {
-                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
-                    alertDialog1.setTitle("Enter Details");
-                    alertDialog1.setMessage("Please enter your height and weight to proceed");
-                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog1.show();
-                }
-                //bottomNavigation.setCurrentItem(4);
-                break;
+//            case 4:
+//                if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+//                    toolbar_title.setText("Settings");
+//                    toolbar.setTitle("");
+//                    fra = new SettingsActivity();
+//                }else {
+//                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
+//                    alertDialog1.setTitle("Enter Details");
+//                    alertDialog1.setMessage("Please enter your height and weight to proceed");
+//                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                        }
+//                    });
+//                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    alertDialog1.show();
+//                }
+//                //bottomNavigation.setCurrentItem(4);
+//                break;
             default:
                 if (getIntent().getStringExtra("interests") != null){
                     fra = new UserConnectFragment();

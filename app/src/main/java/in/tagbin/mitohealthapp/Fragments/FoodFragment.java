@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,7 +56,8 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
     LinearLayoutManager linearLayoutManager;
     RecyclerView rvRecommendations;
     RecommendationAdapter mAdapter;
-    LinearLayout tvTopRecommended,linearFoodLogger;
+    LinearLayout linearFoodLogger;
+    RelativeLayout relativeFoodRecommended,relativeFoodLogged;
     List<RecommendationModel> data,loggerModel;
     List<String> measuring_units;
     int pos;
@@ -71,7 +73,8 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
         pref = new PrefManager(getContext());
         rvRecommendations = (RecyclerView) fragView.findViewById(R.id.rvRecommendation);
         spinner = (Spinner) fragView.findViewById(R.id.spinnerRecommended);
-        tvTopRecommended = (LinearLayout) fragView.findViewById(R.id.linearTopRecommended);
+        relativeFoodRecommended = (RelativeLayout) fragView.findViewById(R.id.relativeRecommended);
+        relativeFoodLogged = (RelativeLayout) fragView.findViewById(R.id.relativeLoggedFood);
         linearFoodLogger = (LinearLayout) fragView.findViewById(R.id.linearFoodLogger);
         //progressBar = (GifImageView) fragView.findViewById(R.id.progressBar);
         progressBar = DailyDetailsActivity.progressBar;
@@ -162,13 +165,13 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
             TextView mealCalories = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTotalCalories);
             RecyclerView rvLogger = (RecyclerView) loggerView.findViewById(R.id.rvFoodLogger);
             linearFoodLogger.addView(loggerView);
-            mealType.setText("Meal Type "+(i+1));
+            mealType.setText(foodLogger.get(i).getMeal_type().getFood_time());
             mealTime.setText(MyUtils.getValidTimeForMeal(foodLogger.get(i).getStart_time())+" to "+MyUtils.getValidTimeForMeal(foodLogger.get(i).getEnd_time()));
             float totalCalories = 0;
             for (int y=0;y<foodLogger.get(i).getMeals().size();y++){
                 totalCalories += foodLogger.get(i).getMeals().get(y).getComponent().getTotal_energy()*foodLogger.get(i).getMeals().get(y).getAmount();
             }
-            mealCalories.setText(new DecimalFormat("##").format(totalCalories).toString()+" calories");
+            mealCalories.setText(new DecimalFormat("##").format(totalCalories).toString()+" Cals");
             LinearLayoutManager linear1 = new LinearLayoutManager(getContext());
             linear1.setOrientation(LinearLayoutManager.VERTICAL);
             rvLogger.setLayoutManager(linear1);
@@ -223,7 +226,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        linearFoodLogger.setVisibility(View.GONE);
+                        relativeFoodLogged.setVisibility(View.GONE);
                     }
                 });
             }else {
@@ -231,7 +234,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        linearFoodLogger.setVisibility(View.VISIBLE);
+                        relativeFoodLogged.setVisibility(View.VISIBLE);
                         setFoodLogger(loggerModel);
                     }
                 });
@@ -249,6 +252,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
+                        relativeFoodLogged.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -259,6 +263,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
+                        relativeFoodLogged.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -291,7 +296,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        tvTopRecommended.setVisibility(View.GONE);
+                        relativeFoodRecommended.setVisibility(View.GONE);
                     }
                 });
             }else {
@@ -299,7 +304,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        tvTopRecommended.setVisibility(View.VISIBLE);
+                        relativeFoodRecommended.setVisibility(View.VISIBLE);
                         mAdapter.notifyDataSetChanged();
                         adapter.notifyDataSetChanged();
                     }
@@ -318,6 +323,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
+                        relativeFoodRecommended.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -326,6 +332,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
+                        relativeFoodRecommended.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });

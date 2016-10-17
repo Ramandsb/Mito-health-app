@@ -517,7 +517,7 @@ public class HealthActivity extends AppCompatActivity implements View.OnClickLis
                 public void run() {
                     progressBar.setVisibility(View.GONE);
                     Intent i = new Intent(HealthActivity.this,BinderActivity.class);
-                    i.putExtra("selection",2);
+                    i.putExtra("selection",0);
                     startActivity(i);
                     finish();
                     Toast.makeText(HealthActivity.this, "Profile Updated Successfuly", Toast.LENGTH_LONG).show();

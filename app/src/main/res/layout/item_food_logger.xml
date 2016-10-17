@@ -1,47 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        android:layout_margin="10dp"
-        android:id="@+id/linearFoodLoggerHeading">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Meal1"
-            android:layout_gravity="left"
-            android:textSize="14sp"
-            android:id="@+id/tvRecommendedMealType"
-            android:textColor="@color/colorPrimary"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="9-11 AM"
-            android:textSize="14sp"
-            android:id="@+id/tvRecommendedMealTime"
-            android:layout_gravity="left"
-            android:textColor="@color/colorPrimary"
-            android:layout_weight="1"/>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="400 calories"
-            android:id="@+id/tvRecommendedMealTotalCalories"
-            android:textSize="14sp"
-            android:layout_gravity="end"
-            android:textColor="@color/colorPrimary"
-            android:layout_weight="1"/>
-    </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/linearFoodLoggerHeading"
-        android:id="@+id/rvFoodLogger"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
-</RelativeLayout>
+    <View
+        android:id="@+id/viewSperator"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="2dp"
+        android:background="#a0c854" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="-7dp"
+            android:src="@drawable/food_meal_image" />
+
+        <LinearLayout
+            android:id="@+id/linearFoodLoggerHeading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <TextView
+                android:id="@+id/tvRecommendedMealType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:text="Meal1"
+                android:textAllCaps="true"
+                android:textColor="#3d405b"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/tvRecommendedMealTotalCalories"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:text="400 calories"
+                android:textColor="#6c6d6d"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvRecommendedMealTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearFoodLoggerHeading"
+            android:layout_marginLeft="10dp"
+            android:text="9-11 AM"
+            android:textColor="#6c6d6d"
+            android:textSize="12sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvFoodLogger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvRecommendedMealTime"
+            android:layout_margin="10dp" />
+    </RelativeLayout>
+</LinearLayout>

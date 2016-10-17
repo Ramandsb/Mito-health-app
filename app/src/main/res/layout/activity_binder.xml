@@ -36,11 +36,17 @@
 
     <include layout="@layout/content_binder" />
 
-    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+    <com.luseen.spacenavigation.SpaceNavigationView
         android:id="@+id/bottom_navigater"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:layout_gravity="bottom" />
-
+        android:layout_gravity="bottom"
+        app:active_item_color="@color/bottombar"
+        app:centre_button_color="@color/colorPrimary"
+        app:inactive_item_color="#ababab"
+        app:space_background_color="@color/white"
+        app:space_item_icon_size="@dimen/space_item_icon_default_size"
+        app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
+        app:space_item_text_size="@dimen/space_item_text_default_size"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -209,7 +209,7 @@ public class SelectCuisineActivity extends AppCompatActivity implements View.OnC
             PrefManager pref = new PrefManager(SelectCuisineActivity.this);
             pref.setKeyUserDetails(JsonUtils.objectify(responseObject.toString(), UserModel.class));
             Intent intent = new Intent(SelectCuisineActivity.this, BinderActivity.class);
-            intent.putExtra("selection", 1);
+            intent.putExtra("selection", 3);
             startActivity(intent);
             runOnUiThread(new Runnable() {
                 @Override

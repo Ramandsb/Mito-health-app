@@ -685,7 +685,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         public void onRequestCompleted(Object responseObject) {
             Log.d("Event Created",responseObject.toString());
             Intent intent = new Intent(CreateEventActivity.this, BinderActivity.class);
-            intent.putExtra("selection", 0);
+            intent.putExtra("selection", 1);
             intent.putExtra("activity_create_event","activity_create_event");
             startActivity(intent);
             //getFragmentManager().popBackStack();
@@ -737,7 +737,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
 //            transaction.add(R.id.frameAddActivity, fragment);
 //            transaction.commit();
             Intent intent = new Intent(CreateEventActivity.this, BinderActivity.class);
-            intent.putExtra("selection", 0);
+            intent.putExtra("selection", 1);
             intent.putExtra("activity_create_event","activity_create_event");
             startActivity(intent);
             runOnUiThread(new Runnable() {

@@ -371,7 +371,7 @@ showDialog();
 
 
         }else {
-           startActivity(new Intent(MainActivity.this,BinderActivity.class).putExtra("source","direct"));
+           startActivity(new Intent(MainActivity.this,BinderActivity.class).putExtra("selection",3).putExtra("source","direct"));
            finish();
        }
         // ATTENTION: This was auto-generated to implement the App Indexing API.

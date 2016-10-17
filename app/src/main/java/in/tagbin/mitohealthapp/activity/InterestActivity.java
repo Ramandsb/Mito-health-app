@@ -353,7 +353,7 @@ public class InterestActivity extends AppCompatActivity {
             PrefManager pref = new PrefManager(InterestActivity.this);
             pref.setTutorial1(true);
             Intent i = new Intent(InterestActivity.this,BinderActivity.class);
-            i.putExtra("selection",0);
+            i.putExtra("selection",1);
             startActivity(i);
             finish();
             runOnUiThread(new Runnable() {

@@ -4,8 +4,6 @@
     android:layout_height="wrap_content"
     android:id="@+id/relativeViewRecommend"
     android:orientation="vertical"
-    android:background="@drawable/bg_recommended"
-    android:layout_marginBottom="10dp"
     android:padding="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -21,7 +19,7 @@
         android:layout_marginBottom="5dp"
         android:layout_toRightOf="@+id/civFoodLogger"
         android:text="Paneer Sandwich"
-        android:textColor="#3d405b"
+        android:textColor="#111111"
         android:textSize="14sp" />
 
     <TextView
@@ -32,7 +30,7 @@
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/civFoodLogger"
         android:text="3 bowls"
-        android:textColor="#111111"
+        android:textColor="#494949"
         android:textSize="12sp" />
 
     <TextView
@@ -43,7 +41,7 @@
         android:layout_marginLeft="30dp"
         android:layout_toRightOf="@+id/tvFoodQuantity"
         android:text="400 calories"
-        android:textColor="#111111"
+        android:textColor="#494949"
         android:textSize="12sp" />
 
     <RelativeLayout
@@ -75,4 +73,10 @@
             android:padding="4dp"
             android:src="@drawable/food_refresh" />
     </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#9b9b9b"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/tvFoodCalories"/>
 </RelativeLayout>
