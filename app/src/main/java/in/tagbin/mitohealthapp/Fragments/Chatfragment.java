@@ -2,11 +2,13 @@ package in.tagbin.mitohealthapp.Fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import in.tagbin.mitohealthapp.Database.ChatDatabase;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.activity.SettingsActivity;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.ItemClickSupport;
 import in.tagbin.mitohealthapp.R;
@@ -106,6 +109,7 @@ public class Chatfragment extends Fragment {
                 .setVisible(false);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         View view = menu.findItem(R.id.action_coin).getActionView();
         coins = (TextView) view.findViewById(R.id.tvCoins);
         PrefManager pref = new PrefManager(getContext());
@@ -122,6 +126,30 @@ public class Chatfragment extends Fragment {
         if (id == R.id.action_requests) {
             Intent i = new Intent(getContext(),ChatRequestActivity.class);
             startActivity(i);
+        }else if (id == R.id.action_Settings) {
+            if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+                //toolbar_title.setText("Settings");
+                //toolbar.setTitle("");
+                //fra = new SettingsActivity();
+                Intent i = new Intent(getContext(), SettingsActivity.class);
+                startActivity(i);
+            }else {
+                final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(getContext(),R.style.AppCompatAlertDialogStyle);
+                alertDialog1.setTitle("Enter Details");
+                alertDialog1.setMessage("Please enter your height and weight to proceed");
+                alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog1.show();
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

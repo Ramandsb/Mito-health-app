@@ -117,7 +117,7 @@ public class SetGoalAdpater extends RecyclerView.Adapter<SetGoalAdpater.ViewHold
                 PrefManager pref = new PrefManager(mContext);
                 pref.setKeyUserDetails(JsonUtils.objectify(responseObject.toString(), UserModel.class));
                 Intent intent = new Intent(mContext, BinderActivity.class);
-                intent.putExtra("selection", 1);
+                intent.putExtra("selection", 3);
                 mContext.startActivity(intent);
                 ((Activity)mContext).runOnUiThread(new Runnable() {
                     @Override

@@ -1,6 +1,5 @@
-package in.tagbin.mitohealthapp.Fragments;
+package in.tagbin.mitohealthapp.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,16 +7,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -34,11 +31,8 @@ import org.json.JSONException;
 
 import java.text.ParseException;
 
-import in.tagbin.mitohealthapp.activity.MainActivity;
-import in.tagbin.mitohealthapp.activity.BinderActivity;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
-import in.tagbin.mitohealthapp.activity.SplashActivity;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
@@ -47,15 +41,7 @@ import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.SettingsModel;
 import pl.droidsonroids.gif.GifImageView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SettingsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class SettingsFragment extends Fragment {
+public class SettingsActivity extends AppCompatActivity {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -65,89 +51,53 @@ public class SettingsFragment extends Fragment {
     DiscreteSeekBar distance;
     TextView ageSet,distanceSet,version,coins;
     SettingsModel settingsModel;
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     GifImageView progressBar;
+    Toolbar toolbar;
     TextView prefernce;
     int coinsFinal = 0;
     RelativeLayout preferenceLayout;
-    private OnFragmentInteractionListener mListener;
-
-    public SettingsFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        BinderActivity i = (BinderActivity) getActivity();
-        setHasOptionsMenu(true);
-        i.invalidateOptionsMenu();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.frag_settings, container, false);
-        TextView logout = (TextView) view.findViewById(R.id.tvLogout);
+        setContentView(R.layout.activity_settings);
+        TextView logout = (TextView) findViewById(R.id.tvLogout);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Settings");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences loginDetails= getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
+                SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor=loginDetails.edit();
                 editor.clear();
                 editor.commit();
-                PrefManager pref = new PrefManager(getContext());
+                PrefManager pref = new PrefManager(SettingsActivity.this);
                 pref.clearSession();
-                startActivity(new Intent(getActivity(),SplashActivity.class));
-                getActivity().finish();
+                startActivity(new Intent(SettingsActivity.this,SplashActivity.class));
+                finish();
             }
         });
-        meals = (Switch) view.findViewById(R.id.switchFilterMeals);
-        water = (Switch) view.findViewById(R.id.switchFilterWater);
-        exercise = (Switch) view.findViewById(R.id.switchFilterExercise);
-        weeklyProgress = (Switch) view.findViewById(R.id.switchFilterWeeklyProgress);
-        healthTips = (Switch) view.findViewById(R.id.switchFilterHealthTips);
-        sleep = (Switch) view.findViewById(R.id.switchFilterSleep);
-        explore = (Switch) view.findViewById(R.id.switchFilterExplore);
-        chatNotifications = (Switch) view.findViewById(R.id.switchFilterChatNotifications);
-        distance = (DiscreteSeekBar) view.findViewById(R.id.rangebarDistance);
-        age = (RangeBar) view.findViewById(R.id.rangebarAge);
-        progressBar = (GifImageView) view.findViewById(R.id.progressBar);
-        ageSet = (TextView) view.findViewById(R.id.tvSettingAgeSet);
-        distanceSet = (TextView) view.findViewById(R.id.tvSettingDistanceSet);
-        prefernce = (TextView) view.findViewById(R.id.tvSettingPreference);
-        version = (TextView) view.findViewById(R.id.tvVersion);
-        preferenceLayout = (RelativeLayout) view.findViewById(R.id.relativeSettingGender);
+        meals = (Switch) findViewById(R.id.switchFilterMeals);
+        water = (Switch) findViewById(R.id.switchFilterWater);
+        exercise = (Switch) findViewById(R.id.switchFilterExercise);
+        weeklyProgress = (Switch) findViewById(R.id.switchFilterWeeklyProgress);
+        healthTips = (Switch) findViewById(R.id.switchFilterHealthTips);
+        sleep = (Switch) findViewById(R.id.switchFilterSleep);
+        explore = (Switch) findViewById(R.id.switchFilterExplore);
+        chatNotifications = (Switch) findViewById(R.id.switchFilterChatNotifications);
+        distance = (DiscreteSeekBar) findViewById(R.id.rangebarDistance);
+        age = (RangeBar) findViewById(R.id.rangebarAge);
+        progressBar = (GifImageView) findViewById(R.id.progressBar);
+        ageSet = (TextView) findViewById(R.id.tvSettingAgeSet);
+        distanceSet = (TextView) findViewById(R.id.tvSettingDistanceSet);
+        prefernce = (TextView) findViewById(R.id.tvSettingPreference);
+        version = (TextView) findViewById(R.id.tvVersion);
+        preferenceLayout = (RelativeLayout) findViewById(R.id.relativeSettingGender);
         settingsModel = new SettingsModel();
         progressBar.setVisibility(View.VISIBLE);
-        Controller.getSettings(getContext(),mSetingSetListener);
+        Controller.getSettings(this,mSetingSetListener);
         try {
-            String version_name = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0).versionName;
+            String version_name = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
             version.setText("Version "+version_name);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -251,24 +201,24 @@ public class SettingsFragment extends Fragment {
         preferenceLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(SettingsActivity.this);
                 if (Build.VERSION.SDK_INT >= 22) {
-                    alertDialog2 = new AlertDialog.Builder(getContext(), R.style.AppCompatAlertDialogStyle);
+                    alertDialog2 = new AlertDialog.Builder(SettingsActivity.this, R.style.AppCompatAlertDialogStyle);
                 } else {
-                    alertDialog2 = new AlertDialog.Builder(getContext());
+                    alertDialog2 = new AlertDialog.Builder(SettingsActivity.this);
                 }
-                LinearLayout linearLayout = new LinearLayout(getContext());
+                LinearLayout linearLayout = new LinearLayout(SettingsActivity.this);
                 linearLayout.setOrientation(LinearLayout.VERTICAL);
-                int padding = MyUtils.dpToPx(getActivity(),10);
-                int padding1 = MyUtils.dpToPx(getContext(),30);
-                int padding2 = MyUtils.dpToPx(getContext(),20);
-                TextView textView = new TextView(getContext());
+                int padding = MyUtils.dpToPx(SettingsActivity.this,10);
+                int padding1 = MyUtils.dpToPx(SettingsActivity.this,30);
+                int padding2 = MyUtils.dpToPx(SettingsActivity.this,20);
+                TextView textView = new TextView(SettingsActivity.this);
                 textView.setText("Please select your preference");
                 textView.setTextColor(Color.parseColor("#000000"));
 
                 textView.setPadding(padding1,padding,padding1,padding);
                 linearLayout.addView(textView);
-                final RadioGroup etRadioGroup = new RadioGroup(getContext());
+                final RadioGroup etRadioGroup = new RadioGroup(SettingsActivity.this);
                 //etNickName.setPadding(padding2,0,padding2,padding);
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
@@ -277,21 +227,21 @@ public class SettingsFragment extends Fragment {
                 params.setMargins(padding2, 0, padding2, padding);
                 etRadioGroup.setLayoutParams(params);
                 etRadioGroup.setPadding(0,padding,0,padding);
-                RadioButton radioButton = new RadioButton(getContext());
+                RadioButton radioButton = new RadioButton(SettingsActivity.this);
                 radioButton.setText("Only Men");
                 //radioButton.setId(1);
                 radioButton.setTextSize(18);
                 radioButton.setTextColor(Color.parseColor("#26446d"));
                 radioButton.setPadding(2, 10, 0, 10);
                 etRadioGroup.addView(radioButton);
-                RadioButton radioButton1 = new RadioButton(getContext());
+                RadioButton radioButton1 = new RadioButton(SettingsActivity.this);
                 radioButton1.setText("Only Women");
                 radioButton1.setTextSize(18);
                 //radioButton1.setId(2);
                 radioButton1.setTextColor(Color.parseColor("#26446d"));
                 radioButton1.setPadding(2, 10, 0, 10);
                 etRadioGroup.addView(radioButton1);
-                RadioButton radioButton2 = new RadioButton(getContext());
+                RadioButton radioButton2 = new RadioButton(SettingsActivity.this);
                 radioButton2.setText("Both");
                 //radioButton2.setId(0);
                 radioButton2.setTextSize(18);
@@ -325,37 +275,32 @@ public class SettingsFragment extends Fragment {
                 alertDialog2.show();
             }
         });
-        return view;
     }
 
+
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        Log.d("PREPDUG", "hereProfile");
-        for (int i = 0; i < menu.size(); i++) {
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        for (int i=0;i< menu.size();i++) {
             MenuItem itm = menu.getItem(i);
-            itm.setVisible(false);
+            itm.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
-        //InitActivity i = (InitActivity) getActivity();
-        //i.getActionBar().setTitle("Profile");
         menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(false);
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(true);
+        menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
         View view = menu.findItem(R.id.action_coin).getActionView();
         coins = (TextView) view.findViewById(R.id.tvCoins);
-        PrefManager pref = new PrefManager(getContext());
+        PrefManager pref = new PrefManager(this);
         coinsFinal = pref.getKeyCoins();
         coins.setText(""+coinsFinal);
-        super.onPrepareOptionsMenu(menu);
+        return super.onCreateOptionsMenu(menu);
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -367,33 +312,21 @@ public class SettingsFragment extends Fragment {
         if (id == R.id.action_save) {
             progressBar.setVisibility(View.VISIBLE);
             Log.d("settig send model",JsonUtils.jsonify(settingsModel));
-            Controller.setSettings(getContext(),settingsModel,mSettingPutListener);
+            Controller.setSettings(SettingsActivity.this,settingsModel,mSettingPutListener);
+            return true;
+        }else if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
     RequestListener mSettingPutListener = new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -403,13 +336,12 @@ public class SettingsFragment extends Fragment {
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("setting response",responseObject.toString());
-            if (getActivity() == null)
-                return;
-            getActivity().runOnUiThread(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),"Settings succesfully saved",Toast.LENGTH_LONG).show();
+                    Toast.makeText(SettingsActivity.this,"Settings succesfully saved",Toast.LENGTH_LONG).show();
+                    finish();
                 }
             });
         }
@@ -417,23 +349,21 @@ public class SettingsFragment extends Fragment {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("settings error",message);
-            if (getActivity() == null)
-                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                getActivity().runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingsActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
             }else{
-                getActivity().runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingsActivity.this, "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -449,9 +379,7 @@ public class SettingsFragment extends Fragment {
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("setting get",responseObject.toString());
             final SettingsModel settingsModel1 = JsonUtils.objectify(responseObject.toString(),SettingsModel.class);
-            if (getActivity() == null)
-                return;
-            getActivity().runOnUiThread(new Runnable() {
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
@@ -463,23 +391,21 @@ public class SettingsFragment extends Fragment {
         @Override
         public void onRequestError(int errorCode, String message) {
             Log.d("settings  fetch error",message);
-            if (getActivity() == null)
-                return;
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                getActivity().runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingsActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
             }else{
-                getActivity().runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SettingsActivity.this, "Internet connection error", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -510,7 +436,7 @@ public class SettingsFragment extends Fragment {
             prefernce.setText("Only Women    >");
         }
         coinsFinal = setting.getTotal_coins();
-        PrefManager pref = new PrefManager(getContext());
+        PrefManager pref = new PrefManager(SettingsActivity.this);
         pref.setKeyCoins(coinsFinal);
     }
 }

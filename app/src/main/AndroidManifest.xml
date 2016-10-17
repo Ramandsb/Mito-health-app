@@ -164,6 +164,10 @@
             android:label="Interests"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.SettingsActivity"
+            android:label="Settings"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activity.SetGoalsActivity"
             android:label="Set Goals"
             android:screenOrientation="portrait" />

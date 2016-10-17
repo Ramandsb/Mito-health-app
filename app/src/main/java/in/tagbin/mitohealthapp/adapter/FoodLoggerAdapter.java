@@ -54,7 +54,7 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
     @Override
     public FoodLoggerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == TYPE_ITEM){
-            View v = LayoutInflater.from(mContext).inflate(R.layout.item_food_recommended,parent,false);
+            View v = LayoutInflater.from(mContext).inflate(R.layout.item_food_logged,parent,false);
             ViewHolder vhItem = new ViewHolder(v,viewType);
             return vhItem;
         }
@@ -107,7 +107,7 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
             mProgressBar = pProgressBar;
             foodName.setText(pModel.getComponent().getName());
             quantity.setText(pModel.getAmount()+" "+pModel.getComponent().getServing_type().getServing_type());
-            calories.setText(new DecimalFormat("##").format(pModel.getComponent().getTotal_energy()*pModel.getAmount()).toString()+" calories");
+            calories.setText(new DecimalFormat("##").format(pModel.getComponent().getTotal_energy()*pModel.getAmount()).toString()+" Cal");
             Picasso.with(mContext).load(mModel.getComponent().getImage()).into(circleImageView);
             Calendar[] dates = new Calendar[4];
             int i = 0;

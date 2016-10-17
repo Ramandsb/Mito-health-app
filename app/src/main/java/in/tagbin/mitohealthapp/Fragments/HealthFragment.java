@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
+import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,6 +60,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.activity.SettingsActivity;
 import in.tagbin.mitohealthapp.helper.ProfileImage.GOTOConstants;
 import in.tagbin.mitohealthapp.helper.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.helper.ProfileImage.PicModeSelectDialogFragment;
@@ -461,6 +464,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(true);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         View view = menu.findItem(R.id.action_coin).getActionView();
         coins = (TextView) view.findViewById(R.id.tvCoins);
         coinsFinal = pref.getKeyCoins();
@@ -521,6 +525,30 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             }
 
             return true;
+        }else if (id == R.id.action_Settings) {
+            if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+                //toolbar_title.setText("Settings");
+                //toolbar.setTitle("");
+                //fra = new SettingsActivity();
+                Intent i = new Intent(getContext(), SettingsActivity.class);
+                startActivity(i);
+            }else {
+                final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(getContext(),R.style.AppCompatAlertDialogStyle);
+                alertDialog1.setTitle("Enter Details");
+                alertDialog1.setMessage("Please enter your height and weight to proceed");
+                alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog1.show();
+            }
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -543,7 +571,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 public void run() {
                     progressBar.setVisibility(View.GONE);
                     BinderActivity i = (BinderActivity) getActivity();
-                    i.bottomNavigation.setCurrentItem(2);
+                    i.bottomNavigation.changeCurrentItem(0);
                     Toast.makeText(getActivity(), "Profile Updated Successfuly", Toast.LENGTH_LONG).show();
                 }
             });

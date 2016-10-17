@@ -2,12 +2,14 @@ package in.tagbin.mitohealthapp.Fragments;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -50,6 +52,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.activity.SettingsActivity;
 import in.tagbin.mitohealthapp.helper.ProfileImage.GOTOConstants;
 import in.tagbin.mitohealthapp.helper.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.helper.ProfileImage.PicModeSelectDialogFragment;
@@ -651,6 +654,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(false);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         View view = menu.findItem(R.id.action_coin).getActionView();
         coins = (TextView) view.findViewById(R.id.tvCoins);
         coins.setText(""+coinsFinal);
@@ -737,6 +741,30 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
 
 //            getFragmentManager().beginTransaction().replace(R.id.fragmentnew,new MitoHealthFragment()).commit();
             //finish();
+            return true;
+        }else if (id == R.id.action_Settings) {
+            if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+                //toolbar_title.setText("Settings");
+                //toolbar.setTitle("");
+                //fra = new SettingsActivity();
+                Intent i = new Intent(getContext(), SettingsActivity.class);
+                startActivity(i);
+            }else {
+                final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(getContext(),R.style.AppCompatAlertDialogStyle);
+                alertDialog1.setTitle("Enter Details");
+                alertDialog1.setMessage("Please enter your height and weight to proceed");
+                alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog1.show();
+            }
             return true;
         }
 
@@ -947,7 +975,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 Controller.getInterests(getContext(), mInterestListener);
             } else {
                 BinderActivity i = (BinderActivity) getActivity();
-                i.bottomNavigation.setCurrentItem(2);
+                i.bottomNavigation.changeCurrentItem(0);
             }
         }
 

@@ -69,7 +69,7 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class DailyDetailsActivity extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener{
 
-    private LineChart mChart;
+    //private LineChart mChart;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     static SheetLayout mSheetLayout;
@@ -77,7 +77,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
     FloatingActionButton fab;
     public static String selectedDate="";
     PrefManager pref;
-    CollapsingToolbarLayout appBarLayout;
+    //CollapsingToolbarLayout appBarLayout;
     int a=0,b=0,c=0;
     int i = 0;
     Intent sendDate;
@@ -98,8 +98,9 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("What's on your plate today?");
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        //appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         dop = new DatabaseOperations(this);
         sendDate=new Intent(SENDDATE);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -144,53 +145,58 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         tabLayout.getTabAt(3).setIcon(tabIcons[3]);
         tabLayout.getTabAt(4).setIcon(tabIcons[4]);
         mSheetLayout = (SheetLayout) findViewById(R.id.bottom_sheet);
-        mChart = (LineChart) findViewById(R.id.chart1);
-        mChart.setOnChartValueSelectedListener(this);
+//        mChart = (LineChart) findViewById(R.id.chart1);
+//        mChart.setOnChartValueSelectedListener(this);
+//
+//        mChart.setDrawGridBackground(false);
+//        mChart.setDescription("");
+//        mChart.setDrawBorders(false);
+//        mChart.getAxisLeft().setEnabled(true);
+//        mChart.getAxisRight().setEnabled(false);
+//
+//        mChart.getAxisRight().setDrawAxisLine(false);
+//        mChart.getAxisRight().setDrawGridLines(false);
+//        mChart.getXAxis().setDrawAxisLine(false);
+//        mChart.getXAxis().setDrawGridLines(false);
+//        mChart.getXAxis().setTextColor(Color.parseColor("#ffffff"));
+//        mChart.setDescriptionColor(Color.parseColor("#ffffff"));
+//        mChart.getAxisLeft().setTextColor(Color.parseColor("#ffffff"));
+//        mChart.getAxisRight().setTextColor(Color.parseColor("#ffffff"));
+//        mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+//        XAxis xAxis = mChart.getXAxis();
+//        xAxis.setValueFormatter(new AxisValueFormatter() {
+//
+//
+//            private SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM");
+//
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis) {
+//                return mFormat.format(new Date((long) value));
+//            }
+//
+//            @Override
+//            public int getDecimalDigits() {
+//                return 0;
+//            }
+//        });
+//
+//        // enable touch gestures
+//        mChart.setTouchEnabled(true);
+//
+//        // enable scaling and dragging
+//        mChart.setDragEnabled(true);
+//        mChart.setScaleEnabled(true);
+//        mChart.setPinchZoom(false);
+//        Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
+//        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+//
 
-        mChart.setDrawGridBackground(false);
-        mChart.setDescription("");
-        mChart.setDrawBorders(false);
-        mChart.getAxisLeft().setEnabled(true);
-        mChart.getAxisRight().setEnabled(false);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
 
-        mChart.getAxisRight().setDrawAxisLine(false);
-        mChart.getAxisRight().setDrawGridLines(false);
-        mChart.getXAxis().setDrawAxisLine(false);
-        mChart.getXAxis().setDrawGridLines(false);
-        mChart.getXAxis().setTextColor(Color.parseColor("#ffffff"));
-        mChart.setDescriptionColor(Color.parseColor("#ffffff"));
-        mChart.getAxisLeft().setTextColor(Color.parseColor("#ffffff"));
-        mChart.getAxisRight().setTextColor(Color.parseColor("#ffffff"));
-        mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setValueFormatter(new AxisValueFormatter() {
-
-
-            private SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM");
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return mFormat.format(new Date((long) value));
             }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
-        });
-
-        // enable touch gestures
-        mChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-        mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(true);
-        mChart.setPinchZoom(false);
-        Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-
-
-
         setChartBackground(i);
 
 
@@ -235,65 +241,65 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
     public void setChartBackground(int position){
         if (position==1){
             fab.hide();
-            appBarLayout.setBackgroundResource(R.color.water);
-            tabLayout.setBackgroundResource(R.color.water);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.wateracc));
+            //appBarLayout.setBackgroundResource(R.color.water);
+            tabLayout.setBackgroundResource(R.color.colorPrimary);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                Window window = getWindow();
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                window.setStatusBarColor(getResources().getColor(R.color.wateracc));
+//
+//            }
 
-            }
-
-            addData(dop.getChartInformation(dop, MitoHealthFragment.selectedDate),"water");
+            //addData(dop.getChartInformation(dop, MitoHealthFragment.selectedDate),"water");
 
         }
         if (position==0){
             fab.show();
-            appBarLayout.setBackgroundResource(R.color.food);
-            tabLayout.setBackgroundResource(R.color.food);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.foodacc));
-
-            }
-            addData(dop.getChartInformation(dop, MitoHealthFragment.selectedDate),"food");
+            //appBarLayout.setBackgroundResource(R.color.food);
+            tabLayout.setBackgroundResource(R.color.colorPrimary);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                Window window = getWindow();
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                window.setStatusBarColor(getResources().getColor(R.color.foodacc));
+//
+//            }
+            //addData(dop.getChartInformation(dop, MitoHealthFragment.selectedDate),"food");
 
         }
         if (position==2){
             fab.show();
-            appBarLayout.setBackgroundResource(R.color.exercise);
-            tabLayout.setBackgroundResource(R.color.exercise);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.exerciseacc));
-            }
-            addData(dop.getChartInformation(dop, MitoHealthFragment.selectedDate),"exercise");
+            //appBarLayout.setBackgroundResource(R.color.exercise);
+            tabLayout.setBackgroundResource(R.color.colorPrimary);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                Window window = getWindow();
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                window.setStatusBarColor(getResources().getColor(R.color.exerciseacc));
+//            }
+            //addData(dop.getChartInformation(dop, MitoHealthFragment.selectedDate),"exercise");
         }
         if (position==3){
             fab.hide();
 
-            appBarLayout.setBackgroundResource(R.color.sleep);
-            tabLayout.setBackgroundResource(R.color.sleep);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.sleepacc));
-            }
-            addData(dop.getChartInformation(dop, MitoHealthFragment.selectedDate),"sleep");
+            //appBarLayout.setBackgroundResource(R.color.sleep);
+            tabLayout.setBackgroundResource(R.color.colorPrimary);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                Window window = getWindow();
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                window.setStatusBarColor(getResources().getColor(R.color.sleepacc));
+//            }
+            //addData(dop.getChartInformation(dop, MitoHealthFragment.selectedDate),"sleep");
         }
 
         if (position==4){
             fab.hide();
 
-            appBarLayout.setBackgroundResource(R.color.feelings);
-            tabLayout.setBackgroundResource(R.color.feelings);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                Window window = getWindow();
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                window.setStatusBarColor(getResources().getColor(R.color.feelingsaacc));
-            }
+            //appBarLayout.setBackgroundResource(R.color.feelings);
+            tabLayout.setBackgroundResource(R.color.colorPrimary);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                Window window = getWindow();
+//                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                window.setStatusBarColor(getResources().getColor(R.color.feelingsaacc));
+//            }
 //            addDatatoFeelingsChart();
         }
 
@@ -319,7 +325,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
 //                break;
 //            }
             case android.R.id.home: {
-                startActivity(new Intent(DailyDetailsActivity.this,BinderActivity.class).putExtra("selection",2).putExtra("source","indirect"));
+                startActivity(new Intent(DailyDetailsActivity.this,BinderActivity.class).putExtra("selection",0).putExtra("source","indirect"));
                 finish();
                 break;
             }
@@ -465,7 +471,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
             e.printStackTrace();
             Log.d("count error","true");
         }
-        startActivity(new Intent(DailyDetailsActivity.this,BinderActivity.class).putExtra("selection",2).putExtra("source","indirect"));
+        startActivity(new Intent(DailyDetailsActivity.this,BinderActivity.class).putExtra("selection",0).putExtra("source","indirect"));
         finish();
         super.onBackPressed();
 
@@ -602,159 +608,159 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
             ColorTemplate.VORDIPLOM_COLORS[2]
     };
 
-    public void addData(ArrayList<DateRangeDataModel> list,String source) {
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-        Log.d("addData",list.toString());
-
-
-
-
-        ArrayList<Entry> values = new ArrayList<Entry>();
-//        values.add(new Entry(1471890600000L, 40));
-//        values.add(new Entry(1471977000000L, 10));
-//        values.add(new Entry(1472063400000L, 80));
-//        values.add(new Entry(1472149800000L, 0));
-//        values.add(new Entry(1472236200000L, 90));
-//        values.add(new Entry(1472322600000L, 10));
-//        values.add(new Entry(1472409000000L, 50));
-//        values.add(new Entry(1472495400000L, 33));
-
-        ArrayList<Entry> values2 = new ArrayList<Entry>();
+//    public void addData(ArrayList<DateRangeDataModel> list,String source) {
+//        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+//        Log.d("addData",list.toString());
 //
-//        values2.add(new Entry(1471977000000L, 70));
-//        values2.add(new Entry(1472063400000L, 30));
-//        values2.add(new Entry(1472149800000L, 100));
-//        values2.add(new Entry(1472236200000L, 10));
-//        values2.add(new Entry(1472322600000L, 100));
-//        values2.add(new Entry(1472409000000L, 40));
-//        values2.add(new Entry(1472495400000L, 33));
-        DateRangeDataModel dm;
-        for (int i =0;i<list.size();i++){
-            dm= list.get(i);
-            if (source.equals("food")){
-                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getFood_req()));
-                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getFood_con()));
-                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getFood_req())));
-                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getFood_con())));
-            }else if (source.equals("water")){
-                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getWater_req()));
-                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getWater_con()));
-                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getWater_req())));
-                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getWater_con())));
-            }else if (source.equals("exercise")){
-                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getExer_req()));
-                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getExer_con()));
-                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getExer_req())));
-                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getExer_con())));
-            }else if (source.equals("sleep")){
-                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getSleep_req()));
-                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getSleep_con()));
-                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getSleep_req())));
-                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getSleep_con())));
-            }
+//
+//
+//
+//        ArrayList<Entry> values = new ArrayList<Entry>();
+////        values.add(new Entry(1471890600000L, 40));
+////        values.add(new Entry(1471977000000L, 10));
+////        values.add(new Entry(1472063400000L, 80));
+////        values.add(new Entry(1472149800000L, 0));
+////        values.add(new Entry(1472236200000L, 90));
+////        values.add(new Entry(1472322600000L, 10));
+////        values.add(new Entry(1472409000000L, 50));
+////        values.add(new Entry(1472495400000L, 33));
+//
+//        ArrayList<Entry> values2 = new ArrayList<Entry>();
+////
+////        values2.add(new Entry(1471977000000L, 70));
+////        values2.add(new Entry(1472063400000L, 30));
+////        values2.add(new Entry(1472149800000L, 100));
+////        values2.add(new Entry(1472236200000L, 10));
+////        values2.add(new Entry(1472322600000L, 100));
+////        values2.add(new Entry(1472409000000L, 40));
+////        values2.add(new Entry(1472495400000L, 33));
+//        DateRangeDataModel dm;
+//        for (int i =0;i<list.size();i++){
+//            dm= list.get(i);
+//            if (source.equals("food")){
+//                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getFood_req()));
+//                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getFood_con()));
+//                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getFood_req())));
+//                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getFood_con())));
+//            }else if (source.equals("water")){
+//                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getWater_req()));
+//                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getWater_con()));
+//                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getWater_req())));
+//                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getWater_con())));
+//            }else if (source.equals("exercise")){
+//                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getExer_req()));
+//                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getExer_con()));
+//                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getExer_req())));
+//                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getExer_con())));
+//            }else if (source.equals("sleep")){
+//                Log.d("value to chartReq", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getSleep_req()));
+//                Log.d("value to chartCons", Long.valueOf(dm.getTimestamp())+"///////"+Float.valueOf(dm.getSleep_con()));
+//                values.add(new Entry(Long.valueOf(dm.getTimestamp()),Float.valueOf(dm.getSleep_req())));
+//                values2.add(new Entry(Long.valueOf(dm.getTimestamp()), Float.valueOf(dm.getSleep_con())));
+//            }
+//
+//        }
+//
+//        LineDataSet d = new LineDataSet(values, "Required");
+//        d.setLineWidth(2.5f);
+//        d.setCircleRadius(4f);
+//        d.setValueTextColor(Color.WHITE);
+//        d.setAxisDependency(YAxis.AxisDependency.LEFT);
+//
+//        LineDataSet d1 = new LineDataSet(values2, "Consumed");
+//        d1.setLineWidth(2.5f);
+//        d1.setCircleRadius(4f);
+//        d1.setDrawFilled(true);
+//        d1.setValueTextColor(Color.WHITE);
+//        d1.setDrawFilled(true);
+//        d1.setAxisDependency(YAxis.AxisDependency.LEFT);
+//
+//
+////        int color = mColors[z % mColors.length];
+////        d.setColor(getResources().getColor(R.color.red));
+////        d.setCircleColor(getResources().getColor(R.color.red));
+//        dataSets.add(d);
+//        dataSets.add(d1);
+//        int col_consumed=0;int col_reql=0;
+//        col_consumed =getResources().getColor(R.color.white);
+//        if (source.equals("food")){
+//
+//            col_reql =getResources().getColor(R.color.foodline);
+//
+//        }else if (source.equals("water")){
+//            col_reql =getResources().getColor(R.color.waterline);
+//
+//        }else if (source.equals("exercise")){
+//            col_reql =getResources().getColor(R.color.exerciseline);
+//        }else if (source.equals("sleep")){
+//
+//            col_reql =getResources().getColor(R.color.sleepline);
+//        }
+//
+//        // make the first DataSet dashed
+////        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
+//        ((LineDataSet) dataSets.get(0)).setColors(new int[]{col_consumed});
+//        ((LineDataSet) dataSets.get(0)).setCircleColors(new int[]{col_consumed});
+//
+//        ((LineDataSet) dataSets.get(1)).setColors(new int[]{col_reql});
+//        ((LineDataSet) dataSets.get(1)).setCircleColors(new int[]{col_reql});
+//
+//        LineData data = new LineData(dataSets);
+//        mChart.setData(data);
+//        mChart.animateY(3000);
+//        mChart.invalidate();
+//
+//    }
 
-        }
-
-        LineDataSet d = new LineDataSet(values, "Required");
-        d.setLineWidth(2.5f);
-        d.setCircleRadius(4f);
-        d.setValueTextColor(Color.WHITE);
-        d.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-        LineDataSet d1 = new LineDataSet(values2, "Consumed");
-        d1.setLineWidth(2.5f);
-        d1.setCircleRadius(4f);
-        d1.setDrawFilled(true);
-        d1.setValueTextColor(Color.WHITE);
-        d1.setDrawFilled(true);
-        d1.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-
-//        int color = mColors[z % mColors.length];
-//        d.setColor(getResources().getColor(R.color.red));
-//        d.setCircleColor(getResources().getColor(R.color.red));
-        dataSets.add(d);
-        dataSets.add(d1);
-        int col_consumed=0;int col_reql=0;
-        col_consumed =getResources().getColor(R.color.white);
-        if (source.equals("food")){
-
-            col_reql =getResources().getColor(R.color.foodline);
-
-        }else if (source.equals("water")){
-            col_reql =getResources().getColor(R.color.waterline);
-
-        }else if (source.equals("exercise")){
-            col_reql =getResources().getColor(R.color.exerciseline);
-        }else if (source.equals("sleep")){
-
-            col_reql =getResources().getColor(R.color.sleepline);
-        }
-
-        // make the first DataSet dashed
-//        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
-        ((LineDataSet) dataSets.get(0)).setColors(new int[]{col_consumed});
-        ((LineDataSet) dataSets.get(0)).setCircleColors(new int[]{col_consumed});
-
-        ((LineDataSet) dataSets.get(1)).setColors(new int[]{col_reql});
-        ((LineDataSet) dataSets.get(1)).setCircleColors(new int[]{col_reql});
-
-        LineData data = new LineData(dataSets);
-        mChart.setData(data);
-        mChart.animateY(3000);
-        mChart.invalidate();
-
-    }
-
-    public void addDatatoFeelingsChart(){
-        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
-
-
-
-
-        ArrayList<Entry> values2 = new ArrayList<Entry>();
-      Cursor cursor=  dop.getFeelingsInformation(dop,"yes");
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-               String  time=cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.FEELINGS_DATE));
-               String  avg=cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.AVERAGE));
-                values2.add(new Entry(Long.valueOf(time+"000"), Float.valueOf(avg)));
-
-
-            }
-            while (cursor.moveToNext());
-        }
-
-
-
-
-        LineDataSet d1 = new LineDataSet(values2, "Feelings");
-        d1.setLineWidth(2.5f);
-        d1.setCircleRadius(4f);
-        d1.setDrawFilled(true);
-        d1.setValueTextColor(Color.WHITE);
-        d1.setDrawFilled(true);
-        d1.setAxisDependency(YAxis.AxisDependency.LEFT);
-
-
-//        int color = mColors[z % mColors.length];
-//        d.setColor(getResources().getColor(R.color.red));
-//        d.setCircleColor(getResources().getColor(R.color.red));
-
-        dataSets.add(d1);
-        int col_consumed=getResources().getColor(R.color.feelingsline);
-        // make the first DataSet dashed
-//        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
-        ((LineDataSet) dataSets.get(0)).setColors(new int[]{col_consumed});
-        ((LineDataSet) dataSets.get(0)).setCircleColors(new int[]{col_consumed});
-
-
-        LineData data = new LineData(dataSets);
-        mChart.setData(data);
-        mChart.animateY(3000);
-        mChart.invalidate();
-
-    }
+//    public void addDatatoFeelingsChart(){
+//        ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+//
+//
+//
+//
+//        ArrayList<Entry> values2 = new ArrayList<Entry>();
+//      Cursor cursor=  dop.getFeelingsInformation(dop,"yes");
+//        if (cursor != null && cursor.moveToFirst()) {
+//            do {
+//               String  time=cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.FEELINGS_DATE));
+//               String  avg=cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.AVERAGE));
+//                values2.add(new Entry(Long.valueOf(time+"000"), Float.valueOf(avg)));
+//
+//
+//            }
+//            while (cursor.moveToNext());
+//        }
+//
+//
+//
+//
+//        LineDataSet d1 = new LineDataSet(values2, "Feelings");
+//        d1.setLineWidth(2.5f);
+//        d1.setCircleRadius(4f);
+//        d1.setDrawFilled(true);
+//        d1.setValueTextColor(Color.WHITE);
+//        d1.setDrawFilled(true);
+//        d1.setAxisDependency(YAxis.AxisDependency.LEFT);
+//
+//
+////        int color = mColors[z % mColors.length];
+////        d.setColor(getResources().getColor(R.color.red));
+////        d.setCircleColor(getResources().getColor(R.color.red));
+//
+//        dataSets.add(d1);
+//        int col_consumed=getResources().getColor(R.color.feelingsline);
+//        // make the first DataSet dashed
+////        ((LineDataSet) dataSets.get(0)).enableDashedLine(10, 10, 0);
+//        ((LineDataSet) dataSets.get(0)).setColors(new int[]{col_consumed});
+//        ((LineDataSet) dataSets.get(0)).setCircleColors(new int[]{col_consumed});
+//
+//
+//        LineData data = new LineData(dataSets);
+//        mChart.setData(data);
+//        mChart.animateY(3000);
+//        mChart.invalidate();
+//
+//    }
     RequestListener mWaterLogListener = new RequestListener() {
         @Override
         public void onRequestStarted() {

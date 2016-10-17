@@ -3,6 +3,7 @@ package in.tagbin.mitohealthapp.Fragments;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.transition.Fade;
 import android.util.Log;
@@ -41,6 +43,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import in.tagbin.mitohealthapp.activity.EventDetailsActivity;
+import in.tagbin.mitohealthapp.activity.SettingsActivity;
 import in.tagbin.mitohealthapp.helper.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
@@ -57,35 +60,11 @@ import in.tagbin.mitohealthapp.model.EnergyGetModel;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 
 public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
-    private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
-
-    String user_id;
     MaterialCalendarView widget;
-    RWeekCalendar rCalendarFragment;
-
     public static String selectedDate = "";
-    SharedPreferences login_details;
-    String auth_key;
     TextView cal_consumed,cal_left,cal_burned,coins;
-    TextView messageView;
-    android.app.AlertDialog alert;
-    String last7Days="";
-    String next7Days="";
-    String myurl= Config.url + "logger/history/dates/";
     PrefManager pref;
-    int a = 0, b = 0, c = 0,coinsFinal = 0;
-    int mBgColor = 0;
-    android.support.v7.widget.CardView food_card;
-    android.support.v7.widget.CardView water_card;
-    android.support.v7.widget.CardView exercise_card;
-    android.support.v7.widget.CardView sleep_card;
-    android.support.v7.widget.CardView feelings_card;
-    public static boolean flagHome = false;
-    public static String firstdate = "";
-    Button plus_button,minus_button;
-    TextView glasses,foodcard_recom,exercard_burnt;
-    int j =4;
-    DatabaseOperations dop;
+    int coinsFinal = 0,mBgColor = 0;
 
 
 
@@ -97,7 +76,6 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         BinderActivity i = (BinderActivity) getActivity();
         setHasOptionsMenu(true);
         i.invalidateOptionsMenu();
-        dop = new DatabaseOperations(getActivity());
 
     }
 
@@ -177,108 +155,14 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
                 .setFirstDayOfWeek(current_cal.get(Calendar.DAY_OF_WEEK))
                 .commit();
 
-
+        cal_consumed = (TextView) v.findViewById(R.id.tvCaloriesConsumed);
+        cal_left = (TextView) v.findViewById(R.id.tvCaloriesLeft);
+        cal_burned = (TextView) v.findViewById(R.id.tvCaloriesBurnt);
 
         mBgColor = getResources().getColor(R.color.sample_bg);
-        food_card = (CardView) v.findViewById(R.id.food_card);
-        water_card = (CardView) v.findViewById(R.id.water_card);
-        exercise_card = (CardView) v.findViewById(R.id.exercise_card);
-        sleep_card = (CardView) v.findViewById(R.id.sleep_card);
-        feelings_card = (CardView) v.findViewById(R.id.feelings_card);
-        plus_button = (Button) v.findViewById(R.id.plus_but);
-        minus_button = (Button) v.findViewById(R.id.minus_but);
-        glasses = (TextView) v.findViewById(R.id.glasses);
-        foodcard_recom = (TextView) v.findViewById(R.id.foodcard_recomended);
-        exercard_burnt = (TextView) v.findViewById(R.id.exercard_burnt);
-        cal_consumed = (TextView) v.findViewById(R.id.cal_consumed);
-        cal_left = (TextView) v.findViewById(R.id.cal_left);
-        cal_burned = (TextView) v.findViewById(R.id.cal_burned);
-        login_details=getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
-
-
-        //setHomepageDetails();
-
-        food_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getActivity(),DailyDetailsActivity.class);
-                intent.putExtra("selection",0);
-                startActivity(intent);
-            }
-        });
-        water_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getActivity(),DailyDetailsActivity.class);
-                intent.putExtra("selection",1);
-                startActivity(intent);
-            }
-        });
-        exercise_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getActivity(),DailyDetailsActivity.class);
-                intent.putExtra("selection",2);
-                startActivity(intent);
-            }
-        });
-        sleep_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getActivity(),DailyDetailsActivity.class);
-                intent.putExtra("selection",3);
-                startActivity(intent);
-            }
-        });
-        feelings_card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(getActivity(),DailyDetailsActivity.class);
-                intent.putExtra("selection",4);
-                startActivity(intent);
-            }
-        });
 
         return v;
     }
-
-//    private void setHomepageDetails() {
-//
-//        Cursor cursor =dop.getCompleteChartInfo(dop,selectedDate);
-//        if (cursor != null && cursor.moveToFirst()) {
-//            do {
-//  String      f_con=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_CONSUMED));
-//  String   e_bur=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_EXERCAL_BURNED));
-//  String  water=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_WATER_CONSUMED));
-//  String    f_req=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.CHART_FOODCAL_REQ));
-//                double wat_int=(Double.valueOf(water));
-//                int i=Integer.valueOf((int) wat_int);
-//                double wat_int1=(Double.valueOf(f_con));
-//                int j=Integer.valueOf((int) wat_int1);
-//                double wat_int2=(Double.valueOf(e_bur));
-//                int k=Integer.valueOf((int) wat_int2);
-//                double wat_int3=(Double.valueOf(f_req));
-//                int l=Integer.valueOf((int) wat_int3);
-//                int fcal_int=j;
-//                int calbur_int=k;
-//                int totcal_int=l;
-//                cal_consumed.setText(fcal_int+"");
-//                cal_left.setText(fcal_int+"/"+totcal_int);
-//                cal_burned.setText(calbur_int+"");
-//                String w= String.valueOf(i/100);
-//                glasses.setText(w+"/8");
-//                foodcard_recom.setText(fcal_int + " Kcal");
-//                exercard_burnt.setText(calbur_int+"");
-//            }
-//            while (cursor.moveToNext());
-//        }
-//
-//    }
 
     RequestListener mDayCaloriesListener = new RequestListener() {
         @Override
@@ -299,12 +183,12 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
                     PrefManager pref = new PrefManager(getActivity());
                     pref.setKeyCoins(coinsFinal);
                     cal_consumed.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_consumed()).toString());
-                    cal_left.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_required()-energyGetModel.getCalorie_consumed()).toString()+"/"+new DecimalFormat("##").format(energyGetModel.getCalorie_required()).toString());
+                    cal_left.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_required()-energyGetModel.getCalorie_consumed()).toString());
                     cal_burned.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_burnt()).toString());
-                    String w= new DecimalFormat("##").format(energyGetModel.getWater()/250).toString();
-                    glasses.setText(w+"/8");
-                    foodcard_recom.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_required()).toString() + " Kcal");
-                    exercard_burnt.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_burnt()).toString());
+//                    String w= new DecimalFormat("##").format(energyGetModel.getWater()/250).toString();
+//                    glasses.setText(w+"/8");
+//                    foodcard_recom.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_required()).toString() + " Kcal");
+//                    exercard_burnt.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_burnt()).toString());
                 }
             });
 
@@ -334,81 +218,7 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
             }
         }
     };
-    RequestListener mDatesCaloriesListener = new RequestListener() {
-        @Override
-        public void onRequestStarted() {
 
-        }
-
-        @Override
-        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
-            Log.d("data range calories",responseObject.toString());
-//            DateRangeDataModel dateRangeDataModel = JsonUtils.objectify(responseObject.toString(),DateRangeDataModel.class);
-//
-//            dateRangeDataModel.getChart().get(0).
-//
-//            try {
-//
-//                dop.ClearChartTable(dop);
-//
-//                JSONObject object = new JSONObject(responseObject.toString());
-//                JSONArray chart = object.getJSONArray("chart");
-//                for (int i = 0; i < chart.length(); i++) {
-//                    JSONObject obj = chart.getJSONObject(i);
-//                    String water = obj.getString("water");
-//                    String date = obj.getString("date");
-//                    String fcal_con = obj.getString("calorie_consumed");
-//                    String fcal_req = obj.getString("calorie_required");
-//                    String exer_bur = obj.getString("calorie_burnt");
-//                    long  time= MyUtils.getUtcTimestamp(date,"m");
-//
-//                    Log.d("check response prob",water+date+""+fcal_con+fcal_req+exer_bur);
-//                    dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "2000", water, "100", exer_bur, "8", "6");
-//
-//                    int count =dop.getCount(dop, TableData.Tableinfo.TABLE_NAME_CHART, TableData.Tableinfo.CHART_DATE,selectedDate+" 00:00:00");
-//
-////                  if (count==0){
-////                      dop.putChartInformation(dop, date, String.valueOf(time), fcal_req, fcal_con, "8", water, "100", exer_bur, "8", "6");
-////                      Log.d("count with put",count+"/////");
-////                  }else {
-////                      Log.d("count",count+"///  count without");
-////                  }
-//
-//                }
-//            }catch (Exception e){
-//
-//                Log.d("exception",e.toString());
-//
-//            }
-        }
-
-        @Override
-        public void onRequestError(int errorCode, String message) {
-                Log.d("error",message);
-//            if (errorCode >= 400 && errorCode < 500) {
-//                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-//                if (getActivity() == null)
-//                    return;
-//                getActivity().runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        progressBar.setVisibility(View.GONE);
-//                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//            }else{
-//                if (getActivity() == null)
-//                    return;
-//                getActivity().runOnUiThread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        progressBar.setVisibility(View.GONE);
-//                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//            }
-        }
-    };
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         for (int i=0;i< menu.size();i++) {
@@ -422,6 +232,7 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(false);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         View view = menu.findItem(R.id.action_coin).getActionView();
         coins = (TextView) view.findViewById(R.id.tvCoins);
         PrefManager pref = new PrefManager(getContext());
@@ -429,14 +240,42 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         coins.setText(""+coinsFinal);
         super.onPrepareOptionsMenu(menu);
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setupWindowAnimations() {
-        Fade fade = new Fade();
-        fade.setDuration(1000);
-        getActivity().getWindow().setEnterTransition(fade);
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_Settings) {
+            if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+                    //toolbar_title.setText("Settings");
+                    //toolbar.setTitle("");
+                    //fra = new SettingsActivity();
+                    Intent i = new Intent(getContext(), SettingsActivity.class);
+                    startActivity(i);
+                }else {
+                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(getContext(),R.style.AppCompatAlertDialogStyle);
+                    alertDialog1.setTitle("Enter Details");
+                    alertDialog1.setMessage("Please enter your height and weight to proceed");
+                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    alertDialog1.show();
+                }
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
