@@ -128,13 +128,13 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
             quantity = (TextView) itemView.findViewById(R.id.tvFoodQuantity);
             calories = (TextView) itemView.findViewById(R.id.tvFoodCalories);
             accept = (ImageView) itemView.findViewById(R.id.ivFoodAccept);
-            decline = (ImageView) itemView.findViewById(R.id.ivFoodDecline);
-            refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
+//            decline = (ImageView) itemView.findViewById(R.id.ivFoodDecline);
+//            refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
             circleImageView = (CircleImageView) itemView.findViewById(R.id.civFoodLogger);
             view = (RelativeLayout) itemView.findViewById(R.id.relativeViewRecommend);
 
             view.setOnClickListener(this);
-            decline.setOnClickListener(this);
+//            decline.setOnClickListener(this);
         }
 
         public void populateData(ExerciseLogModel pModel, Context pContext,GifImageView pProgressBar){
@@ -171,13 +171,13 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
             calendar.setTime(date);
             if (calendar.getTimeInMillis() > dates[0].getTimeInMillis() || calendar.getTimeInMillis() < dates[3].getTimeInMillis()){
                 accept.setVisibility(View.GONE);
-                decline.setVisibility(View.GONE);
-                refresh.setVisibility(View.GONE);
+//                decline.setVisibility(View.GONE);
+//                refresh.setVisibility(View.GONE);
             }else {
                 //mSheetLayout.expandFab();
                 accept.setVisibility(View.GONE);
-                decline.setVisibility(View.VISIBLE);
-                refresh.setVisibility(View.GONE);
+//                decline.setVisibility(View.VISIBLE);
+//                refresh.setVisibility(View.GONE);
             }
         }
 
@@ -191,23 +191,23 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
 //                    mContext.startActivity(i);
                     showExerciseDialog(mModel);
                     break;
-                case R.id.ivFoodDecline:
-                    final android.app.AlertDialog.Builder alertDialog1 = new android.app.AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
-                    alertDialog1.setTitle("Delete logged exercise");
-                    alertDialog1.setMessage(" Are you sure you want to delete this logged exercise?");
-                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            mProgressBar.setVisibility(View.VISIBLE);
-                            Controller.deleteLogFood(mContext,mModel.getId(),mDeleteListener);
-                        }
-                    });
-                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog1.show();
-                    break;
+//                case R.id.ivFoodDecline:
+//                    final android.app.AlertDialog.Builder alertDialog1 = new android.app.AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
+//                    alertDialog1.setTitle("Delete logged exercise");
+//                    alertDialog1.setMessage(" Are you sure you want to delete this logged exercise?");
+//                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            mProgressBar.setVisibility(View.VISIBLE);
+//                            Controller.deleteLogFood(mContext,mModel.getId(),mDeleteListener);
+//                        }
+//                    });
+//                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    alertDialog1.show();
+//                    break;
             }
         }
         RequestListener mDeleteListener = new RequestListener() {

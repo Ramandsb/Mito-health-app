@@ -1,78 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/relativeViewRecommend"
-    android:orientation="vertical"
-    android:background="@drawable/bg_recommended"
-    android:layout_marginBottom="10dp"
-    android:padding="10dp">
+    android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/civFoodLogger"
-        android:layout_width="35dp"
-        android:layout_height="35dp" />
-
-    <TextView
-        android:id="@+id/tvFoodName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+    <LinearLayout
+        android:id="@+id/view_list_repo_action_container"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="right"
+        android:padding="10dp"
         android:layout_marginBottom="5dp"
-        android:layout_toRightOf="@+id/civFoodLogger"
-        android:text="Paneer Sandwich"
-        android:textColor="#3d405b"
-        android:textSize="14sp" />
+        android:background="@drawable/bg_recommended"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tvFoodQuantity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvFoodName"
-        android:layout_marginLeft="10dp"
-        android:layout_toRightOf="@+id/civFoodLogger"
-        android:text="3 bowls"
-        android:textColor="#111111"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/view_list_repo_action_delete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:text="Dislike ?"
+            android:textColor="@android:color/holo_red_dark"/>
 
-    <TextView
-        android:id="@+id/tvFoodCalories"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tvFoodName"
-        android:layout_marginLeft="30dp"
-        android:layout_toRightOf="@+id/tvFoodQuantity"
-        android:text="400 calories"
-        android:textColor="#111111"
-        android:textSize="12sp" />
+        <TextView
+            android:id="@+id/view_list_repo_action_undo"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="Undo"
+            android:textColor="@android:color/holo_red_dark"/>
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/tvFoodName">
+    </LinearLayout>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/relativeViewRecommend"
+        android:orientation="vertical"
+        android:background="@drawable/bg_recommended"
+        android:layout_marginBottom="5dp"
+        android:padding="10dp">
 
-        <ImageView
-            android:id="@+id/ivFoodAccept"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civFoodLogger"
+            android:layout_width="35dp"
+            android:layout_centerVertical="true"
+            android:layout_height="35dp" />
+
+        <TextView
+            android:id="@+id/tvFoodName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="4dp"
-            android:src="@drawable/food_accept" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/civFoodLogger"
+            android:text="Paneer Sandwich"
+            android:textColor="#3d405b"
+            android:textSize="14sp" />
 
-        <ImageView
-            android:id="@+id/ivFoodDecline"
+        <TextView
+            android:id="@+id/tvFoodQuantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/ivFoodAccept"
-            android:padding="4dp"
-            android:src="@drawable/food_decline" />
+            android:layout_below="@+id/tvFoodName"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/civFoodLogger"
+            android:text="3 bowls"
+            android:textColor="#111111"
+            android:textSize="12sp" />
 
-        <ImageView
-            android:id="@+id/ivFoodRefresh"
+        <TextView
+            android:id="@+id/tvFoodCalories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/ivFoodDecline"
-            android:padding="4dp"
-            android:src="@drawable/food_refresh" />
+            android:layout_below="@+id/tvFoodName"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/tvFoodQuantity"
+            android:text="400 calories"
+            android:textColor="#111111"
+            android:textSize="12sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:id="@+id/ivFoodAccept"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:src="@drawable/food_accept" />
+
+            <!--<ImageView-->
+            <!--android:id="@+id/ivFoodDecline"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toRightOf="@+id/ivFoodAccept"-->
+            <!--android:padding="4dp"-->
+            <!--android:src="@drawable/food_decline" />-->
+
+            <!--<ImageView-->
+            <!--android:id="@+id/ivFoodRefresh"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toRightOf="@+id/ivFoodDecline"-->
+            <!--android:padding="4dp"-->
+            <!--android:src="@drawable/food_refresh" />-->
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+
+
+</FrameLayout>

@@ -106,6 +106,7 @@ dependencies {
     compile 'com.google.firebase:firebase-messaging:9.0.0'
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.sothree.slidinguppanel:library:3.3.0'
+    compile 'com.loopeer.library:itemtouchhelperextension:1.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
 

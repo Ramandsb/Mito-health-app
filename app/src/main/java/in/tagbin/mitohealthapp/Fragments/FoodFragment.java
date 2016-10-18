@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.loopeer.itemtouchhelperextension.ItemTouchHelperExtension;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -35,12 +38,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
 import in.tagbin.mitohealthapp.activity.DailyDetailsActivity;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.adapter.FoodLoggerAdapter;
+import in.tagbin.mitohealthapp.helper.ItemTouchHelperCallback;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
@@ -50,7 +53,7 @@ import in.tagbin.mitohealthapp.model.RecommendationModel;
 import pl.droidsonroids.gif.GifImageView;
 
 
-public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
+public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener{
     MaterialCalendarView widget;
     Spinner spinner;
     LinearLayoutManager linearLayoutManager;
@@ -62,6 +65,8 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
     List<String> measuring_units;
     int pos;
     PrefManager pref;
+    public ItemTouchHelperExtension mItemTouchHelper;
+    public ItemTouchHelperExtension.Callback mCallback;
     GifImageView progressBar;
     ArrayAdapter<String> adapter;
 
@@ -135,6 +140,9 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     unit[0] = measuring_units.get(i);
                     mAdapter = new RecommendationAdapter(getContext(), data, measuring_units.get(i),measuring_units,progressBar);
                     rvRecommendations.setAdapter(mAdapter);
+                    mCallback = new ItemTouchHelperCallback();
+                    mItemTouchHelper = new ItemTouchHelperExtension(mCallback);
+                    mItemTouchHelper.attachToRecyclerView(rvRecommendations);
                 }
             }
 
@@ -143,8 +151,11 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
 
             }
         });
+
         return fragView;
     }
+
+
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -158,14 +169,48 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
     public void setFoodLogger(List<RecommendationModel> foodLogger){
         LayoutInflater inflater = LayoutInflater.from(getContext());
         linearFoodLogger.removeAllViews();
+        View loggerView1 = inflater.inflate(R.layout.item_food_logger, linearFoodLogger, false);
+        TextView mealType1 = (TextView) loggerView1.findViewById(R.id.tvRecommendedMealType);
+        TextView mealTime1 = (TextView) loggerView1.findViewById(R.id.tvRecommendedMealTime);
+        TextView mealCalories1 = (TextView) loggerView1.findViewById(R.id.tvRecommendedMealTotalCalories);
+        RecyclerView rvLogger1 = (RecyclerView) loggerView1.findViewById(R.id.rvFoodLogger);
+        ImageView foodImage1 = (ImageView) loggerView1.findViewById(R.id.ivFoodImage);
+        foodImage1.setImageResource(R.drawable.food_meal_image);
+        linearFoodLogger.addView(loggerView1);
+        mealType1.setText("WAKE UP !");
+        mealTime1.setVisibility(View.GONE);
+        mealCalories1.setVisibility(View.GONE);
+        rvLogger1.setVisibility(View.GONE);
         for (int i=0;i<foodLogger.size();i++) {
             View loggerView = inflater.inflate(R.layout.item_food_logger, linearFoodLogger, false);
             TextView mealType = (TextView) loggerView.findViewById(R.id.tvRecommendedMealType);
             TextView mealTime = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTime);
             TextView mealCalories = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTotalCalories);
             RecyclerView rvLogger = (RecyclerView) loggerView.findViewById(R.id.rvFoodLogger);
+            ImageView foodImage = (ImageView) loggerView.findViewById(R.id.ivFoodImage);
             linearFoodLogger.addView(loggerView);
             mealType.setText(foodLogger.get(i).getMeal_type().getFood_time());
+            if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().contains("early morning")){
+                foodImage.setImageResource(R.drawable.icon_early_morning);
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("breakfast")){
+                foodImage.setImageResource(R.drawable.icon_breakfast);
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("mid morning")){
+                foodImage.setImageResource(R.drawable.icon_midmorning);
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("lunch")){
+                foodImage.setImageResource(R.drawable.icon_lunch);
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("teatime")){
+                foodImage.setImageResource(R.drawable.icon_teatime);
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("evening snacks")){
+                foodImage.setImageResource(R.drawable.icon_evening_snack);
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("dinner")){
+                foodImage.setImageResource(R.drawable.icon_dinner);
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("post dinner")){
+                foodImage.setImageResource(R.drawable.icon_post_dinner);
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("late night meals")){
+                foodImage.setImageResource(R.drawable.icon_late_night);
+            }else{
+                foodImage.setImageResource(R.drawable.food_meal_image);
+            }
             mealTime.setText(MyUtils.getValidTimeForMeal(foodLogger.get(i).getStart_time())+" to "+MyUtils.getValidTimeForMeal(foodLogger.get(i).getEnd_time()));
             float totalCalories = 0;
             for (int y=0;y<foodLogger.get(i).getMeals().size();y++){
