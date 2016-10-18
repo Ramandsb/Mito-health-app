@@ -86,13 +86,14 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     }
 
     public void removePosition(int adapterPosition) {
-        mModel.get(mPos).getMeals().remove(adapterPosition);
-        notifyItemRemoved(adapterPosition);
+
+            mModel.get(mPos).getMeals().remove(adapterPosition);
+            //notifyItemRemoved(adapterPosition);
+            //notifyItemRangeChanged(adapterPosition, getItemCount());
+
     }
 
     private void doDelete(int adapterPosition) {
-        mModel.get(mPos).getMeals().remove(adapterPosition);
-        notifyItemRemoved(adapterPosition);
         SetFoodLoggerModel setFoodLoggerModel1 = new SetFoodLoggerModel();
         setFoodLoggerModel1.setLtype("food");
         setFoodLoggerModel1.setC_id(mModel.get(mPos).getMeals().get(adapterPosition).getComponent().getId());
@@ -106,10 +107,12 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
         setFoodLoggerModel1.setMeal_id(mModel.get(mPos).getMeals().get(adapterPosition).getMeal_id());
         mProgressBar.setVisibility(View.VISIBLE);
         Controller.setLogger(mContext, setFoodLoggerModel1, mFoodLoggerListener1);
+        mModel.get(mPos).getMeals().remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
     }
 
     @Override
-    public void onBindViewHolder(final RecommendationAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecommendationAdapter.ViewHolder holder, final int position) {
         if (mModel.get(mPos).getMeals().get(position).getFlag() == 0 || mModel.get(mPos).getMeals().get(position).getFlag() == 1) {
             holder.itemView.setVisibility(View.VISIBLE);
             if (mModel.get(mPos).getMeals().get(position).getFlag() == 0) {
@@ -125,11 +128,12 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             viewHolder.mActionViewDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    doDelete(holder.getAdapterPosition());
+                    doDelete(position);
                 }
             });
             ((RecommendationAdapter.ViewHolder) holder).populateData(mModel.get(mPos).getMeals().get(position), mContext, mType, mProgressBar);
         } else {
+            //holder.itemView.setVisibility(View.GONE);
             removePosition(position);
         }
     }

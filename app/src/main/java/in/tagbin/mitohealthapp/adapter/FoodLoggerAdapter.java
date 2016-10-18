@@ -62,17 +62,87 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(FoodLoggerAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(FoodLoggerAdapter.ViewHolder holder, final int position) {
         holder.itemView.setVisibility(View.VISIBLE);
         if (position == mModel.size()-1){
             holder.viewLine.setVisibility(View.GONE);
         }else{
             holder.viewLine.setVisibility(View.VISIBLE);
         }
+        holder.accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
+                alertDialog1.setTitle("Delete logged food");
+                alertDialog1.setMessage(" Are you sure you want to delete this logged food?");
+                alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        removePosition(position);
+                        Controller.deleteLogFood(mContext,mModel.get(position).getId(),mDeleteListener);
+                    }
+                });
+                alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog1.show();
+            }
+        });
         ((FoodLoggerAdapter.ViewHolder) holder).populateData(mModel.get(position), mContext,mProgressBar);
 
     }
+    RequestListener mDeleteListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
 
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("food deleted",responseObject.toString());
+//                Intent i = new Intent(mContext,DailyDetailsActivity.class);
+//                i.putExtra("selection",0);
+//                mContext.startActivity(i);
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(mContext,"Food successfully deleted",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("food delete error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    public void removePosition(int adapterPosition) {
+        mModel.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        //notifyItemRangeChanged(adapterPosition, getItemCount());
+
+    }
     @Override
     public int getItemCount() {
         return mModel.size();
@@ -103,7 +173,6 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
 //            refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
             circleImageView = (CircleImageView) itemView.findViewById(R.id.civFoodLogger);
             view = (RelativeLayout) itemView.findViewById(R.id.relativeViewRecommend);
-
             view.setOnClickListener(this);
 //            decline.setOnClickListener(this);
         }
@@ -160,69 +229,9 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
                     i.putExtra("logger","logger");
                     mContext.startActivity(i);
                     break;
-//                case R.id.ivFoodDecline:
-//                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
-//                    alertDialog1.setTitle("Delete logged food");
-//                    alertDialog1.setMessage(" Are you sure you want to delete this logged food?");
-//                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            mProgressBar.setVisibility(View.VISIBLE);
-//                            Controller.deleteLogFood(mContext,mModel.getId(),mDeleteListener);
-//                        }
-//                    });
-//                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.dismiss();
-//                        }
-//                    });
-//                    alertDialog1.show();
-//                    break;
             }
         }
-        RequestListener mDeleteListener = new RequestListener() {
-            @Override
-            public void onRequestStarted() {
 
-            }
-
-            @Override
-            public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
-                Log.d("food deleted",responseObject.toString());
-                Intent i = new Intent(mContext,DailyDetailsActivity.class);
-                i.putExtra("selection",0);
-                mContext.startActivity(i);
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(mContext,"Food successfully deleted",Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onRequestError(int errorCode, String message) {
-                Log.d("food delete error",message);
-                if (errorCode >= 400 && errorCode < 500) {
-                    final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                    ((Activity)mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mProgressBar.setVisibility(View.GONE);
-                            Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }else{
-                    ((Activity)mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mProgressBar.setVisibility(View.GONE);
-                            Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            }
-        };
     }
 
 }

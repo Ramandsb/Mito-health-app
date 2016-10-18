@@ -43,6 +43,7 @@
         tools:context="in.tagbin.mitohealthapp.activity.DailyDetailsActivity"
         tools:showIn="@layout/activity_daily_details"
         android:orientation="vertical"
+        android:id="@+id/linearMainLayout"
         android:layout_below="@+id/appbar"
         android:background="#ffffff">
 
@@ -69,6 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@+id/linearMainLayout"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
             app:layout_anchorGravity="bottom|right|end"

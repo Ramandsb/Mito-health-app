@@ -175,6 +175,11 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
         TextView mealCalories1 = (TextView) loggerView1.findViewById(R.id.tvRecommendedMealTotalCalories);
         RecyclerView rvLogger1 = (RecyclerView) loggerView1.findViewById(R.id.rvFoodLogger);
         ImageView foodImage1 = (ImageView) loggerView1.findViewById(R.id.ivFoodImage);
+        ImageView dot1 = (ImageView) loggerView1.findViewById(R.id.ivDot);
+        dot1.setVisibility(View.GONE);
+        foodImage1.getLayoutParams().height = 45;
+        foodImage1.getLayoutParams().width = 45;
+        foodImage1.requestLayout();
         foodImage1.setImageResource(R.drawable.food_meal_image);
         linearFoodLogger.addView(loggerView1);
         mealType1.setText("WAKE UP !");
@@ -188,7 +193,15 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
             TextView mealCalories = (TextView) loggerView.findViewById(R.id.tvRecommendedMealTotalCalories);
             RecyclerView rvLogger = (RecyclerView) loggerView.findViewById(R.id.rvFoodLogger);
             ImageView foodImage = (ImageView) loggerView.findViewById(R.id.ivFoodImage);
+            ImageView dot = (ImageView) loggerView.findViewById(R.id.ivDot);
+            dot.setVisibility(View.VISIBLE);
             linearFoodLogger.addView(loggerView);
+            foodImage.getLayoutParams().height = 80;
+            foodImage.getLayoutParams().width = 80;
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) foodImage.getLayoutParams();
+            layoutParams.setMargins(MyUtils.dpToPx(getContext(),-18),MyUtils.dpToPx(getContext(),-3),0,0);
+            foodImage.setLayoutParams(layoutParams);
+            foodImage.requestLayout();
             mealType.setText(foodLogger.get(i).getMeal_type().getFood_time());
             if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().contains("early morning")){
                 foodImage.setImageResource(R.drawable.icon_early_morning);
@@ -211,7 +224,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
             }else{
                 foodImage.setImageResource(R.drawable.food_meal_image);
             }
-            mealTime.setText(MyUtils.getValidTimeForMeal(foodLogger.get(i).getStart_time())+" to "+MyUtils.getValidTimeForMeal(foodLogger.get(i).getEnd_time()));
+            mealTime.setText(MyUtils.getValidTimeForMeal(foodLogger.get(i).getStart_time())+" - "+MyUtils.getValidTimeForMeal(foodLogger.get(i).getEnd_time()));
             float totalCalories = 0;
             for (int y=0;y<foodLogger.get(i).getMeals().size();y++){
                 totalCalories += foodLogger.get(i).getMeals().get(y).getComponent().getTotal_energy()*foodLogger.get(i).getMeals().get(y).getAmount();

@@ -56,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:src="@drawable/food_accept_logger" />
+            android:src="@drawable/food_decline" />
 
         <!--<ImageView-->
             <!--android:id="@+id/ivFoodDecline"-->

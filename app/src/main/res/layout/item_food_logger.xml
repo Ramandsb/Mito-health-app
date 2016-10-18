@@ -6,16 +6,16 @@
 
     <View
         android:id="@+id/viewSperator"
-        android:layout_width="4dp"
+        android:layout_width="2dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="20dp"
         android:background="#a0c854" />
     <ImageView
         android:layout_width="17dp"
         android:layout_height="17dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="-10dp"
+        android:layout_marginLeft="-9dp"
         android:id="@+id/ivFoodImage"
         android:src="@drawable/food_meal_image" />
     <RelativeLayout
@@ -31,30 +31,35 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tvRecommendedMealType"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:layout_weight="1"
                 android:text="Meal1"
                 android:textAllCaps="true"
                 android:textColor="#3d405b"
                 android:textSize="16sp" />
-
+            <ImageView
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:src="@drawable/dot"
+                android:id="@+id/ivDot"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"/>
             <TextView
                 android:id="@+id/tvRecommendedMealTotalCalories"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:textAlignment="textEnd"
-                android:layout_weight="1"
+                android:layout_marginLeft="20dp"
                 android:text="400 calories"
+                android:paddingTop="2dp"
                 android:textColor="#6c6d6d"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
         </LinearLayout>
 
         <TextView
@@ -73,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvRecommendedMealTime"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp" />
     </RelativeLayout>
 </LinearLayout>
