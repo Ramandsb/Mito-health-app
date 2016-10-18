@@ -19,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
         app:mcv_selectionColor="@color/bottombar"
         app:mcv_showOtherDates="all" />
@@ -30,8 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/calendarView"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
 
             <Spinner
                 android:id="@+id/spinnerRecommended"
@@ -51,8 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator"
-                android:layout_marginTop="10dp"
                 android:layout_weight="1"
+                android:layout_marginLeft="5dp"
                 android:text="Healthy Recommendations"
                 android:textColor="#a0c894"
                 android:textSize="16sp" />
@@ -62,7 +62,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvHealthyRecommendations"
-                android:layout_margin="10dp">
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp">
 
             </android.support.v7.widget.RecyclerView>
         </RelativeLayout>
@@ -73,8 +74,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/relativeRecommended"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp">
 
             <TextView
                 android:id="@+id/tvFoodStory"
@@ -91,7 +92,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_below="@+id/tvFoodStory"
-                android:layout_marginTop="10dp"
                 android:background="#a0c894" />
 
 

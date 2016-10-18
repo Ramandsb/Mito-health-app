@@ -9,19 +9,21 @@
         android:layout_width="4dp"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="2dp"
+        android:layout_marginLeft="5dp"
         android:background="#a0c854" />
-
+    <ImageView
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="-10dp"
+        android:id="@+id/ivFoodImage"
+        android:src="@drawable/food_meal_image" />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
 
-        <ImageView
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="-7dp"
-            android:src="@drawable/food_meal_image" />
+
 
         <LinearLayout
             android:id="@+id/linearFoodLoggerHeading"
@@ -41,13 +43,14 @@
                 android:text="Meal1"
                 android:textAllCaps="true"
                 android:textColor="#3d405b"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tvRecommendedMealTotalCalories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
+                android:layout_gravity="right"
+                android:textAlignment="textEnd"
                 android:layout_weight="1"
                 android:text="400 calories"
                 android:textColor="#6c6d6d"
@@ -69,6 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvRecommendedMealTime"
-            android:layout_margin="10dp" />
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp" />
     </RelativeLayout>
 </LinearLayout>

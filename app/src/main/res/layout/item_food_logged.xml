@@ -9,6 +9,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/civFoodLogger"
         android:layout_width="35dp"
+        android:layout_centerVertical="true"
         android:layout_height="35dp" />
 
     <TextView
@@ -30,7 +31,7 @@
         android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/civFoodLogger"
         android:text="3 bowls"
-        android:textColor="#494949"
+        android:textColor="#808080"
         android:textSize="12sp" />
 
     <TextView
@@ -41,42 +42,43 @@
         android:layout_marginLeft="30dp"
         android:layout_toRightOf="@+id/tvFoodQuantity"
         android:text="400 calories"
-        android:textColor="#494949"
+        android:textColor="#808080"
         android:textSize="12sp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/tvFoodName">
+        android:layout_centerVertical="true">
 
         <ImageView
             android:id="@+id/ivFoodAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:src="@drawable/food_accept" />
+            android:src="@drawable/food_accept_logger" />
 
-        <ImageView
-            android:id="@+id/ivFoodDecline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/ivFoodAccept"
-            android:padding="4dp"
-            android:src="@drawable/food_decline" />
+        <!--<ImageView-->
+            <!--android:id="@+id/ivFoodDecline"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toRightOf="@+id/ivFoodAccept"-->
+            <!--android:padding="4dp"-->
+            <!--android:src="@drawable/food_decline" />-->
 
-        <ImageView
-            android:id="@+id/ivFoodRefresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/ivFoodDecline"
-            android:padding="4dp"
-            android:src="@drawable/food_refresh" />
+        <!--<ImageView-->
+            <!--android:id="@+id/ivFoodRefresh"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toRightOf="@+id/ivFoodDecline"-->
+            <!--android:padding="4dp"-->
+            <!--android:src="@drawable/food_refresh" />-->
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#9b9b9b"
+        android:background="#adadad"
         android:layout_marginTop="10dp"
+        android:id="@+id/viewSperator"
         android:layout_below="@+id/tvFoodCalories"/>
 </RelativeLayout>

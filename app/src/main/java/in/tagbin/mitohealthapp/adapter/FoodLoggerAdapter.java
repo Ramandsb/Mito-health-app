@@ -64,6 +64,11 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
     @Override
     public void onBindViewHolder(FoodLoggerAdapter.ViewHolder holder, int position) {
         holder.itemView.setVisibility(View.VISIBLE);
+        if (position == mModel.size()-1){
+            holder.viewLine.setVisibility(View.GONE);
+        }else{
+            holder.viewLine.setVisibility(View.VISIBLE);
+        }
         ((FoodLoggerAdapter.ViewHolder) holder).populateData(mModel.get(position), mContext,mProgressBar);
 
     }
@@ -82,6 +87,7 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
         TextView foodName,quantity,calories;
         ImageView accept,decline,refresh;
         String mType;
+        View viewLine;
         CircleImageView circleImageView;
         GifImageView mProgressBar;
         RelativeLayout view;
@@ -92,13 +98,14 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
             quantity = (TextView) itemView.findViewById(R.id.tvFoodQuantity);
             calories = (TextView) itemView.findViewById(R.id.tvFoodCalories);
             accept = (ImageView) itemView.findViewById(R.id.ivFoodAccept);
-            decline = (ImageView) itemView.findViewById(R.id.ivFoodDecline);
-            refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
+            viewLine = (View) itemView.findViewById(R.id.viewSperator);
+//            decline = (ImageView) itemView.findViewById(R.id.ivFoodDecline);
+//            refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
             circleImageView = (CircleImageView) itemView.findViewById(R.id.civFoodLogger);
             view = (RelativeLayout) itemView.findViewById(R.id.relativeViewRecommend);
 
             view.setOnClickListener(this);
-            decline.setOnClickListener(this);
+//            decline.setOnClickListener(this);
         }
 
         public void populateData(RecommendationModel.MealsModel pModel, Context pContext,GifImageView pProgressBar){
@@ -134,13 +141,13 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
             calendar.setTime(date);
             if (calendar.getTimeInMillis() > dates[0].getTimeInMillis() || calendar.getTimeInMillis() < dates[3].getTimeInMillis()){
                 accept.setVisibility(View.GONE);
-                decline.setVisibility(View.GONE);
-                refresh.setVisibility(View.GONE);
+//                decline.setVisibility(View.GONE);
+//                refresh.setVisibility(View.GONE);
             }else {
                 //mSheetLayout.expandFab();
-                accept.setVisibility(View.GONE);
-                decline.setVisibility(View.VISIBLE);
-                refresh.setVisibility(View.GONE);
+                accept.setVisibility(View.VISIBLE);
+//                decline.setVisibility(View.VISIBLE);
+//                refresh.setVisibility(View.GONE);
             }
         }
 
@@ -153,23 +160,23 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
                     i.putExtra("logger","logger");
                     mContext.startActivity(i);
                     break;
-                case R.id.ivFoodDecline:
-                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
-                    alertDialog1.setTitle("Delete logged food");
-                    alertDialog1.setMessage(" Are you sure you want to delete this logged food?");
-                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            mProgressBar.setVisibility(View.VISIBLE);
-                            Controller.deleteLogFood(mContext,mModel.getId(),mDeleteListener);
-                        }
-                    });
-                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog1.show();
-                    break;
+//                case R.id.ivFoodDecline:
+//                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
+//                    alertDialog1.setTitle("Delete logged food");
+//                    alertDialog1.setMessage(" Are you sure you want to delete this logged food?");
+//                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            mProgressBar.setVisibility(View.VISIBLE);
+//                            Controller.deleteLogFood(mContext,mModel.getId(),mDeleteListener);
+//                        }
+//                    });
+//                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    alertDialog1.show();
+//                    break;
             }
         }
         RequestListener mDeleteListener = new RequestListener() {
