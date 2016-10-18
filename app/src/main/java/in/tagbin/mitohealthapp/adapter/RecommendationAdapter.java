@@ -86,7 +86,6 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     }
 
     public void removePosition(int adapterPosition) {
-
             mModel.get(mPos).getMeals().remove(adapterPosition);
             //notifyItemRemoved(adapterPosition);
             //notifyItemRangeChanged(adapterPosition, getItemCount());
@@ -94,6 +93,8 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
     }
 
     private void doDelete(int adapterPosition) {
+        mModel.get(mPos).getMeals().remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
         SetFoodLoggerModel setFoodLoggerModel1 = new SetFoodLoggerModel();
         setFoodLoggerModel1.setLtype("food");
         setFoodLoggerModel1.setC_id(mModel.get(mPos).getMeals().get(adapterPosition).getComponent().getId());
@@ -113,6 +114,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
 
     @Override
     public void onBindViewHolder(final RecommendationAdapter.ViewHolder holder, final int position) {
+
         if (mModel.get(mPos).getMeals().get(position).getFlag() == 0 || mModel.get(mPos).getMeals().get(position).getFlag() == 1) {
             holder.itemView.setVisibility(View.VISIBLE);
             if (mModel.get(mPos).getMeals().get(position).getFlag() == 0) {
@@ -133,7 +135,6 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             });
             ((RecommendationAdapter.ViewHolder) holder).populateData(mModel.get(mPos).getMeals().get(position), mContext, mType, mProgressBar);
         } else {
-            //holder.itemView.setVisibility(View.GONE);
             removePosition(position);
         }
     }

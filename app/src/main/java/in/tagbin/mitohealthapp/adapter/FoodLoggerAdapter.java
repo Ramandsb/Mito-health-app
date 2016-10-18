@@ -229,6 +229,23 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
                     i.putExtra("logger","logger");
                     mContext.startActivity(i);
                     break;
+//                case R.id.ivFoodDecline:
+//                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
+//                    alertDialog1.setTitle("Delete logged food");
+//                    alertDialog1.setMessage(" Are you sure you want to delete this logged food?");
+//                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            mProgressBar.setVisibility(View.VISIBLE);
+//                            Controller.deleteLogFood(mContext,mModel.getId(),mDeleteListener);
+//                        }
+//                    });
+//                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    alertDialog1.show();
+//                    break;
             }
         }
 

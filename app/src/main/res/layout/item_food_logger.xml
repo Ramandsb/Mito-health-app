@@ -60,6 +60,7 @@
                 android:paddingTop="2dp"
                 android:textColor="#6c6d6d"
                 android:textSize="14sp" />
+
         </LinearLayout>
 
         <TextView
