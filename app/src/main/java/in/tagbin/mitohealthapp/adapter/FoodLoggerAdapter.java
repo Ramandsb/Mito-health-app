@@ -27,7 +27,6 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.tagbin.mitohealthapp.activity.FoodDetailsActivity;
-import in.tagbin.mitohealthapp.activity.DailyDetailsActivity;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.Controller;
@@ -78,8 +77,8 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
                 alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mProgressBar.setVisibility(View.VISIBLE);
-                        removePosition(position);
                         Controller.deleteLogFood(mContext,mModel.get(position).getId(),mDeleteListener);
+                        removePosition(position);
                     }
                 });
                 alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {

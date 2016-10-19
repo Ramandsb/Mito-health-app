@@ -219,7 +219,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                 foodImage.setImageResource(R.drawable.icon_dinner);
             }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("post dinner")){
                 foodImage.setImageResource(R.drawable.icon_post_dinner);
-            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("late night meals")){
+            }else if (foodLogger.get(i).getMeal_type().getFood_time().toLowerCase().equals("late night meal")){
                 foodImage.setImageResource(R.drawable.icon_late_night);
             }else{
                 foodImage.setImageResource(R.drawable.food_meal_image);

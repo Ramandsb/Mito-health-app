@@ -107,6 +107,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.sothree.slidinguppanel:library:3.3.0'
     compile 'com.loopeer.library:itemtouchhelperextension:1.0.0'
+    compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
 }
 apply plugin: 'com.google.gms.google-services'
 
