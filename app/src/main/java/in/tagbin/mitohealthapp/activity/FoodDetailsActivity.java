@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,12 +59,14 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class FoodDetailsActivity extends AppCompatActivity implements View.OnClickListener, TimePickerDialog.OnTimeSetListener {
     String url = "http://pngimg.com/upload/small/apple_PNG12458.png";
-    TextView calories,fats,protiens,carbs,name;
+    TextView calories,fats,protiens,carbs,name,recipeTime,recipeDetails,viewRecipeDetails;
     EditText quantity_ed,set_time;
     Spinner set_unit;
     RecommendationModel.MealsModel data;
     boolean logged = false;
     View view;
+    RelativeLayout relativeTop;
+    ScrollView svrecipeDetails,svfoodDetails;
     GifImageView progressBar;
     DonutProgress fatsProgress,protiensProgress,carbsProgress;
     ImageView fab,mainImage,backImage;
@@ -73,6 +78,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_food_details);
         calories = (TextView) findViewById(R.id.tvEnterCalories);
         fats = (TextView) findViewById(R.id.tvFatsValue);
@@ -80,6 +86,9 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         carbs = (TextView) findViewById(R.id.tvCarbsValue);
         name = (TextView) findViewById(R.id.tvFoodNameDetails);
         set_time = (EditText) findViewById(R.id.set_time);
+        recipeTime =  (TextView) findViewById(R.id.preparation_time);
+        recipeDetails =  (TextView) findViewById(R.id.set_recipe);
+        viewRecipeDetails =  (TextView) findViewById(R.id.tvViewRecipeDetails);
         quantity_ed = (EditText) findViewById(R.id.quantity_ed);
         set_unit = (Spinner) findViewById(R.id.measuring_type);
         mainImage = (ImageView) findViewById(R.id.seeFood);
@@ -88,9 +97,13 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         carbsProgress = (DonutProgress) findViewById(R.id.progressCarbs);
         protiensProgress = (DonutProgress) findViewById(R.id.progressProtiens);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
+        relativeTop = (RelativeLayout) findViewById(R.id.relativeTopFoodDetails);
+        svfoodDetails = (ScrollView) findViewById(R.id.scrollViewFoodDetails);
+        svrecipeDetails = (ScrollView) findViewById(R.id.scrollViewRecipeDetails);
         pref = new PrefManager(this);
         backImage.setOnClickListener(this);
         set_time.setOnClickListener(this);
+        relativeTop.setOnClickListener(this);
         view=findViewById(R.id.cont);
         response = getIntent().getStringExtra("response");
         if (getIntent().getStringExtra("logger") != null)
@@ -261,7 +274,11 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             public void afterTextChanged(Editable editable) {
             }
         });
-
+        recipeTime.setText(data.getComponent().getPreparation_time()+" mins");
+        if (data.getComponent().getRecipe() != null)
+            recipeDetails.setText(data.getComponent().getRecipe());
+        else
+            recipeDetails.setText("Coming Soon!");
     }
     public void sendRequest(){
         if (quantity.equals("")){
@@ -518,7 +535,6 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     dates[i] = selDate;
                     i++;
                 }
-
 //                while (i < 35) {
 //                    Calendar selDate = Calendar.getInstance();
 //                    selDate.add(Calendar.DAY_OF_MONTH, i-3);
@@ -528,14 +544,34 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 com.wdullaer.materialdatetimepicker.time.TimePickerDialog tpd = com.wdullaer.materialdatetimepicker.time.TimePickerDialog.newInstance(this, hour, minute, false);
                 tpd.show(getFragmentManager(), "TIME_PICKER_TAG");
                 break;
+            case R.id.relativeTopFoodDetails:
+                if (svrecipeDetails.getVisibility() == View.VISIBLE){
+                    svfoodDetails.setVisibility(View.VISIBLE);
+                    svrecipeDetails.setVisibility(View.GONE);
+                    viewRecipeDetails.setText("View Recipe Details");
+                    fab.setVisibility(View.VISIBLE);
+                }else {
+                    svrecipeDetails.setVisibility(View.VISIBLE);
+                    svfoodDetails.setVisibility(View.GONE);
+                    viewRecipeDetails.setText("View Nutritive Details");
+                    fab.setVisibility(View.GONE);
+                }
+                break;
         }
     }
     @Override
     public void onBackPressed() {
-        if (!logged)
-            closeAppDialog();
-        else
-            finish();
+        if (svrecipeDetails.getVisibility() == View.VISIBLE){
+            svfoodDetails.setVisibility(View.VISIBLE);
+            svrecipeDetails.setVisibility(View.GONE);
+            viewRecipeDetails.setText("View Recipe Details");
+            fab.setVisibility(View.VISIBLE);
+        }else {
+            if (!logged)
+                closeAppDialog();
+            else
+                finish();
+        }
 
     }
     public void closeAppDialog(){

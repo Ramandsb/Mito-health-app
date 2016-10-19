@@ -43,6 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/seeFood"
+        android:layout_marginBottom="10dp"
         android:background="@color/colorPrimary">
 
         <LinearLayout
@@ -85,9 +86,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/linearTopFoodDetails"
-            android:layout_marginBottom="10dp"
             android:layout_marginLeft="20dp"
+            android:id="@+id/tvViewRecipeDetails"
             android:text="View Recipe Details"
+            android:layout_marginBottom="10dp"
             android:textColor="#b3b3b3"
             android:textSize="14sp" />
     </RelativeLayout>
@@ -104,6 +106,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/scrollViewFoodDetails"
         android:layout_below="@+id/relativeTopFoodDetails">
 
         <RelativeLayout
@@ -121,7 +124,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="0.75">
 
                     <TextView
                         android:id="@+id/tvEnterQuantity"
@@ -162,7 +165,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_weight="1.25">
 
                     <TextView
                         android:id="@+id/tvEnterTime"
@@ -181,6 +184,7 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="10dp"
                         android:clickable="true"
+                        android:focusable="false"
                         android:cursorVisible="false"
                         android:inputType="none"
                         android:text="10:54 AM"
@@ -329,42 +333,87 @@
                             android:textColor="#3d405b"
                             android:textSize="14sp" />
                     </RelativeLayout>
-                    <!--<RelativeLayout-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:layout_marginRight="10dp"-->
-                    <!--android:layout_marginTop="10dp">-->
-                    <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:text="Fibre"-->
-                    <!--android:id="@+id/tvFibreHeading"-->
-                    <!--android:textColor="@color/colorPrimary"/>-->
-                    <!--<com.github.lzyzsd.circleprogress.DonutProgress-->
-                    <!--android:id="@+id/progressFibre"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:layout_below="@+id/tvFibreHeading"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--app:donut_progress="30"/>-->
-                    <!--<TextView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:text="8 gm"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--android:id="@+id/tvFibreValue"-->
-                    <!--android:layout_below="@+id/progressFibre"-->
-                    <!--android:textColor="#111111"/>-->
-                    <!--</RelativeLayout>-->
+
                 </LinearLayout>
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_below="@+id/relativeTopFoodDetails"
+        android:id="@+id/scrollViewRecipeDetails">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:text="Recipe"
+                android:id="@+id/tvRecipeHeading"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="21sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/linearPreparationTime"
+                android:layout_below="@+id/tvRecipeHeading">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Preparation Time :"
+                    android:textColor="#3d405b"
+                    android:id="@+id/tvPreparationHeading"
+                    android:layout_marginLeft="20dp"
+                    android:layout_alignParentLeft="true"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/preparation_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:text="45 mins"
+                    android:layout_gravity="center_vertical"
+                    android:textColor="#111111"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearPreparationTime"
+                android:text="Method:"
+                android:id="@+id/tvMetohHeading"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:textSize="18sp"
+                android:textColor="#3d405b"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvMetohHeading"
+                android:text="Coming Soon!"
+                android:id="@+id/set_recipe"
+                android:textSize="16sp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:textColor="#111111"/>
+
+        </RelativeLayout>
+    </ScrollView>
     <pl.droidsonroids.gif.GifImageView
         android:id="@+id/progressBar"
         android:layout_width="60dp"

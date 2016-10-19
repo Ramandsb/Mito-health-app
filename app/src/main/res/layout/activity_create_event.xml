@@ -101,6 +101,7 @@
                     android:ellipsize="end"
                     android:clickable="true"
                     android:editable="false"
+                    android:focusable="false"
                     android:hint="Search for event type"
                     android:inputType="textCapWords"
                     android:singleLine="true"
@@ -148,6 +149,7 @@
                     android:hint="Please enter location of the event"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
+                    android:focusable="false"
                     android:textColor="#474747"
                     android:textColorHint="#b7b7b7"
                     android:textSize="14sp" />
