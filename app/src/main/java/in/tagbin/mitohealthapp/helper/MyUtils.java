@@ -76,6 +76,32 @@ public class MyUtils {
         }
         return null;
     }
+    public static String getValidDateForLookup(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, hh:mm a");
+            String da = dateFormat.format(date);
+            return da;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public static String getValidDateForLookupDetails(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM, yyyy hh:mm a");
+            String da = dateFormat.format(date);
+            return da;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     public static String getValidDate1(String validDate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {
@@ -143,6 +169,30 @@ public class MyUtils {
         if (addresses != null)
             cityName = addresses.get(0).getAddressLine(0);
         else
+            cityName = "";
+        return cityName;
+    }
+    public static String getStateName(Context context,String location){
+        String[] parts1 = location.split(Pattern.quote("("));
+        String location1 = parts1[1];
+        String[] parts2 = location1.split(Pattern.quote(" "));
+        String latitude = parts2[1];
+        String[] parts3 = latitude.split(Pattern.quote(")"));
+        double MyLong = Double.parseDouble(parts2[0]);
+        double MyLat = Double.parseDouble(parts3[0]);
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = geocoder.getFromLocation(MyLat, MyLong, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String cityName;
+        if (addresses != null) {
+            cityName = addresses.get(0).getAddressLine(2);
+            String[] parta3 = cityName.split(",");
+            cityName = parta3[0];
+        }else
             cityName = "";
         return cityName;
     }

@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -164,6 +165,7 @@ public class FoodSearchActivity extends AppCompatActivity {
 
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("food detials",responseObject.toString());
             Intent i = new Intent(FoodSearchActivity.this, FoodDetailsActivity.class);
             i.putExtra("response", responseObject.toString());
             i.putExtra("foodsearch","foodsearch");

@@ -28,7 +28,6 @@ public class UserConnectFragment extends Fragment implements TabLayout.OnTabSele
     private TabLayout tabLayout;
     private ViewPager viewPager;
     TextView tabOne,tabTwo,tabThree;
-    FrameLayout frameLayout;
 
 
     @Override
@@ -57,17 +56,16 @@ public class UserConnectFragment extends Fragment implements TabLayout.OnTabSele
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.frag_user_connect,container,false);
         tabLayout = (TabLayout) layout.findViewById(R.id.tabLayout);
-        frameLayout = (FrameLayout) layout.findViewById(R.id.frameLayoutWhole);
 //        viewPager = (ViewPager) layout.findViewById(R.id.pager);
-//        viewpageradapter adapter = new viewpageradapter(getActivity().getSupportFragmentManager());
+//        viewpageradapter lookupAdapter = new viewpageradapter(getActivity().getSupportFragmentManager());
 //
-//        viewPager.setAdapter(adapter);
+//        viewPager.setAdapter(lookupAdapter);
         //tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
 //        viewPager.setCurrentItem(1,true);
         tabLayout.setOnTabSelectedListener(this);
-        //tabLayout.setTabsFromPagerAdapter(adapter);
+        //tabLayout.setTabsFromPagerAdapter(lookupAdapter);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         //viewPager.setOffscreenPageLimit(3);
 
@@ -136,7 +134,7 @@ public class UserConnectFragment extends Fragment implements TabLayout.OnTabSele
                 replaceFragment(new Explorefragment());
                 break;
             case 1 :
-                Fragment fragment = new Lookupfragment(frameLayout);
+                Fragment fragment = new Lookupfragment();
                 if (getArguments() != null){
                     if (getArguments().getString("activity_create_event") != null){
                         Bundle bundle = new Bundle();

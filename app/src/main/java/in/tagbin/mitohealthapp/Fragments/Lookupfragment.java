@@ -1,24 +1,21 @@
 package in.tagbin.mitohealthapp.Fragments;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,12 +24,15 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.activity.CreateEventActivity;
 import in.tagbin.mitohealthapp.activity.ChatRequestActivity;
+import in.tagbin.mitohealthapp.activity.EventsListActivity;
 import in.tagbin.mitohealthapp.activity.SettingsActivity;
+import in.tagbin.mitohealthapp.adapter.UpcomingEventsAdapter;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.adapter.LookupAdapter;
@@ -42,26 +42,18 @@ import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import pl.droidsonroids.gif.GifImageView;
 
 public class Lookupfragment extends Fragment implements View.OnClickListener {
-
-    RecyclerView myview;
-
-    StaggeredGridLayoutManager mylayoutmanager;
-    FrameLayout frameLayout,wholeLayout;
-    TextView allActivity,myActivity,coins;
-    ArrayList<DataObject> mylist=new ArrayList<DataObject>();
-    ArrayList<DataObject> da=new ArrayList<DataObject>();
-    FloatingActionButton fabCreateEvent;
+    TextView coins,createevent;
+    List<DataObject> myEventsList=new ArrayList<DataObject>();
+    List<DataObject> upcomingEventsList=new ArrayList<DataObject>();
+    //FloatingActionButton fabCreateEvent;
     int coinsFinal = 0;
     GifImageView progressBar;
-    LookupAdapter adapter;
     PrefManager pref;
-    public Lookupfragment(){
-
-    }
-    @SuppressLint("ValidFragment")
-    public Lookupfragment(FrameLayout frameLayout){
-        wholeLayout = frameLayout;
-    }
+    ImageView addMoreMyEvents,seeMoreUpcomingEvents,seeMoreGoingEvents;
+    LinearLayoutManager linearLayoutManager1,linearLayoutManager2,linearLayoutManager3;
+    LookupAdapter lookupAdapter;
+    UpcomingEventsAdapter upcomingEventsAdapter;
+    RecyclerView goingEvents,upcomingEvents,myEvents;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,32 +65,36 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.frag_lookup, container, false);
-
-        myview= (RecyclerView) viewGroup.findViewById(R.id.myrecycler);
-
-        frameLayout = (FrameLayout) viewGroup.findViewById(R.id.frameAddActivity);
-        fabCreateEvent = (FloatingActionButton) viewGroup.findViewById(R.id.createevent);
-        allActivity = (TextView) viewGroup.findViewById(R.id.buttonAllActivity);
-        myActivity = (TextView) viewGroup.findViewById(R.id.buttonMyActivity);
+        goingEvents = (RecyclerView) viewGroup.findViewById(R.id.rvGoingEvents);
+        myEvents = (RecyclerView) viewGroup.findViewById(R.id.rvMyEvents);
+        upcomingEvents = (RecyclerView) viewGroup.findViewById(R.id.rvUpcomingEvents);
+        //fabCreateEvent = (FloatingActionButton) viewGroup.findViewById(R.id.createevent);
         progressBar = (GifImageView) viewGroup.findViewById(R.id.progressBar);
-        allActivity.setOnClickListener(this);
-        myActivity.setOnClickListener(this);
-        fabCreateEvent.setOnClickListener(this);
-        mylayoutmanager = new StaggeredGridLayoutManager(2, 1);
-        adapter=new LookupAdapter(getContext(),mylist,frameLayout,getActivity().getSupportFragmentManager(),progressBar,wholeLayout);
-        myview.setLayoutManager(this.mylayoutmanager);
-        myview.setHasFixedSize(true);
-        myview.setAdapter(adapter);
+        createevent = (TextView) viewGroup.findViewById(R.id.tvCreateEvent);
+        addMoreMyEvents = (ImageView) viewGroup.findViewById(R.id.ivSeeMoreMyEvents);
+        seeMoreGoingEvents = (ImageView) viewGroup.findViewById(R.id.ivSeeMoreGoingEvents);
+        seeMoreUpcomingEvents = (ImageView) viewGroup.findViewById(R.id.ivSeeMoreUpcomingEvents);
+        createevent.setOnClickListener(this);
         progressBar.setVisibility(View.VISIBLE);
         pref = new PrefManager(getContext());
-
-        myActivity.setTextColor(Color.parseColor("#ffffff"));
-        myActivity.setBackgroundResource(R.drawable.bg_filter_change);
-        allActivity.setTextColor(Color.parseColor("#26446d"));
-        allActivity.setBackgroundResource(R.drawable.bg_filter);
         progressBar.setVisibility(View.VISIBLE);
+        linearLayoutManager1 = new LinearLayoutManager(getContext());
+        linearLayoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
+        linearLayoutManager2 = new LinearLayoutManager(getContext());
+        linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
+        linearLayoutManager3 = new LinearLayoutManager(getContext());
+        linearLayoutManager3.setOrientation(LinearLayoutManager.HORIZONTAL);
+        goingEvents.setLayoutManager(linearLayoutManager1);
+        upcomingEvents.setLayoutManager(linearLayoutManager3);
+        myEvents.setLayoutManager(linearLayoutManager2);
+        myEvents.setHasFixedSize(true);
+        lookupAdapter = new LookupAdapter(getContext(),myEventsList,progressBar);
+        myEvents.setAdapter(lookupAdapter);
+        upcomingEvents.setHasFixedSize(true);
+        upcomingEventsAdapter = new UpcomingEventsAdapter(getContext(),upcomingEventsList,progressBar);
+        upcomingEvents.setAdapter(upcomingEventsAdapter);
         Controller.getEventsByMe(getContext(),mNearbyEvents);
-
+        Controller.getAllEventsNearby(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude(),mAllEventsListener);
 
         return viewGroup;
     }
@@ -165,7 +161,7 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.createevent:
+            case R.id.tvCreateEvent:
 //                frameLayout.setVisibility(View.VISIBLE);
 //                Fragment fragment = new CreateEventActivity();
 //                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -175,29 +171,6 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
                 Intent i = new Intent(getContext(),CreateEventActivity.class);
                 startActivity(i);
                 break;
-            case R.id.buttonAllActivity:
-                allActivity.setTextColor(Color.parseColor("#ffffff"));
-                allActivity.setBackgroundResource(R.drawable.bg_filter_change);
-                myActivity.setTextColor(Color.parseColor("#26446d"));
-                myActivity.setBackgroundResource(R.drawable.bg_filter);
-                progressBar.setVisibility(View.VISIBLE);
-                if (pref.getCurrentLocationAsObject() != null){
-                    if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLongitude() != 0.0){
-                        Controller.getAllEventsNearby(getContext(),pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude(),mAllEventsListener);
-                    }else{
-                        Controller.getAllEvents(getContext(),mAllEventsListener);
-                    }
-                }
-                break;
-            case R.id.buttonMyActivity:
-                myActivity.setTextColor(Color.parseColor("#ffffff"));
-                myActivity.setBackgroundResource(R.drawable.bg_filter_change);
-                allActivity.setTextColor(Color.parseColor("#26446d"));
-                allActivity.setBackgroundResource(R.drawable.bg_filter);
-                progressBar.setVisibility(View.VISIBLE);
-                Controller.getEventsByMe(getContext(),mNearbyEvents);
-                break;
-
         }
     }
 
@@ -211,22 +184,47 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
         public void onRequestCompleted(Object responseObject) {
             Log.d("nearby events",responseObject.toString());
 
-            mylist.clear();
+            myEventsList.clear();
             Type collectionType = new TypeToken<ArrayList<DataObject>>() {
             }.getType();
-            da = (ArrayList<DataObject>) new Gson()
+            final List<DataObject> da = (ArrayList<DataObject>) new Gson()
                     .fromJson(responseObject.toString(), collectionType);
-            for (int i=0;i<da.size();i++){
+            if (da.size() > 4) {
+                for (int i = 0; i < 4; i++) {
+                    da.get(i).all = false;
+                    myEventsList.add(da.get(i));
+                    pref.setKeyCoins(myEventsList.get(0).getTotal_coins());
+                }
+            }else{
+                for (int i = 0; i < da.size(); i++) {
+                    da.get(i).all = false;
+                    myEventsList.add(da.get(i));
+                    pref.setKeyCoins(myEventsList.get(0).getTotal_coins());
+                }
+            }
+            for (int i= 0;i<da.size();i++){
                 da.get(i).all = false;
-                mylist.add(da.get(i));
-                pref.setKeyCoins(mylist.get(0).getTotal_coins());
             }
             if (getActivity() == null)
                 return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    adapter.notifyDataSetChanged();
+                    if (da.size() > 4){
+                        addMoreMyEvents.setVisibility(View.VISIBLE);
+                        addMoreMyEvents.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent(getContext(), EventsListActivity.class);
+                                i.putExtra("response",JsonUtils.jsonify(da));
+                                i.putExtra("name","My Events");
+                                startActivity(i);
+                            }
+                        });
+                    }else{
+                        addMoreMyEvents.setVisibility(View.GONE);
+                    }
+                    lookupAdapter.notifyDataSetChanged();
                     progressBar.setVisibility(View.GONE);
                 }
             });
@@ -266,23 +264,48 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("all events",responseObject.toString());
-            mylist.clear();
+            upcomingEventsList.clear();
 
             Type collectionType = new TypeToken<ArrayList<DataObject>>() {
             }.getType();
-            da = (ArrayList<DataObject>) new Gson()
+            final List<DataObject> da = (ArrayList<DataObject>) new Gson()
                     .fromJson(responseObject.toString(), collectionType);
-            for (int i=0;i<da.size();i++){
+            if (da.size() > 4) {
+                for (int i = 0; i < 4; i++) {
+                    da.get(i).all = true;
+                    upcomingEventsList.add(da.get(i));
+                    pref.setKeyCoins(upcomingEventsList.get(0).getTotal_coins());
+                }
+            }else{
+                for (int i = 0; i < da.size(); i++) {
+                    da.get(i).all = true;
+                    upcomingEventsList.add(da.get(i));
+                    pref.setKeyCoins(upcomingEventsList.get(0).getTotal_coins());
+                }
+            }
+            for (int i= 0;i<da.size();i++){
                 da.get(i).all = true;
-                mylist.add(da.get(i));
-                pref.setKeyCoins(mylist.get(0).getTotal_coins());
             }
             if(getActivity() == null)
                 return;
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    adapter.notifyDataSetChanged();
+                    if (da.size() > 4){
+                        seeMoreUpcomingEvents.setVisibility(View.VISIBLE);
+                        seeMoreUpcomingEvents.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent i = new Intent(getContext(), EventsListActivity.class);
+                                i.putExtra("response",JsonUtils.jsonify(da));
+                                i.putExtra("name","All Events");
+                                startActivity(i);
+                            }
+                        });
+                    }else{
+                        seeMoreUpcomingEvents.setVisibility(View.GONE);
+                    }
+                    upcomingEventsAdapter.notifyDataSetChanged();
                     progressBar.setVisibility(View.GONE);
                 }
             });

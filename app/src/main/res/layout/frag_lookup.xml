@@ -3,113 +3,196 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eeeeee"
+    android:background="#ffffff"
     android:orientation="vertical">
 
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp">
 
         <RelativeLayout
-            android:id="@+id/frameHeader"
             android:layout_width="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_height="wrap_content"
-            android:padding="10dp">
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true">
-            <TextView
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:text="My Events"
-                android:textColor="#26446d"
-                android:padding="4dp"
-                android:id="@+id/buttonMyActivity"
-                android:background="@drawable/bg_filter"
-                android:textAlignment="center" />
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="120dp"
+            <RelativeLayout
+                android:id="@+id/relativeMyEvents"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:id="@+id/buttonAllActivity"
-                android:layout_marginLeft="-6dp"
-                android:text="All Events"
-                android:padding="4dp"
-                android:layout_toRightOf="@+id/buttonMyActivity"
-                android:textColor="#ffffff"
-                android:textAlignment="center"
-                android:background="@drawable/bg_filter_change"/>
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/tvEventsCreatedMe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Created By Me"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create Event"
+                    android:textStyle="bold"
+                    android:id="@+id/tvCreateEvent"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_marginRight="20dp"
+                    android:textSize="16sp"/>
+
+                <HorizontalScrollView
+                    android:id="@+id/hsv1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvEventsCreatedMe"
+                    android:scrollbars="none"
+                    android:layout_marginTop="15dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rvMyEvents"
+                            android:layout_width="wrap_content"
+                            android:layout_height="180dp" />
+
+                        <ImageView
+                            android:layout_width="150dp"
+                            android:layout_height="180dp"
+                            android:visibility="gone"
+                            android:id="@+id/ivSeeMoreMyEvents"
+                            android:layout_toRightOf="@+id/rvMyEvents"
+                            android:src="@drawable/icon_midmorning" />
+                    </RelativeLayout>
+                </HorizontalScrollView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeGoingEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relativeMyEvents"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvEventsGoing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Going"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+
+                <HorizontalScrollView
+                    android:id="@+id/hsv2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvEventsGoing"
+                    android:scrollbars="none"
+                    android:layout_marginTop="15dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rvGoingEvents"
+                            android:layout_width="wrap_content"
+                            android:layout_height="180dp"/>
+
+                        <ImageView
+                            android:layout_width="150dp"
+                            android:layout_height="180dp"
+                            android:visibility="gone"
+                            android:id="@+id/ivSeeMoreGoingEvents"
+                            android:layout_toRightOf="@+id/rvGoingEvents"
+                            android:src="@drawable/icon_midmorning" />
+                    </RelativeLayout>
+                </HorizontalScrollView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeUpComingEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relativeGoingEvents"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/tvEventsUpcoming"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upcoming Events"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+
+                <HorizontalScrollView
+                    android:id="@+id/hsv3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvEventsUpcoming"
+                    android:scrollbars="none"
+                    android:layout_marginTop="15dp">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rvUpcomingEvents"
+                            android:layout_width="wrap_content"
+                            android:layout_height="180dp" />
+
+                        <ImageView
+                            android:layout_width="150dp"
+                            android:layout_height="180dp"
+                            android:visibility="gone"
+                            android:id="@+id/ivSeeMoreUpcomingEvents"
+                            android:layout_toRightOf="@+id/rvUpcomingEvents"
+                            android:src="@drawable/icon_midmorning" />
+                    </RelativeLayout>
+                </HorizontalScrollView>
             </RelativeLayout>
         </RelativeLayout>
+    </ScrollView>
 
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/createevent"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_gravity="end|bottom"-->
+        <!--android:layout_marginBottom="60dp"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:layout_marginRight="20dp"-->
+        <!--android:background="#4c516d"-->
+        <!--android:rotation="45"-->
+        <!--android:src="@drawable/plus"-->
+        <!--app:backgroundTint="#4c516d"-->
+        <!--app:fabSize="mini"-->
+        <!--app:rippleColor="#FFF" />-->
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@+id/frameHeader">
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/progressBar"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        android:indeterminateTintMode="src_atop"
+        android:src="@drawable/loader"
+        android:visibility="gone" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="5dp">
-
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/myrecycler"
-                    android:layout_width="match_parent"
-                    android:layout_marginBottom="40dp"
-                    android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
-            </LinearLayout>
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/createevent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="end|bottom"
-                android:background="#4c516d"
-                android:rotation="45"
-                android:src="@drawable/plus"
-                app:backgroundTint="#4c516d"
-                app:fabSize="mini"
-                app:rippleColor="#FFF" />
-        </RelativeLayout>
-        <pl.droidsonroids.gif.GifImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:id="@+id/progressBar"
-            android:layout_centerHorizontal="true"
-            android:layout_centerInParent="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:layout_marginBottom="60dp"
-            android:indeterminateTintMode="src_atop"
-            android:visibility="gone"
-            android:src="@drawable/loader"
-            />
-        <!--<ProgressBar-->
-            <!--android:id="@+id/progressBar"-->
-            <!--android:layout_width="60dp"-->
-            <!--android:layout_height="60dp"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_marginBottom="60dp"-->
-            <!--android:progressDrawable="@drawable/loader"-->
-            <!--android:indeterminateTintMode="src_atop"-->
-            <!--android:visibility="gone" />-->
-    </RelativeLayout>
-    <FrameLayout
-        android:id="@+id/frameAddActivity"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="match_parent"></FrameLayout>
 </RelativeLayout>

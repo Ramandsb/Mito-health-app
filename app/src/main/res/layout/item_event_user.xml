@@ -1,11 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-    <de.hdodenhof.circleimageview.CircleImageView
+    android:orientation="vertical" android:layout_width="72dp"
+    android:layout_height="120dp">
+    <ImageView
         android:id="@+id/circleView"
         android:layout_width="72dp"
         android:layout_height="72dp"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:layout_centerHorizontal="true"/>
+    <!--<ImageView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignTop="@+id/circleView"-->
+        <!--android:id="@+id/ivUserApproved"-->
+        <!---->
+        <!--android:layout_alignRight="@+id/circleView"-->
+        <!--android:src="@drawable/user_approved"-->
+        <!--android:layout_marginTop="-10dp"/>-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zack Effron"
+        android:layout_below="@+id/circleView"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textStyle="bold"
         android:layout_centerHorizontal="true"
-        android:layout_margin="5dp"/>
+        android:textAlignment="center"
+        android:id="@+id/tvUserName"
+        android:textColor="@color/colorPrimary"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="21, Gurgaon"
+        android:layout_below="@+id/tvUserName"
+        android:textSize="12sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_centerHorizontal="true"
+        android:textAlignment="center"
+        android:id="@+id/tvUserAge"
+        android:textColor="#3d405b"/>
 </RelativeLayout>

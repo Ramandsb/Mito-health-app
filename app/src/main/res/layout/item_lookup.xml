@@ -1,204 +1,261 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/linearLookupCard"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="150dp"
+    android:layout_height="180dp"
     android:layout_marginBottom="5dp"
-    android:layout_marginRight="5dp">
+    android:layout_marginRight="10dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/setimage"
+        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/relativeLookupImage"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop" />
+            android:layout_height="150dp"
+            android:background="@drawable/bg_recommended"
+            android:orientation="vertical"
+            card_view:cardCornerRadius="10dp"
+            card_view:cardBackgroundColor="#f5f5f5">
+
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone"
-            android:id="@+id/relativeHousefull"
-            android:layout_alignTop="@+id/setimage"
-            android:background="#50000000">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="HouseFull"
-                android:rotation="-15"
-                android:padding="10dp"
-                android:background="@drawable/bg_housefull"
-                android:textSize="20sp"
-                android:textColor="#ffffff"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone"
-            android:id="@+id/relativeExpired"
-            android:layout_alignTop="@+id/setimage"
-            android:background="#50000000">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="Expired"
-                android:rotation="-15"
-                android:padding="10dp"
-                android:background="@drawable/bg_housefull"
-                android:textSize="20sp"
-                android:textColor="#ffffff"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/setimage"
-            android:layout_gravity="top"
-            android:background="#20000000"
-            android:weightSum="3">
-
-            <TextView
-                android:id="@+id/maintitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="Join for Horse riding"
-                android:layout_marginLeft="6dp"
-                android:textColor="#fff"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/event_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/maintitle"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
-                android:text="Horse riding"
-                android:layout_marginLeft="6dp"
-                android:textColor="#fff"
-                android:textSize="9sp"
-                android:textStyle="bold" />
+            android:layout_height="match_parent">
             <ImageView
-                android:id="@+id/ivDelete"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:padding="4dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="6dp"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="end"
-                android:src="@drawable/delete_event" />
+                android:id="@+id/setimage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"/>
 
-            <ImageView
-                android:id="@+id/ivEdit"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:padding="4dp"
-                android:layout_marginTop="5dp"
-                android:layout_toLeftOf="@+id/ivDelete"
-                android:layout_gravity="end"
-                android:src="@drawable/edit_white" />
-
-        </RelativeLayout>
-        <!--<ImageView-->
-        <!--android:id="@+id/ivConfirm"-->
-        <!--android:layout_width="20dp"-->
-        <!--android:layout_height="20dp"-->
-        <!--android:layout_margin="5dp"-->
-        <!--android:layout_above="@+id/relativeBottomBar"-->
-        <!--android:src="@drawable/commnet_right_icon"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:visibility="gone" />-->
-
-        <RelativeLayout
-            android:id="@+id/relativeBottomBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/setimage"
-            android:layout_marginBottom="10dp"
-            android:background="#20000000"
-            android:weightSum="2">
-
-
-            <ImageView
-                android:id="@+id/ivPeople"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginTop="2dp"
-                android:layout_toLeftOf="@+id/capacity"
-                android:src="@drawable/personwhite" />
-
-            <TextView
-                android:id="@+id/capacity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="2dp"
-                android:layout_marginRight="6dp"
-                android:padding="3dp"
-                android:text="8/8"
-                android:textColor="#ffffff"
-                android:textSize="10sp" />
-
-            <TextView
-                android:id="@+id/myloc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginTop="5dp"
-                android:text="Location"
-                android:layout_marginLeft="6dp"
-                android:textColor="#FFF"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/setimage"
-            android:weightSum="2"
-            android:id="@+id/linearBottomBar"
-            android:background="#ffffff">
-
-            <TextView
-                android:id="@+id/time"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignTop="@+id/setimage"
+                android:background="#90313466">
+                <TextView
+                    android:id="@+id/maintitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="Join for Horse riding"
+                    android:textAlignment="center"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="#fff"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:layout_weight="1"
-                android:text="Time"
-                android:paddingLeft="10dp"
-                android:paddingRight="5dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:drawablePadding="-20dp"
-                android:drawableLeft="@drawable/timer"
-                android:textColor="#000000"
-                android:textSize="9sp"
-                android:textStyle="bold" />
-            <TextView
+                android:layout_alignBottom="@+id/setimage"
+                android:layout_marginLeft="7dp"
+                android:layout_marginRight="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp">
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:layout_alignParentLeft="true"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:text="21 Oct, 4:30 PM"
+                    android:textColor="#ffffff"
+                    android:textSize="10sp" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/relativePeople"
+                    android:layout_alignParentRight="true">
+                    <ImageView
+                        android:id="@+id/ivPeople"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_toLeftOf="@+id/capacity"
+                        android:src="@drawable/personwhite" />
+
+                    <TextView
+                        android:id="@+id/capacity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="8/8"
+                        android:layout_marginLeft="2dp"
+                        android:textColor="#ffffff"
+                        android:textSize="10sp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="5dp"
-                android:id="@+id/joinEvent"
-                android:textAlignment="center"
-                android:text="Join Now"
-                android:background="@color/colorPrimary"
-                android:textColor="#ffffff"
-                android:textSize="9sp"
-                android:textStyle="bold"/>
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:id="@+id/relativeHousefull"
+                android:layout_alignTop="@+id/setimage"
+                android:background="#50313466">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="HouseFull"
+                    android:rotation="-15"
+                    android:padding="10dp"
+                    android:background="@drawable/bg_housefull"
+                    android:textSize="20sp"
+                    android:textColor="#ffffff"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:id="@+id/relativeExpired"
+                android:layout_alignTop="@+id/setimage"
+                android:background="#65000000">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:text="Expired"
+                    android:rotation="-15"
+                    android:padding="10dp"
+                    android:background="@drawable/bg_housefull"
+                    android:textSize="20sp"
+                    android:textColor="#ffffff"/>
+            </RelativeLayout>
+        </RelativeLayout>
+        </android.support.v7.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relativeLookupImage"
+            android:layout_margin="5dp"
+            android:layout_centerHorizontal="true"
+            android:text="Horse riding event"
+            android:maxLines="1"
+            android:id="@+id/tvEventDescription"
+            android:ellipsize="end"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:textColor="#3d405b"/>
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignTop="@+id/setimage"-->
+            <!--android:layout_gravity="top"-->
+            <!--android:background="#20000000"-->
+            <!--android:weightSum="3">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/maintitle"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:text="Join for Horse riding"-->
+                <!--android:layout_marginLeft="6dp"-->
+                <!--android:textColor="#fff"-->
+                <!--android:textSize="12sp"-->
+                <!--android:textStyle="bold" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/event_title"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/maintitle"-->
+                <!--android:layout_marginTop="2dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="Horse riding"-->
+                <!--android:layout_marginLeft="6dp"-->
+                <!--android:textColor="#fff"-->
+                <!--android:textSize="9sp"-->
+                <!--android:textStyle="bold" />-->
+            <!--<ImageView-->
+                <!--android:id="@+id/ivDelete"-->
+                <!--android:layout_width="25dp"-->
+                <!--android:layout_height="25dp"-->
+                <!--android:padding="4dp"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:layout_marginRight="6dp"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:src="@drawable/delete_event" />-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/ivEdit"-->
+                <!--android:layout_width="25dp"-->
+                <!--android:layout_height="25dp"-->
+                <!--android:padding="4dp"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:layout_toLeftOf="@+id/ivDelete"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:src="@drawable/edit_white" />-->
+
+        <!--</RelativeLayout>-->
+        <!--&lt;!&ndash;<ImageView&ndash;&gt;-->
+        <!--&lt;!&ndash;android:id="@+id/ivConfirm"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="20dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="20dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_margin="5dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_above="@+id/relativeBottomBar"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:src="@drawable/commnet_right_icon"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_alignParentRight="true"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:visibility="gone" />&ndash;&gt;-->
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/relativeBottomBar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignBottom="@+id/setimage"-->
+            <!--android:layout_marginBottom="10dp"-->
+            <!--android:background="#20000000"-->
+            <!--android:weightSum="2">-->
+
+
+
+            <!--<TextView-->
+                <!--android:id="@+id/myloc"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentLeft="true"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:text="Location"-->
+                <!--android:layout_marginLeft="6dp"-->
+                <!--android:textColor="#FFF"-->
+                <!--android:textSize="10sp"-->
+                <!--android:textStyle="bold" />-->
+
+
+        <!--</RelativeLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/setimage"-->
+            <!--android:weightSum="2"-->
+            <!--android:id="@+id/linearBottomBar"-->
+            <!--android:background="#ffffff">-->
+
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:padding="5dp"-->
+                <!--android:id="@+id/joinEvent"-->
+                <!--android:textAlignment="center"-->
+                <!--android:text="Join Now"-->
+                <!--android:background="@color/colorPrimary"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="9sp"-->
+                <!--android:textStyle="bold"/>-->
+        <!--</LinearLayout>-->
     </RelativeLayout>
 
 </RelativeLayout>

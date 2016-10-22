@@ -65,6 +65,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
     RecommendationModel.MealsModel data;
     boolean logged = false;
     View view;
+    float total;
     RelativeLayout relativeTop;
     ScrollView svrecipeDetails,svfoodDetails;
     GifImageView progressBar;
@@ -156,6 +157,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
         set_unit.setSelection(0,false);
         final String[] unit = {data.getComponent().getServing_type().getServing_type()};
         servingUnit = data.getComponent().getServing_type().getId();
+        total = data.getComponent().getTotal_protein()+data.getComponent().getTotal_fat()+data.getComponent().getTotal_carbohydrate();
         set_unit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -165,10 +167,10 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     protiens.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_protein()).toString()+" gm");
                     fats.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_fat()).toString()+" gm");
                     carbs.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_carbohydrate()).toString()+" gm");
-                    calories.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy()).toString()+" Cal");
-                    float carbsPercentage = (data.getComponent().getTotal_protein()+data.getComponent().getTotal_fat()+data.getComponent().getTotal_carbohydrate())/(data.getComponent().getTotal_carbohydrate())*100;
-                    float fatsPercentage = (data.getComponent().getTotal_protein()+data.getComponent().getTotal_fat()+data.getComponent().getTotal_carbohydrate())/(data.getComponent().getTotal_fat())*100;
-                    float protiensPercentage = (data.getComponent().getTotal_protein()+data.getComponent().getTotal_fat()+data.getComponent().getTotal_carbohydrate())/(data.getComponent().getTotal_protein())*100;
+                    calories.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy()/data.getComponent().getServing_unit()).toString()+" Cal");
+                    float carbsPercentage = (data.getComponent().getTotal_carbohydrate()*100)/total;
+                    float fatsPercentage = (data.getComponent().getTotal_fat()*100)/total;
+                    float protiensPercentage = (data.getComponent().getTotal_protein()*100)/total;
                     carbsProgress.setProgress((int) carbsPercentage);
                     fatsProgress.setProgress((int) fatsPercentage);
                     protiensProgress.setProgress((int) protiensPercentage);
@@ -176,13 +178,14 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                 }else {
                     for (int y = 0; y < data.getComponent().getOther_serving_detail().size(); y++) {
                         if (unit[0].equals(data.getComponent().getOther_serving_detail().get(y).getServing_type().getServing_type())) {
+                            total = (data.getComponent().getOther_serving_detail().get(y).getTotal_protein()+data.getComponent().getOther_serving_detail().get(y).getTotal_fat()+data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate());
                             protiens.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_protein()).toString() + " gm");
                             fats.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_fat()).toString() + " gm");
                             carbs.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate()).toString() + " gm");
-                            calories.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_energy()).toString() + " Cal");
-                            float carbsPercentage = (data.getComponent().getOther_serving_detail().get(y).getTotal_protein()+data.getComponent().getOther_serving_detail().get(y).getTotal_fat()+data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate())/(data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate())*100;
-                            float fatsPercentage = (data.getComponent().getOther_serving_detail().get(y).getTotal_protein()+data.getComponent().getOther_serving_detail().get(y).getTotal_fat()+data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate())/(data.getComponent().getOther_serving_detail().get(y).getTotal_fat())*100;
-                            float protiensPercentage = (data.getComponent().getOther_serving_detail().get(y).getTotal_protein()+data.getComponent().getOther_serving_detail().get(y).getTotal_fat()+data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate())/(data.getComponent().getOther_serving_detail().get(y).getTotal_protein())*100;
+                            calories.setText(new DecimalFormat("##.#").format(data.getComponent().getOther_serving_detail().get(y).getTotal_energy()/data.getComponent().getOther_serving_detail().get(y).getServing_unit()).toString() + " Cal");
+                            float carbsPercentage = (data.getComponent().getOther_serving_detail().get(y).getTotal_carbohydrate()*100)/total;
+                            float fatsPercentage = (data.getComponent().getOther_serving_detail().get(y).getTotal_fat()*100)/total;
+                            float protiensPercentage = (data.getComponent().getOther_serving_detail().get(y).getTotal_protein()*100)/total;
                             carbsProgress.setProgress((int) carbsPercentage);
                             fatsProgress.setProgress((int) fatsPercentage);
                             protiensProgress.setProgress((int) protiensPercentage);
@@ -226,10 +229,10 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             protiens.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_protein()).toString()+" gm");
             fats.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_fat()).toString()+" gm");
             carbs.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_carbohydrate()).toString()+" gm");
-            calories.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy()).toString()+" Cal");
-            float carbsPercentage = (data.getComponent().getTotal_protein()+data.getComponent().getTotal_fat()+data.getComponent().getTotal_carbohydrate())/(data.getComponent().getTotal_carbohydrate())*100;
-            float fatsPercentage = (data.getComponent().getTotal_protein()+data.getComponent().getTotal_fat()+data.getComponent().getTotal_carbohydrate())/(data.getComponent().getTotal_fat())*100;
-            float protiensPercentage = (data.getComponent().getTotal_protein()+data.getComponent().getTotal_fat()+data.getComponent().getTotal_carbohydrate())/(data.getComponent().getTotal_protein())*100;
+            calories.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy()/data.getComponent().getServing_unit()).toString()+" Cal");
+            float carbsPercentage = (data.getComponent().getTotal_carbohydrate()*100)/total;
+            float fatsPercentage = (data.getComponent().getTotal_fat()*100)/total;
+            float protiensPercentage = (data.getComponent().getTotal_protein()*100)/total;
             carbsProgress.setProgress((int) carbsPercentage);
             fatsProgress.setProgress((int) fatsPercentage);
             protiensProgress.setProgress((int) protiensPercentage);
@@ -239,10 +242,10 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
             protiens.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_protein()*data.getAmount()).toString()+" gm");
             fats.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_fat()*data.getAmount()).toString()+" gm");
             carbs.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_carbohydrate()*data.getAmount()).toString()+" gm");
-            calories.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy()*data.getAmount()).toString()+" Cal");
-            float carbsPercentage = (data.getComponent().getTotal_protein()*data.getAmount()+data.getComponent().getTotal_fat()*data.getAmount()+data.getComponent().getTotal_carbohydrate()*data.getAmount())/(data.getComponent().getTotal_carbohydrate()*data.getAmount())*100;
-            float fatsPercentage = (data.getComponent().getTotal_protein()*data.getAmount()+data.getComponent().getTotal_fat()*data.getAmount()+data.getComponent().getTotal_carbohydrate()*data.getAmount())/(data.getComponent().getTotal_fat()*data.getAmount())*100;
-            float protiensPercentage = (data.getComponent().getTotal_protein()*data.getAmount()+data.getComponent().getTotal_fat()*data.getAmount()+data.getComponent().getTotal_carbohydrate()*data.getAmount())/(data.getComponent().getTotal_protein()*data.getAmount())*100;
+            calories.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy()*data.getAmount()/data.getComponent().getServing_unit()).toString()+" Cal");
+            float carbsPercentage = (data.getComponent().getTotal_carbohydrate()*100)/total;
+            float fatsPercentage = (data.getComponent().getTotal_fat()*100)/total;
+            float protiensPercentage = (data.getComponent().getTotal_protein()*100)/total;
             carbsProgress.setProgress((int) carbsPercentage);
             fatsProgress.setProgress((int) fatsPercentage);
             protiensProgress.setProgress((int) protiensPercentage);
@@ -260,10 +263,10 @@ public class FoodDetailsActivity extends AppCompatActivity implements View.OnCli
                     protiens.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_protein() * Float.parseFloat(quantity)).toString() + " gm");
                     fats.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_fat() * Float.parseFloat(quantity)).toString() + " gm");
                     carbs.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_carbohydrate() * Float.parseFloat(quantity)).toString() + " gm");
-                    calories.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy() * Float.parseFloat(quantity)).toString() + " Cal");
-                    float carbsPercentage = (data.getComponent().getTotal_protein()* Float.parseFloat(quantity)+data.getComponent().getTotal_fat()* Float.parseFloat(quantity)+data.getComponent().getTotal_carbohydrate()* Float.parseFloat(quantity))/(data.getComponent().getTotal_carbohydrate()* Float.parseFloat(quantity))*100;
-                    float fatsPercentage = (data.getComponent().getTotal_protein()* Float.parseFloat(quantity)+data.getComponent().getTotal_fat()* Float.parseFloat(quantity)+data.getComponent().getTotal_carbohydrate()* Float.parseFloat(quantity))/(data.getComponent().getTotal_fat()* Float.parseFloat(quantity))*100;
-                    float protiensPercentage = (data.getComponent().getTotal_protein()* Float.parseFloat(quantity)+data.getComponent().getTotal_fat()* Float.parseFloat(quantity)+data.getComponent().getTotal_carbohydrate()* Float.parseFloat(quantity))/(data.getComponent().getTotal_protein()* Float.parseFloat(quantity))*100;
+                    calories.setText(new DecimalFormat("##.#").format(data.getComponent().getTotal_energy() * Float.parseFloat(quantity)/data.getComponent().getServing_unit()).toString() + " Cal");
+                    float carbsPercentage = (data.getComponent().getTotal_carbohydrate()*100)/total;
+                    float fatsPercentage = (data.getComponent().getTotal_fat()*100)/total;
+                    float protiensPercentage = (data.getComponent().getTotal_protein()*100)/total;
                     carbsProgress.setProgress((int) carbsPercentage);
                     fatsProgress.setProgress((int) fatsPercentage);
                     protiensProgress.setProgress((int) protiensPercentage);

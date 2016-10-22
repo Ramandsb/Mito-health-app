@@ -127,7 +127,7 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
                 progressBar.setVisibility(View.VISIBLE);
                 if (getIntent().getStringExtra("food") != null){
                     float calories = 0 ;
-                    if (etFoodCalories.getText().toString() != "" || etFoodCalories.getText().toString() != null){
+                    if (!etFoodCalories.getText().toString().equals("") && !etFoodCalories.getText().toString().isEmpty()){
                         calories = Float.parseFloat(etFoodCalories.getText().toString());
                     }
                     Controller.setNewFood(AddInterestActivity.this, etInterestName.getText().toString(),calories, mSetInterstListener);

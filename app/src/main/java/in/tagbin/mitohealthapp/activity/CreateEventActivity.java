@@ -16,10 +16,13 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import in.tagbin.mitohealthapp.Fragments.PartnerConnectFragment;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.helper.ProfileImage.GOTOConstants;
 import in.tagbin.mitohealthapp.helper.ProfileImage.ImageCropActivity;
@@ -71,13 +75,14 @@ import pl.droidsonroids.gif.GifImageView;
  */
 public class CreateEventActivity extends AppCompatActivity implements View.OnClickListener, TimePickerDialog.OnTimeSetListener, DatePickerDialog.OnDateSetListener {
     ImageView addImage;
-    EditText title,description,location,type;
-    TextView time,memberValue,activityDate,activityTime,coins;
+    EditText title,description,location,type,eventDateTime;
+    TextView time,memberValue,coins;
+    TextInputLayout textInputLayoutTitle,textInputLayoutLocation,textInputLayoutType,textInputLayoutEventDate;
     Button createActivity;
     SeekBar rangeBar;
-    FloatingActionButton fabAddImage;
+    ImageView fabAddImage;
     String editType,editTitle,editDescription,editLocation,response;
-    RelativeLayout relativeTime,relativeDate;
+    RelativeLayout relativeTime;
     private static int SELECT_PICTURE = 1;
     final int REQUEST_LOCATION = 2;
     GifImageView progressBar;
@@ -108,21 +113,28 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         description = (EditText) findViewById(R.id.etAddDesciption);
         location = (EditText) findViewById(R.id.etAddLocation);
         type = (EditText) findViewById(R.id.etAddType);
+        eventDateTime = (EditText) findViewById(R.id.etAddEventDateTime);
         time = (TextView) findViewById(R.id.tvAddDecisionTime);
         createActivity = (Button) findViewById(R.id.buttonCreateActivity);
         relativeTime = (RelativeLayout) findViewById(R.id.relativeAddDecisionTimer);
-        relativeDate = (RelativeLayout) findViewById(R.id.relativeTime);
+        //relativeDate = (RelativeLayout) findViewById(R.id.relativeTime);
         rangeBar = (SeekBar) findViewById(R.id.rangebar);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
-        fabAddImage = (FloatingActionButton) findViewById(R.id.fabAddImage);
-        activityDate = (TextView) findViewById(R.id.tvAddActivityDate);
-        activityTime = (TextView) findViewById(R.id.tvAddActivitytime);
+        fabAddImage = (ImageView) findViewById(R.id.fabAddImage);
+        //activityDate = (TextView) findViewById(R.id.tvAddActivityDate);
+        //activityTime = (TextView) findViewById(R.id.tvAddActivitytime);
         memberValue = (TextView) findViewById(R.id.tvAddMemberValue);
+        //textInputLayoutDescription = (TextInputLayout) findViewById(R.id.tvAddDesciption);
+        textInputLayoutTitle = (TextInputLayout) findViewById(R.id.tvAddTitle);
+        textInputLayoutType = (TextInputLayout) findViewById(R.id.tvAddType);
+        textInputLayoutLocation = (TextInputLayout) findViewById(R.id.tvAddLocation);
+        textInputLayoutEventDate = (TextInputLayout) findViewById(R.id.tvAddActivityDateHeading);
         createActivity.setOnClickListener(this);
         fabAddImage.setOnClickListener(this);
         relativeTime.setOnClickListener(this);
-        relativeDate.setOnClickListener(this);
+        //relativeDate.setOnClickListener(this);
         type.setOnClickListener(this);
+        eventDateTime.setOnClickListener(this);
         location.setOnClickListener(this);
         rangeBar.setProgress(0);
         pref = new PrefManager(this);
@@ -159,11 +171,11 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         minute = calendar.get(Calendar.MINUTE);
         updateTime(hour,minute);
         updateTime1(hour1,minute1);
-        if (pref.getCurrentLocationAsObject() != null){
-            if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
-                location.setText(MyUtils.getCityNameFromLatLng(CreateEventActivity.this,pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
-            }
-        }
+//        if (pref.getCurrentLocationAsObject() != null){
+//            if (pref.getCurrentLocationAsObject().getLongitude() != 0.0 && pref.getCurrentLocationAsObject().getLatitude() != 0.0){
+//                location.setText(MyUtils.getCityNameFromLatLng(CreateEventActivity.this,pref.getCurrentLocationAsObject().getLatitude(),pref.getCurrentLocationAsObject().getLongitude()));
+//            }
+//        }
         if (getIntent().getStringExtra("response") != null){
             response = getIntent().getStringExtra("response");
             getSupportActionBar().setTitle("Edit Event");
@@ -183,8 +195,9 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 day1 = Integer.parseInt(MyUtils.getDay(dataObject.getEvent_time()));
                 hour1 = Integer.parseInt(MyUtils.getHour(dataObject.getEvent_time()));
                 minute1 = Integer.parseInt(MyUtils.getMinute(dataObject.getEvent_time()));
-                activityDate.setText(MyUtils.getValidDate1(dataObject.getEvent_time()));
-                activityTime.setText(MyUtils.getValidTime(dataObject.getEvent_time()));
+                eventDateTime.setText(MyUtils.getValidDate1(dataObject.getEvent_time())+" "+MyUtils.getValidTime(dataObject.getEvent_time()));
+                //activityDate.setText(MyUtils.getValidDate1(dataObject.getEvent_time()));
+                //activityTime.setText(MyUtils.getValidTime(dataObject.getEvent_time()));
             }
             if (dataObject.getPicture() != null){
                 ImageLoader.getInstance().loadImage(dataObject.getPicture(), new ImageLoadingListener() {
@@ -282,19 +295,31 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     event_type = dataObject.getEvent_type().getId();
                     createEventSendModel.event_type = event_type;
                     Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
+                    if (!validateEventDate())
+                        return;
+                    if (!validateTitle())
+                        return;
+                    if (!validateLocation())
+                        return;
+                    if (!validateType())
+                        return;
+//                    if (!validateDescription())
+//                        return;
                     if (output > output1 ){
                         Toast.makeText(CreateEventActivity.this,"Please enter the valid decession timer",Toast.LENGTH_LONG).show();
                     }else if (memberValueFinal == 0){
                         Toast.makeText(CreateEventActivity.this,"Please enter the capacity above 0",Toast.LENGTH_LONG).show();
-                    }else if (latitude == 0 || longitude == 0){
-                        Toast.makeText(CreateEventActivity.this,"Please click on location to enter location",Toast.LENGTH_LONG).show();
                     }else {
                         progressBar.setVisibility(View.VISIBLE);
                         Controller.updateEvent(CreateEventActivity.this, createEventSendModel, dataObject.getId(), mUpdateListener);
                     }
                 }
             });
-
+            type.addTextChangedListener(new MyTextWatcher(type));
+            title.addTextChangedListener(new MyTextWatcher(title));
+            location.addTextChangedListener(new MyTextWatcher(location));
+            //description.addTextChangedListener(new MyTextWatcher(description));
+            eventDateTime.addTextChangedListener(new MyTextWatcher(eventDateTime));
         }
     }
 
@@ -367,18 +392,22 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 createEventSendModel.event_time = output1;
                 createEventSendModel.timer = String.valueOf(output);
                 Log.d("createventmodel", JsonUtils.jsonify(createEventSendModel));
+                if (!validateEventDate())
+                    return;
+                if (!validateTitle())
+                    return;
+                if (!validateLocation())
+                    return;
+                if (!validateType())
+                    return;
+//                if (!validateDescription())
+//                    return;
                 if (output > output1 ){
                     Toast.makeText(CreateEventActivity.this,"Please enter the valid decission timer",Toast.LENGTH_LONG).show();
                 }else if (memberValueFinal == 0){
                     Toast.makeText(CreateEventActivity.this,"Please enter the capacity above 0",Toast.LENGTH_LONG).show();
-                }else if (!eventDate){
-                    Toast.makeText(CreateEventActivity.this,"Please enter the event date and time",Toast.LENGTH_LONG).show();
                 }else if (!decesionTimer){
                     Toast.makeText(CreateEventActivity.this,"Please enter the decession timer of the event",Toast.LENGTH_LONG).show();
-                }else if(event_type == 0){
-                    Toast.makeText(CreateEventActivity.this,"Please click on event type to search event type",Toast.LENGTH_LONG).show();
-                }else if (latitude == 0 || longitude == 0){
-                    Toast.makeText(CreateEventActivity.this,"Please click on location to enter location",Toast.LENGTH_LONG).show();
                 }else {
                     progressBar.setVisibility(View.VISIBLE);
                     Controller.createEvent(CreateEventActivity.this, createEventSendModel, mCreateListener);
@@ -406,7 +435,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                 dpd.setSelectableDays(dates);
                 dpd.show(getFragmentManager(), "DATE_PICKER_TAG");
                 break;
-            case R.id.relativeTime:
+            case R.id.etAddEventDateTime:
                 Calendar calendar1 = Calendar.getInstance();
                 year1 = calendar1.get(Calendar.YEAR);
                 month1 = calendar1.get(Calendar.MONTH);
@@ -521,7 +550,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
                     text.append(ms / MINUTE).append("min ");
                     ms %= MINUTE;
                 }
-                time.setText(text.toString()+"item_chat_activity");
+                time.setText(text.toString());
             }
 
             @Override
@@ -562,10 +591,10 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         Date date = new Date(year1-1900,month1,day1,hour1,minute1);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy");
         String value = dateFormat.format(date);
-        activityDate.setText(value);
+        //activityDate.setText(value);
         SimpleDateFormat dateFormat1 = new SimpleDateFormat("hh:mm a");
         String value1 = dateFormat1.format(date);
-        activityTime.setText(value1);
+        eventDateTime.setText(value+" "+value1);
 
         //time.setText(aTime);
     }
@@ -808,4 +837,97 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
             }
         }
     };
+    private class MyTextWatcher implements TextWatcher {
+        private View view;
+        private MyTextWatcher(View view){
+            this.view = view;
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            switch (view.getId()){
+                case R.id.etAddTitle:
+                    validateTitle();
+                    break;
+                case R.id.etAddType:
+                    validateType();
+                    break;
+//                case R.id.etAddDesciption:
+//                    validateDescription();
+//                    break;
+                case R.id.etAddLocation:
+                    validateLocation();
+                    break;
+                case R.id.etAddEventDateTime:
+                    validateEventDate();
+                    break;
+
+            }
+        }
+    }
+    private boolean validateTitle(){
+        String hometown = title.getText().toString().trim();
+        if (hometown.isEmpty()){
+            textInputLayoutTitle.setError("Please enter event title");
+            requestFocus(title);
+            return false;
+        }else {
+            textInputLayoutTitle.setErrorEnabled(false);
+        }
+        return true;
+    }
+    private boolean validateEventDate(){
+        String hometown = eventDateTime.getText().toString().trim();
+        if (hometown.isEmpty()){
+            textInputLayoutEventDate.setError("Please enter event date and time");
+            requestFocus(eventDateTime);
+            return false;
+        }else {
+            textInputLayoutEventDate.setErrorEnabled(false);
+        }
+        return true;
+    }
+    private boolean validateType(){
+        String hometown = type.getText().toString().trim();
+        if (hometown.isEmpty()){
+            textInputLayoutType.setError("Please enter event type");
+            requestFocus(type);
+            return false;
+        }else {
+            textInputLayoutType.setErrorEnabled(false);
+        }
+        return true;
+    }
+    private boolean validateLocation(){
+        String hometown = location.getText().toString().trim();
+        if (hometown.isEmpty()){
+            textInputLayoutLocation.setError("Please enter event location");
+            requestFocus(location);
+            return false;
+        }else {
+            textInputLayoutLocation.setErrorEnabled(false);
+        }
+        return true;
+    }
+//    private boolean validateDescription(){
+//        String hometown = description.getText().toString().trim();
+//        if (hometown.isEmpty()){
+//            textInputLayoutDescription.setError("Please enter event description");
+//            requestFocus(description);
+//            return false;
+//        }else {
+//            textInputLayoutDescription.setErrorEnabled(false);
+//        }
+//        return true;
+//    }
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        }
+    }
 }

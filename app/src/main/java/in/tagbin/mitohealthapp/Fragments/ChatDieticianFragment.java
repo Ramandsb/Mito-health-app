@@ -84,7 +84,7 @@ public class ChatDieticianFragment  extends Fragment {
         pref = new PrefManager(getContext());
         recyclerView=(RecyclerView)view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        //adapter=new ChatActivityAdapter(this);
+        //lookupAdapter=new ChatActivityAdapter(this);
         textMessage = (EditText) view.findViewById(R.id.chatET);
         send = (Button) view.findViewById(R.id.sendBtn);
         chatLinear = (LinearLayout) view.findViewById(R.id.linearChat);
@@ -206,7 +206,7 @@ public class ChatDieticianFragment  extends Fragment {
                 ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(getContext());
                 chatMessagesDatabase.addChat(pojo);
                 customPojos_list.add(pojo);
-                //adapter.setListContent(customPojos_list);
+                //lookupAdapter.setListContent(customPojos_list);
                 adapter.notifyDataSetChanged();
                 textMessage.setText(null);
                 recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
@@ -256,16 +256,21 @@ public class ChatDieticianFragment  extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String username=intent.getStringExtra("user_name");
             String msg=intent.getStringExtra("message");
+            Log.d("Message Recieved","From"+ username+" Message :"+msg);
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minutee = calendar.get(Calendar.MINUTE);
             if (username.equals(user_name)) {
                 MessagesModel pojo = new MessagesModel(username, msg, updateTime1(hour, minutee), "from");
                 customPojos_list.add(pojo);
-                adapter.notifyDataSetChanged();
-                recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                        recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+                    }
+                });
             }
-            Log.d("Message Recieved","From"+ username+" Message :"+msg);
 
 
         }
@@ -273,14 +278,14 @@ public class ChatDieticianFragment  extends Fragment {
 
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         getActivity().registerReceiver(Recievemsgs, new IntentFilter(XmppChatService.RECIEVEDMSGS));
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         getActivity().unregisterReceiver(Recievemsgs);
     }
 }

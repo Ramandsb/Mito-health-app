@@ -34,176 +34,211 @@
             <ImageView
                 android:id="@+id/ivAddActivityImage"
                 android:layout_width="match_parent"
-                android:layout_height="140dp"
+                android:layout_height="200dp"
                 android:layout_below="@+id/app_bar"
                 android:layout_marginBottom="10dp"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/hotel" />
 
-            <android.support.design.widget.FloatingActionButton
+            <ImageView
                 android:id="@+id/fabAddImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/ivAddActivityImage"
-                android:layout_alignRight="@+id/ivAddActivityImage"
-                android:layout_gravity="end|bottom"
-                android:layout_margin="10dp"
-                android:background="#4c516d"
-                android:rotation="45"
-                android:src="@drawable/plus"
-                app:backgroundTint="#4c516d"
-                app:fabSize="mini"
-                app:rippleColor="#FFF" />
+                android:layout_alignTop="@+id/ivAddActivityImage"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/ic_camera" />
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/ivAddActivityImage"
                 android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginTop="5dp">
 
-                <TextView
+                <android.support.design.widget.TextInputLayout
                     android:id="@+id/tvAddTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Title"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="16sp">
 
-                <EditText
-                    android:id="@+id/etAddTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvAddTitle"
-                    android:ellipsize="end"
-                    android:hint="Please enter event title"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:textColor="#474747"
-                    android:textColorHint="#b7b7b7"
-                    android:textSize="14sp" />
+                    <EditText
+                        android:id="@+id/etAddTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvAddTitle"
+                        android:ellipsize="end"
+                        android:ems="20"
+                        android:hint="Event Name"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textColor="#3d405b"
+                        android:textColorHint="@color/colorPrimary"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
 
-                <TextView
+                <android.support.design.widget.TextInputLayout
                     android:id="@+id/tvAddType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/etAddTitle"
+                    android:layout_below="@+id/tvAddTitle"
                     android:text="Type"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="16sp">
 
-                <EditText
-                    android:id="@+id/etAddType"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvAddType"
-                    android:ellipsize="end"
-                    android:clickable="true"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:hint="Search for event type"
-                    android:inputType="textCapWords"
-                    android:singleLine="true"
-                    android:textColor="#474747"
-                    android:textColorHint="#b7b7b7"
-                    android:textSize="14sp" />
+                    <EditText
+                        android:id="@+id/etAddType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvAddType"
+                        android:clickable="true"
+                        android:editable="false"
+                        android:ellipsize="end"
+                        android:ems="20"
+                        android:focusable="false"
+                        android:hint="Event Type"
+                        android:inputType="textCapWords"
+                        android:singleLine="true"
+                        android:textColor="#3d405b"
+                        android:textColorHint="@color/colorPrimary"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/tvAddDesciption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/etAddType"
-                    android:text="Desciption"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
-
-                <EditText
-                    android:id="@+id/etAddDesciption"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvAddDesciption"
-                    android:ellipsize="end"
-                    android:hint="Please enter desciption of the event"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:textColor="#474747"
-                    android:textColorHint="#b7b7b7"
-                    android:textSize="15sp" />
-
-                <TextView
+                <android.support.design.widget.TextInputLayout
                     android:id="@+id/tvAddLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/etAddDesciption"
+                    android:layout_below="@+id/tvAddType"
                     android:text="Location"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="16sp">
 
-                <EditText
-                    android:id="@+id/etAddLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvAddLocation"
-                    android:ellipsize="end"
-                    android:hint="Please enter location of the event"
-                    android:selectAllOnFocus="true"
-                    android:singleLine="true"
-                    android:focusable="false"
-                    android:textColor="#474747"
-                    android:textColorHint="#b7b7b7"
-                    android:textSize="14sp" />
-
-                <TextView
+                    <EditText
+                        android:id="@+id/etAddLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvAddLocation"
+                        android:ellipsize="end"
+                        android:ems="20"
+                        android:focusable="false"
+                        android:hint="Event Location"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textColor="#474747"
+                        android:textColorHint="@color/colorPrimary"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
+                <android.support.design.widget.TextInputLayout
                     android:id="@+id/tvAddActivityDateHeading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/etAddLocation"
+                    android:layout_below="@+id/tvAddLocation"
                     android:text="Event Date and Time"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp" />
+                    android:textSize="16sp">
 
+                    <EditText
+                        android:id="@+id/etAddEventDateTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvAddLocation"
+                        android:ellipsize="end"
+                        android:ems="20"
+                        android:focusable="false"
+                        android:hint="Event Date and Time"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textColor="#474747"
+                        android:textColorHint="@color/colorPrimary"
+                        android:textSize="14sp" />
+                </android.support.design.widget.TextInputLayout>
                 <RelativeLayout
-                    android:id="@+id/relativeTime"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvAddActivityDateHeading"
-                    android:layout_centerHorizontal="true">
-
+                    android:id="@+id/relativeDescriptionHeading">
                     <TextView
-                        android:id="@+id/tvAddActivityDate"
+                        android:id="@+id/tvAddDesciption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:padding="10dp"
-                        android:text="1 Sep 2016"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
+                        android:text="Full Desciption(Max. 30 characters)"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"/>
 
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="20dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/colorAccent" />
+                        <EditText
+                            android:id="@+id/etAddDesciption"
+                            android:layout_width="match_parent"
+                            android:layout_height="70dp"
+                            android:layout_below="@+id/tvAddDesciption"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/bg_filter"
+                            android:maxLines="4"
+                            android:padding="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:textAlignment="viewStart"
+                            android:hint="Event Description"
+                            android:selectAllOnFocus="true"
+                            android:textColor="#3d405b"
+                            android:textColorHint="@color/colorPrimary"
+                            android:textSize="15sp" />
 
-                    <TextView
-                        android:id="@+id/tvAddActivitytime"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:padding="10dp"
-                        android:text="3:00 PM"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="14sp" />
                 </RelativeLayout>
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tvAddActivityDateHeading"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/tvAddLocation"-->
+                    <!--android:text="Event Date and Time"-->
+                    <!--android:textColor="@color/colorPrimary"-->
+                    <!--android:textSize="16sp" />-->
+
+                <!--<RelativeLayout-->
+                    <!--android:id="@+id/relativeTime"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/tvAddActivityDateHeading"-->
+                    <!--android:layout_centerHorizontal="true">-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tvAddActivityDate"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentLeft="true"-->
+                        <!--android:padding="10dp"-->
+                        <!--android:text="1 Sep 2016"-->
+                        <!--android:textColor="@color/colorAccent"-->
+                        <!--android:textSize="14sp" />-->
+
+                    <!--<View-->
+                        <!--android:layout_width="1dp"-->
+                        <!--android:layout_height="20dp"-->
+                        <!--android:layout_centerHorizontal="true"-->
+                        <!--android:layout_marginTop="10dp"-->
+                        <!--android:background="@color/colorAccent" />-->
+
+                    <!--<TextView-->
+                        <!--android:id="@+id/tvAddActivitytime"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_alignParentRight="true"-->
+                        <!--android:padding="10dp"-->
+                        <!--android:text="3:00 PM"-->
+                        <!--android:textColor="@color/colorAccent"-->
+                        <!--android:textSize="14sp" />-->
+                <!--</RelativeLayout>-->
 
                 <TextView
                     android:id="@+id/tvAddMember"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/relativeTime"
-                    android:text="Member"
+                    android:layout_below="@+id/relativeDescriptionHeading"
+                    android:text="Number of Members"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp" />
 
@@ -212,8 +247,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_below="@+id/relativeTime"
+                    android:layout_below="@+id/relativeDescriptionHeading"
                     android:layout_marginRight="20dp"
+                    android:layout_marginTop="10dp"
                     android:text="0"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp" />

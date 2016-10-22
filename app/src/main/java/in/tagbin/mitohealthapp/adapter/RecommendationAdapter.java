@@ -188,7 +188,7 @@ public class RecommendationAdapter extends RecyclerView.Adapter<RecommendationAd
             mProgressBar = progressBar;
             foodName.setText(pModel.getComponent().getName());
             quantity.setText(pModel.getAmount() + " " + pModel.getComponent().getServing_type().getServing_type());
-            calories.setText(new DecimalFormat("##").format(pModel.getComponent().getTotal_energy() * pModel.getAmount()).toString() + " Cal");
+            calories.setText(new DecimalFormat("##").format(pModel.getComponent().getTotal_energy() * pModel.getAmount()/pModel.getComponent().getServing_unit()).toString() + " Cal");
             Picasso.with(mContext).load(mModel.getComponent().getImage()).into(circleImageView);
             Calendar[] dates = new Calendar[4];
             int i = 0;

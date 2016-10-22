@@ -51,9 +51,9 @@ import pl.droidsonroids.gif.GifImageView;
  * Created by aasaqt on 9/8/16.
  */
 public class EventDetailsActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView title,type,time,people,location,date,heading,selectedPeople,interested,approved,left,joinText,coins;
+    TextView type,time,people,location,date,heading,selectedPeople,interested,approved,left,joinText,coins,edit;
     DataObject data;
-    ImageView backImage,edit;
+    ImageView backImage;
     LinearLayout linearFriends;
     RecyclerView recyclerView;
     List<ParticipantModel> mModel,da;
@@ -78,13 +78,13 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         type = (TextView) findViewById(R.id.tvMyActivityType);
-        title = (TextView) findViewById(R.id.tvMyActivityTitle);
+        //title = (TextView) findViewById(R.id.tvMyActivityTitle);
         time = (TextView) findViewById(R.id.tvMyActivityTime);
         people = (TextView) findViewById(R.id.tvMyActivityPeople);
         date = (TextView) findViewById(R.id.tvMyActivityDate);
         location = (TextView) findViewById(R.id.tvMyActivityLocation);
         recyclerView = (RecyclerView) findViewById(R.id.rvParticipants);
-        edit = (ImageView) findViewById(R.id.ivMyActivityEdit);
+        edit = (TextView) findViewById(R.id.ivMyActivityEdit);
         housefull = (RelativeLayout) findViewById(R.id.relativeHousefull);
         expired = (RelativeLayout) findViewById(R.id.relativeExpired);
         //heading = (TextView) findViewById(R.id.tvMyActivityHeading);
@@ -153,7 +153,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         }else if (MyUtils.getTimeinMillis(data.getTime()) < output){
             joinText.setText("Join");
             housefull.setVisibility(View.GONE);
-            expired.setVisibility(View.VISIBLE);
+            expired.setVisibility(View.GONE);
             join.setClickable(false);
         }else if (data.getMapper().getId() != 0 && !data.getMapper().isConfirm()){
             //holder.join.setTextColor(Color.parseColor("#ffffff"));
@@ -189,13 +189,14 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         super.onResume();
     }
     public void setData(final DataObject data){
-        title.setText(data.getTitle());
-        type.setText(data.getEvent_type().getTitle());
+        //title.setText(data.getTitle());
+        String output = data.getTitle().substring(0, 1).toUpperCase() + data.getTitle().substring(1);
+        type.setText(output);
 //        final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(data.getTime()), getCurrentTime(getContext()), DateUtils.MINUTE_IN_MILLIS));
 //        time.setText(relativeTime);
         location.setText(MyUtils.getCityName(EventDetailsActivity.this,data.getLocation()));
         people.setText(""+data.getCapacity());
-        interested.setText(""+data.getTotal_request());
+        interested.setText(""+(data.getTotal_request()-data.getTotal_approved()));
         approved.setText(""+data.getTotal_approved());
         left.setText(""+(data.getCapacity()-data.getTotal_approved()));
         long endTime = MyUtils.getTimeinMillis(data.getTime());
@@ -206,7 +207,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 long ms = millisUntilFinished;
                 StringBuffer text = new StringBuffer("");
                 if (ms > DAY) {
-                    text.append(ms / DAY).append(":");
+                    text.append(ms / DAY).append(" Days, ");
                     ms %= DAY;
                 }
                 if (ms > HOUR) {
@@ -214,11 +215,11 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                     ms %= HOUR;
                 }
                 if (ms > MINUTE) {
-                    text.append(ms / MINUTE).append(":");
+                    text.append(ms / MINUTE).append(" Hrs");
                     ms %= MINUTE;
                 }
                 if (ms > SECOND){
-                    text.append(ms/SECOND);
+                    //text.append(ms/SECOND);
                     ms %= SECOND;
                 }
                 time.setText(text.toString());
@@ -269,23 +270,23 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 
         recyclerView.setAdapter(mAdapter);
 
+        date.setText(MyUtils.getValidDateForLookupDetails(data.getEvent_time()));
         if (data.isAll()){
             date.setVisibility(View.VISIBLE);
             edit.setVisibility(View.GONE);
             linearFriends.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("All Event");
             selectedPeople.setVisibility(View.VISIBLE);
-            date.setText(MyUtils.getValidDate(data.getEvent_time()));
             linearFriends.setWeightSum(5);
             join.setVisibility(View.VISIBLE);
             approvedRelative.setClickable(false);
             interestedRelative.setClickable(false);
         }else{
-            date.setVisibility(View.GONE);
+            //date.setVisibility(View.GONE);
             edit.setVisibility(View.VISIBLE);
             getSupportActionBar().setTitle("My Event");
             selectedPeople.setVisibility(View.VISIBLE);
-            selectedPeople.setText("Interested People");
+            selectedPeople.setText("Pending Approvals");
             linearFriends.setVisibility(View.VISIBLE);
             join.setVisibility(View.GONE);
             linearFriends.setWeightSum(4);
@@ -342,7 +343,12 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             da = (List<ParticipantModel>) new Gson()
                     .fromJson(responseObject.toString(), collectionType);
             for (int i=0;i<da.size();i++){
-                mModel.add(da.get(i));
+                if (!data.isAll()) {
+                    if (!da.get(i).isConfirm())
+                        mModel.add(da.get(i));
+                }else{
+                    mModel.add(da.get(i));
+                }
             }
             runOnUiThread(new Runnable() {
                 @Override
@@ -398,7 +404,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 Controller.getParticipants(EventDetailsActivity.this,data.getId(),mParticipantApprovedListener);
                 break;
             case R.id.relativeInterested:
-                selectedPeople.setText("Interested People");
+                selectedPeople.setText("Pending Approvals");
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.getParticipants(EventDetailsActivity.this,data.getId(),mParticipantListener);
                 break;

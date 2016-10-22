@@ -146,6 +146,11 @@
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".activity.EventsListActivity"
+            android:label="Create Event"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"/>
+        <activity
             android:name=".activity.CreateEventActivity"
             android:label="Create Event"
             android:windowSoftInputMode="adjustPan"

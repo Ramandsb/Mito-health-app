@@ -41,110 +41,132 @@
         android:scaleType="centerCrop" />
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#20000000"
+        android:layout_height="200dp"
+        android:background="#503d405b"
         android:layout_alignTop="@+id/ivMyActivityImage"
         android:id="@+id/relativeTitle">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvMyActivityType"
-            android:text="Horse Riding"
-            android:textColor="#ffffff"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="5dp"
-            android:layout_marginLeft="5dp"/>
-        <View
-            android:layout_width="1dp"
-            android:layout_height="20dp"
-            android:layout_toRightOf="@+id/tvMyActivityType"
-            android:background="#ffffff"
-            android:id="@+id/viewSperator3"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvMyActivityTitle"
-            android:text="Join for horse riding"
-            android:textColor="#ffffff"
-            android:padding="8dp"
-            android:layout_toRightOf="@+id/viewSperator3"
-            android:textSize="10sp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="00:00:00"
             android:drawableLeft="@drawable/timerglass"
             android:drawablePadding="5dp"
-            android:textSize="10sp"
-            android:layout_marginLeft="10dp"
+            android:textSize="14sp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:id="@+id/tvMyActivityTime"
-            android:layout_below="@+id/tvMyActivityType"
             android:textColor="#ffffff"/>
-        <TextView
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvMyActivityDate"
-            android:text="11/08/2016"
-            android:visibility="gone"
-            android:textColor="#ffffff"
-            android:padding="5dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"/>
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/edit_white"
-            android:layout_alignParentRight="true"
-            android:padding="5dp"
-            android:id="@+id/ivMyActivityEdit"
-            android:layout_marginRight="5dp"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#20000000"
-        android:id="@+id/relativeBottomImage"
-        android:layout_alignBottom="@+id/ivMyActivityImage">
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMyActivityType"
+                android:text="Horse Riding"
+                android:layout_centerHorizontal="true"
+                android:textStyle="bold"
+                android:textAlignment="center"
+                android:textColor="#ffffff"
+                android:textSize="18sp"/>
+            <!--<View-->
+                <!--android:layout_width="1dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:layout_toRightOf="@+id/tvMyActivityType"-->
+                <!--android:background="#ffffff"-->
+                <!--android:id="@+id/viewSperator3"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:layout_marginLeft="3dp"-->
+                <!--android:layout_marginRight="3dp"/>-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:id="@+id/tvMyActivityTitle"-->
+                <!--android:text="Join for horse riding"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:padding="8dp"-->
+                <!--android:layout_toRightOf="@+id/viewSperator3"-->
+                <!--android:textSize="10sp"/>-->
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/personwhite"
-            android:padding="5dp"
-            android:id="@+id/ivMyActivityPeople"
-            android:layout_toLeftOf="@+id/tvMyActivityPeople"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5/5"
-            android:layout_marginRight="5dp"
-            android:textColor="#ffffff"
-            android:layout_alignParentRight="true"
-            android:padding="7dp"
-            android:textSize="16sp"
-            android:id="@+id/tvMyActivityPeople"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMyActivityDate"
+                android:text="21 Oct, 2016 5:30 PM"
+                android:textAlignment="center"
+                android:layout_below="@+id/tvMyActivityType"
+                android:textColor="#ffffff"
+                android:textSize="14sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Event"
+                android:paddingLeft="40dp"
+                android:paddingRight="40dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/colorPrimary"
+                android:background="@drawable/bg_edit_event"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/tvMyActivityDate"
+                android:id="@+id/ivMyActivityEdit"/>
 
-        <TextView
-            android:layout_width="wrap_content"
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tvMyActivityLocation"
-            android:text="New Delhi"
-            android:padding="10dp"
-            android:layout_alignParentLeft="true"
-            android:textColor="#ffffff"/>
+            android:id="@+id/relativeBottomImage"
+            android:layout_alignParentBottom="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/personwhite"
+                android:padding="5dp"
+                android:id="@+id/ivMyActivityPeople"
+                android:layout_toLeftOf="@+id/tvMyActivityPeople"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5/5"
+                android:layout_marginRight="5dp"
+                android:textColor="#ffffff"
+                android:layout_alignParentRight="true"
+                android:padding="7dp"
+                android:textSize="16sp"
+                android:id="@+id/tvMyActivityPeople"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvMyActivityLocation"
+                android:text="New Delhi"
+                android:padding="10dp"
+                android:layout_alignParentLeft="true"
+                android:textColor="#ffffff"/>
+        </RelativeLayout>
+        <!--<ImageView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/edit_white"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:padding="5dp"-->
+            <!--android:id="@+id/ivMyActivityEdit"-->
+            <!--android:layout_marginRight="5dp"/>-->
     </RelativeLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:visibility="gone"
         android:id="@+id/relativeHousefull"
         android:layout_alignTop="@+id/ivMyActivityImage"
-        android:background="#50000000">
+        android:background="#503d405b">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -179,12 +201,11 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/bg_my_activity"
         android:id="@+id/relativeRevert"
-        android:layout_below="@+id/relativeBottomImage">
+        android:layout_below="@+id/ivMyActivityImage">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -203,8 +224,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="50"
-                    android:textStyle="bold"
-                    android:textColor="#6f87b3"
+                    android:textColor="#3d405b"
                     android:layout_centerHorizontal="true"
                     android:id="@+id/tvInterestedFriends"
                     android:textSize="18sp"/>
@@ -213,7 +233,7 @@
                     android:layout_height="wrap_content"
                     android:text="Interested"
                     android:maxLines="1"
-                    android:textColor="#6f87b3"
+                    android:textColor="@color/colorPrimary"
                     android:layout_below="@+id/tvInterestedFriends"
                     android:layout_centerHorizontal="true"
                     android:textSize="13sp"/>
@@ -228,8 +248,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="20"
-                    android:textColor="#6f87b3"
-                    android:textStyle="bold"
+                    android:textColor="#3d405b"
                     android:layout_centerHorizontal="true"
                     android:id="@+id/tvApprovedFriends"
                     android:textSize="18sp"/>
@@ -237,7 +256,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Approved"
-                    android:textColor="#6f87b3"
+                    android:textColor="@color/colorPrimary"
                     android:maxLines="1"
                     android:layout_below="@+id/tvApprovedFriends"
                     android:layout_centerHorizontal="true"
@@ -252,8 +271,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="30"
-                    android:textStyle="bold"
-                    android:textColor="#6f87b3"
+                    android:textColor="#3d405b"
                     android:layout_centerHorizontal="true"
                     android:id="@+id/tvLeftFriends"
                     android:textSize="18sp"/>
@@ -262,7 +280,7 @@
                     android:layout_height="wrap_content"
                     android:text="Left"
                     android:maxLines="1"
-                    android:textColor="#6f87b3"
+                    android:textColor="@color/colorPrimary"
                     android:layout_below="@+id/tvLeftFriends"
                     android:layout_centerHorizontal="true"
                     android:textSize="13sp"/>
@@ -284,7 +302,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Invite"
-                    android:textColor="#6f87b3"
+                    android:textColor="@color/colorPrimary"
                     android:maxLines="1"
                     android:layout_below="@+id/tvInviteFriends"
                     android:layout_centerHorizontal="true"
@@ -309,7 +327,7 @@
                     android:text="Join"
                     android:maxLines="1"
                     android:id="@+id/tvJoinText"
-                    android:textColor="#6f87b3"
+                    android:textColor="@color/colorPrimary"
                     android:layout_below="@+id/tvJoinFriends"
                     android:layout_centerHorizontal="true"
                     android:textSize="13sp"/>
@@ -324,16 +342,17 @@
         android:layout_below="@+id/relativeRevert"
         android:text="Selected People"
         android:layout_marginTop="10dp"
-        android:textColor="#000000"/>
+        android:layout_marginBottom="10dp"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimary"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvSelectedPeople"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/bg_my_activity">
+        android:layout_marginBottom="10dp">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rvParticipants"
             android:layout_width="match_parent"

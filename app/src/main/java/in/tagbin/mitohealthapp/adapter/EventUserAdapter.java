@@ -6,10 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -21,6 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.tagbin.mitohealthapp.activity.EventsUserDetailsActivity;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
+import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
 
 /**
@@ -67,11 +71,15 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder{
         Context mContext;
         ParticipantModel mModel;
-        CircleImageView circleImageView;
+        ImageView circleImageView;
+        TextView age,name;
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
-            circleImageView = (CircleImageView) itemView.findViewById(R.id.circleView);
-            circleImageView.setBorderColor(Color.parseColor("#ffffff"));
+            circleImageView = (ImageView) itemView.findViewById(R.id.circleView);
+            //userApproved = (ImageView) itemView.findViewById(R.id.ivUserApproved);
+            age = (TextView) itemView.findViewById(R.id.tvUserAge);
+            name= (TextView) itemView.findViewById(R.id.tvUserName);
+            //circleImageView.setBorderColor(Color.parseColor("#ffffff"));
 
 
         }
@@ -105,7 +113,10 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
             }else{
                 circleImageView.setImageResource(R.drawable.hotel);
             }
-
+            String output = mModel.getUser().getFirst_name().substring(0, 1).toUpperCase() + mModel.getUser().getFirst_name().substring(1);
+            name.setText(output);
+            //Log.d("location",MyUtils.getStateName(mContext,mModel.getUser().getProfile().getLocation()));
+            age.setText(mModel.getUser().getProfile().getAge()+", "+ MyUtils.getStateName(mContext,mModel.getUser().getProfile().getLocation()));
             circleImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

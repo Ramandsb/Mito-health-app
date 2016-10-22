@@ -72,7 +72,7 @@ public class FoodLoggerSearchAdapter extends ArrayAdapter<HitsArrayModel> {
                     RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                     RequestFuture<JSONObject> future = RequestFuture.newFuture();
                     String url = "https://api.mitoapp.com/v1/elastic_search/recipe_search?keyword="+constraint.toString();
-
+                    url = url.replace(" ","%20");
                     JsonObjectRequest request = new JsonObjectRequest(url,null, future, future);
                     requestQueue.add(request);
                     try {

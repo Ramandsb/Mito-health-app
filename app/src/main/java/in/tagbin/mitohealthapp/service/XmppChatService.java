@@ -94,6 +94,7 @@ public class XmppChatService extends Service {
         public void onReceive(Context context, Intent intent) {
             String username = intent.getStringExtra("user_name");
             String msg = intent.getStringExtra("message");
+            Log.d("name",username+"  "+msg);
             sendMessages(username, msg);
 
         }
