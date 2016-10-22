@@ -114,7 +114,9 @@
             android:name=".activity.DailyDetailsActivity"
             android:label="@string/title_activity_collapsable_logging"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" >
+
+        </activity>
         <activity
             android:name=".activity.FoodDetailsActivity"
             android:label="@string/title_activity_food_details"
