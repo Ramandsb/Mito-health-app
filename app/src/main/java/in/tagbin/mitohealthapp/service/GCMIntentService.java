@@ -68,7 +68,7 @@ public class GCMIntentService extends IntentService implements RequestListener {
 
     @Override
     public void onRequestCompleted(Object responseObject) {
-        //pref.setSentTokenToServer(true);
+        pref.sendTokenToServer(true);
     }
 
     @Override

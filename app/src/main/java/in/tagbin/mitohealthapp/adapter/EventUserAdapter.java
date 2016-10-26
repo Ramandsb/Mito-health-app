@@ -116,7 +116,13 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
             String output = mModel.getUser().getFirst_name().substring(0, 1).toUpperCase() + mModel.getUser().getFirst_name().substring(1);
             name.setText(output);
             //Log.d("location",MyUtils.getStateName(mContext,mModel.getUser().getProfile().getLocation()));
-            age.setText(mModel.getUser().getProfile().getAge()+", "+ MyUtils.getStateName(mContext,mModel.getUser().getProfile().getLocation()));
+            String gender;
+            if (mModel.getUser().getProfile().getGender().toLowerCase().equals("m")){
+                gender = "Male";
+            }else{
+                gender = "Female";
+            }
+            age.setText(mModel.getUser().getProfile().getAge()+", "+ gender);
             circleImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

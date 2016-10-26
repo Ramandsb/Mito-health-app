@@ -269,6 +269,8 @@ public class InterestActivity extends AppCompatActivity {
             return true;
         }else if (item.getItemId() == R.id.action_next){
             Log.d("idfinal",JsonUtils.jsonify(idFinal));
+            PrefManager pref = new PrefManager(InterestActivity.this);
+            pref.setTutorial1(true);
             if (idFinal.size() <= 0){
                 Toast.makeText(this,"Please select atleast one interest.",Toast.LENGTH_LONG).show();
             }else {

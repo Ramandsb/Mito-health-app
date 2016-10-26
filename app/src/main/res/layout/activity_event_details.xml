@@ -97,6 +97,7 @@
                 android:id="@+id/tvMyActivityDate"
                 android:text="21 Oct, 2016 5:30 PM"
                 android:textAlignment="center"
+                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/tvMyActivityType"
                 android:textColor="#ffffff"
                 android:textSize="14sp"/>

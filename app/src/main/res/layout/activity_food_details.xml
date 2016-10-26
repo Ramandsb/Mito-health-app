@@ -46,52 +46,56 @@
         android:layout_marginBottom="10dp"
         android:background="@color/colorPrimary">
 
-        <LinearLayout
-            android:id="@+id/linearTopFoodDetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
+
 
             <TextView
                 android:id="@+id/tvFoodNameDetails"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="Rajma Chawal"
                 android:textColor="@android:color/white"
                 android:textSize="21sp" />
 
-            <ImageView
-                android:layout_width="5dp"
-                android:layout_height="5dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/dot" />
 
-            <TextView
-                android:id="@+id/tvEnterCalories"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:text="212 Cal"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/linearTopFoodDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvFoodNameDetails"
+        android:layout_marginBottom="10dp"
+        android:orientation="horizontal">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/linearTopFoodDetails"
             android:layout_marginLeft="20dp"
             android:id="@+id/tvViewRecipeDetails"
             android:text="View Recipe Details"
-            android:layout_marginBottom="10dp"
             android:textColor="#b3b3b3"
             android:textSize="14sp" />
+        <ImageView
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/dot" />
+
+        <TextView
+            android:id="@+id/tvEnterCalories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:text="212 Cal"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
     </RelativeLayout>
 
     <ImageView

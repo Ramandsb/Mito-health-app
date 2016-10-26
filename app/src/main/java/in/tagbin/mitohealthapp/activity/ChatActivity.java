@@ -77,7 +77,7 @@ public class ChatActivity extends AppCompatActivity {
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutee = calendar.get(Calendar.MINUTE);
-                MessagesModel pojo = new MessagesModel(user_name,text,updateTime1(hour,minutee),"to");
+                MessagesModel pojo = new MessagesModel(user_name,text,String.valueOf(getCurrentTime(ChatActivity.this)),"to");
                 ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(ChatActivity.this);
                 chatMessagesDatabase.addChat(pojo);
                 customPojos_list.add(pojo);
@@ -94,6 +94,11 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
         });
+    }
+    public long getCurrentTime(Context ctx){
+
+        long sec = System.currentTimeMillis();
+        return sec;
     }
     private String updateTime1(int hours, int mins) {
         if (mins >= 60) {
@@ -149,7 +154,7 @@ public class ChatActivity extends AppCompatActivity {
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minutee = calendar.get(Calendar.MINUTE);
             if (username.equals(user_name)) {
-                MessagesModel pojo = new MessagesModel(username, msg, updateTime1(hour, minutee), "from");
+                MessagesModel pojo = new MessagesModel(username, msg, String.valueOf(getCurrentTime(ChatActivity.this)), "from");
                 customPojos_list.add(pojo);
                 adapter.notifyDataSetChanged();
                 recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);

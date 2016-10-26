@@ -8,9 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.helper.MyUtils;
@@ -57,12 +61,22 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
         }
         holder.message.setText(list_items.getMessages());
         try {
-            holder.time.setText(MyUtils.getDateCurrentTimeZone(Long.parseLong(list_items.getTime())));
+            holder.time.setText(getDate(Long.parseLong(list_items.getTime())));
         }catch (NumberFormatException e){
             holder.time.setText(list_items.getTime());
         }
     }
+    private String getDate(long timeStamp){
 
+        try{
+            DateFormat sdf = new SimpleDateFormat("hh:mm a");
+            Date netDate = (new Date(timeStamp));
+            return sdf.format(netDate);
+        }
+        catch(Exception ex){
+            return "xx";
+        }
+    }
 
     @Override
     public int getItemCount() {
@@ -72,13 +86,14 @@ public class ChatActivityAdapter extends  RecyclerView.Adapter<ChatActivityAdapt
     //View holder class, where all view components are defined
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         TextView message,time;
-        LinearLayout setGravity,setpatch;
+        LinearLayout setGravity;
+        RelativeLayout setpatch;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             setGravity= (LinearLayout) itemView.findViewById(R.id.set_gravity);
-            setpatch= (LinearLayout) itemView.findViewById(R.id.setpatch);
+            setpatch= (RelativeLayout) itemView.findViewById(R.id.setpatch);
             message=(TextView)itemView.findViewById(R.id.set_message);
             time=(TextView)itemView.findViewById(R.id.set_time);
 

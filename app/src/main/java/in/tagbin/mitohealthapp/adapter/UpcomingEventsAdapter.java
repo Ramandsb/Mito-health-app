@@ -113,7 +113,7 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
             title.setText(newlist.getTitle());
             description.setText(newlist.getDescription());
             final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(newlist.getTime()), getCurrentTime(mycontext), DateUtils.MINUTE_IN_MILLIS));
-            time.setText(MyUtils.getValidDateForLookup(newlist.getTime()));
+            time.setText(MyUtils.getValidDateForLookup(newlist.getEvent_time()));
 
             capacity.setText("" +(newlist.getTotal_approved())+"/"+newlist.getCapacity());
 //            location.setText(MyUtils.getCityName(mycontext,newlist.getLocation()));

@@ -180,7 +180,7 @@ public class XmppChatService extends Service {
                         Calendar calendar = Calendar.getInstance();
                         int hour = calendar.get(Calendar.HOUR_OF_DAY);
                         int minutee = calendar.get(Calendar.MINUTE);
-                        MessagesModel messagesModel = new MessagesModel(fromName, message.getBody(), updateTime1(hour, minutee), "from");
+                        MessagesModel messagesModel = new MessagesModel(fromName, message.getBody(), String.valueOf(getCurrentTime()), "from");
                         ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(getBaseContext());
                         chatMessagesDatabase.addChat(messagesModel);
                         ChatDatabase chatDatabase = new ChatDatabase(getBaseContext());
@@ -227,7 +227,11 @@ public class XmppChatService extends Service {
             }, filter);
         }
     }
+    public long getCurrentTime(){
 
+        long sec = System.currentTimeMillis();
+        return sec;
+    }
     private String updateTime1(int hours, int mins) {
         if (mins >= 60) {
             //hour = hours + 1;

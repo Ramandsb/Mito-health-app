@@ -146,7 +146,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                             img4.setVisibility(View.GONE);
                             img5.setVisibility(View.GONE);
                             eventUserNumber.setVisibility(View.GONE);
-                        }else if (da.size() > 0){
+                        }else if (da.size() ==1){
                             img1.setVisibility(View.VISIBLE);
                             img2.setVisibility(View.GONE);
                             img3.setVisibility(View.GONE);
@@ -155,8 +155,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                             eventUserNumber.setVisibility(View.GONE);
                             if (da.get(0).getUser().getProfile().getImages().getMaster() != null)
                                 Picasso.with(mContext).load(da.get(0).getUser().getProfile().getImages().getMaster()).into(img1);
-
-                        }else if (da.size() >1){
+                        }else if (da.size()  == 2){
                             img1.setVisibility(View.VISIBLE);
                             img2.setVisibility(View.VISIBLE);
                             img3.setVisibility(View.GONE);
@@ -167,7 +166,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                                 Picasso.with(mContext).load(da.get(0).getUser().getProfile().getImages().getMaster()).into(img1);
                             if (da.get(1).getUser().getProfile().getImages().getMaster() != null)
                                 Picasso.with(mContext).load(da.get(1).getUser().getProfile().getImages().getMaster()).into(img2);
-                        }else if (da.size() > 2){
+                        }else if (da.size() == 3){
                             img1.setVisibility(View.VISIBLE);
                             img2.setVisibility(View.VISIBLE);
                             img3.setVisibility(View.VISIBLE);
@@ -180,7 +179,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                                 Picasso.with(mContext).load(da.get(1).getUser().getProfile().getImages().getMaster()).into(img2);
                             if (da.get(2).getUser().getProfile().getImages().getMaster() != null)
                                 Picasso.with(mContext).load(da.get(2).getUser().getProfile().getImages().getMaster()).into(img3);
-                        }else if (da.size() > 3){
+                        }else if (da.size() == 4){
                             img1.setVisibility(View.VISIBLE);
                             img2.setVisibility(View.VISIBLE);
                             img3.setVisibility(View.VISIBLE);
@@ -195,7 +194,7 @@ public class EventListAdapter extends RecyclerView.Adapter<EventListAdapter.View
                                 Picasso.with(mContext).load(da.get(2).getUser().getProfile().getImages().getMaster()).into(img3);
                             if (da.get(3).getUser().getProfile().getImages().getMaster() != null)
                                 Picasso.with(mContext).load(da.get(3).getUser().getProfile().getImages().getMaster()).into(img4);
-                        }else if (da.size()  >4){
+                        }else if (da.size() == 5){
                             img1.setVisibility(View.VISIBLE);
                             img2.setVisibility(View.VISIBLE);
                             img3.setVisibility(View.VISIBLE);

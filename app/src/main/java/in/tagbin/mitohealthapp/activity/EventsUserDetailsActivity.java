@@ -126,7 +126,7 @@ public class EventsUserDetailsActivity extends AppCompatActivity implements View
         };
         countDownTimer.start();
         getSupportActionBar().setTitle(dataObject.getTitle());
-        location.setText(MyUtils.getCityName(EventsUserDetailsActivity.this,dataObject.getLocation()));
+        location.setText(MyUtils.getStateName(EventsUserDetailsActivity.this,dataObject.getLocation()));
         people.setText(""+dataObject.getCapacity());
         if (data.getUser().getLast_name() != null) {
             name.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name()+", "+data.getUser().getProfile().getAge());
@@ -136,6 +136,7 @@ public class EventsUserDetailsActivity extends AppCompatActivity implements View
         if (dataObject.isAll()){
             addParticipant.setVisibility(View.GONE);
         }else{
+
             addParticipant.setVisibility(View.VISIBLE);
         }
         //profession.setText(data.getUser().getProfession());
@@ -163,6 +164,7 @@ public class EventsUserDetailsActivity extends AppCompatActivity implements View
         }else{
             mImageResources.add(null);
         }
+        profession.setText(MyUtils.getStateName(this,data.getUser().getProfile().getLocation()));
         mAdapter = new ImagesSlideAdapter(EventsUserDetailsActivity.this, mImageResources);
         intro_images.setAdapter(mAdapter);
         intro_images.setCurrentItem(0);

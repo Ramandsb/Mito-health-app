@@ -202,7 +202,7 @@ public class ChatDieticianFragment  extends Fragment {
                 Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minutee = calendar.get(Calendar.MINUTE);
-                MessagesModel pojo = new MessagesModel(user_name,text,updateTime1(hour,minutee),"to");
+                MessagesModel pojo = new MessagesModel(user_name,text,String.valueOf(getCurrentTime(getContext())),"to");
                 ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(getContext());
                 chatMessagesDatabase.addChat(pojo);
                 customPojos_list.add(pojo);
@@ -219,6 +219,11 @@ public class ChatDieticianFragment  extends Fragment {
             }
 
         });
+    }
+    public long getCurrentTime(Context ctx){
+
+        long sec = System.currentTimeMillis();
+        return sec;
     }
     private String updateTime1(int hours, int mins) {
         if (mins >= 60) {
@@ -261,7 +266,7 @@ public class ChatDieticianFragment  extends Fragment {
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minutee = calendar.get(Calendar.MINUTE);
             if (username.equals(user_name)) {
-                MessagesModel pojo = new MessagesModel(username, msg, updateTime1(hour, minutee), "from");
+                MessagesModel pojo = new MessagesModel(username, msg, String.valueOf(getCurrentTime(getContext())), "from");
                 customPojos_list.add(pojo);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

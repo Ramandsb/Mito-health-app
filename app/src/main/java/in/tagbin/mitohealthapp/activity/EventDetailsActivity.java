@@ -153,7 +153,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         }else if (MyUtils.getTimeinMillis(data.getTime()) < output){
             joinText.setText("Join");
             housefull.setVisibility(View.GONE);
-            expired.setVisibility(View.GONE);
+            expired.setVisibility(View.VISIBLE);
             join.setClickable(false);
         }else if (data.getMapper().getId() != 0 && !data.getMapper().isConfirm()){
             //holder.join.setTextColor(Color.parseColor("#ffffff"));
@@ -181,12 +181,35 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
                 }
             });
         }
+        if (data.isAll()){
+            date.setVisibility(View.VISIBLE);
+            edit.setVisibility(View.GONE);
+            linearFriends.setVisibility(View.VISIBLE);
+            getSupportActionBar().setTitle("All Event");
+            selectedPeople.setVisibility(View.VISIBLE);
+            linearFriends.setWeightSum(5);
+            join.setVisibility(View.VISIBLE);
+            approvedRelative.setClickable(false);
+            interestedRelative.setClickable(false);
+        }else{
+            //date.setVisibility(View.GONE);
+            edit.setVisibility(View.VISIBLE);
+            getSupportActionBar().setTitle("My Event");
+            selectedPeople.setVisibility(View.VISIBLE);
+            selectedPeople.setText("Pending Approvals");
+            linearFriends.setVisibility(View.VISIBLE);
+            join.setVisibility(View.GONE);
+            linearFriends.setWeightSum(4);
+            approvedRelative.setClickable(true);
+            interestedRelative.setClickable(true);
+        }
         Controller.getParticipants(EventDetailsActivity.this,data.getId(),mParticipantListener);
         setData(data);
     }
     @Override
     protected void onResume() {
         super.onResume();
+        Controller.getParticipants(EventDetailsActivity.this,data.getId(),mParticipantListener);
     }
     public void setData(final DataObject data){
         //title.setText(data.getTitle());
@@ -195,7 +218,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
 //        final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(data.getTime()), getCurrentTime(getContext()), DateUtils.MINUTE_IN_MILLIS));
 //        time.setText(relativeTime);
         location.setText(MyUtils.getCityName(EventDetailsActivity.this,data.getLocation()));
-        people.setText(""+data.getCapacity());
+        people.setText(""+data.getTotal_approved()+"/"+data.getCapacity());
         interested.setText(""+(data.getTotal_request()-data.getTotal_approved()));
         approved.setText(""+data.getTotal_approved());
         left.setText(""+(data.getCapacity()-data.getTotal_approved()));
@@ -271,28 +294,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         recyclerView.setAdapter(mAdapter);
 
         date.setText(MyUtils.getValidDateForLookupDetails(data.getEvent_time()));
-        if (data.isAll()){
-            date.setVisibility(View.VISIBLE);
-            edit.setVisibility(View.GONE);
-            linearFriends.setVisibility(View.VISIBLE);
-            getSupportActionBar().setTitle("All Event");
-            selectedPeople.setVisibility(View.VISIBLE);
-            linearFriends.setWeightSum(5);
-            join.setVisibility(View.VISIBLE);
-            approvedRelative.setClickable(false);
-            interestedRelative.setClickable(false);
-        }else{
-            //date.setVisibility(View.GONE);
-            edit.setVisibility(View.VISIBLE);
-            getSupportActionBar().setTitle("My Event");
-            selectedPeople.setVisibility(View.VISIBLE);
-            selectedPeople.setText("Pending Approvals");
-            linearFriends.setVisibility(View.VISIBLE);
-            join.setVisibility(View.GONE);
-            linearFriends.setWeightSum(4);
-            approvedRelative.setClickable(true);
-            interestedRelative.setClickable(true);
-        }
+
 
     }
     @Override

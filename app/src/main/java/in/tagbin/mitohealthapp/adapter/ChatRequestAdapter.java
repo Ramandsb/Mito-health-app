@@ -61,7 +61,13 @@ public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.
     @Override
     public void onBindViewHolder(ChatRequestAdapter.ViewHolder holder, int position) {
         holder.itemView.setVisibility(View.VISIBLE);
-        ((ChatRequestAdapter.ViewHolder) holder).populateData(mModel.get(position), mContext,mProgressBar);
+        ((ChatRequestAdapter.ViewHolder) holder).populateData(mModel.get(position), mContext,mProgressBar,position);
+
+    }
+    public void removePosition(int adapterPosition) {
+        mModel.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        //notifyItemRangeChanged(adapterPosition, getItemCount());
 
     }
 
@@ -73,13 +79,14 @@ public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.
     public int getItemViewType(int position) {
         return TYPE_ITEM;
     }
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Context mContext;
         ConnectProfileModel mModel;
         TextView firendRequest;
         ImageView picture,confirm,decline;
         GifImageView mProgressBar;
         RelativeLayout view;
+        int mPosition;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -93,10 +100,11 @@ public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.
             view.setOnClickListener(this);
         }
 
-        public void populateData(ConnectProfileModel pModel, Context pContext,GifImageView pProgressBar){
+        public void populateData(ConnectProfileModel pModel, Context pContext,GifImageView pProgressBar,int pPosition){
             mModel = pModel;
             mContext = pContext;
             mProgressBar = pProgressBar;
+            mPosition = pPosition;
             firendRequest.setText(pModel.getUser().getFirst_name() +" send you a request");
             if (mModel.getImages() != null){
                 if (mModel.getImages().getMaster() != null){
@@ -167,9 +175,10 @@ public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.
                     public void run() {
                         mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(mContext, "Approved", Toast.LENGTH_LONG).show();
-                        Intent i = new Intent(mContext, ChatRequestActivity.class);
-                        mContext.startActivity(i);
-                        ((Activity) mContext).finish();
+                        removePosition(mPosition);
+//                        Intent i = new Intent(mContext, ChatRequestActivity.class);
+//                        mContext.startActivity(i);
+//                        ((Activity) mContext).finish();
                     }
                 });
             }
@@ -212,9 +221,10 @@ public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.
                     public void run() {
                         mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(mContext, "Rejected", Toast.LENGTH_LONG).show();
-                        Intent i = new Intent(mContext, ChatRequestActivity.class);
-                        mContext.startActivity(i);
-                        ((Activity) mContext).finish();
+                        removePosition(mPosition);
+//                        Intent i = new Intent(mContext, ChatRequestActivity.class);
+//                        mContext.startActivity(i);
+//                        ((Activity) mContext).finish();
                     }
                 });
             }

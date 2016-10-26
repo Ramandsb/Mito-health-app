@@ -115,7 +115,7 @@ public class LookupAdapter extends RecyclerView.Adapter<LookupAdapter.MyViewHold
             String output1 = newlist.getTitle().substring(0, 1).toUpperCase() + newlist.getTitle().substring(1);
             title.setText(output1);
             final String relativeTime = String.valueOf(DateUtils.getRelativeTimeSpanString(MyUtils.getTimeinMillis(newlist.getTime()), getCurrentTime(mycontext), DateUtils.MINUTE_IN_MILLIS));
-            time.setText(MyUtils.getValidDateForLookup(newlist.getTime()));
+            time.setText(MyUtils.getValidDateForLookup(newlist.getEvent_time()));
             description.setText(newlist.getDescription());
             capacity.setText("" +(newlist.getTotal_approved())+"/"+newlist.getCapacity());
 //            location.setText(MyUtils.getCityName(mycontext,newlist.getLocation()));
@@ -131,7 +131,7 @@ public class LookupAdapter extends RecyclerView.Adapter<LookupAdapter.MyViewHold
 //                join.setTextColor(Color.parseColor("#9b9b9b"));
 //                join.setText("Join Now");
                 housefull.setVisibility(View.GONE);
-                expired.setVisibility(View.GONE);
+                expired.setVisibility(View.VISIBLE);
 //                join.setClickable(false);
             }else if (newlist.getMapper().getId() != 0 && !newlist.getMapper().isConfirm()){
 //                join.setTextColor(Color.parseColor("#ffffff"));

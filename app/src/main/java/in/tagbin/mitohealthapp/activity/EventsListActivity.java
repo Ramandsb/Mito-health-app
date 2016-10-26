@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -16,6 +20,8 @@ import java.util.List;
 
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.adapter.EventListAdapter;
+import in.tagbin.mitohealthapp.app.Controller;
+import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.model.DataObject;
 import pl.droidsonroids.gif.GifImageView;
 
@@ -52,5 +58,18 @@ public class EventsListActivity extends AppCompatActivity {
         dataObjects = (List<DataObject>) new Gson().fromJson(response, collectionType);
         adapter = new EventListAdapter(this,dataObjects,null);
         recyclerView.setAdapter(adapter);
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

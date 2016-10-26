@@ -65,18 +65,21 @@ public class BinderActivity extends AppCompatActivity{
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar_title.setText("Mito");
+
+        pref = new PrefManager(this);
         bottomNavigation = (SpaceNavigationView) findViewById(R.id.bottom_navigater);
 
         bottomNavigation.initWithSaveInstanceState(savedInstanceState);
-        Intent intent = new Intent(this, GCMIntentService.class);
-        startService(intent);
+        if (!pref.isTOkenSend()) {
+            Intent intent = new Intent(this, GCMIntentService.class);
+            startService(intent);
+        }
 // Create items
         startService(new Intent(this,XmppChatService.class));
         bottomNavigation.addSpaceItem(new SpaceItem("", R.drawable.big_mito));
         bottomNavigation.addSpaceItem(new SpaceItem("", R.drawable.partnet_final));
         bottomNavigation.addSpaceItem(new SpaceItem("", R.drawable.chat_nutritionist));
         bottomNavigation.addSpaceItem(new SpaceItem("", R.drawable.profile_final));
-        pref = new PrefManager(this);
         bottomNavigation.setCentreButtonIcon(R.drawable.plus_svg);
         bottomNavigation.showIconOnly();
         bottomNavigation.hideAllBudges();

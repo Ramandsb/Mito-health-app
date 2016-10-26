@@ -44,7 +44,7 @@ public class PrefManager {
     private static final String KEY_MONTH = "selected_month";
     private static final String KEY_YEAR = "selected_year";
     private static String KEY_DIETICIAN = "key_deitician";
-
+    private static String GCM_TOKEN = "gcm_token";
     private static String LOCATION_OBJECT = "location_object";
     private static String PREFERENCE = "preference_object";
 
@@ -225,5 +225,12 @@ public class PrefManager {
         String response = pref.getString(KEY_USER_DETAILS,null);
         UserModel userModel = JsonUtils.objectify(response,UserModel.class);
         return userModel;
+    }
+    public void sendTokenToServer(boolean tokenToServer){
+        editor.putBoolean(GCM_TOKEN,tokenToServer);
+        editor.commit();
+    }
+    public boolean isTOkenSend(){
+        return pref.getBoolean(GCM_TOKEN,false);
     }
 }

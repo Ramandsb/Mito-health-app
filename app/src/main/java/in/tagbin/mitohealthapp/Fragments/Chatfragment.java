@@ -65,15 +65,7 @@ public class Chatfragment extends Fragment {
         recyclerView=(RecyclerView)view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         pref = new PrefManager(getContext());
-        if (pref.getDietician() != null) {
-            dieticainModel = pref.getDietician();
-            chatDatabase = new ChatDatabase(getContext());
-            listContentArr = chatDatabase.getChatUsers(dieticainModel.getChat_username() + "@" + dieticainModel.getChat_server());
-            adapter = new ChatFriendsAdapter(getActivity(), listContentArr);
-            recyclerView.setAdapter(adapter);
-        }else{
-            Controller.getDietician(getContext(),mDieticianListener);
-        }
+
         ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
             @Override
             public void onItemClicked(RecyclerView recyclerView, int position, View v) {
@@ -164,6 +156,15 @@ public class Chatfragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().registerReceiver(ReceiveRoosters,new IntentFilter(XmppChatService.RECEIVEROOSTER));
+        if (pref.getDietician() != null) {
+            dieticainModel = pref.getDietician();
+            chatDatabase = new ChatDatabase(getContext());
+            listContentArr = chatDatabase.getChatUsers(dieticainModel.getChat_username() + "@" + dieticainModel.getChat_server());
+            adapter = new ChatFriendsAdapter(getActivity(), listContentArr);
+            recyclerView.setAdapter(adapter);
+        }else{
+            Controller.getDietician(getContext(),mDieticianListener);
+        }
     }
     RequestListener mDieticianListener = new RequestListener() {
         @Override
