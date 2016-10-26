@@ -77,7 +77,9 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         setHasOptionsMenu(true);
         i.invalidateOptionsMenu();
 
+
     }
+
 
     @Nullable
     @Override
@@ -86,14 +88,11 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         View v = inflater.inflate(R.layout.frag_mito_health,container,false);
         pref=  new PrefManager(getContext());
         Calendar  calendar = Calendar.getInstance();
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
         Calendar  current_cal = Calendar.getInstance();
         Date currentDate = current_cal.getTime();
         Log.d("weekValue",current_cal.get(Calendar.DAY_OF_WEEK)+"///");
         selectedDate=sdf.format(currentDate);
-
         Calendar calendar1 = Calendar.getInstance();
         int day = calendar1.get(Calendar.DAY_OF_MONTH);
         int year = calendar1.get(Calendar.YEAR);
@@ -158,9 +157,7 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         cal_consumed = (TextView) v.findViewById(R.id.tvCaloriesConsumed);
         cal_left = (TextView) v.findViewById(R.id.tvCaloriesLeft);
         cal_burned = (TextView) v.findViewById(R.id.tvCaloriesBurnt);
-
         mBgColor = getResources().getColor(R.color.sample_bg);
-
         return v;
     }
 
@@ -185,10 +182,7 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
                     cal_consumed.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_consumed()).toString());
                     cal_left.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_required()-energyGetModel.getCalorie_consumed()).toString());
                     cal_burned.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_burnt()).toString());
-//                    String w= new DecimalFormat("##").format(energyGetModel.getWater()/250).toString();
-//                    glasses.setText(w+"/8");
-//                    foodcard_recom.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_required()).toString() + " Kcal");
-//                    exercard_burnt.setText(new DecimalFormat("##").format(energyGetModel.getCalorie_burnt()).toString());
+
                 }
             });
 

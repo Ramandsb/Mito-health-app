@@ -69,6 +69,14 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         Log.d("Database Created", "true");
 
     }
+    public Cursor getFoodInformation(DatabaseOperations dop,String date){
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+//        Cursor cursor = SQ.rawQuery("SELECT * from " + TableData.Tableinfo.TABLE_NAME_SLEEP, null, null);
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_FOOD + " WHERE " + TableData.Tableinfo.DATE + "='" + date + "'", null);
+
+        Log.d("getinfo ",cursor.getColumnName(3));
+        return cursor;
+    }
     public void putCMInformation(DatabaseOperations dop, String source, String time, String messages,String user) {
         SQLiteDatabase SQ = dop.getWritableDatabase();
         ContentValues cv = new ContentValues();

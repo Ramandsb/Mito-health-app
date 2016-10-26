@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,7 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
     private static final String ARG_PARAM2 = "param2";
     TextView stress_tv,happiness_tv,energy_tv,confidence_tv;
     double stress=0.0,happiness=0.0,energy=0.0,confidence=0.0;
-    RelativeLayout relativeMain;
+    LinearLayout relativeMain;
     String dateTimeStamp="";
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -127,7 +128,7 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
         happiness_tv= (TextView) view.findViewById(R.id.hapinesstv);
         energy_tv= (TextView) view.findViewById(R.id.energytv);
         confidence_tv= (TextView) view.findViewById(R.id.confidencetv);
-        relativeMain = (RelativeLayout) view.findViewById(R.id.relativeFeelingMain);
+        relativeMain = (LinearLayout) view.findViewById(R.id.relativeFeelingMain);
         dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
 
         try{

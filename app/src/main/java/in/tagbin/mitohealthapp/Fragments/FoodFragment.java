@@ -1,9 +1,12 @@
 package in.tagbin.mitohealthapp.Fragments;
 
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -38,6 +41,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.activity.DailyDetailsActivity;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
@@ -69,6 +75,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
     public ItemTouchHelperExtension.Callback mCallback;
     GifImageView progressBar;
     ArrayAdapter<String> adapter;
+    static long timestamp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,7 +112,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
 
         Date date1 = new Date(year-1900,month,day,0,0);
         widget.setSelectedDate(date1);
-        long timestamp = date1.getTime()/1000L;
+        timestamp = date1.getTime()/1000L;
         progressBar.setVisibility(View.VISIBLE);
         Log.d("timestamop",""+timestamp);
         Controller.getLogger(getContext(),timestamp,mGetFoodLoggerListener);
@@ -248,10 +255,11 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
         pref.setKeyYear(year);
         pref.setKeyMonth(month);
         pref.setKeyDay(day);
-        long timestamp = date.getDate().getTime()/1000L;
+       timestamp = date.getDate().getTime()/1000L;
         progressBar.setVisibility(View.VISIBLE);
         Controller.getLogger(getContext(),timestamp,mGetFoodLoggerListener);
         long timestamp1 = date.getDate().getTime()/1000L;
+
         measuring_units.clear();
         adapter.notifyDataSetChanged();
         data.clear();
@@ -259,6 +267,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
         Log.d("dateformat", String.valueOf(timestamp1));
         progressBar.setVisibility(View.VISIBLE);
         Controller.getFoodRecommendation(getContext(),timestamp1,mRecommendationListener);
+
     }
 
     RequestListener mGetFoodLoggerListener = new RequestListener() {
@@ -277,6 +286,21 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
             for (int i=0;i<da.size();i++){
                 loggerModel.add(da.get(i));
             }
+
+            String data= JsonUtils.jsonify(loggerModel);
+            DatabaseOperations dop = new DatabaseOperations(getActivity());
+
+           Cursor cursor=dop.getFoodInformation(dop,String.valueOf(timestamp));
+
+                    if (cursor.getCount()==0) {
+                dop.putInformation(dop, "","" , data, "", "", String.valueOf(timestamp), "");
+            }else if (cursor.getCount()==1){
+                ContentValues cv = new ContentValues();
+                cv.put(TableData.Tableinfo.FOOD_NAME,data);
+                dop.updateAnyRow(dop, TableData.Tableinfo.TABLE_NAME_FOOD,cv, TableData.Tableinfo.DATE,String.valueOf(timestamp));
+            }
+            Log.d("Json Data",data);
+
             if(getActivity() == null)
                 return;
             if (loggerModel.size() <= 0){
@@ -288,12 +312,14 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     }
                 });
             }else {
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
                         relativeFoodLogged.setVisibility(View.VISIBLE);
                         setFoodLogger(loggerModel);
+
                     }
                 });
             }
@@ -310,23 +336,63 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
                     @Override
                     public void run() {
                         progressBar.setVisibility(View.GONE);
-                        relativeFoodLogged.setVisibility(View.GONE);
+                        //relativeFoodLogged.setVisibility(View.GONE);
                         Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }else{
-                if(getActivity() == null)
-                    return;
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.GONE);
-                        relativeFoodLogged.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
-                    }
-                });
+                }else {
+                    if(getActivity() == null)
+                        return;
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            //relativeFoodLogged.setVisibility(View.GONE);
+                            DatabaseOperations dop = new DatabaseOperations(getActivity());
+                            Cursor cursor=dop.getFoodInformation(dop,String.valueOf(timestamp));
+                            if (cursor.getCount()==0){
+                                dop.putInformation(dop, "","" , "[]", "", "", String.valueOf(timestamp), "");
+                                relativeFoodLogged.setVisibility(View.GONE);
+
+                            }
+                            if (cursor != null && cursor.moveToFirst()) {
+                                do {
+                                    loggerModel.clear();
+                                    String gotData=   cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.FOOD_NAME));
+                                    Type collectionType1 = new TypeToken<ArrayList<RecommendationModel>>() {}.getType();
+                                    List<RecommendationModel> da1 = (ArrayList<RecommendationModel>) new Gson()
+                                            .fromJson(gotData, collectionType1);
+                                    loggerModel.addAll(da1);
+                                    if (loggerModel.size() <= 0){
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                progressBar.setVisibility(View.GONE);
+                                                relativeFoodLogged.setVisibility(View.GONE);
+                                            }
+                                        });
+                                    }else {
+
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                progressBar.setVisibility(View.GONE);
+                                                relativeFoodLogged.setVisibility(View.VISIBLE);
+                                                setFoodLogger(loggerModel);
+
+                                            }
+                                        });
+                                    }
+                                    Log.d("GotData",gotData+"///");
+                                }
+                                while (cursor.moveToNext());
+                            }
+                            Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
             }
-        }
+
     };
     RequestListener mRecommendationListener = new RequestListener() {
         @Override
@@ -345,6 +411,7 @@ public class FoodFragment extends Fragment implements DatePickerDialog.OnDateSet
             for (int i=0;i<da.size();i++){
                 data.add(da.get(i));
                 measuring_units.add(da.get(i).getMeal_type().getFood_time());
+
             }
             if (getActivity() == null)
                 return;

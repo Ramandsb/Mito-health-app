@@ -15,15 +15,14 @@
 
 
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp"
-        app:mcv_selectionColor="@color/bottombar"
-        app:mcv_showOtherDates="all" />
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            app:mcv_selectionColor="@color/bottombar"
+            app:mcv_showOtherDates="all"
+            app:mcv_tileHeight="30dp" />
 
         <RelativeLayout
             android:id="@+id/relativeRecommended"
@@ -51,8 +50,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/viewSperator"
-                android:layout_weight="1"
                 android:layout_marginLeft="5dp"
+                android:layout_weight="1"
                 android:text="Healthy Recommendations"
                 android:textColor="#a0c894"
                 android:textSize="16sp" />
@@ -62,8 +61,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tvHealthyRecommendations"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp">
 
             </android.support.v7.widget.RecyclerView>
         </RelativeLayout>
@@ -74,16 +73,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/relativeRecommended"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="40dp">
+            android:layout_marginBottom="40dp"
+            android:layout_marginRight="20dp">
 
             <TextView
                 android:id="@+id/tvFoodStory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:layout_marginLeft="20dp"
                 android:text="Your Food Story Today"
                 android:textColor="#151535"
                 android:textSize="18sp" />
@@ -92,19 +91,18 @@
                 android:id="@+id/viewSperator1"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_marginLeft="20dp"
                 android:layout_below="@+id/tvFoodStory"
+                android:layout_marginLeft="20dp"
                 android:background="#a0c894" />
 
 
-
-                <LinearLayout
-                    android:id="@+id/linearFoodLogger"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/viewSperator1"
-                    android:layout_marginTop="10dp"
-                    android:orientation="vertical" />
+            <LinearLayout
+                android:id="@+id/linearFoodLogger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/viewSperator1"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" />
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

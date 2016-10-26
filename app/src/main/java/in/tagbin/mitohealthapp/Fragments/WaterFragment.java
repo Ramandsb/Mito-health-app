@@ -27,9 +27,8 @@ import java.util.Date;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress;
-import in.tagbin.mitohealthapp.helper.PourBeerTask;
 import in.tagbin.mitohealthapp.R;
-import uk.co.barbuzz.beerprogressview.BeerProgressView;
+
 
 public class WaterFragment extends Fragment implements OnDateSelectedListener {
     WaterWaveProgress water1,water2,water3,water4,water5,water6,water7,water8;
@@ -41,7 +40,7 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
     Canvas canvas;
     int count=0;
 
-    PourBeerTask mPourBeerTask;
+
     boolean boo1=false;
     boolean boo2=false;
     boolean boo3=false;
@@ -1277,211 +1276,6 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
             }
         });
 
-
-//        g2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PourBeerTask pourBeerTask=new PourBeerTask (getActivity(), water2,80,0);
-//                if (boo2){
-//                    pourBeerTask.cancel(true);
-//                    water2.setBeerProgress(0);
-//                    boo2=false;
-//                    count--;
-//                    water9.setBeerProgress(Returnjug(count));
-//                    jugcount=Returnjug(count);
-//                    Log.d("cancel","tr");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//                }else {
-//                    pourBeerTask.execute(true);
-//                    count++;
-//                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
-//                    jugcount=Returnjug(count);
-//                    Task.execute(true);
-//                    boo2=true;
-//
-//                    Log.d("jug",jugcount+"///");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//
-//                }
-//            }
-//        });
-//
-//
-//        g3.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PourBeerTask pourBeerTask=new PourBeerTask(getActivity(), water3,80,0);
-//                if (boo3){
-//                    pourBeerTask.cancel(true);
-//                    water3.setBeerProgress(0);
-//                    boo3=false;
-//                    count--;
-//                    water9.setBeerProgress(Returnjug(count));
-//                    jugcount=Returnjug(count);
-//                    Log.d("cancel","tr");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//                }else {
-//                    pourBeerTask.execute(true);
-//                    count++;
-//                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
-//                    jugcount=Returnjug(count);
-//                    Task.execute(true);
-//                    boo3=true;
-//
-//                    Log.d("jug",jugcount+"///");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//
-//                }            }
-//        });
-//
-//        g4.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PourBeerTask pourBeerTask=new PourBeerTask(getActivity(), water4,80,0);
-//                if (boo4){
-//                    pourBeerTask.cancel(true);
-//                    water4.setBeerProgress(0);
-//                    boo4=false;
-//                    count--;
-//                    water9.setBeerProgress(Returnjug(count));
-//                    jugcount=Returnjug(count);
-//                    Log.d("cancel","tr");
-//                    Log.d("count",count+"");
-//                }else {
-//                    pourBeerTask.execute(true);
-//                    count++;
-//                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
-//                    jugcount=Returnjug(count);
-//                    Task.execute(true);
-//                    boo4=true;
-//
-//                    Log.d("jug",jugcount+"///");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//
-//                }            }
-//        });
-//
-//
-//
-//
-//        g5.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PourBeerTask pourBeerTask=new PourBeerTask(getActivity(), water5,80,0);
-//                if (boo5){
-//                    pourBeerTask.cancel(true);
-//                    water5.setBeerProgress(0);
-//                    count--;
-//                    water9.setBeerProgress(Returnjug(count));
-//                    jugcount=Returnjug(count);
-//                    boo5=false;
-//                    Log.d("cancel","tr");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//                }else {
-//                    pourBeerTask.execute(true);
-//                    count++;
-//                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
-//                    jugcount=Returnjug(count);
-//                    Task.execute(true);
-//                    boo5=true;
-//
-//                    Log.d("jug",jugcount+"///");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//
-//                }                   }
-//        });
-//        g6.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PourBeerTask pourBeerTask=new PourBeerTask(getActivity(), water6,80,0);
-//                if (boo6){
-//                    pourBeerTask.cancel(true);
-//                    water6.setBeerProgress(0);
-//                    count--;
-//                    water9.setBeerProgress(Returnjug(count));
-//                    jugcount=Returnjug(count);
-//                    boo6=false;
-//                    Log.d("cancel","tr");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//                }else {
-//                    pourBeerTask.execute(true);
-//                    count++;
-//                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
-//                    jugcount=Returnjug(count);
-//                    Task.execute(true);
-//                    boo6=true;
-//
-//                    Log.d("jug",jugcount+"///");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//
-//                }                       }
-//        });
-//        g7.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PourBeerTask pourBeerTask=new PourBeerTask(getActivity(), water7,80,0);
-//                if (boo7){
-//                    pourBeerTask.cancel(true);
-//                    water7.setBeerProgress(0);
-//                    boo7=false;
-//                    count--;
-//                    water9.setBeerProgress(Returnjug(count));
-//                    jugcount=Returnjug(count);
-//                    Log.d("cancel","tr");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//                }else {
-//                    pourBeerTask.execute(true);
-//                    count++;
-//                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
-//                    jugcount=Returnjug(count);
-//                    Task.execute(true);
-//                    boo7=true;
-//
-//                    Log.d("jug",jugcount+"///");
-//                    Log.d("count",count+"");
-//                    UpdateDataBase(String.valueOf(count));
-//
-//                }                     }
-//        });
-//        g8.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                PourBeerTask pourBeerTask=new PourBeerTask(getActivity(), water8,80,0);
-//                if (boo8){
-//                    pourBeerTask.cancel(true);
-//                    water8.setBeerProgress(0);
-//                    count--;
-//                    water9.setBeerProgress(Returnjug(count));
-//                    jugcount=Returnjug(count);
-//                    Log.d("count",count+"");
-//                    boo8=false;
-//                    Log.d("cancel","tr");
-//                    UpdateDataBase(String.valueOf(count));
-//                }else {
-//                    pourBeerTask.execute(true);
-//                    boo8=true;
-//                    count++;
-//                    Log.d("else","tr");
-//                    PourBeerTask Task=new PourBeerTask(getActivity(), water9,Returnjug(count),jugcount);
-//                    jugcount=Returnjug(count);
-//                    Task.execute(true);
-//                    Log.d("count",count+"");
-//                    Log.d("jug",jugcount+"///");
-//                    UpdateDataBase(String.valueOf(count));
-//
-//                }
-//                    }
-//        });
         return view;
     }
 
@@ -1591,8 +1385,9 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
     }
     public void resetGlasses(){
         for (int i = 1; i <= 16; i++) {
-            WaterWaveProgress wa = returnGlasses(i);
+            WaterWaveProgress wa = returnGlasses(i,"reset");
             wa.setProgress(0);
+
         }
     }
 
@@ -1609,7 +1404,7 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
 
         }else {
             for (int i = 1; i <= glasses; i++) {
-                WaterWaveProgress wa = returnGlasses(i);
+                WaterWaveProgress wa = returnGlasses(i,"fillglasses");
                 wa.setProgress(80);
             }
 
@@ -1631,81 +1426,149 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
 
     }
 
-    public WaterWaveProgress returnGlasses(int i){
+    public WaterWaveProgress returnGlasses(int i,String source){
 
         WaterWaveProgress currentView=new WaterWaveProgress(getActivity());
         switch (i){
             case 1:
                 currentView=water1;
-                pro=80;
+                if (source.equals("reset")){
+                    pro=0;
+                }else {
+                    pro = 80;
+                }
                 break;
             case 2:
                 currentView=water2;
-                pro2=80;
+                if (source.equals("reset")){
+                    pro2=0;
+                }else {
+                    pro2 = 80;
+                }
                 break;
             case 3:
                 currentView=water3;
-                pro3=80;
+                if (source.equals("reset")){
+                    pro3=0;
+                }else {
+                    pro3 = 80;
+                }
                 break;
             case 4:
                 currentView=water4;
-                pro4=80;
+                if (source.equals("reset")){
+                    pro4=0;
+                }else {
+                    pro4 = 80;
+                }
                 break;
             case 5:
                 currentView=water5;
-                pro5=80;
+                if (source.equals("reset")){
+                    pro5=0;
+                }else {
+                    pro5 = 80;
+                }
                 break;
             case 6:
                 currentView=water6;
-                pro6=80;
+                if (source.equals("reset")){
+                    pro6=0;
+                }else {
+                    pro6 = 80;
+                }
 
                 break;
             case 7:
                 currentView=water7;
-                pro7=80;
+                if (source.equals("reset")){
+                    pro7=0;
+                }else {
+                    pro7 = 80;
+                }
 
                 break;
             case 8:
                 currentView=water8;
-                pro8=80;
+                if (source.equals("reset")){
+                    pro8=0;
+                }else {
+                    pro8 = 80;
+                }
 
                 break;
             case 9:
                 currentView=water9;
-                boo1=true;
+                if (source.equals("reset")){
+                    pro9=0;
+                }else {
+                    pro9 = 80;
+                }
+
                 break;
             case 10:
                 currentView=water10;
-                pro10=80;
-
+                if (source.equals("reset")){
+                    pro10=0;
+                }else {
+                    pro10 = 80;
+                }
                 break;
             case 11:
                 currentView=water11;
-                pro11=80;
+                if (source.equals("reset")){
+                    pro11=0;
+                }else {
+                    pro11 = 80;
+                }
 
                 break;
             case 12:
                 currentView=water12;
-                pro12=80;
+                if (source.equals("reset")){
+                    pro12=0;
+                }else {
+                    pro12 = 80;
+                }
 
                 break;
             case 13:
                 currentView=water13;
-                pro13=80;
+                if (source.equals("reset")){
+                    pro13=0;
+                }else {
+                    pro13 = 80;
+                }
+
 
                 break;
             case 14:
                 currentView=water14;
-                pro14=80;
+                if (source.equals("reset")){
+                    pro14=0;
+                }else {
+                    pro14 = 80;
+                }
+
 
                 break;
             case 15:
                 currentView=water15;
-                pro15=80;
+                if (source.equals("reset")){
+                    pro15=0;
+                }else {
+                    pro15 = 80;
+                }
+
                 break;
             case 16:
                 currentView=water16;
-                pro16=80;
+                if (source.equals("reset")){
+                    pro16=0;
+                }else {
+                    pro16 = 80;
+                }
+
                 break;
 
         }
