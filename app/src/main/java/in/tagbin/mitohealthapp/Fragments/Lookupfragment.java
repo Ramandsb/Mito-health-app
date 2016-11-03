@@ -1,10 +1,13 @@
 package in.tagbin.mitohealthapp.Fragments;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +29,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import in.tagbin.mitohealthapp.Database.DatabaseOperations;
+import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.activity.CreateEventActivity;
@@ -184,51 +189,23 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
         public void onRequestCompleted(Object responseObject) {
             Log.d("nearby events",responseObject.toString());
 
-            myEventsList.clear();
-            Type collectionType = new TypeToken<ArrayList<DataObject>>() {
-            }.getType();
-            final List<DataObject> da = (ArrayList<DataObject>) new Gson()
-                    .fromJson(responseObject.toString(), collectionType);
-            if (da.size() > 4) {
-                for (int i = 0; i < 4; i++) {
-                    da.get(i).all = false;
-                    myEventsList.add(da.get(i));
-                    pref.setKeyCoins(myEventsList.get(0).getTotal_coins());
-                }
-            }else{
-                for (int i = 0; i < da.size(); i++) {
-                    da.get(i).all = false;
-                    myEventsList.add(da.get(i));
-                    pref.setKeyCoins(myEventsList.get(0).getTotal_coins());
-                }
+            DatabaseOperations dop = new DatabaseOperations(getActivity());
+            dop.putEventsInformation(dop,responseObject.toString(),"nothing");
+          Cursor cursor= dop.getEventsInformation(dop);
+           Log.d("Events count",cursor.getCount()+"   //");
+            if (cursor.getCount()==0){
+                dop.putEventsInformation(dop,responseObject.toString(),"nothing");
+            }else {
+                ContentValues cv = new ContentValues();
+                cv.put(TableData.Tableinfo.ALL_EVENTS,responseObject.toString());
+                dop.updateEventsRow(dop,cv);
             }
-            for (int i= 0;i<da.size();i++){
-                da.get(i).all = false;
-            }
-            if (getActivity() == null)
-                return;
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (da.size() > 4){
-                        addMoreMyEvents.setVisibility(View.VISIBLE);
-                        addMoreMyEvents.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent i = new Intent(getContext(), EventsListActivity.class);
-                                i.putExtra("response",JsonUtils.jsonify(da));
-                                i.putExtra("name","My Events");
-                                startActivity(i);
-                            }
-                        });
-                    }else{
-                        addMoreMyEvents.setVisibility(View.GONE);
-                    }
-                    lookupAdapter.notifyDataSetChanged();
-                    progressBar.setVisibility(View.GONE);
-                }
-            });
+            setEvents();
+
+
         }
+
+
 
         @Override
         public void onRequestError(int errorCode, String message) {
@@ -250,11 +227,72 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
                     public void run() {
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                        setEvents();
                     }
                 });
             }
         }
     };
+
+    public void setEvents(){
+        String all_events="";
+        DatabaseOperations dop = new DatabaseOperations(getActivity());
+
+        Cursor cursor= dop.getEventsInformation(dop);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+
+                all_events=  cursor.getString(cursor.getColumnIndex(TableData.Tableinfo.ALL_EVENTS));
+
+            } while (cursor.moveToNext());
+
+        }
+
+        myEventsList.clear();
+        Type collectionType = new TypeToken<ArrayList<DataObject>>() {
+        }.getType();
+        final List<DataObject> da = (ArrayList<DataObject>) new Gson()
+                .fromJson(all_events, collectionType);
+        if (da.size() > 4) {
+            for (int i = 0; i < 4; i++) {
+                da.get(i).all = false;
+                myEventsList.add(da.get(i));
+                pref.setKeyCoins(myEventsList.get(0).getTotal_coins());
+            }
+        }else{
+            for (int i = 0; i < da.size(); i++) {
+                da.get(i).all = false;
+                myEventsList.add(da.get(i));
+                pref.setKeyCoins(myEventsList.get(0).getTotal_coins());
+            }
+        }
+        for (int i= 0;i<da.size();i++){
+            da.get(i).all = false;
+        }
+        if (getActivity() == null)
+            return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (da.size() > 4){
+                    addMoreMyEvents.setVisibility(View.VISIBLE);
+                    addMoreMyEvents.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent i = new Intent(getContext(), EventsListActivity.class);
+                            i.putExtra("response",JsonUtils.jsonify(da));
+                            i.putExtra("name","My Events");
+                            startActivity(i);
+                        }
+                    });
+                }else{
+                    addMoreMyEvents.setVisibility(View.GONE);
+                }
+                lookupAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+    }
     RequestListener mAllEventsListener = new RequestListener() {
         @Override
         public void onRequestStarted() {

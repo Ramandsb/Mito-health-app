@@ -96,6 +96,12 @@ public class TableData {
 
         public static final String TABLE_NAME_FEELINGS = "feelings_table";
 
+        //////////////////////////////////////////////////////////
+
+        public static final String ALL_EVENTS = "all_events";
+        public static final String OTHER_EVENTS = "other_events";
+
+        public static final String TABLE_NAME_EVENTS = "events_table";
 
 
     }

@@ -34,6 +34,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
     public String CREATE_CHAT_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_CHAT + " (" + TableData.Tableinfo.CHAT_NAME + " TEXT," + TableData.Tableinfo.CHAT_USER + " TEXT NOT NULL UNIQUE," + TableData.Tableinfo.CHAT_STATUS + " TEXT," + TableData.Tableinfo.CHAT_TYPE + " TEXT," + TableData.Tableinfo.CHAT_PRESENCE + " TEXT," + TableData.Tableinfo.CHAT_PRESENCE_STATUS + " TEXT)";
     public String CREATE_CM_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_CM + " (" + TableData.Tableinfo.CM_SOURCE + " TEXT," + TableData.Tableinfo.CM_TIME + " TEXT," + TableData.Tableinfo.CM_MESSAGES + " TEXT," + TableData.Tableinfo.CM_USER + " TEXT)";
     public String CREATE_FEELINGS_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_FEELINGS + " (" + TableData.Tableinfo.STRESS + " TEXT," + TableData.Tableinfo.HAPPINESS + " TEXT," + TableData.Tableinfo.ENERGY + " TEXT," + TableData.Tableinfo.CONFIDENCE + " TEXT," + TableData.Tableinfo.AVERAGE + " TEXT," + TableData.Tableinfo.FEELINGS_DATE + " TEXT NOT NULL UNIQUE," + TableData.Tableinfo.FEELING_SYNCED + " TEXT)";
+    public String CREATE_EVENTS_TABLE= "CREATE TABLE IF NOT EXISTS " + TableData.Tableinfo.TABLE_NAME_EVENTS + " (" + TableData.Tableinfo.ALL_EVENTS + " TEXT," + TableData.Tableinfo.OTHER_EVENTS  + " TEXT)";
 
     @Override
     public void onCreate(SQLiteDatabase sdb) {
@@ -45,6 +46,7 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         sdb.execSQL(CREATE_CHAT_TABLE);
         sdb.execSQL(CREATE_CM_TABLE);
         sdb.execSQL(CREATE_FEELINGS_TABLE);
+        sdb.execSQL(CREATE_EVENTS_TABLE);
 
         Log.d("Database operations", "Table created");
     }
@@ -178,6 +180,27 @@ public class DatabaseOperations extends SQLiteOpenHelper {
         long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_SLEEP, null, cv);
         Log.d("Database Created", "true");
 
+    }
+
+    public void putEventsInformation(DatabaseOperations dop, String all_values,String other) {
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(TableData.Tableinfo.ALL_EVENTS, all_values);
+        cv.put(TableData.Tableinfo.OTHER_EVENTS, other);
+        long k = SQ.insert(TableData.Tableinfo.TABLE_NAME_EVENTS, null, cv);
+        Log.d("Database Created", "true");
+
+    }
+
+    public Cursor getEventsInformation(DatabaseOperations dop){
+        SQLiteDatabase SQ = dop.getReadableDatabase();
+        Cursor cursor=  SQ.rawQuery("Select * FROM " + TableData.Tableinfo.TABLE_NAME_EVENTS, null);
+        return cursor;
+    }
+    public  void updateEventsRow(DatabaseOperations dop,ContentValues cv){
+        SQLiteDatabase SQ = dop.getWritableDatabase();
+        SQ.update(TableData.Tableinfo.TABLE_NAME_EVENTS, cv, null, null);
+        Log.d("update","true"+cv.toString()+"///");
     }
 
     public Cursor getslInformation(DatabaseOperations dop,String  date){
