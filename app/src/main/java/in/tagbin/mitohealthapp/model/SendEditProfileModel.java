@@ -1,5 +1,6 @@
 package in.tagbin.mitohealthapp.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,9 +16,17 @@ public class SendEditProfileModel {
     }
     public class ImagesModel{
         String master;
+        ArrayList<String> other = new ArrayList<String>();
 
         public void setMaster(String master) {
             this.master = master;
+        }
+        public void setOther(ArrayList<String> other) {
+            this.other = other;
+        }
+
+        public ArrayList<String> getOther() {
+            return other;
         }
     }
 

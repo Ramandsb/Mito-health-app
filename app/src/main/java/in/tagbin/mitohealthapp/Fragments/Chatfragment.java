@@ -181,8 +181,10 @@ public class Chatfragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    chatDatabase = new ChatDatabase(getContext());
                     listContentArr=chatDatabase.getChatUsers(dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server());
-                    adapter.notifyDataSetChanged();
+                    adapter = new ChatFriendsAdapter(getActivity(), listContentArr);
+                    recyclerView.setAdapter(adapter);
                 }
             });
         }

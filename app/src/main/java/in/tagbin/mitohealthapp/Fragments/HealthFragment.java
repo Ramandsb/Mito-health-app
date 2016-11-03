@@ -178,12 +178,9 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         day = calendar.get(Calendar.DAY_OF_MONTH);
         //customDialog();
 
-        if (pref.getKeyUserDetails() != null){
-            updateProfile(pref.getKeyUserDetails());
-        }else {
+
             progressBar.setVisibility(View.VISIBLE);
             Controller.getUserDetails(getContext(), user_id, mUserDetailsListener);
-        }
 
         if (login_details.getFloat("height",0) != 0) {
             height_tv.setText(new DecimalFormat("##.#").format(height).toString() + " cms");
@@ -514,11 +511,35 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 sendEditProfileModel.setWeight(String.valueOf(weight));
                 sendEditProfileModel.setPreferences(prefernce_final);
                 sendEditProfileModel.setGoal_time(monthsValue*7);
+                SendEditProfileModel.ImagesModel imagesModel = sendEditProfileModel.getImages();
                 if (pref.getKeyMasterImage() != null){
-                    SendEditProfileModel.ImagesModel imagesModel = sendEditProfileModel.getImages();
                     imagesModel.setMaster(pref.getKeyMasterImage());
                     sendEditProfileModel.setImages(imagesModel);
                 }
+                ArrayList<String> other = new ArrayList<String>();
+                if (pref.getKeyUserPic1() != null) {
+                    other.add(pref.getKeyUserPic1());
+                }
+                if (pref.getKeyUserPic2() != null) {
+                    other.add(pref.getKeyUserPic2());
+                }
+                if (pref.getKeyUserPic3() != null) {
+                    other.add(pref.getKeyUserPic3());
+                }
+                if (pref.getKeyUserPic4() != null) {
+                    other.add(pref.getKeyUserPic4());
+                }
+                if (pref.getKeyUserPic5() != null) {
+                    other.add(pref.getKeyUserPic5());
+                }
+
+
+                if (pref.getKeyUserPic6() != null) {
+                    other.add(pref.getKeyUserPic6());
+                }
+
+                imagesModel.setOther(other);
+                sendEditProfileModel.setImages(imagesModel);
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.setUserDetails(getContext(),user_id,sendEditProfileModel,mSendUserListener);
                 //makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight), String.valueOf(goal_weight));
@@ -1307,6 +1328,15 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             Log.d("edit profile error",message);
             if (getActivity() == null)
                 return;
+            if (pref.getKeyUserDetails() != null){
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        updateProfile(pref.getKeyUserDetails());
+                    }
+                });
+            }
             if (errorCode >= 400 && errorCode < 500) {
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {

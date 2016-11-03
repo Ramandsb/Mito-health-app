@@ -337,7 +337,7 @@ public class XmppChatService extends Service {
                     }
                 });
                 makeRoosterEntry(roster, entries);
-            } catch (XMPPException ex) {
+            } catch (Exception ex) {
                 Log.e("XMPPChatDemoActivity", "Failed to log in as "
                         + USERNAME);
                 Log.e("XMPPChatDemoActivity", ex.toString());

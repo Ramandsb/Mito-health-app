@@ -273,15 +273,26 @@
                 <!--custom:tickEnd="100"-->
                 <!--custom:tickInterval="1"-->
                 <!--custom:tickStart="0" />-->
-                <SeekBar
+                <!--<SeekBar-->
+                    <!--android:id="@+id/rangebar"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_below="@+id/tvAddMember"-->
+                    <!--android:layout_marginLeft="16dp"-->
+                    <!--android:layout_marginRight="16dp"-->
+                    <!--android:layout_marginTop="10dp" />-->
+                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
                     android:id="@+id/rangebar"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="72dp"
                     android:layout_below="@+id/tvAddMember"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="10dp" />
-
+                    app:dsb_allowTrackClickToDrag="true"
+                    app:dsb_min="0"
+                    app:dsb_max="100"
+                    app:dsb_indicatorColor="@color/colorPrimary"
+                    app:dsb_indicatorFormatter="%d"
+                    app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
+                    app:dsb_progressColor="@color/colorPrimary" />
                 <RelativeLayout
                     android:id="@+id/relativeAddDecisionTimer"
                     android:layout_width="wrap_content"

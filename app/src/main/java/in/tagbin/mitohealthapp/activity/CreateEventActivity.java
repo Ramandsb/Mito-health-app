@@ -46,7 +46,10 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
+
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -79,7 +82,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
     TextView time,memberValue,coins;
     TextInputLayout textInputLayoutTitle,textInputLayoutLocation,textInputLayoutType,textInputLayoutEventDate;
     Button createActivity;
-    SeekBar rangeBar;
+    DiscreteSeekBar rangeBar;
     ImageView fabAddImage;
     String editType,editTitle,editDescription,editLocation,response;
     RelativeLayout relativeTime;
@@ -118,7 +121,7 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         createActivity = (Button) findViewById(R.id.buttonCreateActivity);
         relativeTime = (RelativeLayout) findViewById(R.id.relativeAddDecisionTimer);
         //relativeDate = (RelativeLayout) findViewById(R.id.relativeTime);
-        rangeBar = (SeekBar) findViewById(R.id.rangebar);
+        rangeBar = (DiscreteSeekBar) findViewById(R.id.rangebar);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
         fabAddImage = (ImageView) findViewById(R.id.fabAddImage);
         //activityDate = (TextView) findViewById(R.id.tvAddActivityDate);
@@ -138,25 +141,34 @@ public class CreateEventActivity extends AppCompatActivity implements View.OnCli
         location.setOnClickListener(this);
         rangeBar.setProgress(0);
         pref = new PrefManager(this);
-        rangeBar.incrementProgressBy(1);
-        rangeBar.setMax(100);
-        rangeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//        rangeBar.incrementProgressBy(1);
+//        rangeBar.setMax(100);
+        rangeBar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                memberValue.setText(String.valueOf(i));
-                memberValueFinal = i;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public int transform(int value) {
+                //settingsModel.setMaximum_distance(value);
+                memberValue.setText(String.valueOf(value));
+                memberValueFinal = value;
+                return value;
             }
         });
+//        rangeBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+//                memberValue.setText(String.valueOf(i));
+//                memberValueFinal = i;
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
 
         Calendar calendar = Calendar.getInstance();
         year1 = calendar.get(Calendar.YEAR);

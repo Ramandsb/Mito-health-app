@@ -31,7 +31,7 @@
                 android:layout_marginTop="15dp"
                 app:mcv_selectionColor="@color/bottombar"
                 app:mcv_showOtherDates="all"
-                app:mcv_tileSize="30dp"/>
+                app:mcv_tileHeight="30dp"/>
 
             <RelativeLayout
                 android:id="@+id/relativeMainCircle"
