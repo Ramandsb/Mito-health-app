@@ -245,6 +245,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             app:donut_progress="30"
+                            app:donut_finished_color="#5fb49c"
                             app:donut_text_color="#111111"
                             app:donut_text_size="14sp" />
 
@@ -284,6 +285,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             app:donut_progress="30"
+                            app:donut_finished_color="#a0c894"
                             app:donut_text_color="#111111"
                             app:donut_text_size="14sp" />
 
@@ -323,6 +325,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="10dp"
                             app:donut_progress="30"
+                            app:donut_finished_color="#94b0da"
                             app:donut_text_color="#111111"
                             app:donut_text_size="14sp" />
 

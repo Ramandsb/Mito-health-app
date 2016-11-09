@@ -591,8 +591,9 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    BinderActivity i = (BinderActivity) getActivity();
-                    i.bottomNavigation.changeCurrentItem(0);
+                    Intent i = new Intent(getContext(),BinderActivity.class);
+                    i.putExtra("selection",0);
+                    startActivity(i);
                     Toast.makeText(getActivity(), "Profile Updated Successfuly", Toast.LENGTH_LONG).show();
                 }
             });

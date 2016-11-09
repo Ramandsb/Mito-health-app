@@ -133,12 +133,12 @@ public class EventsUserDetailsActivity extends AppCompatActivity implements View
         }else{
             name.setText(data.getUser().getFirst_name()+", "+data.getUser().getProfile().getAge());
         }
-        if (dataObject.isAll()){
+        if (dataObject.isAll() || data.isConfirm()){
             addParticipant.setVisibility(View.GONE);
         }else{
-
             addParticipant.setVisibility(View.VISIBLE);
         }
+
         //profession.setText(data.getUser().getProfession());
         if (data.getUser().getInterests() != null && data.getUser().getInterests().size() >0) {
             List<String> finalInterests = new ArrayList<String>();

@@ -974,8 +974,9 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 });
                 Controller.getInterests(getContext(), mInterestListener);
             } else {
-                BinderActivity i = (BinderActivity) getActivity();
-                i.bottomNavigation.changeCurrentItem(0);
+                Intent i = new Intent(getContext(),BinderActivity.class);
+                i.putExtra("selection",0);
+                startActivity(i);
             }
         }
 

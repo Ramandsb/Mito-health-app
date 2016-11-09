@@ -35,18 +35,95 @@
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_binder" />
-
-    <com.luseen.spacenavigation.SpaceNavigationView
-        android:id="@+id/bottom_navigater"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="match_parent"
+        android:background="#99cacaca"
+        android:visibility="gone"
+        android:id="@+id/overlay"/>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/plus_svg"
         android:layout_gravity="bottom"
-        app:active_item_color="@color/bottombar"
-        app:centre_button_color="@color/colorPrimary"
-        app:inactive_item_color="#ababab"
-        app:space_background_color="@color/white"
-        app:space_item_icon_size="@dimen/space_item_icon_default_size"
-        app:space_item_icon_only_size="@dimen/space_item_icon_only_size"
-        app:space_item_text_size="@dimen/space_item_text_default_size"/>
+        android:layout_marginBottom="5dp"
+        android:id="@+id/fab"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:layout_gravity="bottom">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#cacaca"
+            android:id="@+id/viewSperator"/>
+        <!--<in.tagbin.mitohealthapp.helper.GooeyMenu-->
+            <!--android:id="@+id/gooey_menu"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--app:fab_radius="@dimen/big_circle_radius"-->
+            <!--app:gap_between_menu_fab="@dimen/min_gap"-->
+            <!--app:menu_radius="@dimen/small_circle_radius"-->
+            <!--app:no_of_menu="5"-->
+            <!--android:layout_centerHorizontal="true"-->
+            <!--app:menu_drawable="@array/drawable_array"/>-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/bottom_navigater"
+            android:layout_below="@+id/viewSperator"
+            android:background="#ffffff"
+            android:weightSum="5">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/iv1"
+                android:src="@drawable/iv_mito"
+                android:layout_gravity="center"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/iv2"
+                android:src="@drawable/iv_partner_connect"
+                android:layout_gravity="center"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/iv3"
+                android:src="@drawable/iv_nutritionist_chat"
+                android:layout_gravity="center"/>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/iv4"
+                android:src="@drawable/iv_edit_profile"
+                android:layout_gravity="center"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--<com.luseen.spacenavigation.SpaceNavigationView-->
+        <!--android:id="@+id/bottom_navigater"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="40dp"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--app:active_item_color="@color/bottombar"-->
+        <!--app:centre_button_color="@color/colorPrimary"-->
+        <!--app:inactive_item_color="#ababab"-->
+        <!--app:space_background_color="@color/white"-->
+        <!--app:space_item_icon_size="@dimen/space_item_icon_default_size"-->
+        <!--app:space_item_icon_only_size="@dimen/space_item_icon_only_size"-->
+        <!--app:space_item_text_size="@dimen/space_item_text_default_size"/>-->
 
 </android.support.design.widget.CoordinatorLayout>

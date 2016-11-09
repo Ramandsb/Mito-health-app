@@ -63,6 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Title"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp">
 
@@ -87,6 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvAddTitle"
                     android:text="Type"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp">
 
@@ -114,6 +116,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvAddType"
                     android:text="Location"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp">
 
@@ -138,6 +141,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvAddLocation"
                     android:text="Event Date and Time"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp">
 
@@ -160,6 +164,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvAddActivityDateHeading"
+                    android:layout_marginTop="10dp"
                     android:id="@+id/relativeDescriptionHeading">
                     <TextView
                         android:id="@+id/tvAddDesciption"

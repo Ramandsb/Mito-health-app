@@ -47,7 +47,7 @@ import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import pl.droidsonroids.gif.GifImageView;
 
 public class Lookupfragment extends Fragment implements View.OnClickListener {
-    TextView coins,createevent;
+    TextView coins,createevent,noMyEvents,noUpcomingEvents,noGoingEvents;
     List<DataObject> myEventsList=new ArrayList<DataObject>();
     List<DataObject> upcomingEventsList=new ArrayList<DataObject>();
     //FloatingActionButton fabCreateEvent;
@@ -79,6 +79,9 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
         addMoreMyEvents = (ImageView) viewGroup.findViewById(R.id.ivSeeMoreMyEvents);
         seeMoreGoingEvents = (ImageView) viewGroup.findViewById(R.id.ivSeeMoreGoingEvents);
         seeMoreUpcomingEvents = (ImageView) viewGroup.findViewById(R.id.ivSeeMoreUpcomingEvents);
+        noMyEvents = (TextView) viewGroup.findViewById(R.id.tvNoMyEvents);
+        noGoingEvents = (TextView) viewGroup.findViewById(R.id.tvNoGoingEvents);
+        noUpcomingEvents = (TextView) viewGroup.findViewById(R.id.tvNoUpcomingEvents);
         createevent.setOnClickListener(this);
         progressBar.setVisibility(View.VISIBLE);
         pref = new PrefManager(getContext());
@@ -274,6 +277,11 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (da.size() == 0){
+                    noMyEvents.setVisibility(View.VISIBLE);
+                }else{
+                    noMyEvents.setVisibility(View.GONE);
+                }
                 if (da.size() > 4){
                     addMoreMyEvents.setVisibility(View.VISIBLE);
                     addMoreMyEvents.setOnClickListener(new View.OnClickListener() {
@@ -329,6 +337,11 @@ public class Lookupfragment extends Fragment implements View.OnClickListener {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (da.size() == 0){
+                        noUpcomingEvents.setVisibility(View.VISIBLE);
+                    }else{
+                        noUpcomingEvents.setVisibility(View.GONE);
+                    }
                     if (da.size() > 4){
                         seeMoreUpcomingEvents.setVisibility(View.VISIBLE);
                         seeMoreUpcomingEvents.setOnClickListener(new View.OnClickListener() {

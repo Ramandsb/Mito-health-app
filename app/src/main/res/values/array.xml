@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <array name="drawable_array">
+
+        <item>@drawable/feeling</item>
+        <item>@drawable/sleep_menu</item>
+        <item>@drawable/exericon_svg</item>
+        <item>@drawable/watericon_svg</item>
+        <item>@drawable/foodicon_svg</item>
+    </array>
+</resources>

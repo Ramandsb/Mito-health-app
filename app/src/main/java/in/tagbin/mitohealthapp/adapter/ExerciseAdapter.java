@@ -78,6 +78,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
     static Context mContext;
     List<ExerciseLogModel> mModel;
     GifImageView mProgressBar;
+    int finalPosition;
     private static final int TYPE_ITEM = 1;
 
     public ExerciseAdapter(Context pContext, List<ExerciseLogModel> pModel,GifImageView pProgressBar){
@@ -96,12 +97,81 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ExerciseAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ExerciseAdapter.ViewHolder holder, final int position) {
         holder.itemView.setVisibility(View.VISIBLE);
+        finalPosition = position;
+        holder.accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final android.app.AlertDialog.Builder alertDialog1 = new android.app.AlertDialog.Builder(mContext,R.style.AppCompatAlertDialogStyle);
+                alertDialog1.setTitle("Delete logged exercise");
+                alertDialog1.setMessage(" Are you sure you want to delete this logged exercise?");
+                alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        Controller.deleteLogFood(mContext,mModel.get(position).getId(),mDeleteListener);
+                    }
+                });
+                alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                alertDialog1.show();
+            }
+        });
         ((ExerciseAdapter.ViewHolder) holder).populateData(mModel.get(position), mContext,mProgressBar);
 
     }
+    public void removePosition(int adapterPosition) {
+        mModel.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        //notifyItemRangeChanged(adapterPosition, getItemCount());
 
+    }
+    RequestListener mDeleteListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Log.d("exercise deleted",responseObject.toString());
+
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mProgressBar.setVisibility(View.GONE);
+                    removePosition(finalPosition);
+                    Toast.makeText(mContext,"Exercise successfully deleted",Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("exercise delete error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mProgressBar.setVisibility(View.GONE);
+                        Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
     @Override
     public int getItemCount() {
         return mModel.size();
@@ -132,7 +202,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
 //            refresh = (ImageView) itemView.findViewById(R.id.ivFoodRefresh);
             circleImageView = (CircleImageView) itemView.findViewById(R.id.civFoodLogger);
             view = (RelativeLayout) itemView.findViewById(R.id.relativeViewRecommend);
-
+            accept.setImageResource(R.drawable.food_decline);
             view.setOnClickListener(this);
 //            decline.setOnClickListener(this);
         }
@@ -175,7 +245,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
 //                refresh.setVisibility(View.GONE);
             }else {
                 //mSheetLayout.expandFab();
-                accept.setVisibility(View.GONE);
+                accept.setVisibility(View.VISIBLE);
 //                decline.setVisibility(View.VISIBLE);
 //                refresh.setVisibility(View.GONE);
             }
@@ -210,50 +280,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
 //                    break;
             }
         }
-        RequestListener mDeleteListener = new RequestListener() {
-            @Override
-            public void onRequestStarted() {
 
-            }
-
-            @Override
-            public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
-                Log.d("exercise deleted",responseObject.toString());
-                Intent i = new Intent(mContext,DailyDetailsActivity.class);
-                i.putExtra("selection",2);
-                mContext.startActivity(i);
-                ((Activity) mContext).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(mContext,"Exercise successfully deleted",Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onRequestError(int errorCode, String message) {
-                Log.d("exercise delete error",message);
-                if (errorCode >= 400 && errorCode < 500) {
-                    final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
-                    ((Activity)mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mProgressBar.setVisibility(View.GONE);
-                            Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }else{
-                    ((Activity)mContext).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mProgressBar.setVisibility(View.GONE);
-                            Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
-                        }
-                    });
-                }
-            }
-        };
         public void showExerciseDialog(final ExerciseLogModel data){
             android.app.AlertDialog.Builder dialog = new android.app.AlertDialog.Builder(mContext);
             if (Build.VERSION.SDK_INT >= 22) {

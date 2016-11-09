@@ -1,5 +1,6 @@
 package in.tagbin.mitohealthapp.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -21,10 +23,14 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.activity.EventsUserDetailsActivity;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
+import in.tagbin.mitohealthapp.model.DataObject;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.ParticipantModel;
 
 /**
@@ -36,6 +42,7 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
     FragmentManager mFragment;
     FrameLayout mFrameLayout;
     String dataObject;
+    int finalPosition;
     private static final int TYPE_ITEM = 1;
 
     public EventUserAdapter(Context pContext, List<ParticipantModel> pModel, FragmentManager fragmentManager, FrameLayout frameLayout, String dataObject){
@@ -56,10 +63,63 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(EventUserAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(EventUserAdapter.ViewHolder holder, final int position) {
+
+        final DataObject dataObject1 = JsonUtils.objectify(dataObject,DataObject.class);
+        holder.approveParticipant.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finalPosition = position;
+                Controller.confirmParticipant(mContext,dataObject1.getId(),mModel.get(position).getId(),mParticipantApproved);
+            }
+        });
         ((EventUserAdapter.ViewHolder) holder).populateData(mModel.get(position),mContext,mModel,mFragment,mFrameLayout,dataObject,position);
     }
+    RequestListener mParticipantApproved = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
 
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) {
+            Log.d("participant approved",responseObject.toString());
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(mContext,"Participant approved succesfully",Toast.LENGTH_LONG).show();
+                    removePosition(finalPosition);
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            Log.d("approved error",message);
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                ((Activity) mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(mContext, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                ((Activity)mContext).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(mContext, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    public void removePosition(int adapterPosition) {
+        mModel.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        //notifyItemRangeChanged(adapterPosition, getItemCount());
+
+    }
     @Override
     public int getItemCount() {
         return mModel.size();
@@ -71,11 +131,12 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder{
         Context mContext;
         ParticipantModel mModel;
-        ImageView circleImageView;
+        ImageView circleImageView,approveParticipant;
         TextView age,name;
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
             circleImageView = (ImageView) itemView.findViewById(R.id.circleView);
+            approveParticipant = (ImageView) itemView.findViewById(R.id.ivApproveParticipant);
             //userApproved = (ImageView) itemView.findViewById(R.id.ivUserApproved);
             age = (TextView) itemView.findViewById(R.id.tvUserAge);
             name= (TextView) itemView.findViewById(R.id.tvUserName);
@@ -122,6 +183,18 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
             }else{
                 gender = "Female";
             }
+            final DataObject dataObject = JsonUtils.objectify(dataObj,DataObject.class);
+            if (dataObject.isAll()){
+                approveParticipant.setVisibility(View.GONE);
+            }else{
+                approveParticipant.setVisibility(View.VISIBLE);
+            }
+            if (mModel.isConfirm()){
+                approveParticipant.setVisibility(View.GONE);
+            }else{
+                approveParticipant.setVisibility(View.VISIBLE);
+            }
+
             age.setText(mModel.getUser().getProfile().getAge()+", "+ gender);
             circleImageView.setOnClickListener(new View.OnClickListener() {
                 @Override

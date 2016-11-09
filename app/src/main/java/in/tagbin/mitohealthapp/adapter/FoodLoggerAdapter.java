@@ -43,6 +43,7 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
     static Context mContext;
     List<RecommendationModel.MealsModel> mModel;
     GifImageView mProgressBar;
+    int finalPosition;
     private static final int TYPE_ITEM = 1;
 
     public FoodLoggerAdapter(Context pContext, List<RecommendationModel.MealsModel> pModel,GifImageView pProgressBar){
@@ -77,8 +78,8 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
                 alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         mProgressBar.setVisibility(View.VISIBLE);
+                        finalPosition = position;
                         Controller.deleteLogFood(mContext,mModel.get(position).getId(),mDeleteListener);
-                        removePosition(position);
                     }
                 });
                 alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -108,6 +109,7 @@ public class FoodLoggerAdapter extends RecyclerView.Adapter<FoodLoggerAdapter.Vi
                 @Override
                 public void run() {
                     mProgressBar.setVisibility(View.GONE);
+                    removePosition(finalPosition);
                     Toast.makeText(mContext,"Food successfully deleted",Toast.LENGTH_LONG).show();
                 }
             });

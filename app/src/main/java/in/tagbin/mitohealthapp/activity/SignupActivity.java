@@ -212,7 +212,7 @@ finish();
 
                 }else {
                     displayErrors(volleyError);
-                    Log.d("normal errors", volleyError.getMessage());
+                    //Log.d("normal errors", volleyError.getMessage());
                 }
 
 

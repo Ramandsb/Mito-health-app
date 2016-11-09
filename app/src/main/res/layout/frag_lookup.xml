@@ -65,6 +65,16 @@
                             android:id="@+id/ivSeeMoreMyEvents"
                             android:layout_toRightOf="@+id/rvMyEvents"
                             android:src="@drawable/icon_midmorning" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No events. Create Some."
+                            android:textColor="@color/colorAccent"
+                            android:textSize="14sp"
+                            android:layout_marginLeft="30dp"
+                            android:id="@+id/tvNoMyEvents"
+                            android:visibility="gone"
+                            android:layout_centerHorizontal="true" />
                     </RelativeLayout>
                 </HorizontalScrollView>
             </RelativeLayout>
@@ -112,6 +122,16 @@
                             android:id="@+id/ivSeeMoreGoingEvents"
                             android:layout_toRightOf="@+id/rvGoingEvents"
                             android:src="@drawable/icon_midmorning" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No going events. Please join some"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="14sp"
+                            android:layout_marginLeft="30dp"
+                            android:visibility="gone"
+                            android:id="@+id/tvNoGoingEvents"
+                            android:layout_centerHorizontal="true"/>
                     </RelativeLayout>
                 </HorizontalScrollView>
             </RelativeLayout>
@@ -159,6 +179,16 @@
                             android:id="@+id/ivSeeMoreUpcomingEvents"
                             android:layout_toRightOf="@+id/rvUpcomingEvents"
                             android:src="@drawable/icon_midmorning" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No upcoming events"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="14sp"
+                            android:layout_marginLeft="30dp"
+                            android:visibility="gone"
+                            android:id="@+id/tvNoUpcomingEvents"
+                            android:layout_centerHorizontal="true"/>
                     </RelativeLayout>
                 </HorizontalScrollView>
             </RelativeLayout>

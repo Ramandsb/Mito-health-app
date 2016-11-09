@@ -78,7 +78,7 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView title/*,eventtitle,join*/;
-        ImageView backimage/*,edit,delete*/;
+        ImageView backimage,joinEvents/*,edit,delete*/;
         RelativeLayout linearCard,housefull,expired;
         TextView time;
         TextView capacity,description;
@@ -101,6 +101,7 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
             expired = (RelativeLayout) itemView.findViewById(R.id.relativeExpired);
             //bottomBar = (LinearLayout) itemView.findViewById(R.id.linearBottomBar);
             backimage= (ImageView) itemView.findViewById(R.id.setimage);
+            joinEvents= (ImageView) itemView.findViewById(R.id.ivJoinEvents);
             //delete = (ImageView) itemView.findViewById(R.id.ivDelete);
             //edit = (ImageView) itemView.findViewById(R.id.ivEdit);
             //location= (TextView) itemView.findViewById(R.id.myloc);
@@ -124,12 +125,14 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
 //                join.setText("Join Now");
                 housefull.setVisibility(View.VISIBLE);
                 expired.setVisibility(View.GONE);
+                joinEvents.setVisibility(View.GONE);
 //                join.setClickable(false);
             }else if (MyUtils.getTimeinMillis(newlist.getTime()) < output){
 //                join.setTextColor(Color.parseColor("#9b9b9b"));
 //                join.setText("Join Now");
                 housefull.setVisibility(View.GONE);
                 expired.setVisibility(View.VISIBLE);
+                joinEvents.setVisibility(View.GONE);
 //                join.setClickable(false);
             }else if (newlist.getMapper().getId() != 0 && !newlist.getMapper().isConfirm()){
 //                join.setTextColor(Color.parseColor("#ffffff"));
@@ -142,6 +145,7 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
 //                join.setText("Accepted");
                 expired.setVisibility(View.GONE);
                 housefull.setVisibility(View.GONE);
+                joinEvents.setVisibility(View.GONE);
 //                join.setClickable(false);
             }else{
 //                join.setTextColor(Color.parseColor("#ffffff"));
@@ -149,6 +153,7 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
                 expired.setVisibility(View.GONE);
 //                join.setClickable(true);
                 housefull.setVisibility(View.GONE);
+                joinEvents.setVisibility(View.VISIBLE);
 //                join.setOnClickListener(new View.OnClickListener() {
 //                    @Override
 //                    public void onClick(View view) {
@@ -156,7 +161,15 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
 //                        Controller.joinEvent(mycontext, newlist.getId(), mJoinEventListener);
 //                    }
 //                });
+                joinEvents.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                        Controller.joinEvent(mycontext, newlist.getId(), mJoinEventListener);
+                    }
+                });
             }
+
 //            if (newlist.isAll()) {
 ////                join.setVisibility(View.VISIBLE);
 //                //holder.date.setVisibility(View.VISIBLE);
@@ -282,6 +295,7 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
                     public void run() {
 //                        join.setText("Pending");
 //                        join.setTextColor(Color.parseColor("#ffffff"));
+                        joinEvents.setVisibility(View.GONE);
                         mProgressBar.setVisibility(View.GONE);
                         Toast.makeText(mycontext,"Event joined successfully",Toast.LENGTH_LONG).show();
                     }
