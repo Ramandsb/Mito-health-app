@@ -144,10 +144,13 @@
                 </RelativeLayout>
             </RelativeLayout>
         </android.support.v7.widget.CardView>
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/add_events"
+            android:background="@drawable/add_events"
+            android:text="+"
+            android:textColor="#ffffff"
+            android:textAlignment="center"
             android:id="@+id/ivJoinEvents"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"/>

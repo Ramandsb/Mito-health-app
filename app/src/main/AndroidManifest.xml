@@ -192,6 +192,10 @@
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.TrackMyWeightActivity"
+            android:label="Track My Weight"
+            android:screenOrientation="portrait" />
         <receiver
             android:name="com.clevertap.android.sdk.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >

@@ -18,9 +18,9 @@ android {
         applicationId "in.tagbin.mitohealthapp"
         minSdkVersion 15
         targetSdkVersion 24
-        versionName '1.2'
+        versionName '1.3'
         multiDexEnabled true
-        versionCode 102
+        versionCode 103
     }
     buildTypes {
         release {

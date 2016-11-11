@@ -11,8 +11,6 @@
     tools:context="in.tagbin.mitohealthapp.Fragments.MitoHealthFragment">
 
 
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -31,7 +29,7 @@
                 android:layout_marginTop="15dp"
                 app:mcv_selectionColor="@color/bottombar"
                 app:mcv_showOtherDates="all"
-                app:mcv_tileHeight="30dp"/>
+                app:mcv_tileHeight="30dp" />
 
             <RelativeLayout
                 android:id="@+id/relativeMainCircle"
@@ -71,7 +69,6 @@
                     android:text="800"
                     android:textColor="@android:color/white"
                     android:textSize="15sp" />
-
 
 
                 <TextView
@@ -147,38 +144,70 @@
             </android.support.v7.widget.CardView>
 
 
+            <RelativeLayout
+                android:id="@+id/relativeTrackMyWeight"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/cardMyStats"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/back_card"
+                android:elevation="5dp">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/cardMyStats"
+                <TextView
+                    android:id="@+id/tvTrackWEight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Want to track your weight?"
+                    android:textColor="#3d405b"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvTrackWEight"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:elevation="5dp"
-                    android:background="@drawable/back_card">
+                    android:text="Check it now"
+                    android:textColor="#111111"
+                    android:textSize="12sp" />
+            </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/tvHowHealth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="How's your Health?"
-                        android:textColor="#3d405b"
-                        android:textSize="16sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/relativeTrackMyWeight"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/back_card"
+                android:elevation="5dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tvHowHealth"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="Take the health test and find out now"
-                        android:textColor="#111111"
-                        android:textSize="12sp" />
-                </RelativeLayout>
+                <TextView
+                    android:id="@+id/tvHowHealth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="How's your Health?"
+                    android:textColor="#3d405b"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvHowHealth"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="Take the health test and find out now"
+                    android:textColor="#111111"
+                    android:textSize="12sp" />
+            </RelativeLayout>
 
         </RelativeLayout>
 

@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ import java.util.Date;
 
 import in.tagbin.mitohealthapp.activity.EventDetailsActivity;
 import in.tagbin.mitohealthapp.activity.SettingsActivity;
+import in.tagbin.mitohealthapp.activity.TrackMyWeightActivity;
 import in.tagbin.mitohealthapp.helper.CalenderView.RWeekCalendar;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
@@ -59,11 +61,12 @@ import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.EnergyGetModel;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 
-public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener {
+public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnDateSetListener,OnDateSelectedListener, View.OnClickListener {
     MaterialCalendarView widget;
     public static String selectedDate = "";
     TextView cal_consumed,cal_left,cal_burned,coins;
     PrefManager pref;
+    RelativeLayout trackWeight;
     int coinsFinal = 0,mBgColor = 0;
 
 
@@ -97,6 +100,8 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         int day = calendar1.get(Calendar.DAY_OF_MONTH);
         int year = calendar1.get(Calendar.YEAR);
         int month = calendar1.get(Calendar.MONTH);
+        trackWeight = (RelativeLayout) v.findViewById(R.id.relativeTrackMyWeight);
+        trackWeight.setOnClickListener(this);
         pref.setKeyDay(day);
         pref.setKeyMonth(month);
         pref.setKeyYear(year);
@@ -308,4 +313,13 @@ public class MitoHealthFragment extends Fragment implements DatePickerDialog.OnD
         //setHomepageDetails();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.relativeTrackMyWeight:
+                Intent i = new Intent(getContext(), TrackMyWeightActivity.class);
+                startActivity(i);
+                break;
+        }
+    }
 }

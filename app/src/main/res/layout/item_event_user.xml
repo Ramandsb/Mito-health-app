@@ -11,10 +11,13 @@
         android:scaleType="centerCrop"
         android:layout_marginRight="10dp"
         android:layout_centerHorizontal="true"/>
-    <ImageView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/add_events"
+        android:background="@drawable/add_events"
+        android:text="+"
+        android:textColor="#ffffff"
+        android:textAlignment="center"
         android:id="@+id/ivApproveParticipant"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"/>

@@ -16,7 +16,7 @@
         android:pathData="M 99.6 0 C 154.607561083 0 199.2 44.2790382417 199.2 98.9 C 199.2 153.520961758 154.607561083 197.8 99.6 197.8 C 44.5924389169 197.8 0 153.520961758 0 98.9 C 0 44.2790382417 44.5924389169 0 99.6 0 Z" />
     <group>
         <path
-            android:fillColor="url(#SVGID_4_)"
+            android:fillColor="#D1D1D1"
             android:fillAlpha="0.1"
             android:strokeAlpha="0.1"
             android:strokeWidth="1"

@@ -78,9 +78,9 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView title/*,eventtitle,join*/;
-        ImageView backimage,joinEvents/*,edit,delete*/;
+        ImageView backimage/*,edit,delete*/;
         RelativeLayout linearCard,housefull,expired;
-        TextView time;
+        TextView time,joinEvents;
         TextView capacity,description;
         //LinearLayout bottomBar;
         //TextView location;
@@ -101,7 +101,7 @@ public class UpcomingEventsAdapter extends RecyclerView.Adapter<UpcomingEventsAd
             expired = (RelativeLayout) itemView.findViewById(R.id.relativeExpired);
             //bottomBar = (LinearLayout) itemView.findViewById(R.id.linearBottomBar);
             backimage= (ImageView) itemView.findViewById(R.id.setimage);
-            joinEvents= (ImageView) itemView.findViewById(R.id.ivJoinEvents);
+            joinEvents= (TextView) itemView.findViewById(R.id.ivJoinEvents);
             //delete = (ImageView) itemView.findViewById(R.id.ivDelete);
             //edit = (ImageView) itemView.findViewById(R.id.ivEdit);
             //location= (TextView) itemView.findViewById(R.id.myloc);

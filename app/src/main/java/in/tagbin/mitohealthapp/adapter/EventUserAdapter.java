@@ -131,12 +131,12 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
     public static class ViewHolder extends RecyclerView.ViewHolder{
         Context mContext;
         ParticipantModel mModel;
-        ImageView circleImageView,approveParticipant;
-        TextView age,name;
+        ImageView circleImageView;
+        TextView age,name,approveParticipant;
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
             circleImageView = (ImageView) itemView.findViewById(R.id.circleView);
-            approveParticipant = (ImageView) itemView.findViewById(R.id.ivApproveParticipant);
+            approveParticipant = (TextView) itemView.findViewById(R.id.ivApproveParticipant);
             //userApproved = (ImageView) itemView.findViewById(R.id.ivUserApproved);
             age = (TextView) itemView.findViewById(R.id.tvUserAge);
             name= (TextView) itemView.findViewById(R.id.tvUserName);
