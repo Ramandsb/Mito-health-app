@@ -131,6 +131,17 @@ public class MyUtils {
         }
         return 0;
     }
+    public static long getTimeinMillis1(String validDate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            simpleDateFormat.setTimeZone(TimeZone.getTimeZone(TimeZone.getDefault().getDisplayName()));
+            Date date = simpleDateFormat.parse(validDate);
+            return date.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public static long getUtcTimestamp(String validDate,String source) {
         Log.d("Date to Convert",validDate);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

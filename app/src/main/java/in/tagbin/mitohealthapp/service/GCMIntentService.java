@@ -1,7 +1,10 @@
 package in.tagbin.mitohealthapp.service;
 
+import android.app.Activity;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -11,6 +14,9 @@ import java.io.IOException;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.activity.MainActivity;
+import in.tagbin.mitohealthapp.activity.SettingsActivity;
+import in.tagbin.mitohealthapp.activity.SplashActivity;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 
@@ -21,6 +27,7 @@ public class GCMIntentService extends IntentService implements RequestListener {
     private static final String TAG = "RegIntentService";
     PrefManager pref;
     private String android_id;
+    SharedPreferences loginDetails;
 
     public GCMIntentService() {
         super(TAG);
@@ -58,7 +65,10 @@ public class GCMIntentService extends IntentService implements RequestListener {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        Controller.sendToken(getApplicationContext(),token,this);
+        loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,0);
+        String key = loginDetails.getString("key",null);
+        if (key!= null )
+            Controller.sendToken(getApplicationContext(),token,this);
     }
 
     @Override
@@ -74,5 +84,15 @@ public class GCMIntentService extends IntentService implements RequestListener {
     @Override
     public void onRequestError(int errorCode, String message) {
         Log.d(TAG,message);
+        if (errorCode == 403){
+            SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor=loginDetails.edit();
+            editor.clear();
+            editor.commit();
+            PrefManager pref = new PrefManager(this);
+            pref.clearSession();
+            startActivity(new Intent(this,SplashActivity.class));
+            ((Activity) getApplicationContext()).finish();
+        }
     }
 }

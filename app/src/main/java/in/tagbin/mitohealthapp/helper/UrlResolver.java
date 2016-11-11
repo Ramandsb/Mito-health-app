@@ -36,6 +36,7 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.EXERCISE,"v1/exercise/");
         endPointMapper.put(EndPoints.NUTRITIONIS,"v1/users/nutritionist/");
         endPointMapper.put(EndPoints.EVENTTYPE,"v1/eventtype/");
+        endPointMapper.put(EndPoints.TRACK_WEIGHT,"v1/graphs/weight_graph/");
     }
 
     public interface EndPoints {
@@ -58,5 +59,6 @@ public class UrlResolver {
         int EXERCISE = 17;
         int NUTRITIONIS = 18;
         int EVENTTYPE = 19;
+        int TRACK_WEIGHT = 20;
     }
 }
