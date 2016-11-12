@@ -82,8 +82,8 @@ public class RecommendationModel {
         }
 
         public class ComponentModel {
-            int id, food_type, preparation_time;
-            float total_protein, total_carbohydrate, total_fat, serving_unit, total_energy;
+            int id, food_type;
+            float total_protein, total_carbohydrate, total_fat, serving_unit, total_energy,preparation_time;
             String name, recipe, image;
             ServingType serving_type;
             List<FoodTimeModel> food_time;
@@ -111,7 +111,7 @@ public class RecommendationModel {
                 return food_type;
             }
 
-            public int getPreparation_time() {
+            public float getPreparation_time() {
                 return preparation_time;
             }
 

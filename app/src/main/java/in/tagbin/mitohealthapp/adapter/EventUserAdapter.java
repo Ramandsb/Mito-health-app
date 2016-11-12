@@ -24,6 +24,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
+import in.tagbin.mitohealthapp.activity.EventDetailsActivity;
 import in.tagbin.mitohealthapp.activity.EventsUserDetailsActivity;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.Controller;
@@ -88,6 +89,7 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
                 @Override
                 public void run() {
                     Toast.makeText(mContext,"Participant approved succesfully",Toast.LENGTH_LONG).show();
+                    //EventDetailsActivity.onResume1();
                     removePosition(finalPosition);
                 }
             });
@@ -184,12 +186,7 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
                 gender = "Female";
             }
             final DataObject dataObject = JsonUtils.objectify(dataObj,DataObject.class);
-            if (dataObject.isAll()){
-                approveParticipant.setVisibility(View.GONE);
-            }else{
-                approveParticipant.setVisibility(View.VISIBLE);
-            }
-            if (mModel.isConfirm()){
+            if (dataObject.isAll() || mModel.isConfirm()){
                 approveParticipant.setVisibility(View.GONE);
             }else{
                 approveParticipant.setVisibility(View.VISIBLE);

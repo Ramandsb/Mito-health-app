@@ -104,51 +104,51 @@
                     android:textSize="13sp" />
             </RelativeLayout>
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/cardMyStats"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/relativeMainCircle"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="40dp"
-                android:elevation="5dp"
-                card_view:cardCornerRadius="10dp">
+            <!--<android.support.v7.widget.CardView-->
+                <!--android:id="@+id/cardMyStats"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@+id/relativeMainCircle"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginTop="40dp"-->
+                <!--android:elevation="5dp"-->
+                <!--card_view:cardCornerRadius="10dp">-->
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/card_gradient">
+                <!--<RelativeLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@drawable/card_gradient">-->
 
-                    <TextView
-                        android:id="@+id/tvMyStats"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:text="My Stats"
-                        android:textColor="#3d405b"
-                        android:textSize="16sp" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/tvMyStats"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_margin="10dp"-->
+                        <!--android:text="My Stats"-->
+                        <!--android:textColor="#3d405b"-->
+                        <!--android:textSize="16sp" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tvMyStats"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:text="Your progress for today"
-                        android:textColor="#ffffff"
-                        android:textSize="12sp" />
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_below="@+id/tvMyStats"-->
+                        <!--android:layout_marginBottom="10dp"-->
+                        <!--android:layout_marginLeft="10dp"-->
+                        <!--android:layout_marginRight="10dp"-->
+                        <!--android:text="Your progress for today"-->
+                        <!--android:textColor="#ffffff"-->
+                        <!--android:textSize="12sp" />-->
+                <!--</RelativeLayout>-->
+            <!--</android.support.v7.widget.CardView>-->
 
 
             <RelativeLayout
                 android:id="@+id/relativeTrackMyWeight"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/cardMyStats"
+                android:layout_below="@+id/relativeMainCircle"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
@@ -177,37 +177,37 @@
                     android:textSize="12sp" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/relativeTrackMyWeight"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/back_card"
-                android:elevation="5dp">
+            <!--<RelativeLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_below="@+id/relativeTrackMyWeight"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:background="@drawable/back_card"-->
+                <!--android:elevation="5dp">-->
 
-                <TextView
-                    android:id="@+id/tvHowHealth"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="How's your Health?"
-                    android:textColor="#3d405b"
-                    android:textSize="16sp" />
+                <!--<TextView-->
+                    <!--android:id="@+id/tvHowHealth"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_margin="10dp"-->
+                    <!--android:text="How's your Health?"-->
+                    <!--android:textColor="#3d405b"-->
+                    <!--android:textSize="16sp" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvHowHealth"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="Take the health test and find out now"
-                    android:textColor="#111111"
-                    android:textSize="12sp" />
-            </RelativeLayout>
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/tvHowHealth"-->
+                    <!--android:layout_marginBottom="10dp"-->
+                    <!--android:layout_marginLeft="10dp"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:text="Take the health test and find out now"-->
+                    <!--android:textColor="#111111"-->
+                    <!--android:textSize="12sp" />-->
+            <!--</RelativeLayout>-->
 
         </RelativeLayout>
 

@@ -69,6 +69,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
     int coinsFinal;
     CountDownTimer countDownTimer;
     Toolbar toolbar;
+    String dataobject;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,7 +103,7 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         left = (TextView) findViewById(R.id.tvLeftFriends);
         interestedRelative.setOnClickListener(this);
         approvedRelative.setOnClickListener(this);
-        final String dataobject = getIntent().getStringExtra("dataobject");
+        dataobject = getIntent().getStringExtra("dataobject");
         progressBar = (GifImageView) findViewById(R.id.progressBar);
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,9 +208,12 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
         setData(data);
     }
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         Controller.getParticipants(EventDetailsActivity.this,data.getId(),mParticipantListener);
+    }
+    public void onResume1() {
+        Controller.getParticipants(this,data.getId(),mParticipantListener);
     }
     public void setData(final DataObject data){
         //title.setText(data.getTitle());
@@ -286,7 +290,6 @@ public class EventDetailsActivity extends AppCompatActivity implements View.OnCl
             backImage.setBackgroundResource(R.drawable.hotel);
         }
         mylayoutmanager = new StaggeredGridLayoutManager(4, 1);
-        String dataobject = JsonUtils.jsonify(data);
         mAdapter = new EventUserAdapter(EventDetailsActivity.this,mModel,getSupportFragmentManager(),null,dataobject);
         recyclerView.setLayoutManager(this.mylayoutmanager);
         recyclerView.setHasFixedSize(true);

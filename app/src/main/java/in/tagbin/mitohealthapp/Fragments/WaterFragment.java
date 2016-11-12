@@ -28,6 +28,7 @@ import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 
 
 public class WaterFragment extends Fragment implements OnDateSelectedListener {
@@ -82,14 +83,26 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
     int pro14=0;
     int pro15=0;
     int pro16=0;
+    int day,year,month;
+    PrefManager pref;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        pref = new PrefManager(getContext());
+        Calendar calendar = Calendar.getInstance();
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else {
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+        }
 
-        Calendar  current_cal = Calendar.getInstance();
-        Date currentDate = current_cal.getTime();
-        selectedDate=sdf.format(currentDate);
+        Date date1 = new Date(year-1900,month,day,0,0);
+        selectedDate=sdf.format(date1);
         dop= new DatabaseOperations(getActivity());
 
 
@@ -122,9 +135,21 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
         otherglasses.setVisibility(View.GONE);
         ml= (TextView) view.findViewById(R.id.ml);
         /////////////////////
-
+        pref = new PrefManager(getContext());
         Calendar calendar = Calendar.getInstance();
-        widget.setSelectedDate(calendar.getTime());
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else {
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+        }
+
+        Date date1 = new Date(year-1900,month,day,0,0);
+        widget.setSelectedDate(date1);
+        //widget.setSelectedDate(calendar.getTime());
 
         Calendar instance1 = Calendar.getInstance();
         instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
@@ -1692,6 +1717,10 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
         int day=   date.getDay();
         int month=   date.getMonth()+1;
         int year=   date.getYear();
+        int month1 = date.getMonth();
+        pref.setKeyYear(year);
+        pref.setKeyMonth(month1);
+        pref.setKeyDay(day);
         if (month<=9 && day <=9){
             selectedDate = year + "-" + "0"+month + "-" + "0"+day;
             Log.d("date",selectedDate);

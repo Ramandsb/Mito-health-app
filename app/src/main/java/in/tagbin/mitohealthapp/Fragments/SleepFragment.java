@@ -33,6 +33,7 @@ import java.util.Date;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.activity.MainActivity;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.DataItems;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.adapter.SleepAdapter;
@@ -53,6 +54,8 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
     static String uniqueId="";
     private static final DateFormat FORMATTER = SimpleDateFormat.getDateInstance();
     MaterialCalendarView widget;
+    PrefManager pref;
+    int day,year,month;
      public SleepFragment() {
         // Required empty public constructor
     }
@@ -62,25 +65,21 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
         super.onCreate(savedInstanceState);
         dop=new DatabaseOperations(getActivity());
         login_details=getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS, getActivity().MODE_PRIVATE);
-        Calendar  calendar = Calendar.getInstance();
-        int  year = calendar.get(Calendar.YEAR);
-        int  month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        month = month+1;
-        if (month<=9 && day <=9){
-            selectedDate = year + "-" + "0"+month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else  if (month<=9 && day >9){
-            selectedDate = year + "-" + "0"+month + "-" + day;
-            Log.d("date",selectedDate);
-        }else  if (day <=9 && month >9){
-            selectedDate = year + "-" +month + "-" + "0"+day;
-            Log.d("date",selectedDate);
-        }else if (day >9 && month >9){
-            selectedDate = year + "-" + month + "-" + day;
-            Log.d("date", selectedDate);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        pref = new PrefManager(getContext());
+        Calendar calendar = Calendar.getInstance();
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else {
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
         }
-        Log.d("food startdate", selectedDate);
+
+        Date date1 = new Date(year-1900,month,day,0,0);
+        selectedDate=sdf.format(date1);
 
 
 
@@ -126,8 +125,20 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
         setDatafromdatabase(selectedDate);
         /////////////////////
 
+        pref = new PrefManager(getContext());
         Calendar calendar = Calendar.getInstance();
-        widget.setSelectedDate(calendar.getTime());
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else {
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+        }
+
+        Date date1 = new Date(year-1900,month,day,0,0);
+        widget.setSelectedDate(date1);
 
         Calendar instance1 = Calendar.getInstance();
         instance1.set(instance1.get(Calendar.YEAR), Calendar.JANUARY, 1);
@@ -288,6 +299,10 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
         int day=   date.getDay();
         int month=   date.getMonth()+1;
         int year=   date.getYear();
+        int month1 = date.getMonth();
+        pref.setKeyYear(year);
+        pref.setKeyMonth(month1);
+        pref.setKeyDay(day);
         if (month<=9 && day <=9){
             selectedDate = year + "-" + "0"+month + "-" + "0"+day;
             Log.d("date",selectedDate);

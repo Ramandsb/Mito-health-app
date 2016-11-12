@@ -170,7 +170,7 @@
                         android:id="@+id/tvAddDesciption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Full Desciption(Max. 30 characters)"
+                        android:text="Full Desciption(Max. 100 characters)"
                         android:textColor="@color/colorPrimary"
                         android:textSize="16sp"/>
 
