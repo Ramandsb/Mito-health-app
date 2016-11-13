@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -48,6 +49,7 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
     ArrayList<DataItems> arrayList;
     TextView start_time,end_time,no_of_hours;
     RatingBar ratingBar;
+    RelativeLayout relativeOverlay;
     String start_t="",end_t="",test="",unique,auth_key;
     public static String selectedDate="";
     int a=0,b=0,c=0,i = 0,mBgColor=0,sth=0,stm=0,eth=0,etm=0,hour,min,hour1,min1;
@@ -95,6 +97,7 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
         end_time= (TextView) view.findViewById(R.id.end_time);
         no_of_hours= (TextView) view.findViewById(R.id.set_no_hours);
         ratingBar= (RatingBar) view.findViewById(R.id.rating);
+        relativeOverlay = (RelativeLayout) view.findViewById(R.id.relativeOverlayFeelings);
         ratingBar.setMax(5);
         ratingBar.setNumStars(5);
 
@@ -157,7 +160,33 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
         min = 0;
         hour1 = 6;
         min1 = 0;
-
+        Calendar[] dates = new Calendar[4];
+        int i = 0;
+        while (i < 4){
+            Calendar selDate = Calendar.getInstance();
+            selDate.add(Calendar.DAY_OF_MONTH, -i);
+            dates[i] = selDate;
+            i++;
+        }
+        int day,month,year;
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else{
+            Calendar calendar2 = Calendar.getInstance();
+            day = calendar2.get(Calendar.DAY_OF_MONTH);
+            year = calendar2.get(Calendar.YEAR);
+            month = calendar2.get(Calendar.MONTH);
+        }
+        Date date = new Date(year-1900,month,day);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(date);
+        if (calendar2.getTimeInMillis() > dates[0].getTimeInMillis() || calendar2.getTimeInMillis() < dates[3].getTimeInMillis()){
+            relativeOverlay.setVisibility(View.VISIBLE);
+        }else{
+            relativeOverlay.setVisibility(View.GONE);
+        }
         //////////////////
 
         start_time.setOnClickListener(new View.OnClickListener(){
@@ -316,7 +345,33 @@ public class SleepFragment extends Fragment implements DatePickerDialog.OnDateSe
             selectedDate = year + "-" + month + "-" + day;
             Log.d("date", selectedDate);
         }
-
+        Calendar[] dates = new Calendar[4];
+        int i = 0;
+        while (i < 4){
+            Calendar selDate = Calendar.getInstance();
+            selDate.add(Calendar.DAY_OF_MONTH, -i);
+            dates[i] = selDate;
+            i++;
+        }
+        int day1,month2,year1;
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day1 = pref.getKeyDay();
+            month2 = pref.getKeyMonth();
+            year1 = pref.getKeyYear();
+        }else{
+            Calendar calendar2 = Calendar.getInstance();
+            day1 = calendar2.get(Calendar.DAY_OF_MONTH);
+            year1 = calendar2.get(Calendar.YEAR);
+            month2 = calendar2.get(Calendar.MONTH);
+        }
+        Date date1 = new Date(year1-1900,month2,day1);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(date1);
+        if (calendar2.getTimeInMillis() > dates[0].getTimeInMillis() || calendar2.getTimeInMillis() < dates[3].getTimeInMillis()){
+            relativeOverlay.setVisibility(View.VISIBLE);
+        }else{
+            relativeOverlay.setVisibility(View.GONE);
+        }
         setDatafromdatabase(selectedDate);
     }
 

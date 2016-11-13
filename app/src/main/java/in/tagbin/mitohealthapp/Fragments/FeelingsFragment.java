@@ -32,6 +32,7 @@ import java.util.Date;
 
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
 import in.tagbin.mitohealthapp.Database.TableData;
+import in.tagbin.mitohealthapp.activity.DailyDetailsActivity;
 import in.tagbin.mitohealthapp.activity.MainActivity;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.helper.MyUtils;
@@ -50,9 +51,9 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    TextView stress_tv,happiness_tv,energy_tv,confidence_tv;
+    TextView stress_tv,happiness_tv,energy_tv,confidence_tv,feelingsBlock;
     double stress=0.0,happiness=0.0,energy=0.0,confidence=0.0;
-    LinearLayout relativeMain;
+    RelativeLayout relativeMain,relativeOverlay;
     String dateTimeStamp="";
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -123,7 +124,9 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
         happiness_tv= (TextView) view.findViewById(R.id.hapinesstv);
         energy_tv= (TextView) view.findViewById(R.id.energytv);
         confidence_tv= (TextView) view.findViewById(R.id.confidencetv);
-        relativeMain = (LinearLayout) view.findViewById(R.id.relativeFeelingMain);
+        feelingsBlock= (TextView) view.findViewById(R.id.tvFeelingsBlock);
+        relativeMain = (RelativeLayout) view.findViewById(R.id.relativeFeelingMain);
+        relativeOverlay = (RelativeLayout) view.findViewById(R.id.relativeOverlayFeelings);
         dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
 
         try{
@@ -184,15 +187,50 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
         happinessbar = (DiscreteSeekBar) view.findViewById(R.id.happinessbar);
         energybar = (DiscreteSeekBar) view.findViewById(R.id.energybar);
         confidencebar = (DiscreteSeekBar) view.findViewById(R.id.confidencebar);
-        if (currentTime.compareTo("18:00") <0){
+        Calendar[] dates = new Calendar[4];
+        int i = 0;
+        while (i < 4){
+            Calendar selDate = Calendar.getInstance();
+            selDate.add(Calendar.DAY_OF_MONTH, -i);
+            dates[i] = selDate;
+            i++;
+        }
+        int day,month,year;
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else{
+            Calendar calendar2 = Calendar.getInstance();
+            day = calendar2.get(Calendar.DAY_OF_MONTH);
+            year = calendar2.get(Calendar.YEAR);
+            month = calendar2.get(Calendar.MONTH);
+        }
+        Date date = new Date(year-1900,month,day);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(date);
+        if (calendar2.getTimeInMillis() > dates[0].getTimeInMillis() || calendar2.getTimeInMillis() < dates[3].getTimeInMillis()){
+            relativeOverlay.setVisibility(View.VISIBLE);
+            feelingsBlock.setText("You can not log data for this date");
+            stressbar.setEnabled(false);
+            happinessbar.setEnabled(false);
+            energybar.setEnabled(false);
+            confidencebar.setEnabled(false);
+        }else if (currentTime.compareTo("18:00") <0){
             //Toast.makeText(getContext(),"You can log feelings after 6 pm",Toast.LENGTH_LONG).show();
-            stressbar.setNumericTransformer(null);
-            happinessbar.setNumericTransformer(null);
-            energybar.setNumericTransformer(null);
-            confidencebar.setNumericTransformer(null);
+            feelingsBlock.setText("You can log feelings after 6 pm only");
+            relativeOverlay.setVisibility(View.VISIBLE);
+            stressbar.setEnabled(false);
+            happinessbar.setEnabled(false);
+            energybar.setEnabled(false);
+            confidencebar.setEnabled(false);
             //relativeMain.setBackgroundResource(Color.parseColor("#9b9b9b"));
         }else {
-
+            relativeOverlay.setVisibility(View.GONE);
+            stressbar.setEnabled(true);
+            happinessbar.setEnabled(true);
+            energybar.setEnabled(true);
+            confidencebar.setEnabled(true);
             stressbar.setProgress((int) stress);
             stress_tv.setText(stress+"");
             stressbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
@@ -287,6 +325,11 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
         pref.setKeyYear(year);
         pref.setKeyMonth(month1);
         pref.setKeyDay(day);
+        Calendar calendar1 = Calendar.getInstance();
+        int hour = calendar1.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar1.get(Calendar.MINUTE);
+        String currentTime = hour+":"+minute;
+
         if (month<=9 && day <=9){
             selectedDate = year + "-" + "0"+month + "-" + "0"+day;
             Log.d("date",selectedDate);
@@ -299,6 +342,56 @@ public class FeelingsFragment extends Fragment  implements OnDateSelectedListene
         }else if (day >9 && month >9){
             selectedDate = year + "-" + month + "-" + day;
             Log.d("date", selectedDate);
+        }
+        Calendar[] dates = new Calendar[4];
+        int i = 0;
+        while (i < 4){
+            Calendar selDate = Calendar.getInstance();
+            selDate.add(Calendar.DAY_OF_MONTH, -i);
+            dates[i] = selDate;
+            i++;
+        }
+        int day1,month2,year1;
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day1 = pref.getKeyDay();
+            month2 = pref.getKeyMonth();
+            year1 = pref.getKeyYear();
+        }else{
+            Calendar calendar2 = Calendar.getInstance();
+            day1 = calendar2.get(Calendar.DAY_OF_MONTH);
+            year1 = calendar2.get(Calendar.YEAR);
+            month2 = calendar2.get(Calendar.MONTH);
+        }
+        Date date1 = new Date(year1-1900,month2,day1);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(date1);
+        int currentDay,currentYear,currentMonth;
+        Calendar currentCalendar= Calendar.getInstance();
+        currentDay = currentCalendar.get(Calendar.DAY_OF_MONTH);
+        currentYear = currentCalendar.get(Calendar.YEAR);
+        currentMonth = currentCalendar.get(Calendar.MONTH);
+        if (calendar2.getTimeInMillis() > dates[0].getTimeInMillis() || calendar2.getTimeInMillis() < dates[3].getTimeInMillis()){
+            relativeOverlay.setVisibility(View.VISIBLE);
+            feelingsBlock.setText("You can not log data for this date");
+            stressbar.setEnabled(false);
+            happinessbar.setEnabled(false);
+            energybar.setEnabled(false);
+            confidencebar.setEnabled(false);
+        }else if (currentTime.compareTo("18:00") <0 && day1 == currentDay && year1 == currentYear && month2 == currentMonth){
+            //Toast.makeText(getContext(),"You can log feelings after 6 pm",Toast.LENGTH_LONG).show();
+            feelingsBlock.setText("You can log feelings after 6 pm only");
+            relativeOverlay.setVisibility(View.VISIBLE);
+            stressbar.setEnabled(false);
+            happinessbar.setEnabled(false);
+            energybar.setEnabled(false);
+            confidencebar.setEnabled(false);
+            //relativeMain.setBackgroundResource(Color.parseColor("#9b9b9b"));
+        }else {
+            relativeOverlay.setVisibility(View.GONE);
+            stressbar.setEnabled(true);
+            happinessbar.setEnabled(true);
+            energybar.setEnabled(true);
+            confidencebar.setEnabled(true);
         }
         dateTimeStamp=String.valueOf(MyUtils.getUtcTimestamp(selectedDate+" 00:00:00","s"));
         Cursor cursor= dop.getFeelingsInformationByDate(dop,dateTimeStamp);

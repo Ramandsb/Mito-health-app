@@ -377,9 +377,25 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="Goal Time"
+                        android:id="@+id/tvGoalTime"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="8 Weeks"
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/tvGoalTimeValue"
+                        android:textColor="#474747"
+                        android:textSize="14sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:textColor="@color/colorPrimary"
                         android:textSize="14sp"
+                        android:layout_below="@+id/tvGoalTime"
                         android:id="@+id/tvMonthsHeading"
                         android:text="You want to loose "/>
 

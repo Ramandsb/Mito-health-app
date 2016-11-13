@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -36,6 +37,7 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
     WaterWaveProgress water9,water10,water11,water12,water13,water14,water15,water16;
     WaterWaveProgress waterjug,waterjug2;
     View jug2;
+    RelativeLayout relativeOverlay;
     View otherglasses;
     Bitmap bitmapWater1,bitmapWater2,bitmapWater3,bitmapWater4,bitmapWater5,bitmapWater6,bitmapWater7,bitmapWater8,bitmapWater9;
     Canvas canvas;
@@ -131,6 +133,7 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
         final View g14=view.findViewById(R.id.g14);
         final View g15=view.findViewById(R.id.g15);
         final View g16=view.findViewById(R.id.g16);
+        relativeOverlay = (RelativeLayout) view.findViewById(R.id.relativeOverlayFeelings);
          otherglasses=view.findViewById(R.id.otherglasses);
         otherglasses.setVisibility(View.GONE);
         ml= (TextView) view.findViewById(R.id.ml);
@@ -169,6 +172,33 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
 //        waveProgressView.setMax(60);
 //        animWave(waveProgressView, 2 * 1000);
        Init(view);
+        Calendar[] dates = new Calendar[4];
+        int i = 0;
+        while (i < 4){
+            Calendar selDate = Calendar.getInstance();
+            selDate.add(Calendar.DAY_OF_MONTH, -i);
+            dates[i] = selDate;
+            i++;
+        }
+        int day,month,year;
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day = pref.getKeyDay();
+            month = pref.getKeyMonth();
+            year = pref.getKeyYear();
+        }else{
+            Calendar calendar2 = Calendar.getInstance();
+            day = calendar2.get(Calendar.DAY_OF_MONTH);
+            year = calendar2.get(Calendar.YEAR);
+            month = calendar2.get(Calendar.MONTH);
+        }
+        Date date = new Date(year-1900,month,day);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(date);
+        if (calendar2.getTimeInMillis() > dates[0].getTimeInMillis() || calendar2.getTimeInMillis() < dates[3].getTimeInMillis()){
+            relativeOverlay.setVisibility(View.VISIBLE);
+        }else{
+            relativeOverlay.setVisibility(View.GONE);
+        }
         Cursor cursor = dop.getWaterInformation(dop, selectedDate);
         if (cursor.getCount()==0){
             count=0;
@@ -1733,6 +1763,33 @@ public class WaterFragment extends Fragment implements OnDateSelectedListener {
         }else if (day >9 && month >9){
             selectedDate = year + "-" + month + "-" + day;
             Log.d("date", selectedDate);
+        }
+        Calendar[] dates = new Calendar[4];
+        int i = 0;
+        while (i < 4){
+            Calendar selDate = Calendar.getInstance();
+            selDate.add(Calendar.DAY_OF_MONTH, -i);
+            dates[i] = selDate;
+            i++;
+        }
+        int day1,month2,year1;
+        if (pref.getKeyDay() != 0 && pref.getKeyMonth() != 0 && pref.getKeyYear() != 0){
+            day1 = pref.getKeyDay();
+            month2 = pref.getKeyMonth();
+            year1 = pref.getKeyYear();
+        }else{
+            Calendar calendar2 = Calendar.getInstance();
+            day1 = calendar2.get(Calendar.DAY_OF_MONTH);
+            year1 = calendar2.get(Calendar.YEAR);
+            month2 = calendar2.get(Calendar.MONTH);
+        }
+        Date date1 = new Date(year1-1900,month2,day1);
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.setTime(date1);
+        if (calendar2.getTimeInMillis() > dates[0].getTimeInMillis() || calendar2.getTimeInMillis() < dates[3].getTimeInMillis()){
+            relativeOverlay.setVisibility(View.VISIBLE);
+        }else{
+            relativeOverlay.setVisibility(View.GONE);
         }
         Cursor cursor = dop.getWaterInformation(dop, selectedDate);
         if (cursor.getCount()==0){

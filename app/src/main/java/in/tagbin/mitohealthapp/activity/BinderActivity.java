@@ -387,7 +387,16 @@ public class BinderActivity extends AppCompatActivity implements View.OnClickLis
             case 2:
                 setImages();
                 iv3.setImageResource(R.drawable.iv_nutritionist_chat_clicked);
-                toolbar_title.setText("Dietician Chat");
+                if (pref.getDietician() != null){
+                    if (pref.getDietician().getFirst_name() != null){
+                        toolbar_title.setText(pref.getDietician().getFirst_name());
+                        if (pref.getDietician().getLast_name() != null){
+                            toolbar_title.setText(pref.getDietician().getFirst_name()+" "+pref.getDietician().getLast_name());
+                        }
+                    }
+                }else {
+                    toolbar_title.setText("Dietician Chat");
+                }
                 toolbar.setTitle("");
                 fra = new ChatDieticianFragment();
                 break;

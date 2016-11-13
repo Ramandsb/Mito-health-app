@@ -95,7 +95,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
     private int year, month, day;
     private DatePicker datePicker;
     private Calendar calendar;
-    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv,coins,monthsHeading;
+    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv,coins,monthsHeading,goalTimeValue;
     ImageView profile_pic;
     SharedPreferences login_details;
     static double height = 0.0,weight = 0.0,waist = 0.0,goal_weight = 0.0;
@@ -166,6 +166,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
         //months = (TextView) Fragview.findViewById(R.id.tvMonths);
         monthsHeading = (TextView) Fragview.findViewById(R.id.tvMonthsHeading);
+        goalTimeValue = (TextView) Fragview.findViewById(R.id.tvGoalTimeValue);
         monthsSeekbar = (DiscreteSeekBar) Fragview.findViewById(R.id.seekbarMonths);
         mygoals.setOnClickListener(this);
         login_details = getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
@@ -334,6 +335,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                     monthsHeading.setVisibility(View.GONE);
                 }
                 monthsValue = value;
+                goalTimeValue.setText(monthsValue+ " weeks");
                 return value;
             }
         });
@@ -1157,6 +1159,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         goal_weight = userModel.getProfile().getGoal_weight();
         waist = userModel.getProfile().getWaist();
         monthsValue = userModel.getProfile().getGoal_time()/7;
+        goalTimeValue.setText(monthsValue+ " weeks");
         monthsSeekbar.setProgress(monthsValue);
         if (goal_weight != 0 && weight != 0){
             double goal = goal_weight/1000;

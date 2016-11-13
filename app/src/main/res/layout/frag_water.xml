@@ -7,253 +7,245 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
 
-           <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-               xmlns:app="http://schemas.android.com/apk/res-auto"
-               android:id="@+id/calendarView"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               app:mcv_showOtherDates="all"
-               app:mcv_tileHeight="30dp"
-               android:visibility="visible"
-               android:layout_marginTop="20dp"
-               app:mcv_selectionColor="@color/bottombar"
-               />
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="visible"
+            app:mcv_selectionColor="@color/bottombar"
+            app:mcv_showOtherDates="all"
+            app:mcv_tileHeight="30dp" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/calendarView">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
                 android:layout_margin="30dp"
-                >
+                android:orientation="vertical">
 
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0.5dp"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/colorPrimary"></LinearLayout>
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="8">
 
 
+                    <RelativeLayout
+                        android:id="@+id/g1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/DrawingwaterView1"
+                            android:layout_width="10dp"
+                            android:layout_height="45dp"
+                            android:layout_alignEnd="@+id/linearLayout1"
+                            android:layout_alignRight="@+id/linearLayout1"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:weightSum="8">
+                        <LinearLayout
+                            android:id="@+id/linearLayout1"
+                            android:layout_width="35dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/trans_glass"
+                            android:orientation="horizontal"></LinearLayout>
+                    </RelativeLayout>
 
+                    <RelativeLayout
+                        android:id="@+id/g2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/DrawingwaterView2"
+                            android:layout_width="10dp"
+                            android:layout_height="45dp"
+                            android:layout_alignEnd="@+id/linearLayout2"
+                            android:layout_alignRight="@+id/linearLayout2"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
 
+                        <LinearLayout
+                            android:id="@+id/linearLayout2"
+                            android:layout_width="35dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/trans_glass"
+                            android:orientation="horizontal"></LinearLayout>
+                    </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/g1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--DFE8F4-->
-            <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                android:id="@+id/DrawingwaterView1"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                app:progress="0"
-                app:maxProgress="100"
-                app:showProgress="false"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/linearLayout1"
-                android:layout_alignEnd="@+id/linearLayout1" />
-            <LinearLayout
-                android:layout_width="35dp"
-                android:layout_height="45dp"
-                android:background="@drawable/trans_glass"
-                android:id="@+id/linearLayout1"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/g3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/DrawingwaterView3"
+                            android:layout_width="10dp"
+                            android:layout_height="45dp"
+                            android:layout_alignEnd="@+id/linearLayout3"
+                            android:layout_alignRight="@+id/linearLayout3"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
 
-        <RelativeLayout
-            android:id="@+id/g2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--DFE8F4-->
-            <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                android:id="@+id/DrawingwaterView2"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                app:progress="0"
-                app:maxProgress="100"
-                app:showProgress="false"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/linearLayout2"
-                android:layout_alignEnd="@+id/linearLayout2" />
-            <LinearLayout
-                android:layout_width="35dp"
-                android:layout_height="45dp"
-                android:background="@drawable/trans_glass"
-                android:id="@+id/linearLayout2"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </RelativeLayout>
+                        <LinearLayout
+                            android:id="@+id/linearLayout3"
+                            android:layout_width="35dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/trans_glass"
+                            android:orientation="horizontal"></LinearLayout>
+                    </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/g3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--DFE8F4-->
-            <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                android:id="@+id/DrawingwaterView3"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                app:progress="0"
-                app:maxProgress="100"
-                app:showProgress="false"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/linearLayout3"
-                android:layout_alignEnd="@+id/linearLayout3" />
-            <LinearLayout
-                android:layout_width="35dp"
-                android:layout_height="45dp"
-                android:background="@drawable/trans_glass"
-                android:id="@+id/linearLayout3"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/g4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--DFE8F4-->
-            <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                android:id="@+id/DrawingwaterView4"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                app:progress="0"
-                app:maxProgress="100"
-                app:showProgress="false"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/linearLayout4"
-                android:layout_alignEnd="@+id/linearLayout4" />
-            <LinearLayout
-                android:layout_width="35dp"
-                android:layout_height="45dp"
-                android:background="@drawable/trans_glass"
-                android:id="@+id/linearLayout4"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/g5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--DFE8F4-->
-            <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                android:id="@+id/DrawingwaterView5"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                app:progress="0"
-                app:maxProgress="100"
-                app:showProgress="false"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/linearLayout5"
-                android:layout_alignEnd="@+id/linearLayout5" />
-            <LinearLayout
-                android:layout_width="35dp"
-                android:layout_height="45dp"
-                android:background="@drawable/trans_glass"
-                android:id="@+id/linearLayout5"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/g6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--DFE8F4-->
-            <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                android:id="@+id/DrawingwaterView6"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                app:progress="0"
-                app:maxProgress="100"
-                app:showProgress="false"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/linearLayout6"
-                android:layout_alignEnd="@+id/linearLayout6" />
-            <LinearLayout
-                android:layout_width="35dp"
-                android:layout_height="45dp"
-                android:background="@drawable/trans_glass"
-                android:id="@+id/linearLayout6"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/g7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--DFE8F4-->
-            <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                android:id="@+id/DrawingwaterView7"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                app:progress="0"
-                app:maxProgress="100"
-                app:showProgress="false"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/linearLayout7"
-                android:layout_alignEnd="@+id/linearLayout7" />
-            <LinearLayout
-                android:layout_width="35dp"
-                android:layout_height="45dp"
-                android:background="@drawable/trans_glass"
-                android:id="@+id/linearLayout7"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/g8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <!--DFE8F4-->
-            <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                android:id="@+id/DrawingwaterView8"
-                android:layout_width="10dp"
-                android:layout_height="45dp"
-                app:progress="0"
-                app:maxProgress="100"
-                app:showProgress="false"
-                android:layout_centerVertical="true"
-                android:layout_alignRight="@+id/linearLayout8"
-                android:layout_alignEnd="@+id/linearLayout8" />
-            <LinearLayout
-                android:layout_width="35dp"
-                android:layout_height="45dp"
-                android:background="@drawable/trans_glass"
-                android:id="@+id/linearLayout8"
-                android:orientation="horizontal">
-            </LinearLayout>
-        </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/g4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/DrawingwaterView4"
+                            android:layout_width="10dp"
+                            android:layout_height="45dp"
+                            android:layout_alignEnd="@+id/linearLayout4"
+                            android:layout_alignRight="@+id/linearLayout4"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout4"
+                            android:layout_width="35dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/trans_glass"
+                            android:orientation="horizontal"></LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/g5"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/DrawingwaterView5"
+                            android:layout_width="10dp"
+                            android:layout_height="45dp"
+                            android:layout_alignEnd="@+id/linearLayout5"
+                            android:layout_alignRight="@+id/linearLayout5"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout5"
+                            android:layout_width="35dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/trans_glass"
+                            android:orientation="horizontal"></LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/g6"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/DrawingwaterView6"
+                            android:layout_width="10dp"
+                            android:layout_height="45dp"
+                            android:layout_alignEnd="@+id/linearLayout6"
+                            android:layout_alignRight="@+id/linearLayout6"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout6"
+                            android:layout_width="35dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/trans_glass"
+                            android:orientation="horizontal"></LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/g7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/DrawingwaterView7"
+                            android:layout_width="10dp"
+                            android:layout_height="45dp"
+                            android:layout_alignEnd="@+id/linearLayout7"
+                            android:layout_alignRight="@+id/linearLayout7"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout7"
+                            android:layout_width="35dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/trans_glass"
+                            android:orientation="horizontal"></LinearLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/g8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/DrawingwaterView8"
+                            android:layout_width="10dp"
+                            android:layout_height="45dp"
+                            android:layout_alignEnd="@+id/linearLayout8"
+                            android:layout_alignRight="@+id/linearLayout8"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout8"
+                            android:layout_width="35dp"
+                            android:layout_height="45dp"
+                            android:background="@drawable/trans_glass"
+                            android:orientation="horizontal"></LinearLayout>
+                    </RelativeLayout>
 
 
+                </LinearLayout>
 
-
-
-
-
-
-    </LinearLayout>
                 <LinearLayout
                     android:id="@+id/otherglasses"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
                     android:weightSum="8">
 
 
@@ -266,19 +258,19 @@
                             android:id="@+id/DrawingwaterView9"
                             android:layout_width="10dp"
                             android:layout_height="45dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
-                            android:layout_centerVertical="true"
+                            android:layout_alignEnd="@+id/linearLayout9"
                             android:layout_alignRight="@+id/linearLayout9"
-                            android:layout_alignEnd="@+id/linearLayout9" />
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
+                            android:id="@+id/linearLayout9"
                             android:layout_width="35dp"
                             android:layout_height="45dp"
                             android:background="@drawable/trans_glass"
-                            android:id="@+id/linearLayout9"
-                            android:orientation="horizontal">
-                        </LinearLayout>
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -290,19 +282,19 @@
                             android:id="@+id/DrawingwaterView10"
                             android:layout_width="10dp"
                             android:layout_height="45dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
-                            android:layout_centerVertical="true"
+                            android:layout_alignEnd="@+id/linearLayout10"
                             android:layout_alignRight="@+id/linearLayout10"
-                            android:layout_alignEnd="@+id/linearLayout10" />
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
+                            android:id="@+id/linearLayout10"
                             android:layout_width="35dp"
                             android:layout_height="45dp"
                             android:background="@drawable/trans_glass"
-                            android:id="@+id/linearLayout10"
-                            android:orientation="horizontal">
-                        </LinearLayout>
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
 
 
@@ -315,20 +307,21 @@
                             android:id="@+id/DrawingwaterView11"
                             android:layout_width="10dp"
                             android:layout_height="45dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
-                            android:layout_centerVertical="true"
+                            android:layout_alignEnd="@+id/linearLayout11"
                             android:layout_alignRight="@+id/linearLayout11"
-                            android:layout_alignEnd="@+id/linearLayout11" />
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
+                            android:id="@+id/linearLayout11"
                             android:layout_width="35dp"
                             android:layout_height="45dp"
                             android:background="@drawable/trans_glass"
-                            android:id="@+id/linearLayout11"
-                            android:orientation="horizontal">
-                        </LinearLayout>
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:id="@+id/g12"
                         android:layout_width="wrap_content"
@@ -338,20 +331,21 @@
                             android:id="@+id/DrawingwaterView12"
                             android:layout_width="10dp"
                             android:layout_height="45dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
-                            android:layout_centerVertical="true"
+                            android:layout_alignEnd="@+id/linearLayout12"
                             android:layout_alignRight="@+id/linearLayout12"
-                            android:layout_alignEnd="@+id/linearLayout12" />
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
+                            android:id="@+id/linearLayout12"
                             android:layout_width="35dp"
                             android:layout_height="45dp"
                             android:background="@drawable/trans_glass"
-                            android:id="@+id/linearLayout12"
-                            android:orientation="horizontal">
-                        </LinearLayout>
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:id="@+id/g13"
                         android:layout_width="wrap_content"
@@ -361,20 +355,21 @@
                             android:id="@+id/DrawingwaterView13"
                             android:layout_width="10dp"
                             android:layout_height="45dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
-                            android:layout_centerVertical="true"
+                            android:layout_alignEnd="@+id/linearLayout13"
                             android:layout_alignRight="@+id/linearLayout13"
-                            android:layout_alignEnd="@+id/linearLayout13" />
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
+                            android:id="@+id/linearLayout13"
                             android:layout_width="35dp"
                             android:layout_height="45dp"
                             android:background="@drawable/trans_glass"
-                            android:id="@+id/linearLayout13"
-                            android:orientation="horizontal">
-                        </LinearLayout>
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:id="@+id/g14"
                         android:layout_width="wrap_content"
@@ -384,20 +379,21 @@
                             android:id="@+id/DrawingwaterView14"
                             android:layout_width="10dp"
                             android:layout_height="45dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
-                            android:layout_centerVertical="true"
+                            android:layout_alignEnd="@+id/linearLayout14"
                             android:layout_alignRight="@+id/linearLayout14"
-                            android:layout_alignEnd="@+id/linearLayout14" />
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
+                            android:id="@+id/linearLayout14"
                             android:layout_width="35dp"
                             android:layout_height="45dp"
                             android:background="@drawable/trans_glass"
-                            android:id="@+id/linearLayout14"
-                            android:orientation="horizontal">
-                        </LinearLayout>
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:id="@+id/g15"
                         android:layout_width="wrap_content"
@@ -407,20 +403,21 @@
                             android:id="@+id/DrawingwaterView15"
                             android:layout_width="10dp"
                             android:layout_height="45dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
-                            android:layout_centerVertical="true"
+                            android:layout_alignEnd="@+id/linearLayout15"
                             android:layout_alignRight="@+id/linearLayout15"
-                            android:layout_alignEnd="@+id/linearLayout15" />
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
+                            android:id="@+id/linearLayout15"
                             android:layout_width="35dp"
                             android:layout_height="45dp"
                             android:background="@drawable/trans_glass"
-                            android:id="@+id/linearLayout15"
-                            android:orientation="horizontal">
-                        </LinearLayout>
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
+
                     <RelativeLayout
                         android:id="@+id/g16"
                         android:layout_width="wrap_content"
@@ -430,26 +427,20 @@
                             android:id="@+id/DrawingwaterView16"
                             android:layout_width="10dp"
                             android:layout_height="45dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
-                            android:layout_centerVertical="true"
+                            android:layout_alignEnd="@+id/linearLayout16"
                             android:layout_alignRight="@+id/linearLayout16"
-                            android:layout_alignEnd="@+id/linearLayout16" />
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
+                            android:id="@+id/linearLayout16"
                             android:layout_width="35dp"
                             android:layout_height="45dp"
                             android:background="@drawable/trans_glass"
-                            android:id="@+id/linearLayout16"
-                            android:orientation="horizontal">
-                        </LinearLayout>
+                            android:orientation="horizontal"></LinearLayout>
                     </RelativeLayout>
-
-
-
-
-
-
 
 
                 </LinearLayout>
@@ -464,74 +455,95 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_gravity="center"
                     android:layout_marginTop="50dp"
-                    android:gravity="center">
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    >
-                    <!--DFE8F4-->
-                    <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
-                        android:id="@+id/complete_beer"
-                        android:layout_width="70dp"
-                        android:layout_height="65dp"
-                        app:progress="0"
-                        app:maxProgress="100"
-                        app:showProgress="false"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true" />
-                    <LinearLayout
-                        android:layout_width="75dp"
-                        android:layout_height="70dp"
-                        android:background="@drawable/beaker"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"></LinearLayout>
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center">
+                        <!--DFE8F4-->
+                        <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
+                            android:id="@+id/complete_beer"
+                            android:layout_width="70dp"
+                            android:layout_height="65dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
+                        <LinearLayout
+                            android:layout_width="75dp"
+                            android:layout_height="70dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/beaker"></LinearLayout>
+
+                    </RelativeLayout>
+
                     <RelativeLayout
                         android:id="@+id/jug2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="30dp"
-                        >
+                        android:layout_marginLeft="30dp">
                         <!--DFE8F4-->
                         <in.tagbin.mitohealthapp.WaterWaveProgress.WaterWaveProgress
                             android:id="@+id/complete_beer2"
                             android:layout_width="70dp"
                             android:layout_height="65dp"
-                            app:progress="0"
-                            app:maxProgress="100"
-                            app:showProgress="false"
+                            android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true" />
+                            app:maxProgress="100"
+                            app:progress="0"
+                            app:showProgress="false" />
+
                         <LinearLayout
                             android:layout_width="75dp"
                             android:layout_height="70dp"
-                            android:background="@drawable/beaker"
+                            android:layout_centerHorizontal="true"
                             android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true"></LinearLayout>
+                            android:background="@drawable/beaker"></LinearLayout>
 
                     </RelativeLayout>
 
 
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/ml"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1000 ml"
-                    android:textSize="20sp"
+                    android:layout_gravity="center"
                     android:layout_marginTop="20dp"
-                    android:layout_gravity="center"/>
+                    android:text="1000 ml"
+                    android:textSize="20sp" />
 
 
             </LinearLayout>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:background="#80cacaca"
+            android:visibility="gone"
+            android:id="@+id/relativeOverlayFeelings"
+            android:layout_below="@+id/calendarView">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You can not log water for this date"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:id="@+id/tvFeelingsBlock"
+                android:paddingLeft="20dp"
+                android:rotation="-15"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+    </RelativeLayout>
 
-
-       </LinearLayout>
-
-    </ScrollView>
+</ScrollView>
