@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     SharedPreferences loginDetails;
     public static String LOGIN_DETAILS = "login_details";
     TextView messageView;
-    GifImageView progressBar;
+    static GifImageView progressBar;
     AlertDialog alert;
     private static final String TAG = "IdTokenActivity";
     private static final int RC_GET_TOKEN = 9002;
@@ -509,7 +509,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new LoginFragment1(), "LOGIN");
-        //adapter.addFragment(new TwoFragment(), "SIGNUP");
+        adapter.addFragment(new SignupFragment(), "SIGNUP");
         viewPager.setAdapter(adapter);
     }
 

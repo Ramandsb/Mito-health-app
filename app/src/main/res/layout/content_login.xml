@@ -13,11 +13,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="30dp"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:paddingLeft="30dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/linearLayout3">
 
         <android.support.design.widget.TextInputLayout
@@ -98,7 +97,8 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/linearLayout2"
-        android:layout_toEndOf="@+id/textView2" />
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"/>
 
 
 </RelativeLayout>

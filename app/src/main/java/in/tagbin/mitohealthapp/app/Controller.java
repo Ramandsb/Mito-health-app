@@ -53,6 +53,7 @@ import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
 import in.tagbin.mitohealthapp.model.SetFoodLoggerModel;
 import in.tagbin.mitohealthapp.model.SetNewInterestModel;
 import in.tagbin.mitohealthapp.model.SettingsModel;
+import in.tagbin.mitohealthapp.model.SignUpModel;
 import in.tagbin.mitohealthapp.model.SleepLogModel;
 import in.tagbin.mitohealthapp.model.SocialModel;
 import in.tagbin.mitohealthapp.model.UserDateModel;
@@ -247,6 +248,15 @@ public class Controller {
                                 RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.SOCIAL);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, socialModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void signup(Context context,SignUpModel socialModel,
+                                        RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.POST, socialModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);
