@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/loginCont"
     android:fitsSystemWindows="true"
-    tools:context="in.tagbin.mitohealthapp.activity.LoginActivity">
+    tools:context="in.tagbin.mitohealthapp.activity.LoginFragment1">
 
 
     <include layout="@layout/content_login" />

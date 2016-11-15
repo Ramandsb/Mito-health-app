@@ -8,6 +8,11 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +23,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
@@ -61,51 +67,49 @@ import com.uxcam.UXCam;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.AppController;
+import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.Config;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.LoginModel;
+import in.tagbin.mitohealthapp.model.SocialModel;
+import pl.droidsonroids.gif.GifImageView;
 
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
     SharedPreferences loginDetails;
     public static String LOGIN_DETAILS = "login_details";
     TextView messageView;
-    ProgressBar progressBar;
+    GifImageView progressBar;
     AlertDialog alert;
     private static final String TAG = "IdTokenActivity";
     private static final int RC_GET_TOKEN = 9002;
-
     private GoogleApiClient mGoogleApiClient;
     private TextView mIdTokenTextView;
-
     CleverTapAPI cleverTap;
-
     String profile_name, profile_picture;
-
-
-    ///////////////////////////////////
-    //FullscreenVideoLayout video_player_view;
-
-
-///////////////////////////////////
-
-
     Button Fblogin;
     CallbackManager callbackManager;
     final int DIALOG_LOADING = 0;
     String url = "https://graph.facebook.com/me/feed";
     String FbToken = "";
+    TabLayout tabLayout;
+    ViewPager viewPager;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -126,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 "AAab8a197df22ed375a8ad6f54fcb1c736ae09e5f2"
         ).start(this.getApplication());
         UXCam.startWithKey("075a1785b64ccb2");
-        customDialog();
         validateServerClientID();
         try {
             cleverTap = CleverTapAPI.getInstance(getApplicationContext());
@@ -153,8 +156,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
         loginDetails = getSharedPreferences(LOGIN_DETAILS, MODE_PRIVATE);
+        progressBar = (GifImageView) findViewById(R.id.progressBar);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        setupViewPager(viewPager);
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(viewPager);
+        //findViewById(R.id.sign_in_button).setOnClickListener(this);
         Fblogin = (Button) findViewById(R.id.login_button);
 
         Fblogin.setOnClickListener(new View.OnClickListener() {
@@ -165,47 +173,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
             }
         });
-
-
-
-//        try {
-//            getInit();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        TextView loginTv = (TextView) findViewById(R.id.login);
-        loginTv.setOnClickListener(new View.OnClickListener() {
-                                       @Override
-                                       public void onClick(View v) {
-
-                                           startActivity(new Intent(MainActivity.this, LoginActivity.class));
-
-
-                                       }
-                                   }
-        );
-        TextView signup = (TextView) findViewById(R.id.singup);
-        signup.setOnClickListener(new View.OnClickListener() {
-                                      @Override
-                                      public void onClick(View v) {
-
-                                          startActivity(new Intent(MainActivity.this, SignupActivity.class));
-                                      }
-                                  }
-        );
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
         client2 = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void onFblogin() {
 
-        showDialog();
         callbackManager = CallbackManager.Factory.create();
 
         // Set permissions
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_photos", "public_profile"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_photos", "public_profile", "user_birthday"));
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -216,9 +192,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             FbToken = loginResult.getAccessToken().getToken();
 
                             RequestData();
-
-                            makeJsonObjReq(FbToken,"facebook");
-// JsonObjReq(loginResult.getAccessToken().getToken());
+                            SocialModel socialModel = new SocialModel();
+                            socialModel.setAccess_token(FbToken);
+                            socialModel.setSource("facebook");
+                            progressBar.setVisibility(View.VISIBLE);
+                            Controller.setFacebookLogin(MainActivity.this, socialModel, mFacebookListener);
 
                         }
                     }
@@ -226,13 +204,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     @Override
                     public void onCancel() {
 
-                       progressBar.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.GONE);
                         messageView.setText("Check Internet Connection");
                     }
 
                     @Override
                     public void onError(FacebookException error) {
-                        Log.d("bhai eror h",error.toString());
+                        Log.d("bhai eror h", error.toString());
 
                     }
                 });
@@ -303,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     public void RequestData() {
-showDialog();
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
@@ -311,7 +288,7 @@ showDialog();
                 JSONObject json = response.getJSONObject();
                 try {
                     if (json != null) {
-                        Log.d("json",json.toString());
+                        Log.d("json", json.toString());
                         String text = "<b>Name :</b> " + json.getString("name") + "<br><br><b>Email :</b> " + json.getString("email") + "<br><br><b>Profile link :</b> " + json.getString("link");
                         String id = json.getString("id");
                         profile_name = json.getString("name");
@@ -320,22 +297,22 @@ showDialog();
                         JSONObject picture = json.getJSONObject("picture");
                         JSONObject data = picture.getJSONObject("data");
                         profile_picture = data.getString("url");
-                        HashMap<String, Object> eventHashmap = new HashMap<String,Object>();
-                        eventHashmap.put("type","Social Signup");
-                        eventHashmap.put("source","facebook");
-                        eventHashmap.put("name",json.getString("name"));
+                        HashMap<String, Object> eventHashmap = new HashMap<String, Object>();
+                        eventHashmap.put("type", "Social Signup");
+                        eventHashmap.put("source", "facebook");
+                        eventHashmap.put("name", json.getString("name"));
                         //eventHashmap.put("first_name",json.getString("first_name"));
                         //eventHashmap.put("last_name",json.getString("last_name"));
-                        eventHashmap.put("email",json.getString("email"));
+                        eventHashmap.put("email", json.getString("email"));
                         //eventHashmap.put("age",json.getString("age_range"));
                         //eventHashmap.put("gender",json.getString("gender"));
-                        eventHashmap.put("user_id",json.getString("id"));
+                        eventHashmap.put("user_id", json.getString("id"));
                         //eventHashmap.put("picture",json.getJSONObject("picture"));
-                        MyUtils.sendEvent(MainActivity.this,"facebook_signup",eventHashmap);
+                        MyUtils.sendEvent(MainActivity.this, "facebook_signup", eventHashmap);
                         HashMap<String, Object> profileUpdate = new HashMap<String, Object>();
                         profileUpdate.put("Name", profile_name);
                         profileUpdate.put("Email2", email);
-                        profileUpdate.put("Identity",email);
+                        profileUpdate.put("Identity", email);
                         cleverTap.profile.push(profileUpdate);
                         Log.d("Details", profile_name + "\n" + link + "\n" + email + "\n" + profile_picture + "\n" + id);
                         Log.d("GraphResponse", response.toString());
@@ -350,7 +327,7 @@ showDialog();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("some graph shit eeror",e.toString());
+                    Log.d("some graph shit eeror", e.toString());
 
                 }
             }
@@ -366,14 +343,13 @@ showDialog();
     protected void onStart() {
         super.onStart();
 
-       if (loginDetails.getString("key","").equals("")){
+        if (loginDetails.getString("key", "").equals("")) {
 
 
-
-        }else {
-           startActivity(new Intent(MainActivity.this,BinderActivity.class).putExtra("selection",3).putExtra("source","direct"));
-           finish();
-       }
+        } else {
+            startActivity(new Intent(MainActivity.this, BinderActivity.class).putExtra("selection", 3).putExtra("source", "direct"));
+            finish();
+        }
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client2.connect();
@@ -398,7 +374,6 @@ showDialog();
         super.onPause();
 //        video_player_view.pause();
 //        video_player_view.hideControls();
-
 
 
     }
@@ -445,9 +420,11 @@ showDialog();
             if (result.isSuccess()) {
                 GoogleSignInAccount acct = result.getSignInAccount();
                 String idToken = acct.getIdToken();
-                showDialog();
-                makeJsonObjReq(idToken,"google");
-
+                SocialModel socialModel = new SocialModel();
+                socialModel.setSource("google");
+                socialModel.setAccess_token(idToken);
+                progressBar.setVisibility(View.VISIBLE);
+                Controller.setFacebookLogin(MainActivity.this,socialModel,mFacebookListener);
                 // Show signed-in UI.
                 Log.d(TAG, "idToken:" + idToken);
 //                mIdTokenTextView.setText(getString(R.string.id_token_fmt, idToken));
@@ -457,8 +434,8 @@ showDialog();
             } else {
                 Log.d(TAG, "idToken:" + "some erroe");
             }
-                // Show signed-out UI.
-            }else {
+            // Show signed-out UI.
+        } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
 
         }
@@ -478,138 +455,41 @@ showDialog();
 
 
 
+    RequestListener mFacebookListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
 
-
-    private void makeJsonObjReq(String s,String source) {
-
-        showDialog();
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
-        int year = calendar.get(Calendar.YEAR);
-        Date date  = new Date(year-1900,month,day,hour,minute);
-        long timestamp = date.getTime()/1000L;
-        Map<String, String> postParam = new HashMap<String, String>();
-        postParam.put("access_token", s);
-        postParam.put("source", source);
-        postParam.put("is_nutritionist", "0");
-        postParam.put("time_delta", String.valueOf(timestamp));
-
-        JSONObject jsonObject = new JSONObject(postParam);
-        Log.d("postpar", jsonObject.toString());
-
-
-        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                Config.url + "social/signin", jsonObject,
-                new Response.Listener<JSONObject>() {
-
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d("response", response.toString());
-                        LoginModel loginModel = JsonUtils.objectify(response.toString(),LoginModel.class);
-                        PrefManager pref = new PrefManager(MainActivity.this);
-                        pref.saveLoginModel(loginModel);
-                        SharedPreferences.Editor editor1 = loginDetails.edit();
-                        editor1.clear();
-                        editor1.commit();
-                        SharedPreferences.Editor editor = loginDetails.edit();
-                        try {
-                            editor.putString("user_id", response.getString("user_id"));
-                            editor.putString("key", response.getString("key"));
-                            editor.commit();
-                            Intent intent = new Intent(MainActivity.this, SetGoalsActivity.class);
-                            startActivity(intent);
-                            finish();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                VolleyLog.d("error", "Error: " + volleyError.getMessage());
-                VolleyError error = null;
-                if(volleyError.networkResponse != null && volleyError.networkResponse.data != null){
-                    error = new VolleyError(new String(volleyError.networkResponse.data));
-                    volleyError = error;
-
-                    Log.d("error", error.toString());
-
-                }
-
-                displayErrors(error);
-            }
-        }) {
-
-
-
-
-//
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                headers.put("Content-Type", "application/json");
-//                headers.put( "charset", "utf-8");
-//                headers.put("Authorization","Authkey");
-//                return headers;
-
-//            }
-//
-
-
-        };
-
-
-        // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(jsonObjReq);
-    }
-
-
-    public void customDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-
-        View customView = inflater.inflate(R.layout.dialog, null);
-        builder.setView(customView);
-        messageView = (TextView) customView.findViewById(R.id.tvdialog);
-        progressBar = (ProgressBar) customView.findViewById(R.id.progress);
-        alert = builder.create();
-
-    }
-
-    public void showDialog() {
-
-        progressBar.setVisibility(View.VISIBLE);
-        alert.show();
-        messageView.setText("Loading");
-    }
-
-    public void dismissDialog() {
-        alert.dismiss();
-    }
-
-    public void displayErrors(VolleyError error) {
-        showDialog();
-        if (error instanceof TimeoutError || error instanceof NoConnectionError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("Connection failed");
-        } else if (error instanceof AuthFailureError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("AuthFailureError");
-        } else if (error instanceof ServerError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ServerError");
-        } else if (error instanceof NetworkError) {
-            messageView.setText("NetworkError");
-        } else if (error instanceof ParseError) {
-            progressBar.setVisibility(View.GONE);
-            messageView.setText("ParseError");
         }
-    }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            LoginModel loginModel = JsonUtils.objectify(responseObject.toString(), LoginModel.class);
+            PrefManager pref = new PrefManager(MainActivity.this);
+            pref.saveLoginModel(loginModel);
+            SharedPreferences.Editor editor1 = loginDetails.edit();
+            editor1.clear();
+            editor1.commit();
+            SharedPreferences.Editor editor = loginDetails.edit();
+            editor.putString("user_id", loginModel.getUser_id());
+            editor.putString("key", loginModel.getKey());
+            editor.commit();
+            Intent intent = new Intent(MainActivity.this, SetGoalsActivity.class);
+            startActivity(intent);
+            finish();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setVisibility(View.GONE);
+                }
+            });
+
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+
+        }
+    };
 
     @Override
     public void onClick(View v) {
@@ -625,5 +505,40 @@ showDialog();
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new LoginFragment1(), "LOGIN");
+        //adapter.addFragment(new TwoFragment(), "SIGNUP");
+        viewPager.setAdapter(adapter);
+    }
+
+    class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

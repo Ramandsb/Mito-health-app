@@ -1,15 +1,19 @@
 package in.tagbin.mitohealthapp.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -30,13 +34,10 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,33 +51,35 @@ import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.LoginModel;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginFragment1 extends Fragment {
 
+    private static final int MODE_PRIVATE = 1;
     EditText username_ed,password_ed;
     String username_str,password_str;
     SharedPreferences loginDetails;
     TextView forgotPassword;
     int hour,minute,day,month,year;
     boolean signup=false;
+
+    public LoginFragment1(){}
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_login);
-        View view = findViewById(R.id.loginCont);
-        customDialog();
-        signup= getIntent().getBooleanExtra("signup",false);
-        if (signup){
-            Snackbar.make(view,"Sign up Success",Snackbar.LENGTH_LONG).show();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_login,container,false);
 
-        }
+        View view1 = view.findViewById(R.id.loginCont);
+        //customDialog();
+//        signup= getIntent().getBooleanExtra("signup",false);
+//        if (signup){
+//            Snackbar.make(view,"Sign up Success",Snackbar.LENGTH_LONG).show();
+//
+//        }
 
-        loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,MODE_PRIVATE);
-        username_ed= (EditText) findViewById(R.id.username);
-        password_ed= (EditText) findViewById(R.id.login_password);
-        forgotPassword= (TextView) findViewById(R.id.forgotpassword);
+        loginDetails= getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS,MODE_PRIVATE);
+        username_ed= (EditText) view.findViewById(R.id.username);
+        password_ed= (EditText) view.findViewById(R.id.login_password);
+        forgotPassword= (TextView) view.findViewById(R.id.forgotpassword);
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -84,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
                 quantity_dialog();
             }
         });
-        Button login= (Button) findViewById(R.id.login);
+        Button login= (Button) view.findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,13 +98,15 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+        return view;
 
     }
+
     public void quantity_dialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getContext());
         alertDialog.setTitle("Reset Password");
         alertDialog.setMessage("Please enter your email to Reset Password");
-        final View view = View.inflate(this, R.layout.item_forgot_password, null);
+        final View view = View.inflate(getContext(), R.layout.item_forgot_password, null);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT
@@ -169,7 +174,7 @@ showDialog();
 
                         if (source.equals("login")) {
                             LoginModel loginModel = JsonUtils.objectify(response.toString(),LoginModel.class);
-                            PrefManager pref = new PrefManager(LoginActivity.this);
+                            PrefManager pref = new PrefManager(getContext());
                             pref.saveLoginModel(loginModel);
                             SharedPreferences.Editor editor1 = loginDetails.edit();
                             editor1.clear();
@@ -179,9 +184,9 @@ showDialog();
                                 editor.putString("user_id", response.getString("user_id"));
                                 editor.putString("key", response.getString("key"));
                                 editor.commit();
-                                Intent intent = new Intent(LoginActivity.this, SetGoalsActivity.class);
+                                Intent intent = new Intent(getContext(), SetGoalsActivity.class);
                                 startActivity(intent);
-                                finish();
+                                getActivity().finish();
                                 dismissDialog();
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -313,8 +318,8 @@ showDialog();
 
 
     public void customDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View customView = inflater.inflate(R.layout.dialog, null);
         builder.setView(customView);

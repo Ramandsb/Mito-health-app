@@ -186,7 +186,7 @@ Toast.makeText(SignupActivity.this,"Sign up Success",Toast.LENGTH_LONG).show();
                 Log.d("response",o.toString());
                 dismissDialog();
 
-                startActivity(new Intent(SignupActivity.this,LoginActivity.class).putExtra("signup",true));
+                startActivity(new Intent(SignupActivity.this,LoginFragment1.class).putExtra("signup",true));
 finish();
             }
         }, new Response.ErrorListener() {
