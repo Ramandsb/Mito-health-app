@@ -89,7 +89,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
     @Override
     public ExerciseAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == TYPE_ITEM){
-            View v = LayoutInflater.from(mContext).inflate(R.layout.item_food_recommended,parent,false);
+            View v = LayoutInflater.from(mContext).inflate(R.layout.item_food_logged,parent,false);
             ExerciseAdapter.ViewHolder vhItem = new ExerciseAdapter.ViewHolder(v,viewType);
             return vhItem;
         }
@@ -215,6 +215,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
             foodName.setText(pModel.getComponent().getName());
             quantity.setText(pModel.getAmount()+" mins");
             calories.setText(new DecimalFormat("##").format(pModel.getEnergy_burned()).toString()+" calories");
+
             //Picasso.with(mContext).load(mModel.getComponent().getImage()).into(circleImageView);
             Calendar[] dates = new Calendar[4];
             int i = 0;

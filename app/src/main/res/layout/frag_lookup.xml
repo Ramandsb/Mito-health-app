@@ -64,6 +64,7 @@
                             android:id="@+id/ivSeeMoreMyEvents"
                             android:layout_toRightOf="@+id/rvMyEvents"
                             android:rotation="180"
+                            android:visibility="gone"
                             android:background="@drawable/back_arrow"
                             android:src="@drawable/arrow" />
                         <TextView
@@ -118,11 +119,13 @@
 
                         <ImageView
                             android:layout_width="150dp"
-                            android:layout_height="180dp"
+                            android:layout_height="200dp"
                             android:visibility="gone"
                             android:id="@+id/ivSeeMoreGoingEvents"
                             android:layout_toRightOf="@+id/rvGoingEvents"
-                            android:src="@drawable/icon_midmorning" />
+                            android:rotation="180"
+                            android:background="@drawable/back_arrow"
+                            android:src="@drawable/arrow" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -175,11 +178,13 @@
 
                         <ImageView
                             android:layout_width="150dp"
-                            android:layout_height="180dp"
+                            android:layout_height="200dp"
                             android:visibility="gone"
                             android:id="@+id/ivSeeMoreUpcomingEvents"
                             android:layout_toRightOf="@+id/rvUpcomingEvents"
-                            android:src="@drawable/icon_midmorning" />
+                            android:rotation="180"
+                            android:background="@drawable/back_arrow"
+                            android:src="@drawable/arrow" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

@@ -90,6 +90,11 @@ public class EventUserAdapter extends RecyclerView.Adapter<EventUserAdapter.View
                 public void run() {
                     Toast.makeText(mContext,"Participant approved succesfully",Toast.LENGTH_LONG).show();
                     //EventDetailsActivity.onResume1();
+                    DataObject data = JsonUtils.objectify(dataObject,DataObject.class);
+                    EventDetailsActivity.people.setText(""+(data.getTotal_approved()+1)+"/"+data.getCapacity());
+                    EventDetailsActivity.interested.setText(""+(data.getTotal_request()-(data.getTotal_approved()-1)));
+                    EventDetailsActivity.approved.setText(""+(data.getTotal_approved()+1));
+                    EventDetailsActivity.left.setText(""+(data.getCapacity()-(data.getTotal_approved()-1)));
                     removePosition(finalPosition);
                 }
             });

@@ -12,6 +12,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -48,6 +49,7 @@ import java.util.List;
 
 import in.tagbin.mitohealthapp.Database.TableData;
 import in.tagbin.mitohealthapp.Fragments.ExerciseFragment;
+import in.tagbin.mitohealthapp.Fragments.Explorefragment;
 import in.tagbin.mitohealthapp.Fragments.FeelingsFragment;
 import in.tagbin.mitohealthapp.Fragments.MitoHealthFragment;
 import in.tagbin.mitohealthapp.Database.DatabaseOperations;
@@ -68,11 +70,11 @@ import in.tagbin.mitohealthapp.model.Timeconsumed;
 import in.tagbin.mitohealthapp.model.WaterLogModel;
 import pl.droidsonroids.gif.GifImageView;
 
-public class DailyDetailsActivity extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener{
+public class DailyDetailsActivity extends AppCompatActivity implements OnChartValueSelectedListener, SheetLayout.OnFabAnimationEndListener, TabLayout.OnTabSelectedListener {
 
     //private LineChart mChart;
     private TabLayout tabLayout;
-    private ViewPager viewPager;
+    //private ViewPager viewPager;
     static SheetLayout mSheetLayout;
     DatabaseOperations dop;
     FloatingActionButton fab;
@@ -100,51 +102,59 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("What's on your plate today?");
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        //viewPager = (ViewPager) findViewById(R.id.viewpager);
         //appBarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         dop = new DatabaseOperations(this);
         sendDate=new Intent(SENDDATE);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        //tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         int i = getIntent().getIntExtra("selection",0);
         currentFrag = i;
-        setupViewPager(viewPager);
-        viewPager.setOffscreenPageLimit(3);
-        viewPager.setCurrentItem(i);
+        //setupViewPager(viewPager);
+        //viewPager.setOffscreenPageLimit(3);
+        //viewPager.setCurrentItem(i);
 
 
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                currentFrag = position;
-               setChartBackground(position);
-
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+//        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+//            @Override
+//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+//
+//            }
+//
+//            @Override
+//            public void onPageSelected(int position) {
+//                currentFrag = position;
+//               setChartBackground(position);
+//
+//
+//            }
+//
+//            @Override
+//            public void onPageScrollStateChanged(int state) {
+//
+//            }
+//        });
 
 
 //        calenderTrans();
 
-        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
-        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
-        tabLayout.getTabAt(4).setIcon(tabIcons[4]);
+//        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+//
+//        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+//        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+//        tabLayout.getTabAt(3).setIcon(tabIcons[3]);
+//        tabLayout.getTabAt(4).setIcon(tabIcons[4]);
+        tabLayout.addTab(tabLayout.newTab().setIcon(tabIcons[0]));
+        tabLayout.addTab(tabLayout.newTab().setIcon(tabIcons[1]));
+        tabLayout.addTab(tabLayout.newTab().setIcon(tabIcons[2]));
+        tabLayout.addTab(tabLayout.newTab().setIcon(tabIcons[3]));
+        tabLayout.addTab(tabLayout.newTab().setIcon(tabIcons[4]));
+        tabLayout.setOnTabSelectedListener(this);
+        //tabLayout.setTabsFromPagerAdapter(lookupAdapter);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         mSheetLayout = (SheetLayout) findViewById(R.id.bottom_sheet);
 //        mChart = (LineChart) findViewById(R.id.chart1);
 //        mChart.setOnChartValueSelectedListener(this);
@@ -199,7 +209,8 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
 
             }
         setChartBackground(i);
-
+        TabLayout.Tab tab = tabLayout.getTabAt(i);
+        tab.select();
 
 
         mSheetLayout.setFab(fab);
@@ -244,6 +255,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
             fab.hide();
             //appBarLayout.setBackgroundResource(R.color.water);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
+            replaceFragment(new WaterFragment());
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                Window window = getWindow();
 //                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -258,6 +270,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
             fab.show();
             //appBarLayout.setBackgroundResource(R.color.food);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
+            replaceFragment(new FoodFragment());
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                Window window = getWindow();
 //                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -271,6 +284,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
             fab.show();
             //appBarLayout.setBackgroundResource(R.color.exercise);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
+            replaceFragment(new ExerciseFragment());
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                Window window = getWindow();
 //                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -283,6 +297,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
 
             //appBarLayout.setBackgroundResource(R.color.sleep);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
+            replaceFragment(new SleepFragment());
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                Window window = getWindow();
 //                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -296,6 +311,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
 
             //appBarLayout.setBackgroundResource(R.color.feelings);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
+            replaceFragment(new FeelingsFragment());
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //                Window window = getWindow();
 //                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -305,8 +321,22 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         }
 
     }
-
-
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.viewpager, fragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.commit();
+    }
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new FoodFragment(), "");
+        adapter.addFragment(new WaterFragment(), "");
+        adapter.addFragment(new ExerciseFragment(), "");
+        adapter.addFragment(new SleepFragment(), "");
+        adapter.addFragment(new FeelingsFragment(), "");
+        viewPager.setAdapter(adapter);
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -404,15 +434,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
     }
 
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FoodFragment(), "");
-        adapter.addFragment(new WaterFragment(), "");
-        adapter.addFragment(new ExerciseFragment(), "");
-        adapter.addFragment(new SleepFragment(), "");
-        adapter.addFragment(new FeelingsFragment(), "");
-        viewPager.setAdapter(adapter);
-    }
+
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
@@ -550,6 +572,21 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         }
         sleepLogModel.setList(timeconsumeds);
         return sleepLogModel;
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        setChartBackground(tab.getPosition());
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 
 //    public long convertDateToTimeStamp(String date,String time) throws ParseException {

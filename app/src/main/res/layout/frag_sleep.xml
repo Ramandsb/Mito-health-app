@@ -170,7 +170,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You can not log water for this date"
+                android:text="You can not log data for this date"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 android:id="@+id/tvFeelingsBlock"

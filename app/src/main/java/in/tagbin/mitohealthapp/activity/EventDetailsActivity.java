@@ -51,7 +51,8 @@ import pl.droidsonroids.gif.GifImageView;
  * Created by aasaqt on 9/8/16.
  */
 public class EventDetailsActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView type,time,people,location,date,heading,selectedPeople,interested,approved,left,joinText,coins,edit;
+    TextView type,time,location,date,selectedPeople,heading,joinText,coins,edit;
+    public static TextView people,interested,approved,left;
     DataObject data;
     ImageView backImage;
     LinearLayout linearFriends;

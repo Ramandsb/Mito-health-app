@@ -15,7 +15,7 @@
         <RelativeLayout
             android:id="@+id/relativeMainProfile"
             android:layout_width="match_parent"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="70dp"
             android:visibility="gone"
             android:layout_height="wrap_content">
 

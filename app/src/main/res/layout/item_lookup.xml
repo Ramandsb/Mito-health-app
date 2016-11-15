@@ -17,7 +17,6 @@
             android:layout_height="150dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_recommended"
             android:orientation="vertical"
             card_view:cardBackgroundColor="#f5f5f5"
             card_view:cardCornerRadius="10dp">
@@ -158,16 +157,7 @@
             android:textAlignment="center"
             android:textColor="#3d405b"
             android:textSize="12sp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/add_events"
-            android:text="+"
-            android:textColor="#ffffff"
-            android:textAlignment="center"
-            android:id="@+id/ivJoinEvents"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"/>
+
         <!--<RelativeLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->
@@ -279,5 +269,14 @@
         <!--android:textStyle="bold"/>-->
         <!--</LinearLayout>-->
     </RelativeLayout>
-
+    <TextView
+        android:layout_width="23dp"
+        android:layout_height="23dp"
+        android:background="@drawable/add_events"
+        android:text="+"
+        android:textColor="#ffffff"
+        android:textAlignment="center"
+        android:id="@+id/ivJoinEvents"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
 </RelativeLayout>
