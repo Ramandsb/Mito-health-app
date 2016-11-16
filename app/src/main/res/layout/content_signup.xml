@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="in.tagbin.mitohealthapp.activity.SignupFragment"
+    tools:context="in.tagbin.mitohealthapp.Fragments.SignupFragment"
     tools:showIn="@layout/activity_signup">
 
 
@@ -34,6 +34,7 @@
                 android:layout_marginRight="50dp"
                 android:drawableLeft="@drawable/sm1"
                 android:hint="Full name"
+                android:textSize="16sp"
                 android:inputType="textEmailAddress"
                 android:drawablePadding="10dp"
                 android:textColor="#f2f2f2"
@@ -65,6 +66,7 @@
                 android:layout_marginRight="50dp"
                 android:drawableLeft="@drawable/sm1"
                 android:hint="E mail"
+                android:textSize="16sp"
                 android:inputType="textEmailAddress"
                 android:drawablePadding="10dp"
                 android:textColor="#f2f2f2"
@@ -101,6 +103,7 @@
                 android:hint="Choose Password"
                 android:drawablePadding="10dp"
                 android:textColor="#f2f2f2"
+                android:textSize="16sp"
                 android:textColorHint="#f2f2f2"
                 ></EditText>
 

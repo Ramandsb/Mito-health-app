@@ -1,24 +1,17 @@
 package in.tagbin.mitohealthapp.model;
 
 /**
- * Created by aasaqt on 22/9/16.
+ * Created by chetan on 15/11/16.
  */
+
 public class LoginModel {
-    String chat_credential,message,user_id,key;
+    String username,password;
 
-    public String getChat_credential() {
-        return chat_credential;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getUser_id() {
-        return user_id;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

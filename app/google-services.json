@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "56770976470-o3mjptnlkflgldripffbdju364g2eglo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.tagbin.mitohealthapp",
+            "certificate_hash": "BD03190BAF6378EBD9CFF5E28E92D607E34E1CEB"
+          }
+        },
+        {
           "client_id": "56770976470-msjc6g2kkd1c92knhcid3ioahtm13669.apps.googleusercontent.com",
           "client_type": 3
         },

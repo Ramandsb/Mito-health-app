@@ -43,6 +43,7 @@ import in.tagbin.mitohealthapp.model.FeelingLogModel;
 import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.GcmSendModel;
 import in.tagbin.mitohealthapp.model.JoinEventModel;
+import in.tagbin.mitohealthapp.model.LoginModel;
 import in.tagbin.mitohealthapp.model.RecipeFavouriteModel;
 import in.tagbin.mitohealthapp.model.SendCuisineModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
@@ -253,10 +254,28 @@ public class Controller {
         volleyTypeRequest.setShouldCache(false);
         dispatchToQueue(volleyTypeRequest, context);
     }
+    public static void loginByEmail(Context context,LoginModel socialModel,
+                              RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.LOGIN);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, socialModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
     public static void signup(Context context,SignUpModel socialModel,
                                         RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.USERS);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, socialModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void forgotpassword(Context context,LoginModel socialModel,
+                              RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.FORGOT);
         Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
                 context, Request.Method.POST, socialModel, url, requestListener);
         volleyTypeRequest.setShouldCache(false);

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="in.tagbin.mitohealthapp.activity.LoginFragment1"
+    tools:context="in.tagbin.mitohealthapp.Fragments.LoginFragment1"
     tools:showIn="@layout/activity_login">
 
     <LinearLayout
@@ -31,15 +31,15 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="50dp"
                 android:drawableLeft="@drawable/sm1"
-                android:hint="Username"
-                android:inputType="textPersonName"
-                android:textColor="#f2f2f2"
                 android:drawablePadding="10dp"
-                android:textColorHighlight="#f2f2f2"
-                android:textColorLink="#f2f2f2"
+                android:hint="Username"
+                android:textSize="16sp"
+                android:inputType="textPersonName"
                 android:shadowColor="#f2f2f2"
+                android:textColor="#f2f2f2"
+                android:textColorHighlight="#f2f2f2"
                 android:textColorHint="#f2f2f2"
-                ></EditText>
+                android:textColorLink="#f2f2f2"></EditText>
 
         </android.support.design.widget.TextInputLayout>
 
@@ -69,6 +69,7 @@
                 android:layout_marginRight="50dp"
                 android:drawableLeft="@drawable/sm1"
                 android:hint="Password"
+                android:textSize="16sp"
                 android:inputType="textPassword"
                 android:drawablePadding="10dp"
                 android:textColor="#f2f2f2"

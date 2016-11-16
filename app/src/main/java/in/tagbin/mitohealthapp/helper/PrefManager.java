@@ -12,8 +12,7 @@ import java.util.List;
 
 import in.tagbin.mitohealthapp.model.DieticainModel;
 import in.tagbin.mitohealthapp.model.LocationModel;
-import in.tagbin.mitohealthapp.model.LoginModel;
-import in.tagbin.mitohealthapp.model.ParticipantModel;
+import in.tagbin.mitohealthapp.model.LoginResponseModel;
 import in.tagbin.mitohealthapp.model.PrefernceModel;
 import in.tagbin.mitohealthapp.model.UserModel;
 
@@ -207,14 +206,14 @@ public class PrefManager {
         DieticainModel locationModel = JsonUtils.objectify(userJson,DieticainModel.class);
         return locationModel;
     }
-    public void saveLoginModel (LoginModel loginModel) {
+    public void saveLoginModel (LoginResponseModel loginModel) {
         String userJson = JsonUtils.jsonify(loginModel);
         editor.putString(KEY_LOGIN, userJson);
         editor.apply();
     }
-    public LoginModel getLoginModel(){
+    public LoginResponseModel getLoginModel(){
         String userJson = pref.getString(KEY_LOGIN, null);
-        LoginModel locationModel = JsonUtils.objectify(userJson,LoginModel.class);
+        LoginResponseModel locationModel = JsonUtils.objectify(userJson,LoginResponseModel.class);
         return locationModel;
     }
     public void setKeyUserDetails(UserModel userModel){

@@ -2,7 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="in.tagbin.mitohealthapp">
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
+    <permission
+        android:name="in.tagbin.mitohealthapp.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="in.tagbin.mitohealthapp.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
@@ -56,7 +65,7 @@
         </service>
 
         <activity
-            android:name=".activity.LoginFragment1"
+            android:name=".activity.ForgotPasswordActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -65,11 +74,11 @@
             android:label="Set Profile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.SignupFragment"
-            android:label="@string/title_activity_signup"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <!--<activity-->
+            <!--android:name=".Fragments.SignupFragment"-->
+            <!--android:label="@string/title_activity_signup"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@style/AppTheme.NoActionBar" />-->
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

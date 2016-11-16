@@ -1,41 +1,36 @@
 package in.tagbin.mitohealthapp.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.Request;
-
-import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.clevertap.android.sdk.CleverTapAPI;
 import com.clevertap.android.sdk.exceptions.CleverTapMetaDataNotFoundException;
 import com.clevertap.android.sdk.exceptions.CleverTapPermissionsNotSatisfied;
@@ -50,17 +45,21 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.auth.GoogleAuthException;
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.common.api.Status;
 //import com.newrelic.agent.android.NewRelic;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.newrelic.agent.android.NewRelic;
 
 import com.uxcam.UXCam;
@@ -72,34 +71,34 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import in.tagbin.mitohealthapp.Fragments.LoginFragment1;
+import in.tagbin.mitohealthapp.Fragments.SignupFragment;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
-import in.tagbin.mitohealthapp.app.AppController;
 import in.tagbin.mitohealthapp.app.Controller;
-import in.tagbin.mitohealthapp.helper.Config;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.MyUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
-import in.tagbin.mitohealthapp.model.LoginModel;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
+import in.tagbin.mitohealthapp.model.LoginResponseModel;
 import in.tagbin.mitohealthapp.model.SocialModel;
 import pl.droidsonroids.gif.GifImageView;
 
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
     SharedPreferences loginDetails;
     public static String LOGIN_DETAILS = "login_details";
     TextView messageView;
-    static GifImageView progressBar;
+    public static GifImageView progressBar;
     AlertDialog alert;
     private static final String TAG = "IdTokenActivity";
-    private static final int RC_GET_TOKEN = 9002;
     private GoogleApiClient mGoogleApiClient;
+    private static final int RC_SIGN_IN = 1;
+    private String googleAccessToken,googleUserID;
+    final int REQUEST_GETACCOUNTS = 1;
     private TextView mIdTokenTextView;
     CleverTapAPI cleverTap;
     String profile_name, profile_picture;
@@ -110,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     String FbToken = "";
     TabLayout tabLayout;
     ViewPager viewPager;
+    Button googleButton;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -139,18 +139,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         } catch (CleverTapPermissionsNotSatisfied cleverTapPermissionsNotSatisfied) {
             cleverTapPermissionsNotSatisfied.printStackTrace();
         }
-        // [START configure_signin]
-        // Request only the user's ID token, which can be used to identify the
-        // user securely to your backend. This will contain the user's basic
-        // profile (name, profile picture URL, etc) so you should not need to
-        // make an additional call to personalize your application.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.server_client_id))
-                .requestEmail()
-                .build();
-        // [END configure_signin]
 
-        // Build GoogleAPIClient with the Google Sign-In API and the above options.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(getString(R.string.client_id))
+                .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
@@ -158,6 +151,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         loginDetails = getSharedPreferences(LOGIN_DETAILS, MODE_PRIVATE);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
+        googleButton = (Button) findViewById(R.id.sign_in_button);
+        googleButton.setOnClickListener(this);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -378,70 +373,88 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
-    private void getIdToken() {
-        // Show an account picker to let the user choose a Google account from the device.
-        // If the GoogleSignInOptions only asks for IDToken and/or profile and/or email then no
-        // consent screen will be shown here.
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_GET_TOKEN);
-    }
 
-    private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        Log.d(TAG, "signOut:onResult:" + status);
-
-                    }
-                });
-    }
-
-    private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        Log.d(TAG, "revokeAccess:onResult:" + status);
-
-                    }
-                });
-    }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
-        if (requestCode == RC_GET_TOKEN) {
-            // [START get_id_token]
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            Log.d(TAG, "onActivityResult:GET_TOKEN:success:" + result.getStatus().isSuccess());
-
-            if (result.isSuccess()) {
-                GoogleSignInAccount acct = result.getSignInAccount();
-                String idToken = acct.getIdToken();
-                SocialModel socialModel = new SocialModel();
-                socialModel.setSource("google");
-                socialModel.setAccess_token(idToken);
-                progressBar.setVisibility(View.VISIBLE);
-                Controller.setFacebookLogin(MainActivity.this,socialModel,mFacebookListener);
-                // Show signed-in UI.
-                Log.d(TAG, "idToken:" + idToken);
-//                mIdTokenTextView.setText(getString(R.string.id_token_fmt, idToken));
-
-
-                // TODO(user): send token to server and validate server-side
-            } else {
-                Log.d(TAG, "idToken:" + "some erroe");
-            }
-            // Show signed-out UI.
+            int statusCode = result.getStatus().getStatusCode();
+            Log.d("code result",""+statusCode);
+            handleSignInResult(result);
         } else {
             callbackManager.onActivityResult(requestCode, resultCode, data);
 
         }
 
     }
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            String personName = acct.getDisplayName();
+            String personGivenName = acct.getGivenName();
+            String personFamilyName = acct.getFamilyName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
+            String access= acct.getIdToken();
+            Log.d("google token",access);
+        } else {
+            // Signed out, show unauthenticated UI.
+            Log.d("failed","failed");
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_GETACCOUNTS:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //Storage permission is enabled
+                    signIn();
 
+                } else if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.GET_ACCOUNTS)) {
+                    //User has deny from permission dialog
+                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
+                    alertDialog1.setTitle("Contacts Permission Denied");
+                    alertDialog1.setMessage("This permission enables you to create an account on Mito using Google+ account, or use an existing connection to sign in. Are you sure you want to deny this permission?");
+                    alertDialog1.setPositiveButton("I'M SURE", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    alertDialog1.setNegativeButton("RETRY", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.GET_ACCOUNTS}, REQUEST_GETACCOUNTS);
+                        }
+                    });
+                    alertDialog1.show();
+                } else {
+                    // User has deny permission and checked never show permission dialog so you can redirect to Application settings page
+                    AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
+                    alertDialog1.setMessage("It looks like you have turned off permission required for this feature. It can be enabled under Phone Settings > Apps > Mito > Permissions");
+                    alertDialog1.setPositiveButton("GO TO SETTINGS", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent();
+                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            Uri uri = Uri.fromParts("package", MainActivity.this.getPackageName(), null);
+                            intent.setData(uri);
+                            startActivity(intent);
+                        }
+                    });
+                    alertDialog1.show();
+                }
+                break;
+
+        }
+    }
     private void validateServerClientID() {
         String serverClientId = getString(R.string.server_client_id);
         String suffix = ".apps.googleusercontent.com";
@@ -463,7 +476,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
-            LoginModel loginModel = JsonUtils.objectify(responseObject.toString(), LoginModel.class);
+            LoginResponseModel loginModel = JsonUtils.objectify(responseObject.toString(), LoginResponseModel.class);
             PrefManager pref = new PrefManager(MainActivity.this);
             pref.saveLoginModel(loginModel);
             SharedPreferences.Editor editor1 = loginDetails.edit();
@@ -473,6 +486,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             editor.putString("user_id", loginModel.getUser_id());
             editor.putString("key", loginModel.getKey());
             editor.commit();
+//            if (loginModel.isSignup()){
+//
+//            }else{
+//
+//            }
             Intent intent = new Intent(MainActivity.this, SetGoalsActivity.class);
             startActivity(intent);
             finish();
@@ -487,7 +505,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         @Override
         public void onRequestError(int errorCode, String message) {
-
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(MainActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(MainActivity.this, "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     };
 
@@ -495,16 +530,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
-                getIdToken();
+                checkStoragePermissions();
                 break;
 
         }
 
     }
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
 
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    private void checkStoragePermissions() {
+        if (hasStoragePermissionGranted()) {
+            // you can do whatever you want
+            signIn();
+        } else {
+            requestStoragePermission();
+        }
+    }
+    public boolean hasStoragePermissionGranted(){
+        return  ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.GET_ACCOUNTS) == PackageManager.PERMISSION_GRANTED;
+    }
 
+    public void requestStoragePermission() {
+        if(Build.VERSION.SDK_INT >= 23){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.GET_ACCOUNTS},
+                    REQUEST_GETACCOUNTS);
+        }
     }
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -512,6 +565,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         adapter.addFragment(new SignupFragment(), "SIGNUP");
         viewPager.setAdapter(adapter);
     }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

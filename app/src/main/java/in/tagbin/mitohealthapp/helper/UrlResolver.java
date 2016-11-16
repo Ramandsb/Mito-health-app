@@ -38,6 +38,8 @@ public class UrlResolver {
         endPointMapper.put(EndPoints.EVENTTYPE,"v1/eventtype/");
         endPointMapper.put(EndPoints.TRACK_WEIGHT,"v1/graphs/weight_graph/");
         endPointMapper.put(EndPoints.SOCIAL,"v1/social/signin/");
+        endPointMapper.put(EndPoints.LOGIN,"v1/login/");
+        endPointMapper.put(EndPoints.FORGOT,"password/forgot/");
     }
 
     public interface EndPoints {
@@ -62,5 +64,7 @@ public class UrlResolver {
         int EVENTTYPE = 19;
         int TRACK_WEIGHT = 20;
         int SOCIAL = 21;
+        int LOGIN = 22;
+        int FORGOT = 23;
     }
 }
