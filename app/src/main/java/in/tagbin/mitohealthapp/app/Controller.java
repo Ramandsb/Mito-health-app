@@ -53,7 +53,9 @@ import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
 import in.tagbin.mitohealthapp.model.SetFoodLoggerModel;
 import in.tagbin.mitohealthapp.model.SetNewInterestModel;
 import in.tagbin.mitohealthapp.model.SettingsModel;
+import in.tagbin.mitohealthapp.model.SignUpModel;
 import in.tagbin.mitohealthapp.model.SleepLogModel;
+import in.tagbin.mitohealthapp.model.SocialModel;
 import in.tagbin.mitohealthapp.model.UserDateModel;
 import in.tagbin.mitohealthapp.model.UserGoalWeightModel;
 import in.tagbin.mitohealthapp.model.UserHeightModel;
@@ -241,6 +243,24 @@ public class Controller {
             request.setRetryPolicy(DEFAULT_RETRY_POLICY);
             mRequestQueue.add(request);
         }
+    }
+    public static void setFacebookLogin(Context context,SocialModel socialModel,
+                                RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.SOCIAL);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, socialModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void signup(Context context,SignUpModel socialModel,
+                                        RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.POST, socialModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
     }
     public static void getGoals(Context context,
                                       RequestListener requestListener) {

@@ -167,13 +167,13 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     @Override
                     public void onCancel() {
                         // App code
-                        Log.v("LoginActivity", "cancel");
+                        Log.v("LoginFragment1", "cancel");
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
                         // App code
-                        Log.v("LoginActivity", exception.getCause().toString());
+                        Log.v("LoginFragment1", exception.getCause().toString());
                     }
                 });
             }

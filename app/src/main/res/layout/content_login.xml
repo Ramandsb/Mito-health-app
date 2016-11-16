@@ -5,32 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="in.tagbin.mitohealthapp.activity.LoginActivity"
-    tools:showIn="@layout/activity_login"
-    android:background="@drawable/loginback">
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
-        android:id="@+id/textView2"
-        android:textColor="#ffffff"
-        android:textSize="25sp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="149dp" />
+    tools:context="in.tagbin.mitohealthapp.activity.LoginFragment1"
+    tools:showIn="@layout/activity_login">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="30dp"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:paddingLeft="30dp"
+        android:layout_marginTop="20dp"
         android:id="@+id/linearLayout3">
 
         <android.support.design.widget.TextInputLayout
@@ -111,7 +97,8 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:layout_below="@+id/linearLayout2"
-        android:layout_toEndOf="@+id/textView2" />
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"/>
 
 
 </RelativeLayout>

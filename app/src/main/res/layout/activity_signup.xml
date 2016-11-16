@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="in.tagbin.mitohealthapp.activity.SignupActivity">
+    tools:context="in.tagbin.mitohealthapp.activity.SignupFragment">
 
 
     <include layout="@layout/content_signup" />
