@@ -254,6 +254,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         if (position==1){
             fab.hide();
             //appBarLayout.setBackgroundResource(R.color.water);
+            currentFrag = 1;
             tabLayout.setBackgroundResource(R.color.colorPrimary);
             replaceFragment(new WaterFragment());
 //            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -268,6 +269,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         }
         if (position==0){
             fab.show();
+            currentFrag = 0;
             //appBarLayout.setBackgroundResource(R.color.food);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
             replaceFragment(new FoodFragment());
@@ -282,6 +284,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         }
         if (position==2){
             fab.show();
+            currentFrag = 2;
             //appBarLayout.setBackgroundResource(R.color.exercise);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
             replaceFragment(new ExerciseFragment());
@@ -294,6 +297,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
         }
         if (position==3){
             fab.hide();
+            currentFrag = 3;
 
             //appBarLayout.setBackgroundResource(R.color.sleep);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
@@ -308,7 +312,7 @@ public class DailyDetailsActivity extends AppCompatActivity implements OnChartVa
 
         if (position==4){
             fab.hide();
-
+            currentFrag = 4;
             //appBarLayout.setBackgroundResource(R.color.feelings);
             tabLayout.setBackgroundResource(R.color.colorPrimary);
             replaceFragment(new FeelingsFragment());

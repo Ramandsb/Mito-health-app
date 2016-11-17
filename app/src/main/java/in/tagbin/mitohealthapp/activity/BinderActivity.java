@@ -361,26 +361,26 @@ public class BinderActivity extends AppCompatActivity implements View.OnClickLis
             case 0:
                 setImages();
                 iv1.setImageResource(R.drawable.iv_mito_clicked);
-                if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+                //if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
                     toolbar_title.setText("Mito");
                     toolbar.setTitle("");
                     fra = new MitoHealthFragment();
-                }else {
-                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
-                    alertDialog1.setTitle("Enter Details");
-                    alertDialog1.setMessage("Please enter your height and weight to proceed");
-                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    });
-                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    alertDialog1.show();
-                }
+//                }else {
+//                    final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
+//                    alertDialog1.setTitle("Enter Details");
+//                    alertDialog1.setMessage("Please enter your height and weight to proceed");
+//                    alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//
+//                        }
+//                    });
+//                    alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    });
+//                    alertDialog1.show();
+//                }
                 //bottomNavigation.setCurrentItem(2);
 //                Toast.makeText(BinderActivity.this, "clicked 3", Toast.LENGTH_SHORT).show();
                 break;

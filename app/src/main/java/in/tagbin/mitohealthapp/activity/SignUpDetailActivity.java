@@ -1308,8 +1308,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
     }
     private boolean validatedob(){
         if(tv_dateOfBirth.getText().toString().trim().isEmpty()){
-            textInputDob.setError("Please enter date of birth");
-            requestFocus(tv_dateOfBirth);
+//            textInputDob.setError("Please enter date of birth");
+//            requestFocus(tv_dateOfBirth);
             return false;
         }else {
             textInputDob.setErrorEnabled(false);
@@ -1319,8 +1319,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
     }
     private boolean validateHeight(){
         if(tv_height.getText().toString().trim().isEmpty()){
-            textInputHeight.setError("Please enter height");
-            requestFocus(tv_height);
+//            textInputHeight.setError("Please enter height");
+//            requestFocus(tv_height);
             return false;
         }else {
             textInputHeight.setErrorEnabled(false);
@@ -1330,8 +1330,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
     }
     private boolean validateWeight(){
         if(tv_weight.getText().toString().trim().isEmpty()){
-            textInputWeight.setError("Please enter weight");
-            requestFocus(tv_weight);
+//            textInputWeight.setError("Please enter weight");
+//            requestFocus(tv_weight);
             return false;
         }else {
             textInputWeight.setErrorEnabled(false);
@@ -1341,8 +1341,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
     }
     private boolean validateWaist(){
         if(tv_waist.getText().toString().trim().isEmpty()){
-            textInputWaist.setError("Please enter waist");
-            requestFocus(tv_waist);
+//            textInputWaist.setError("Please enter waist");
+//            requestFocus(tv_waist);
             return false;
         }else {
             textInputWaist.setErrorEnabled(false);
@@ -1352,8 +1352,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
     }
     private boolean validateGoalWeight(){
         if(tv_goal_weight.getText().toString().trim().isEmpty()){
-            textInputGoalWeight.setError("Please enter goal weight");
-            requestFocus(tv_goal_weight);
+//            textInputGoalWeight.setError("Please enter goal weight");
+//            requestFocus(tv_goal_weight);
             return false;
         }else {
             textInputGoalWeight.setErrorEnabled(false);

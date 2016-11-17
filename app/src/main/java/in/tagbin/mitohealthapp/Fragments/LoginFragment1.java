@@ -83,7 +83,7 @@ public class LoginFragment1 extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(getContext(), SignUpDetailActivity.class);
+                Intent i = new Intent(getContext(), ForgotPasswordActivity.class);
                 startActivity(i);
             }
         });

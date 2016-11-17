@@ -743,28 +743,28 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             //finish();
             return true;
         }else if (id == R.id.action_Settings) {
-            if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
+            //if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
                 //toolbar_title.setText("Settings");
                 //toolbar.setTitle("");
                 //fra = new SettingsActivity();
                 Intent i = new Intent(getContext(), SettingsActivity.class);
                 startActivity(i);
-            }else {
-                final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(getContext(),R.style.AppCompatAlertDialogStyle);
-                alertDialog1.setTitle("Enter Details");
-                alertDialog1.setMessage("Please enter your height and weight to proceed");
-                alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-                alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                alertDialog1.show();
-            }
+//            }else {
+//                final AlertDialog.Builder alertDialog1 = new AlertDialog.Builder(getContext(),R.style.AppCompatAlertDialogStyle);
+//                alertDialog1.setTitle("Enter Details");
+//                alertDialog1.setMessage("Please enter your height and weight to proceed");
+//                alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                    }
+//                });
+//                alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                alertDialog1.show();
+//            }
             return true;
         }
 
