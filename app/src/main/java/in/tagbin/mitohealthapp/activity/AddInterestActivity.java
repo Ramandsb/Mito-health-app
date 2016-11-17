@@ -77,8 +77,8 @@ public class AddInterestActivity extends AppCompatActivity implements View.OnCli
             etFoodCalories.setVisibility(View.GONE);
             foodCalories.setVisibility(View.GONE);
         }
-        if (getIntent().getStringExtra("name") != null) {
-            response = getIntent().getStringExtra("name");
+        if (getIntent().getStringExtra("tv_name") != null) {
+            response = getIntent().getStringExtra("tv_name");
             etInterestName.setText(response);
         }
         etInterestName.setOnEditorActionListener(new TextView.OnEditorActionListener() {

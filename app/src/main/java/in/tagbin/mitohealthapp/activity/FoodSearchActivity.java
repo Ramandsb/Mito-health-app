@@ -97,7 +97,7 @@ public class FoodSearchActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 Intent i = new Intent(FoodSearchActivity.this,AddInterestActivity.class);
                                 i.putExtra("food","food");
-                                i.putExtra("name",editable.toString());
+                                i.putExtra("tv_name",editable.toString());
                                 startActivity(i);
                             }
                         });

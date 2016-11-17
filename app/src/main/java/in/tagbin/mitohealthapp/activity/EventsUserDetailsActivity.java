@@ -144,7 +144,7 @@ public class EventsUserDetailsActivity extends AppCompatActivity implements View
             List<String> finalInterests = new ArrayList<String>();
             for (int i=0;i<data.getUser().getInterests().size();i++){
                 finalInterests.add(data.getUser().getInterests().get(i).getInterest().getName());
-                Log.d("name",data.getUser().getInterests().get(i).getInterest().getName());
+                Log.d("tv_name",data.getUser().getInterests().get(i).getInterest().getName());
             }
             hobbies.setText(finalInterests.toString().replace("[","").replace("]",""));
 

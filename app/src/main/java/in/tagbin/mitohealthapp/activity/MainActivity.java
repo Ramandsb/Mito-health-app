@@ -53,6 +53,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
@@ -142,11 +143,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
+                .requestProfile()
+                .requestScopes(new Scope("https://www.googleapis.com/auth/user.birthday.read"))
+                .requestScopes(new Scope(Scopes.PLUS_LOGIN))
+                .requestScopes(new Scope(Scopes.PLUS_ME))
+                .requestServerAuthCode(getString(R.string.client_id))
                 .requestIdToken(getString(R.string.client_id))
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(Plus.API)
                 .build();
         loginDetails = getSharedPreferences(LOGIN_DETAILS, MODE_PRIVATE);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
@@ -176,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         callbackManager = CallbackManager.Factory.create();
 
         // Set permissions
-        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_photos", "public_profile", "user_birthday"));
+        LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "user_photos", "public_profile"/*, "user_birthday"*/));
 
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
@@ -200,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onCancel() {
 
                         progressBar.setVisibility(View.GONE);
-                        messageView.setText("Check Internet Connection");
+//                        messageView.setText("Check Internet Connection");
                     }
 
                     @Override
@@ -284,9 +291,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     if (json != null) {
                         Log.d("json", json.toString());
-                        String text = "<b>Name :</b> " + json.getString("name") + "<br><br><b>Email :</b> " + json.getString("email") + "<br><br><b>Profile link :</b> " + json.getString("link");
+                        String text = "<b>Name :</b> " + json.getString("tv_name") + "<br><br><b>Email :</b> " + json.getString("email") + "<br><br><b>Profile link :</b> " + json.getString("link");
                         String id = json.getString("id");
-                        profile_name = json.getString("name");
+                        profile_name = json.getString("tv_name");
                         String link = json.getString("link");
                         String email = json.getString("email");
                         JSONObject picture = json.getJSONObject("picture");
@@ -295,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         HashMap<String, Object> eventHashmap = new HashMap<String, Object>();
                         eventHashmap.put("type", "Social Signup");
                         eventHashmap.put("source", "facebook");
-                        eventHashmap.put("name", json.getString("name"));
+                        eventHashmap.put("tv_name", json.getString("tv_name"));
                         //eventHashmap.put("first_name",json.getString("first_name"));
                         //eventHashmap.put("last_name",json.getString("last_name"));
                         eventHashmap.put("email", json.getString("email"));
@@ -312,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.d("Details", profile_name + "\n" + link + "\n" + email + "\n" + profile_picture + "\n" + id);
                         Log.d("GraphResponse", response.toString());
 //                        Intent intent = new Intent(MainActivity.this, HealthFragment.class);
-//                        intent.putExtra("name", profile_name);
+//                        intent.putExtra("tv_name", profile_name);
 //                        intent.putExtra("picture", profile_picture);
 //                        startActivity(intent);
 //                        finish();
@@ -328,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,link,email,picture");
+        parameters.putString("fields", "id,tv_name,link,email,picture");
         request.setParameters(parameters);
         request.executeAsync();
 
@@ -403,8 +410,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String personEmail = acct.getEmail();
             String personId = acct.getId();
             Uri personPhoto = acct.getPhotoUrl();
-            String access= acct.getIdToken();
-            Log.d("google token",access);
+            googleAccessToken= acct.getServerAuthCode();
+            SocialModel socialModel = new SocialModel();
+            socialModel.setAccess_token(googleAccessToken);
+            socialModel.setSource("plus");
+            progressBar.setVisibility(View.VISIBLE);
+            Controller.setFacebookLogin(MainActivity.this, socialModel, mFacebookListener);
+            Log.d("google token",googleAccessToken);
         } else {
             // Signed out, show unauthenticated UI.
             Log.d("failed","failed");
@@ -486,14 +498,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             editor.putString("user_id", loginModel.getUser_id());
             editor.putString("key", loginModel.getKey());
             editor.commit();
-//            if (loginModel.isSignup()){
-//
-//            }else{
-//
-//            }
-            Intent intent = new Intent(MainActivity.this, SetGoalsActivity.class);
-            startActivity(intent);
-            finish();
+            if (loginModel.isSignup()){
+                Intent intent = new Intent(MainActivity.this, SignUpDetailActivity.class);
+                startActivity(intent);
+                finish();
+            }else{
+                startActivity(new Intent(MainActivity.this,BinderActivity.class).putExtra("selection",0).putExtra("source","direct"));
+                finish();
+            }
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -506,6 +519,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onRequestError(int errorCode, String message) {
             if (errorCode >= 400 && errorCode < 500) {
+                if (errorCode == 403){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(MainActivity.this, "UnAuthorised!Please enter valid details", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 runOnUiThread(new Runnable() {
                     @Override

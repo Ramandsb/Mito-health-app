@@ -20,6 +20,7 @@ import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.activity.MainActivity;
 import in.tagbin.mitohealthapp.activity.SetGoalsActivity;
+import in.tagbin.mitohealthapp.activity.SignUpDetailActivity;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
@@ -28,9 +29,10 @@ import in.tagbin.mitohealthapp.model.LoginResponseModel;
 import in.tagbin.mitohealthapp.model.SignUpModel;
 import pl.droidsonroids.gif.GifImageView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class SignupFragment extends Fragment {
 
-    private static final int MODE_PRIVATE = 1;
     EditText email, pass, conPass, name;
     Button signup;
     String email_str = "", pass_str = "", con_pass_str = "", name_str;
@@ -91,7 +93,7 @@ public class SignupFragment extends Fragment {
         editor.putString("user_id", loginModel.getUser_id());
         editor.putString("key", loginModel.getKey());
         editor.commit();
-        Intent intent = new Intent(getContext(), SetGoalsActivity.class);
+        Intent intent = new Intent(getContext(), SignUpDetailActivity.class);
         startActivity(intent);
         getActivity().finish();
         getActivity().runOnUiThread(new Runnable() {
@@ -107,6 +109,15 @@ public class SignupFragment extends Fragment {
         if (getActivity() == null)
             return;
         if (errorCode >= 400 && errorCode < 500) {
+            if (errorCode == 403){
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "UnAuthorised! Please enter valid details", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
             final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
             getActivity().runOnUiThread(new Runnable() {
                 @Override

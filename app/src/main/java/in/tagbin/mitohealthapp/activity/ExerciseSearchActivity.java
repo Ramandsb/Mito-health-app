@@ -129,7 +129,7 @@ public class ExerciseSearchActivity extends AppCompatActivity{
                             public void onClick(View view) {
                                 Intent i = new Intent(ExerciseSearchActivity.this,AddInterestActivity.class);
                                 i.putExtra("exercise","exercise");
-                                i.putExtra("name",editable.toString());
+                                i.putExtra("tv_name",editable.toString());
                                 startActivity(i);
                             }
                         });

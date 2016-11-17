@@ -147,7 +147,7 @@ public class InterestActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent i = new Intent(InterestActivity.this,AddInterestActivity.class);
-                            i.putExtra("name",query);
+                            i.putExtra("tv_name",query);
                             startActivity(i);
                         }
                     });
@@ -215,7 +215,7 @@ public class InterestActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Intent i = new Intent(InterestActivity.this,AddInterestActivity.class);
-                            i.putExtra("name",newText);
+                            i.putExtra("tv_name",newText);
                             startActivity(i);
                         }
                     });

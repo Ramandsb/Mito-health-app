@@ -9,7 +9,7 @@ import java.util.List;
 public class SendEditProfileModel {
     String first_name,last_name,email,dob,gender,height,waist,weight,goal_weight;
     List<Integer> cuisines;
-    int preferences,goal_time;
+    int preferences,goal_time,goal;
     ImagesModel images;
     public SendEditProfileModel(){
         images = new ImagesModel();
@@ -40,6 +40,14 @@ public class SendEditProfileModel {
 
     public void setImages(ImagesModel images) {
         this.images = images;
+    }
+
+    public void setGoal(int goal) {
+        this.goal = goal;
+    }
+
+    public int getGoal() {
+        return goal;
     }
 
     public ImagesModel getImages() {

@@ -14,6 +14,7 @@ import in.tagbin.mitohealthapp.model.DieticainModel;
 import in.tagbin.mitohealthapp.model.LocationModel;
 import in.tagbin.mitohealthapp.model.LoginResponseModel;
 import in.tagbin.mitohealthapp.model.PrefernceModel;
+import in.tagbin.mitohealthapp.model.SetGoalModel;
 import in.tagbin.mitohealthapp.model.UserModel;
 
 /**
@@ -42,10 +43,12 @@ public class PrefManager {
     private static final String KEY_DAY = "selected_day";
     private static final String KEY_MONTH = "selected_month";
     private static final String KEY_YEAR = "selected_year";
+    private static final String KEY_SIGNUP = "sign_up";
     private static String KEY_DIETICIAN = "key_deitician";
     private static String GCM_TOKEN = "gcm_token";
     private static String LOCATION_OBJECT = "location_object";
     private static String PREFERENCE = "preference_object";
+    private static String GAOL_TYPE = "goal_object";
 
     public PrefManager(Context ctx){
         _context = ctx;
@@ -196,6 +199,19 @@ public class PrefManager {
                 .fromJson(userJson, collectionType);
         return diet_options;
     }
+    public void saveCurrentGoal (List<SetGoalModel> locationModel) {
+        String userJson = JsonUtils.jsonify(locationModel);
+        editor.putString(GAOL_TYPE, userJson);
+        editor.apply();
+    }
+    public List<SetGoalModel> getCurrentGoalAsObject(){
+        String userJson = pref.getString(GAOL_TYPE, null);
+        Type collectionType = new TypeToken<ArrayList<SetGoalModel>>() {
+        }.getType();
+        final List<SetGoalModel> diet_options = (ArrayList<SetGoalModel>) new Gson()
+                .fromJson(userJson, collectionType);
+        return diet_options;
+    }
     public void saveDietician (DieticainModel locationModel) {
         String userJson = JsonUtils.jsonify(locationModel);
         editor.putString(KEY_DIETICIAN, userJson);
@@ -231,5 +247,12 @@ public class PrefManager {
     }
     public boolean isTOkenSend(){
         return pref.getBoolean(GCM_TOKEN,false);
+    }
+    public void setSignup(boolean tokenToServer){
+        editor.putBoolean(KEY_SIGNUP,tokenToServer);
+        editor.commit();
+    }
+    public boolean isSignup(){
+        return pref.getBoolean(KEY_SIGNUP,false);
     }
 }

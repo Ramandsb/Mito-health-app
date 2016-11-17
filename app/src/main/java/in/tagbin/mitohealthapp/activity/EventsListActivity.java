@@ -47,7 +47,7 @@ public class EventsListActivity extends AppCompatActivity {
         //progressBar = (GifImageView) findViewById(R.id.progressBar);
         dataObjects = new ArrayList<DataObject>();
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getIntent().getStringExtra("name"));
+        getSupportActionBar().setTitle(getIntent().getStringExtra("tv_name"));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

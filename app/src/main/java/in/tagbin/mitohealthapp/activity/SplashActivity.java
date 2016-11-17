@@ -281,12 +281,18 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         }
     }
     public void nextIntent(){
+
         if (loginDetails.getString("key","").equals("")){
             startActivity(new Intent(SplashActivity.this,MainActivity.class));
             finish();
         }else {
-            startActivity(new Intent(SplashActivity.this,BinderActivity.class).putExtra("selection",0).putExtra("source","direct"));
-            finish();
+            if (!pref.isSignup()){
+                startActivity(new Intent(SplashActivity.this,SignUpDetailActivity.class));
+                finish();
+            }else {
+                startActivity(new Intent(SplashActivity.this, BinderActivity.class).putExtra("selection", 0).putExtra("source", "direct"));
+                finish();
+            }
         }
     }
 }

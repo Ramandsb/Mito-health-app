@@ -35,9 +35,12 @@ import java.util.Map;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.activity.BinderActivity;
 import in.tagbin.mitohealthapp.activity.ForgotPasswordActivity;
 import in.tagbin.mitohealthapp.activity.MainActivity;
 import in.tagbin.mitohealthapp.activity.SetGoalsActivity;
+import in.tagbin.mitohealthapp.activity.SignUpDetailActivity;
+import in.tagbin.mitohealthapp.activity.SplashActivity;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.ServerStatusRequestObject;
 import in.tagbin.mitohealthapp.app.AppController;
@@ -49,9 +52,10 @@ import in.tagbin.mitohealthapp.model.LoginModel;
 import in.tagbin.mitohealthapp.model.LoginResponseModel;
 import pl.droidsonroids.gif.GifImageView;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class LoginFragment1 extends Fragment {
 
-    private static final int MODE_PRIVATE = 1;
     EditText username_ed, password_ed;
     String username_str, password_str;
     SharedPreferences loginDetails;
@@ -79,7 +83,7 @@ public class LoginFragment1 extends Fragment {
             @Override
             public void onClick(View view) {
 
-                Intent i = new Intent(getContext(), ForgotPasswordActivity.class);
+                Intent i = new Intent(getContext(), SignUpDetailActivity.class);
                 startActivity(i);
             }
         });
@@ -155,9 +159,15 @@ public class LoginFragment1 extends Fragment {
             editor.putString("user_id", loginModel.getUser_id());
             editor.putString("key", loginModel.getKey());
             editor.commit();
-            Intent intent = new Intent(getContext(), SetGoalsActivity.class);
-            startActivity(intent);
-            getActivity().finish();
+            if (loginModel.isSignup()){
+                Intent intent = new Intent(getContext(), SignUpDetailActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }else{
+                startActivity(new Intent(getContext(),BinderActivity.class).putExtra("selection",0).putExtra("source","direct"));
+                getActivity().finish();
+            }
+
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -171,6 +181,15 @@ public class LoginFragment1 extends Fragment {
             if (getActivity() == null)
                 return;
             if (errorCode >= 400 && errorCode < 500) {
+                if (errorCode == 403){
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(getContext(), "UnAuthorised! Please enter valid details", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

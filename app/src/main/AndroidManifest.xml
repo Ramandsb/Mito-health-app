@@ -74,11 +74,11 @@
             android:label="Set Profile"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <!--<activity-->
-            <!--android:name=".Fragments.SignupFragment"-->
-            <!--android:label="@string/title_activity_signup"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@style/AppTheme.NoActionBar" />-->
+        <activity
+            android:name=".activity.SignUpDetailActivity"
+            android:label="@string/title_activity_signup"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

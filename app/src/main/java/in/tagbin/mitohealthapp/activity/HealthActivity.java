@@ -174,7 +174,7 @@ public class HealthActivity extends AppCompatActivity implements View.OnClickLis
 
         //makeJsonObjReq();
 
-        //name = getActivity().getIntent().getStringExtra("name");
+        //tv_name = getActivity().getIntent().getStringExtra("tv_name");
 
         Log.d("check url", "" + myurl);
 //        if (url.equals("")) {
@@ -493,7 +493,7 @@ public class HealthActivity extends AppCompatActivity implements View.OnClickLis
                 }
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.setUserDetails(HealthActivity.this,user_id,sendEditProfileModel,mSendUserListener);
-                //makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight), String.valueOf(goal_weight));
+                //makeJsonObjReq(tv_name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight), String.valueOf(goal_weight));
             }
 
             return true;

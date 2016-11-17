@@ -108,7 +108,7 @@ public class EventTypeSearchActivity extends AppCompatActivity {
                             public void onClick(View view) {
                                 Intent i = new Intent(EventTypeSearchActivity.this,AddInterestActivity.class);
                                 i.putExtra("event","event");
-                                i.putExtra("name",editable.toString());
+                                i.putExtra("tv_name",editable.toString());
                                 startActivity(i);
                             }
                         });
