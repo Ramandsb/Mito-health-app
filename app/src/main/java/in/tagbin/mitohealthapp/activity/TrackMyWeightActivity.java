@@ -84,7 +84,7 @@ public class TrackMyWeightActivity extends AppCompatActivity implements View.OnC
         getSupportActionBar().setTitle("Track My Weight");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         heading = (TextView) findViewById(R.id.tvTrackWeightHeading);
-        highlight = (TextView) findViewById(R.id.tvTrackWeightHighlight);
+        //highlight = (TextView) findViewById(R.id.tvTrackWeightHighlight);
         currentWeight = (TextView) findViewById(R.id.tvTrackWeightCurrent);
         goalWeight = (TextView) findViewById(R.id.tvTrackWeightGoal);
         mChart = (LineChart) findViewById(R.id.chart);
@@ -97,47 +97,7 @@ public class TrackMyWeightActivity extends AppCompatActivity implements View.OnC
         relativeGoal.setOnClickListener(this);
         mChart.setOnChartValueSelectedListener(this);
 
-        mChart.setDrawGridBackground(false);
-        mChart.setDescription("");
-        mChart.setDrawBorders(false);
-        mChart.getAxisLeft().setEnabled(true);
-        mChart.getAxisRight().setEnabled(false);
 
-        mChart.getAxisRight().setDrawAxisLine(false);
-        mChart.getAxisRight().setDrawGridLines(false);
-        mChart.getXAxis().setDrawAxisLine(false);
-        mChart.getXAxis().setDrawGridLines(false);
-        mChart.getXAxis().setTextColor(Color.parseColor("#111111"));
-        mChart.setDescriptionColor(Color.parseColor("#111111"));
-        mChart.getAxisLeft().setTextColor(Color.parseColor("#111111"));
-        mChart.getAxisRight().setTextColor(Color.parseColor("#111111"));
-        mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setValueFormatter(new AxisValueFormatter() {
-
-
-            private SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM");
-
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return mFormat.format(new Date((long) value));
-            }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
-        });
-
-        // enable touch gestures
-        mChart.setTouchEnabled(true);
-
-        // enable scaling and dragging
-        mChart.setDragEnabled(true);
-        mChart.setScaleEnabled(true);
-        mChart.setPinchZoom(false);
-        Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
 
     }
 
@@ -425,6 +385,7 @@ public class TrackMyWeightActivity extends AppCompatActivity implements View.OnC
                     goal_weight = trackWeightGraphModel.getGoal_weight();
                     monthsValue = trackWeightGraphModel.getGoal_time()/7;
                     weight = trackWeightGraphModel.getCurrent_weight();
+                    heading.setText(trackWeightGraphModel.getMessage());
                     currentWeight.setText(new DecimalFormat("##.#").format(trackWeightGraphModel.getCurrent_weight()/1000).toString()+" kg");
                     goalWeight.setText(new DecimalFormat("##.#").format(trackWeightGraphModel.getGoal_weight()/1000).toString()+" kgs in "+trackWeightGraphModel.getGoal_time()/7+" weeks");
                     ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
@@ -434,20 +395,61 @@ public class TrackMyWeightActivity extends AppCompatActivity implements View.OnC
                         entries.add(new Entry(MyUtils.getTimeinMillis(trackWeightGraphModel.getVariation().get(i).getTime_consumed()),trackWeightGraphModel.getVariation().get(i).getComponent_id()/1000));
                     }
                     LineDataSet dataSet = new LineDataSet(entries, "Actual"); // add entries to dataset
-                    dataSet.setColor(Color.parseColor("#111111"));
-                    dataSet.setValueTextColor(Color.parseColor("#111111"));
+                    dataSet.setColor(Color.parseColor("#a0c894"));
+                    dataSet.setValueTextColor(Color.parseColor("#a0c894"));
                     dataSets.add(dataSet);
 
                     List<Entry> entries1 = new ArrayList<Entry>();
-                    entries1.add(new Entry(MyUtils.getTimeinMillis1(trackWeightGraphModel.getStart_date()),trackWeightGraphModel.getCurrent_weight()/1000));
+                    entries1.add(new Entry(MyUtils.getTimeinMillis1(trackWeightGraphModel.getStart_date()),trackWeightGraphModel.getStart_weight()/1000));
                     entries1.add(new Entry(MyUtils.getTimeinMillis1(trackWeightGraphModel.getEnd_date()),trackWeightGraphModel.getGoal_weight()/1000));
                     LineDataSet dataSet1 = new LineDataSet(entries1, "Ideal"); // add entries to dataset
-                    dataSet1.setColor(Color.parseColor("#111111"));
-                    dataSet1.setValueTextColor(Color.parseColor("#111111"));
+                    dataSet1.setColor(Color.parseColor("#313466"));
+                    dataSet1.setValueTextColor(Color.parseColor("#313466"));
                     dataSets.add(dataSet1);
                     LineData lineData = new LineData(dataSets);
                     mChart.setData(lineData);
                     mChart.invalidate();
+                    mChart.setDrawGridBackground(false);
+                    mChart.setDescription("");
+                    mChart.setDrawBorders(false);
+                    mChart.getAxisLeft().setEnabled(true);
+                    mChart.getAxisRight().setEnabled(false);
+
+                    mChart.getAxisRight().setDrawAxisLine(false);
+                    mChart.getAxisRight().setDrawGridLines(false);
+                    mChart.getXAxis().setDrawAxisLine(false);
+                    mChart.getXAxis().setDrawGridLines(false);
+                    mChart.getXAxis().setTextColor(Color.parseColor("#111111"));
+                    mChart.setDescriptionColor(Color.parseColor("#111111"));
+                    mChart.getAxisLeft().setTextColor(Color.parseColor("#111111"));
+                    mChart.getAxisRight().setTextColor(Color.parseColor("#111111"));
+                    mChart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+                    XAxis xAxis = mChart.getXAxis();
+                    xAxis.setValueFormatter(new AxisValueFormatter() {
+
+
+                        private SimpleDateFormat mFormat = new SimpleDateFormat("dd/MM");
+
+                        @Override
+                        public String getFormattedValue(float value, AxisBase axis) {
+                            return mFormat.format(new Date((long) value));
+                        }
+
+                        @Override
+                        public int getDecimalDigits() {
+                            return 0;
+                        }
+                    });
+
+                    // enable touch gestures
+                    mChart.setTouchEnabled(true);
+
+                    // enable scaling and dragging
+                    mChart.setDragEnabled(true);
+                    mChart.setScaleEnabled(true);
+                    mChart.setPinchZoom(false);
+                    Legend l = mChart.getLegend(); ////////////////////////////dataset values show hint
+                    l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
                 }
             });
         }

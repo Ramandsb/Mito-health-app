@@ -6,28 +6,28 @@ package in.tagbin.mitohealthapp.model;
 public class SettingsModel {
     boolean meals_notification,water_notification,sleep_notification,exercise_notification,weekly_progress_notification;
     boolean daily_health_tips_notification,show_me_on_explore,chat_notification;
-    int people_connect_preference,maximum_distance,total_coins;
-    int[] age_range;
+    int /*people_connect_preference,maximum_distance,*/total_coins;
+    //int[] age_range;
 
-    public int getPeople_connect_preference() {
-        return people_connect_preference;
-    }
+//    public int getPeople_connect_preference() {
+//        return people_connect_preference;
+//    }
 
     public int getTotal_coins() {
         return total_coins;
     }
 
-    public int[] getAge_range() {
-        return age_range;
-    }
-
-    public int getMaximum_distance() {
-        return maximum_distance;
-    }
-
-    public void setAge_range(int[] age_range) {
-        this.age_range = age_range;
-    }
+//    public int[] getAge_range() {
+//        return age_range;
+//    }
+//
+//    public int getMaximum_distance() {
+//        return maximum_distance;
+//    }
+//
+//    public void setAge_range(int[] age_range) {
+//        this.age_range = age_range;
+//    }
 
     public void setChat_notification(boolean chat_notification) {
         this.chat_notification = chat_notification;
@@ -45,13 +45,13 @@ public class SettingsModel {
         this.meals_notification = meals_notification;
     }
 
-    public void setMaximum_distance(int maximum_distance) {
-        this.maximum_distance = maximum_distance;
-    }
-
-    public void setPeople_connect_preference(int people_connect_preference) {
-        this.people_connect_preference = people_connect_preference;
-    }
+//    public void setMaximum_distance(int maximum_distance) {
+//        this.maximum_distance = maximum_distance;
+//    }
+//
+//    public void setPeople_connect_preference(int people_connect_preference) {
+//        this.people_connect_preference = people_connect_preference;
+//    }
 
     public void setShow_me_on_explore(boolean show_me_on_explore) {
         this.show_me_on_explore = show_me_on_explore;

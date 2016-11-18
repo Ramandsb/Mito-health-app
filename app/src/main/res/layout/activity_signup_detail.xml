@@ -112,13 +112,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="15dp"
                 android:layout_toRightOf="@+id/tvProfileGenderHeading"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:layout_alignParentTop="true">
 
                 <RadioButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Male"
                     android:id="@+id/radioMale"
+                    android:button="@drawable/item_slectable_radio"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
 
@@ -127,6 +130,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:text="Female"
+                    android:button="@drawable/item_slectable_radio"
                     android:id="@+id/radioFemale"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />

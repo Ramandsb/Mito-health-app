@@ -8,8 +8,8 @@ import java.util.List;
 
 public class TrackWeightGraphModel {
     List<VariationModel> variation;
-    String end_date,start_date;
-    float goal_weight,current_weight;
+    String end_date,start_date,message;
+    float goal_weight,current_weight,start_weight;
     int goal_time;
 
     public int getGoal_time() {
@@ -30,6 +30,14 @@ public class TrackWeightGraphModel {
 
     public String getEnd_date() {
         return end_date;
+    }
+
+    public float getStart_weight() {
+        return start_weight;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public String getStart_date() {

@@ -182,99 +182,99 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
-        distance.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
-            @Override
-            public int transform(int value) {
-                settingsModel.setMaximum_distance(value);
-                distanceSet.setText(value+ " kms");
-                return value;
-            }
-        });
-        age.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
-            @Override
-            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
-                int[] age = {Integer.parseInt(leftPinValue), Integer.parseInt(rightPinValue)};
-                settingsModel.setAge_range(age);
-                ageSet.setText(leftPinValue+"-"+rightPinValue+" yrs");
-            }
-        });
-        preferenceLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(SettingsActivity.this);
-                if (Build.VERSION.SDK_INT >= 22) {
-                    alertDialog2 = new AlertDialog.Builder(SettingsActivity.this, R.style.AppCompatAlertDialogStyle);
-                } else {
-                    alertDialog2 = new AlertDialog.Builder(SettingsActivity.this);
-                }
-                LinearLayout linearLayout = new LinearLayout(SettingsActivity.this);
-                linearLayout.setOrientation(LinearLayout.VERTICAL);
-                int padding = MyUtils.dpToPx(SettingsActivity.this,10);
-                int padding1 = MyUtils.dpToPx(SettingsActivity.this,30);
-                int padding2 = MyUtils.dpToPx(SettingsActivity.this,20);
-                TextView textView = new TextView(SettingsActivity.this);
-                textView.setText("Please select your preference");
-                textView.setTextColor(Color.parseColor("#000000"));
-
-                textView.setPadding(padding1,padding,padding1,padding);
-                linearLayout.addView(textView);
-                final RadioGroup etRadioGroup = new RadioGroup(SettingsActivity.this);
-                //etNickName.setPadding(padding2,0,padding2,padding);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
-                );
-                params.setMargins(padding2, 0, padding2, padding);
-                etRadioGroup.setLayoutParams(params);
-                etRadioGroup.setPadding(0,padding,0,padding);
-                RadioButton radioButton = new RadioButton(SettingsActivity.this);
-                radioButton.setText("Only Men");
-                //radioButton.setId(1);
-                radioButton.setTextSize(18);
-                radioButton.setTextColor(Color.parseColor("#26446d"));
-                radioButton.setPadding(2, 10, 0, 10);
-                etRadioGroup.addView(radioButton);
-                RadioButton radioButton1 = new RadioButton(SettingsActivity.this);
-                radioButton1.setText("Only Women");
-                radioButton1.setTextSize(18);
-                //radioButton1.setId(2);
-                radioButton1.setTextColor(Color.parseColor("#26446d"));
-                radioButton1.setPadding(2, 10, 0, 10);
-                etRadioGroup.addView(radioButton1);
-                RadioButton radioButton2 = new RadioButton(SettingsActivity.this);
-                radioButton2.setText("Both");
-                //radioButton2.setId(0);
-                radioButton2.setTextSize(18);
-                radioButton2.setTextColor(Color.parseColor("#26446d"));
-                radioButton2.setPadding(2, 10, 0, 10);
-                etRadioGroup.addView(radioButton2);
-                linearLayout.addView(etRadioGroup);
-                alertDialog2.setView(linearLayout);
-                alertDialog2.setTitle("Preference");
-
-                alertDialog2.setMessage(null);
-                alertDialog2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int radioButtonID = etRadioGroup.getCheckedRadioButtonId();
-                        View radioButton4 = etRadioGroup.findViewById(radioButtonID);
-                        int idx = etRadioGroup.indexOfChild(radioButton4);
-                        RadioButton r = (RadioButton)  etRadioGroup.getChildAt(idx);
-                        if (r != null) {
-                            String selectedtext = r.getText().toString();
-                            settingsModel.setPeople_connect_preference(r.getId());
-                            prefernce.setText(selectedtext + "    >");
-                        }
-                    }
-                });
-                alertDialog2.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                alertDialog2.show();
-            }
-        });
+//        distance.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+//            @Override
+//            public int transform(int value) {
+//                settingsModel.setMaximum_distance(value);
+//                distanceSet.setText(value+ " kms");
+//                return value;
+//            }
+//        });
+//        age.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+//            @Override
+//            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+//                int[] age = {Integer.parseInt(leftPinValue), Integer.parseInt(rightPinValue)};
+//                settingsModel.setAge_range(age);
+//                ageSet.setText(leftPinValue+"-"+rightPinValue+" yrs");
+//            }
+//        });
+//        preferenceLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(SettingsActivity.this);
+//                if (Build.VERSION.SDK_INT >= 22) {
+//                    alertDialog2 = new AlertDialog.Builder(SettingsActivity.this, R.style.AppCompatAlertDialogStyle);
+//                } else {
+//                    alertDialog2 = new AlertDialog.Builder(SettingsActivity.this);
+//                }
+//                LinearLayout linearLayout = new LinearLayout(SettingsActivity.this);
+//                linearLayout.setOrientation(LinearLayout.VERTICAL);
+//                int padding = MyUtils.dpToPx(SettingsActivity.this,10);
+//                int padding1 = MyUtils.dpToPx(SettingsActivity.this,30);
+//                int padding2 = MyUtils.dpToPx(SettingsActivity.this,20);
+//                TextView textView = new TextView(SettingsActivity.this);
+//                textView.setText("Please select your preference");
+//                textView.setTextColor(Color.parseColor("#000000"));
+//
+//                textView.setPadding(padding1,padding,padding1,padding);
+//                linearLayout.addView(textView);
+//                final RadioGroup etRadioGroup = new RadioGroup(SettingsActivity.this);
+//                //etNickName.setPadding(padding2,0,padding2,padding);
+//                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+//                        LinearLayout.LayoutParams.MATCH_PARENT,
+//                        LinearLayout.LayoutParams.WRAP_CONTENT
+//                );
+//                params.setMargins(padding2, 0, padding2, padding);
+//                etRadioGroup.setLayoutParams(params);
+//                etRadioGroup.setPadding(0,padding,0,padding);
+//                RadioButton radioButton = new RadioButton(SettingsActivity.this);
+//                radioButton.setText("Only Men");
+//                //radioButton.setId(1);
+//                radioButton.setTextSize(18);
+//                radioButton.setTextColor(Color.parseColor("#26446d"));
+//                radioButton.setPadding(2, 10, 0, 10);
+//                etRadioGroup.addView(radioButton);
+//                RadioButton radioButton1 = new RadioButton(SettingsActivity.this);
+//                radioButton1.setText("Only Women");
+//                radioButton1.setTextSize(18);
+//                //radioButton1.setId(2);
+//                radioButton1.setTextColor(Color.parseColor("#26446d"));
+//                radioButton1.setPadding(2, 10, 0, 10);
+//                etRadioGroup.addView(radioButton1);
+//                RadioButton radioButton2 = new RadioButton(SettingsActivity.this);
+//                radioButton2.setText("Both");
+//                //radioButton2.setId(0);
+//                radioButton2.setTextSize(18);
+//                radioButton2.setTextColor(Color.parseColor("#26446d"));
+//                radioButton2.setPadding(2, 10, 0, 10);
+//                etRadioGroup.addView(radioButton2);
+//                linearLayout.addView(etRadioGroup);
+//                alertDialog2.setView(linearLayout);
+//                alertDialog2.setTitle("Preference");
+//
+//                alertDialog2.setMessage(null);
+//                alertDialog2.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        int radioButtonID = etRadioGroup.getCheckedRadioButtonId();
+//                        View radioButton4 = etRadioGroup.findViewById(radioButtonID);
+//                        int idx = etRadioGroup.indexOfChild(radioButton4);
+//                        RadioButton r = (RadioButton)  etRadioGroup.getChildAt(idx);
+//                        if (r != null) {
+//                            String selectedtext = r.getText().toString();
+//                            settingsModel.setPeople_connect_preference(r.getId());
+//                            prefernce.setText(selectedtext + "    >");
+//                        }
+//                    }
+//                });
+//                alertDialog2.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.cancel();
+//                    }
+//                });
+//                alertDialog2.show();
+//            }
+//        });
     }
 
 
@@ -290,15 +290,15 @@ public class SettingsActivity extends AppCompatActivity {
         menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(false);
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                .setVisible(true);
+                .setVisible(false);
         menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
-        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
         menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
-        View view = menu.findItem(R.id.action_coin).getActionView();
-        coins = (TextView) view.findViewById(R.id.tvCoins);
-        PrefManager pref = new PrefManager(this);
-        coinsFinal = pref.getKeyCoins();
-        coins.setText(""+coinsFinal);
+//        View view = menu.findItem(R.id.action_coin).getActionView();
+//        coins = (TextView) view.findViewById(R.id.tvCoins);
+//        PrefManager pref = new PrefManager(this);
+//        coinsFinal = pref.getKeyCoins();
+//        coins.setText(""+coinsFinal);
         return super.onCreateOptionsMenu(menu);
     }
     @Override
@@ -309,12 +309,12 @@ public class SettingsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
+        /*if (id == R.id.action_save) {
             progressBar.setVisibility(View.VISIBLE);
             Log.d("settig send model",JsonUtils.jsonify(settingsModel));
             Controller.setSettings(SettingsActivity.this,settingsModel,mSettingPutListener);
             return true;
-        }else if (item.getItemId() == android.R.id.home) {
+        }else */if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
         }
@@ -324,6 +324,8 @@ public class SettingsActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        Log.d("settig send model",JsonUtils.jsonify(settingsModel));
+        Controller.setSettings(SettingsActivity.this,settingsModel,mSettingPutListener);
         this.finish();
     }
 
@@ -340,8 +342,8 @@ public class SettingsActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     progressBar.setVisibility(View.GONE);
-                    Toast.makeText(SettingsActivity.this,"Settings succesfully saved",Toast.LENGTH_LONG).show();
-                    finish();
+                    //Toast.makeText(SettingsActivity.this,"Settings succesfully saved",Toast.LENGTH_LONG).show();
+                    //finish();
                 }
             });
         }
@@ -420,21 +422,21 @@ public class SettingsActivity extends AppCompatActivity {
         weeklyProgress.setChecked(setting.isWeekly_progress_notification());
         chatNotifications.setChecked(setting.isChat_notification());
         explore.setChecked(setting.isShow_me_on_explore());
-        if (setting.getMaximum_distance() != 0) {
-            distance.setProgress(setting.getMaximum_distance());
-            distanceSet.setText(setting.getMaximum_distance()+" kms");
-        }
-        if (setting.getAge_range() != null && setting.getAge_range().length == 2) {
-            age.setRangePinsByValue(setting.getAge_range()[0], setting.getAge_range()[1]);
-            ageSet.setText(setting.getAge_range()[0]+"-"+setting.getAge_range()[1]+" yrs");
-        }
-        if (setting.getPeople_connect_preference() == 0){
-            prefernce.setText("Both    >");
-        }else if (setting.getPeople_connect_preference() == 1){
-            prefernce.setText("Only Men    >");
-        }else if (setting.getPeople_connect_preference() == 2){
-            prefernce.setText("Only Women    >");
-        }
+//        if (setting.getMaximum_distance() != 0) {
+//            distance.setProgress(setting.getMaximum_distance());
+//            distanceSet.setText(setting.getMaximum_distance()+" kms");
+//        }
+//        if (setting.getAge_range() != null && setting.getAge_range().length == 2) {
+//            age.setRangePinsByValue(setting.getAge_range()[0], setting.getAge_range()[1]);
+//            ageSet.setText(setting.getAge_range()[0]+"-"+setting.getAge_range()[1]+" yrs");
+//        }
+//        if (setting.getPeople_connect_preference() == 0){
+//            prefernce.setText("Both    >");
+//        }else if (setting.getPeople_connect_preference() == 1){
+//            prefernce.setText("Only Men    >");
+//        }else if (setting.getPeople_connect_preference() == 2){
+//            prefernce.setText("Only Women    >");
+//        }
         coinsFinal = setting.getTotal_coins();
         PrefManager pref = new PrefManager(SettingsActivity.this);
         pref.setKeyCoins(coinsFinal);
