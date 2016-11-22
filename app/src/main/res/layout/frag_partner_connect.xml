@@ -1,6 +1,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fillViewport="false">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -26,6 +27,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
+                    android:visibility="gone"
                     android:orientation="vertical"
                     android:padding="10dp">
 
@@ -77,16 +79,18 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
+                    android:weightSum="4"
+                    android:orientation="horizontal"
                     android:padding="10dp">
 
                     <RelativeLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp">
+                        android:layout_weight="1"
+                        android:layout_margin="5dp">
 
                         <ImageView
                             android:id="@+id/userPic2"
@@ -120,9 +124,10 @@
 
 
                     <RelativeLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp">
+                        android:layout_weight="1"
+                        android:layout_margin="5dp">
 
                         <ImageView
                             android:id="@+id/userPic3"
@@ -155,9 +160,10 @@
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp">
+                        android:layout_weight="1"
+                        android:layout_margin="5dp">
 
                         <ImageView
                             android:id="@+id/userPic4"
@@ -188,20 +194,11 @@
                             android:src="@drawable/loader"
                             android:visibility="gone" />
                     </RelativeLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
                     <RelativeLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp">
+                        android:layout_weight="1"
+                        android:layout_margin="5dp">
 
                         <ImageView
                             android:id="@+id/userPic5"
@@ -232,6 +229,17 @@
                             android:src="@drawable/loader"
                             android:visibility="gone" />
                     </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+
 
 
                     <RelativeLayout
@@ -340,6 +348,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/linearPhotos"
                 android:layout_marginLeft="10dp"
+                android:theme="@style/TextLabel1"
                 android:layout_marginTop="5dp">
 
                 <EditText
@@ -356,13 +365,15 @@
                     android:singleLine="true"
                     android:textColor="#474747"
                     android:textColorHint="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tvHomeTownHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:theme="@style/TextLabel1"
                 android:layout_below="@+id/tvOccupationHeading"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp">
@@ -388,6 +399,7 @@
                 android:id="@+id/tvDescriptionHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:theme="@style/TextLabel1"
                 android:layout_below="@+id/tvHomeTownHeading"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp">
@@ -401,29 +413,160 @@
                     android:layout_marginRight="10dp"
                     android:ellipsize="end"
                     android:ems="20"
-                    android:hint="Description (About Me)"
+                    android:hint="About Me"
                     android:inputType="textCapSentences"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
                     android:textColor="#474747"
                     android:textColorHint="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    android:textSize="16sp" />
             </android.support.design.widget.TextInputLayout>
+            <RelativeLayout
+                android:id="@+id/relativeInterests"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvDescriptionHeading"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Interests"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:id="@+id/tvInterestsHeading"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
 
+                <LinearLayout
+                    android:id="@+id/buttonInterests"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvInterests"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/sm1"
+                        android:text="Select interests"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="#474747"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/edit_svg" />
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/relativeSettingAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relativeInterests"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp">
+
+                <TextView
+                    android:id="@+id/tvSettingAge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Age Range"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="5-80 yrs"
+                    android:id="@+id/tvSettingAgeSet"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="15sp" />
+
+                <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/rangebarAge"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_below="@+id/tvSettingAge"
+                    custom:connectingLineColor="@color/bottombar"
+                    custom:pinColor="@color/bottombar"
+                    custom:pinMaxFont="16sp"
+                    custom:pinMinFont="14sp"
+                    custom:pinPadding="10dp"
+                    custom:pinRadius="17dp"
+                    custom:rangeBarColor="#d0cfcf"
+                    custom:selectorColor="@color/bottombar"
+                    custom:textColor="#ffffff"
+                    custom:tickColor="#cacaca"
+                    custom:tickEnd="80"
+                    custom:tickInterval="1"
+                    custom:tickStart="5" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/relativeSettingDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/relativeSettingAge"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="7dp"
+                android:paddingTop="7dp">
+
+                <TextView
+                    android:id="@+id/tvSettingDistance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Maximum Distance"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="2 kms"
+                    android:id="@+id/tvSettingDistanceSet"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="15sp" />
+
+                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                    android:id="@+id/rangebarDistance"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_below="@+id/tvSettingDistance"
+                    app:dsb_allowTrackClickToDrag="true"
+                    app:dsb_min="2"
+                    app:dsb_max="100"
+                    app:dsb_indicatorColor="@color/bottombar"
+                    app:dsb_indicatorFormatter="%d"
+                    app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
+                    app:dsb_progressColor="@color/bottombar" />
+            </RelativeLayout>
             <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/facebook_people_connect"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/tvDescriptionHeading"
+                android:layout_below="@+id/relativeSettingDistance"
                 android:layout_marginBottom="60dp"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:background="#35548f"
+                android:background="@drawable/bg_filter"
                 android:drawableLeft="@drawable/facebook"
                 android:drawablePadding="10dp"
                 android:padding="10dp"
-                android:textColor="#ffffff"
+                android:textSize="16sp"
+                android:textColor="@color/colorPrimary"
                 fb:confirm_logout="false"
                 fb:login_text="Pick from my Facebook profile"
                 fb:logout_text="Pick from my Facebook profile" />

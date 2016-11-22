@@ -250,16 +250,17 @@ public class InterestActivity extends AppCompatActivity {
             itm.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
         menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                .setVisible(true);
-        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(false);
+        menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
+                .setVisible(true).setTitle("Done");
         menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
-        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
-        View view = menu.findItem(R.id.action_coin).getActionView();
-        coins = (TextView) view.findViewById(R.id.tvCoins);
-        PrefManager pref = new PrefManager(this);
-        coinsFinal = pref.getKeyCoins();
-        coins.setText(""+coinsFinal);
+        menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
+        menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
+//        View view = menu.findItem(R.id.action_coin).getActionView();
+//        coins = (TextView) view.findViewById(R.id.tvCoins);
+//        PrefManager pref = new PrefManager(this);
+//        coinsFinal = pref.getKeyCoins();
+//        coins.setText(""+coinsFinal);
         return super.onCreateOptionsMenu(menu);
     }
     @Override
@@ -267,7 +268,7 @@ public class InterestActivity extends AppCompatActivity {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        }else if (item.getItemId() == R.id.action_next){
+        }else if (item.getItemId() == R.id.action_save){
             Log.d("idfinal",JsonUtils.jsonify(idFinal));
             PrefManager pref = new PrefManager(InterestActivity.this);
             pref.setTutorial1(true);
@@ -354,9 +355,9 @@ public class InterestActivity extends AppCompatActivity {
             Log.d("iterest ",responseObject.toString());
             PrefManager pref = new PrefManager(InterestActivity.this);
             pref.setTutorial1(true);
-            Intent i = new Intent(InterestActivity.this,BinderActivity.class);
-            i.putExtra("selection",1);
-            startActivity(i);
+            Intent intent = new Intent(InterestActivity.this, BinderActivity.class);
+            intent.putExtra("selection", 3);
+            startActivity(intent);
             finish();
             runOnUiThread(new Runnable() {
                 @Override

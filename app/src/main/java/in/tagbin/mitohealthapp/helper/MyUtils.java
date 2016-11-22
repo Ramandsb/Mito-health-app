@@ -355,4 +355,15 @@ public class MyUtils {
         else
             cleverTap.event.push(eventName,eventHashmap);
     }
+    public static double calculateBmi(double height,double weight){
+        double weight_in_kg = weight/1000;
+        double height_in_m = height * 0.01;
+        return weight_in_kg/height_in_m/height_in_m;
+    }
+    public static double calculateGoalWeight(double bmi,double height){
+        double mass;
+        double height_in_m = height * 0.01;
+        mass = bmi*height_in_m*height_in_m;
+        return mass*1000;
+    }
 }

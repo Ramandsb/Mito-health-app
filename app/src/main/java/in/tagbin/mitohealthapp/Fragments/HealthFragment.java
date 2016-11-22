@@ -61,6 +61,8 @@ import java.util.List;
 
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.activity.SettingsActivity;
+import in.tagbin.mitohealthapp.activity.SignUpDetailActivity;
+import in.tagbin.mitohealthapp.activity.SplashActivity;
 import in.tagbin.mitohealthapp.helper.ProfileImage.GOTOConstants;
 import in.tagbin.mitohealthapp.helper.ProfileImage.ImageCropActivity;
 import in.tagbin.mitohealthapp.helper.ProfileImage.PicModeSelectDialogFragment;
@@ -78,6 +80,7 @@ import in.tagbin.mitohealthapp.model.FileUploadModel;
 import in.tagbin.mitohealthapp.model.ImageUploadResponseModel;
 import in.tagbin.mitohealthapp.model.PrefernceModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
+import in.tagbin.mitohealthapp.model.SetGoalModel;
 import in.tagbin.mitohealthapp.model.UserDateModel;
 import in.tagbin.mitohealthapp.model.UserGoalWeightModel;
 import in.tagbin.mitohealthapp.model.UserHeightModel;
@@ -95,23 +98,22 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
     private int year, month, day;
     private DatePicker datePicker;
     private Calendar calendar;
-    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,goal_tv,coins,monthsHeading,goalTimeValue;
+    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,coins,monthsHeading,goalTimeValue;
     ImageView profile_pic;
     SharedPreferences login_details;
     static double height = 0.0,weight = 0.0,waist = 0.0,goal_weight = 0.0;
     String height_new = "",weight_new = "",goal_weight_new = "",waist_new = "",dob = "",user_id,url = "",name = "default",gender = "";
     Button choose_image;
     GifImageView progressBar;
-    RelativeLayout cusines;
     public static String myurl = "";
     public static Bitmap profileImage;
     View male_view;
     PrefManager pref;
-    int prefernce_final,coinsFinal = 0,monthsValue = 8;
+    int prefernce_final,coinsFinal = 0,monthsValue = 8,goal_id;
     GifImageView progressBar1;
     DiscreteSeekBar monthsSeekbar;
-    Spinner diet_preference;
-    LinearLayout mygoals,editName;
+    Spinner diet_preference,goal_type;
+    LinearLayout editName,cusines;
     View female_view;
     List<CuisineModel> cuisineModels;
     String first_name = "",last_name = "",email = "";
@@ -158,20 +160,21 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         goal_weight_tv = (TextView) Fragview.findViewById(R.id.goal_weight_tv);
         waist_tv = (TextView) Fragview.findViewById(R.id.waist_tv);
         diet_preference = (Spinner) Fragview.findViewById(R.id.spinner_diet_preference);
-        cusines = (RelativeLayout) Fragview.findViewById(R.id.relativeCuisines);
-        mygoals = (LinearLayout) Fragview.findViewById(R.id.select_goals);
-        goal_tv = (TextView) Fragview.findViewById(R.id.goals_tv);
-        cusineSize = (TextView) Fragview.findViewById(R.id.tvCuisinesSize);
+        cusines = (LinearLayout) Fragview.findViewById(R.id.buttonCuisines);
+        //mygoals = (LinearLayout) Fragview.findViewById(R.id.select_goals);
+        //goal_tv = (TextView) Fragview.findViewById(R.id.goals_tv);
+        cusineSize = (TextView) Fragview.findViewById(R.id.tvCuisines);
         profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
         profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
         //months = (TextView) Fragview.findViewById(R.id.tvMonths);
         monthsHeading = (TextView) Fragview.findViewById(R.id.tvMonthsHeading);
         goalTimeValue = (TextView) Fragview.findViewById(R.id.tvGoalTimeValue);
         monthsSeekbar = (DiscreteSeekBar) Fragview.findViewById(R.id.seekbarMonths);
-        mygoals.setOnClickListener(this);
+        goal_type = (Spinner) Fragview.findViewById(R.id.spinnerGoal);
+        //mygoals.setOnClickListener(this);
         login_details = getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
         user_id = login_details.getString("user_id", "");
-
+        UserDetailsFragment.user_id = login_details.getString("user_id", "");
         calendar = Calendar.getInstance();
         cuisineModels = new ArrayList<CuisineModel>();
         year = calendar.get(Calendar.YEAR);
@@ -280,6 +283,38 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             });
         }else{
             Controller.getDietPrefernce(getContext(),mDietListener);
+        }
+        if (pref.getCurrentGoalAsObject() != null){
+            final List<SetGoalModel> diet_options = pref.getCurrentGoalAsObject();
+            final List<String> diet = new ArrayList<String>();
+            for (int i= 0;i<diet_options.size();i++){
+                diet.add(diet_options.get(i).getGoal());
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner, diet);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            goal_type.setAdapter(adapter);
+            goal_type.setSelection(0,false);
+            goal_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d("item selected", diet.get(i));
+                    //unit[0] = diet_options.get(i);
+                    for (int y= 0; y<diet_options.size();y++){
+
+                        if (diet.get(i).equals(diet_options.get(y).getGoal())){
+                            goal_id = diet_options.get(y).getId();
+                        }
+                    }
+                    Controller.setGoal(getContext(),goal_id,user_id,mPreferenceListener);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }else {
+            Controller.getGoals(getContext(), mGoalsListener);
         }
         assert select_date != null;
         select_date.setOnClickListener(new View.OnClickListener() {
@@ -461,7 +496,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         }
 
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                .setVisible(true);
+                .setVisible(false);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         View view = menu.findItem(R.id.action_coin).getActionView();
@@ -479,76 +514,78 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_save) {
-
-            if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
-                if (first_name == null || first_name.equals("")){
-                    showNameDialog();
-                }else if (dob == null || dob.equals("")){
-                    showDateDialog();
-                }else if (height == 0) {
-                    //dialog.dismiss();
-                    showHeightDialog();
-                } else if (weight == 0) {
-                    //dialog.dismiss();
-                    showWeightDialog();
-                } else if (waist == 0) {
-                    //dialog.dismiss();
-                    showWaistDialog();
-                } else if (goal_weight == 0) {
-                    //dialog.dismiss();
-                    showGoal_WeightDialog();
-                }
-            } else {
-                pref.setKeyUserDetails(null);
-                SendEditProfileModel sendEditProfileModel = new SendEditProfileModel();
-                sendEditProfileModel.setDob(dob);
-                sendEditProfileModel.setEmail(email);
-                sendEditProfileModel.setFirst_name(first_name);
-                sendEditProfileModel.setGender(gender);
-                sendEditProfileModel.setLast_name(last_name);
-                sendEditProfileModel.setGoal_weight(String.valueOf(goal_weight));
-                sendEditProfileModel.setHeight(String.valueOf(height));
-                sendEditProfileModel.setWaist(String.valueOf(waist));
-                sendEditProfileModel.setWeight(String.valueOf(weight));
-                sendEditProfileModel.setPreferences(prefernce_final);
-                sendEditProfileModel.setGoal_time(monthsValue*7);
-                SendEditProfileModel.ImagesModel imagesModel = sendEditProfileModel.getImages();
-                if (pref.getKeyMasterImage() != null){
-                    imagesModel.setMaster(pref.getKeyMasterImage());
-                    sendEditProfileModel.setImages(imagesModel);
-                }
-                ArrayList<String> other = new ArrayList<String>();
-                if (pref.getKeyUserPic1() != null) {
-                    other.add(pref.getKeyUserPic1());
-                }
-                if (pref.getKeyUserPic2() != null) {
-                    other.add(pref.getKeyUserPic2());
-                }
-                if (pref.getKeyUserPic3() != null) {
-                    other.add(pref.getKeyUserPic3());
-                }
-                if (pref.getKeyUserPic4() != null) {
-                    other.add(pref.getKeyUserPic4());
-                }
-                if (pref.getKeyUserPic5() != null) {
-                    other.add(pref.getKeyUserPic5());
-                }
-
-
-                if (pref.getKeyUserPic6() != null) {
-                    other.add(pref.getKeyUserPic6());
-                }
-
-                imagesModel.setOther(other);
-                sendEditProfileModel.setImages(imagesModel);
-                progressBar.setVisibility(View.VISIBLE);
-                Controller.setUserDetails(getContext(),user_id,sendEditProfileModel,mSendUserListener);
-                //makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight), String.valueOf(goal_weight));
-            }
-
-            return true;
-        }else if (id == R.id.action_Settings) {
+//        if (id == R.id.action_save) {
+//
+//            if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0 ||first_name == null || first_name.equals("") || dob == null || dob.equals("")) {
+//                if (first_name == null || first_name.equals("")){
+//                    showNameDialog();
+//                }else if (dob == null || dob.equals("")){
+//                    showDateDialog();
+//                }else if (height == 0) {
+//                    //dialog.dismiss();
+//                    showHeightDialog();
+//                } else if (weight == 0) {
+//                    //dialog.dismiss();
+//                    showWeightDialog();
+//                } else if (waist == 0) {
+//                    //dialog.dismiss();
+//                    showWaistDialog();
+//                } else if (goal_weight == 0) {
+//                    //dialog.dismiss();
+//                    showGoal_WeightDialog();
+//                }
+//            } else {
+//                pref.setKeyUserDetails(null);
+//                SendEditProfileModel sendEditProfileModel = new SendEditProfileModel();
+//                sendEditProfileModel.setDob(dob);
+//                sendEditProfileModel.setEmail(email);
+//                sendEditProfileModel.setFirst_name(first_name);
+//                sendEditProfileModel.setGender(gender);
+//                sendEditProfileModel.setLast_name(last_name);
+//                sendEditProfileModel.setGoal_weight(String.valueOf(goal_weight));
+//                sendEditProfileModel.setHeight(String.valueOf(height));
+//                sendEditProfileModel.setWaist(String.valueOf(waist));
+//                sendEditProfileModel.setWeight(String.valueOf(weight));
+//                sendEditProfileModel.setPreferences(prefernce_final);
+//                sendEditProfileModel.setGoal_time(monthsValue*7);
+//                sendEditProfileModel.setGoal(goal_id);
+//                SendEditProfileModel.ImagesModel imagesModel = sendEditProfileModel.getImages();
+//                if (pref.getKeyMasterImage() != null){
+//                    imagesModel.setMaster(pref.getKeyMasterImage());
+//                    sendEditProfileModel.setImages(imagesModel);
+//                }
+//                ArrayList<String> other = new ArrayList<String>();
+//                if (pref.getKeyUserPic1() != null) {
+//                    other.add(pref.getKeyUserPic1());
+//                }
+//                if (pref.getKeyUserPic2() != null) {
+//                    other.add(pref.getKeyUserPic2());
+//                }
+//                if (pref.getKeyUserPic3() != null) {
+//                    other.add(pref.getKeyUserPic3());
+//                }
+//                if (pref.getKeyUserPic4() != null) {
+//                    other.add(pref.getKeyUserPic4());
+//                }
+//                if (pref.getKeyUserPic5() != null) {
+//                    other.add(pref.getKeyUserPic5());
+//                }
+//
+//
+//                if (pref.getKeyUserPic6() != null) {
+//                    other.add(pref.getKeyUserPic6());
+//                }
+//
+//                imagesModel.setOther(other);
+//                sendEditProfileModel.setImages(imagesModel);
+//                progressBar.setVisibility(View.VISIBLE);
+//                Controller.setUserDetails(getContext(),user_id,sendEditProfileModel,mSendUserListener);
+//                //makeJsonObjReq(name, gender, dob, String.valueOf(height), String.valueOf(waist), String.valueOf(weight), String.valueOf(goal_weight));
+//            }
+//
+//            return true;
+//        }else
+        if (id == R.id.action_Settings) {
             //if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
                 //toolbar_title.setText("Settings");
                 //toolbar.setTitle("");
@@ -1146,12 +1183,16 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         if (userModel.getProfile().getDob() != null) {
             dob = userModel.getProfile().getDob();
             dob_tv.setText(dob);
+            UserDetailsFragment.dob1 = dob;
+            UserDetailsFragment.dob.setText(dob);
         }else {
             dob = "";
             dob_tv.setText("Set Date");
         }
         gender = userModel.getProfile().getGender();
         email = userModel.getUser().getEmail();
+        UserDetailsFragment.first_name = userModel.getUser().getFirst_name();
+        UserDetailsFragment.last_name = userModel.getUser().getLast_name();
         first_name = userModel.getUser().getFirst_name();
         last_name = userModel.getUser().getLast_name();
         height = userModel.getProfile().getHeight();
@@ -1177,18 +1218,24 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         if (userModel.getUser().getFirst_name() != null) {
             if (userModel.getUser().getLast_name() != null) {
                 profile_name.setText(userModel.getUser().getFirst_name() + " " + userModel.getUser().getLast_name());
-            }else
+                UserDetailsFragment.name.setText(userModel.getUser().getFirst_name() + " " + userModel.getUser().getLast_name());
+            }else {
                 profile_name.setText(userModel.getUser().getFirst_name());
+                UserDetailsFragment.name.setText(userModel.getUser().getFirst_name());
+            }
         }else{
             profile_name.setText("Your Name?");
         }
         if (gender.equals("M")) {
+            UserDetailsFragment.gender.setText("Male");
             male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
             female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
         } else if (gender.equals("F")) {
+            UserDetailsFragment.gender.setText("Female");
             male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_m));
             female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
         } else {
+            UserDetailsFragment.gender.setText("Male");
             male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));
             female_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.grey_f));
         }
@@ -1222,11 +1269,18 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             //double inv = waist % 0.39;
             waist_tv.setText(new DecimalFormat("##.#").format(waist/2.54).toString()+ " inches");
         }
-        if (userModel.getProfile().getGoal() != null)
-            goal_tv.setText(userModel.getProfile().getGoal().getGoal());
+//        if (userModel.getProfile().getGoal() != null)
+//            goal_tv.setText(userModel.getProfile().getGoal().getGoal());
         if (userModel.getProfile().getCuisines() != null && userModel.getProfile().getCuisines().size() >0){
             cusineSize.setVisibility(View.VISIBLE);
-            cusineSize.setText(""+userModel.getProfile().getCuisines().size());
+            String textCuisines = "";
+            if (userModel.getProfile().getCuisines().size()>1){
+                textCuisines = userModel.getProfile().getCuisines().get(0).getCuisine_name()+" +"+(userModel.getProfile().getCuisines().size()-1);
+            }else if (userModel.getProfile().getCuisines().size() == 1){
+                textCuisines = userModel.getProfile().getCuisines().get(0).getCuisine_name();
+            }
+
+            cusineSize.setText(textCuisines);
             cusines.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1236,7 +1290,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 }
             });
         }else{
-            cusineSize.setVisibility(View.GONE);
+            cusineSize.setVisibility(View.VISIBLE);
+            cusineSize.setText("Select cuisines");
             cusines.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1255,6 +1310,16 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             });
 
         }
+        if (userModel.getProfile().getGoal() != null) {
+            //changed = true;
+            goal_type.post(new Runnable() {
+                @Override
+                public void run() {
+                    goal_type.setSelection(userModel.getProfile().getGoal().getId() - 1);
+                }
+            });
+        }
+
         if(pref.getKeyCoins() == 0){
             coinsFinal = userModel.getProfile().getTotal_coins();
             pref.setKeyCoins(userModel.getProfile().getTotal_coins());
@@ -1279,6 +1344,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                     profile_pic.setImageBitmap(loadedImage);
+                    UserDetailsFragment.circleView.setImageBitmap(loadedImage);
                 }
             });
         }
@@ -1365,10 +1431,10 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.select_goals:
-                Intent i = new Intent(getContext(),SetGoalsActivity.class);
-                startActivity(i);
-                break;
+//            case R.id.select_goals:
+//                Intent i = new Intent(getContext(),SetGoalsActivity.class);
+//                startActivity(i);
+//                break;
             case R.id.linearEditName:
                 showNameDialog();
                 break;
@@ -1519,5 +1585,88 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             }
         }
     };
+    RequestListener mGoalsListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
 
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            Type collectionType = new TypeToken<ArrayList<SetGoalModel>>() {
+            }.getType();
+            final List<SetGoalModel> diet_options = (ArrayList<SetGoalModel>) new Gson()
+                    .fromJson(responseObject.toString(), collectionType);
+
+            pref.saveCurrentGoal(diet_options);
+            final List<String> diet = new ArrayList<String>();
+            for (int i= 0;i<diet_options.size();i++){
+                diet.add(diet_options.get(i).getGoal());
+            }
+            if (getActivity() == null)
+                return;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner, diet);
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    goal_type.setAdapter(adapter);
+                    goal_type.setSelection(0,false);
+                    goal_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            Log.d("item selected", diet.get(i));
+                            //unit[0] = diet_options.get(i);
+
+                            for (int y= 0; y<diet_options.size();y++){
+                                if (diet.get(i).equals(diet_options.get(y).getGoal())){
+                                    goal_id = diet_options.get(y).getId();
+                                }
+                            }
+                            Controller.setGoal(getContext(),goal_id,user_id,mPreferenceListener);
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            if (getActivity() == null)
+                return;
+            if (errorCode >= 400 && errorCode < 500) {
+                if (errorCode == 403){
+                    SharedPreferences loginDetails= getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor=loginDetails.edit();
+                    editor.clear();
+                    editor.commit();
+                    PrefManager pref = new PrefManager(getContext());
+                    pref.clearSession();
+                    startActivity(new Intent(getContext(),SplashActivity.class));
+                    getActivity().finish();
+                }
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
 }

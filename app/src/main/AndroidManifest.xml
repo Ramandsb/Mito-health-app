@@ -142,10 +142,6 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.HealthActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.InterestActivity"
             android:label="Interests"
             android:screenOrientation="portrait" />

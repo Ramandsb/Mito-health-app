@@ -52,7 +52,7 @@ public class ChatActivity extends AppCompatActivity {
         textMessage = (EditText) this.findViewById(R.id.chatET);
         user_name=getIntent().getExtras().getString("user_name");
         name = getIntent().getStringExtra("tv_name");
-        Log.d("tv_name",name);
+//        Log.d("tv_name",name);
         if (name != null) {
             getSupportActionBar().setTitle(name);
         }else {

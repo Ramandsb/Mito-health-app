@@ -38,7 +38,7 @@
         <item name="android:textColorSecondary">@android:color/white</item>
     </style>
 
-    <style name="TextLabel" parent="TextAppearance.AppCompat">
+    <style name="TextLabel" parent="Widget.Design.TextInputLayout">
         <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">@android:color/white</item>
         <item name="android:textSize">20sp</item>
@@ -47,7 +47,15 @@
         <item name="colorControlNormal">@android:color/white</item>
         <item name="colorControlActivated">@android:color/white</item>
     </style>
-
+    <style name="TextLabel1" parent="Widget.Design.TextInputLayout">
+        <!-- Hint color and label color in FALSE state -->
+        <item name="android:textColorHint">#313466</item>
+        <item name="android:textSize">16sp</item>
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        <item name="colorAccent">#313466</item>
+        <item name="colorControlNormal">#313466</item>
+        <item name="colorControlActivated">#313466</item>
+    </style>
     <!--<style name="MaterialSearchViewStyle">-->
         <!--<item name="searchBackground">@color/white_ish</item>-->
         <!--<item name="searchVoiceIcon">@drawable/ic_action_voice_search</item>-->

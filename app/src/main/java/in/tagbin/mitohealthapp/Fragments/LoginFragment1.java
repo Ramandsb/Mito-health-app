@@ -164,6 +164,7 @@ public class LoginFragment1 extends Fragment {
                 startActivity(intent);
                 getActivity().finish();
             }else{
+                pref.setSignup(true);
                 startActivity(new Intent(getContext(),BinderActivity.class).putExtra("selection",0).putExtra("source","direct"));
                 getActivity().finish();
             }

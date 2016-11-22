@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import in.tagbin.mitohealthapp.Fragments.AccountsFragment;
 import in.tagbin.mitohealthapp.Fragments.HealthFragment;
 import in.tagbin.mitohealthapp.Fragments.PartnerConnectFragment;
 
@@ -42,6 +43,9 @@ public class UserDetailsSliderAdapter extends FragmentStatePagerAdapter {
                             tab2.setArguments(bundle);
                         }
                         return tab2;
+                case 2:
+                    AccountsFragment tab3=new AccountsFragment();
+                    return tab3;
                 default:
             }
         }catch (Exception e){
@@ -52,7 +56,7 @@ public class UserDetailsSliderAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 2;
+        return 3;
     }
 
     @Override

@@ -503,6 +503,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 finish();
             }else{
+                pref.setSignup(true);
                 startActivity(new Intent(MainActivity.this,BinderActivity.class).putExtra("selection",0).putExtra("source","direct"));
                 finish();
             }

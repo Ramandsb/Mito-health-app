@@ -3,20 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="#ffffff"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#ffffff">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:context="in.tagbin.mitohealthapp.Fragments.HealthFragment">
+
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/app_bar"
-            android:visibility="gone"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:visibility="gone">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -26,64 +27,68 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.AppBarLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_below="@+id/app_bar"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical"
-                android:id="@+id/editProfileTop"
-                android:orientation="horizontal">
 
-                <RelativeLayout
-                    android:id="@+id/fra"
+        <LinearLayout
+            android:id="@+id/editProfileTop"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@+id/app_bar"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:id="@+id/fra"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="30dp">
+
+                <ImageView
+                    android:id="@+id/profile_pic"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:layout_margin="30dp">
+                    android:layout_marginTop="2dp"
+                    android:src="#111111" />
 
-                    <ImageView
-                        android:id="@+id/profile_pic"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_marginTop="2dp"
-                        android:src="#111111" />
+                <RelativeLayout
+                    android:layout_width="103dp"
+                    android:layout_height="103dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/profile_frame">
 
-                    <RelativeLayout
-                        android:layout_width="103dp"
-                        android:layout_height="103dp"
+
+                    <Button
+                        android:id="@+id/choose_image"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/cam_image" />
+
+                    <pl.droidsonroids.gif.GifImageView
+                        android:id="@+id/progressBar1"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_centerHorizontal="true"
-                        android:background="@drawable/profile_frame">
-
-
-                        <Button
-                            android:id="@+id/choose_image"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:background="@drawable/cam_image" />
-                        <pl.droidsonroids.gif.GifImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:id="@+id/progressBar1"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerInParent="true"
-                            android:layout_centerVertical="true"
-                            android:layout_gravity="center"
-                            android:indeterminateTintMode="src_atop"
-                            android:visibility="gone"
-                            android:src="@drawable/loader"
-                            />
-                    </RelativeLayout>
-
+                        android:layout_centerInParent="true"
+                        android:layout_centerVertical="true"
+                        android:layout_gravity="center"
+                        android:indeterminateTintMode="src_atop"
+                        android:src="@drawable/loader"
+                        android:visibility="gone" />
                 </RelativeLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/linearEditName"
-                    android:orientation="horizontal">
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/linearEditName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <TextView
                     android:id="@+id/profile_name"
                     android:layout_width="wrap_content"
@@ -98,436 +103,533 @@
                     android:layout_height="10dp"
                     android:layout_marginLeft="10dp"
                     android:src="@drawable/edit_svg" />
-                </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
 
-            <LinearLayout
+        <LinearLayout
+            android:id="@+id/editProfileBasicInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editProfileTop"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Basic Information"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:id="@+id/editProfileBasicInfo"
-                android:layout_below="@+id/editProfileTop"
-                android:padding="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Basic Information"
+                    android:text="Date of Birth"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Date of Birth"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorPrimary" />
-
-                    <LinearLayout
-                        android:id="@+id/select_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/dob"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/sm1"
-                            android:text="Select Date"
-                            android:textSize="14sp"
-                            android:textColor="#474747"/>
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/edit_svg" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Gender"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorPrimary" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="35dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginRight="20dp"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:id="@+id/male_view"
-                            android:layout_width="45dp"
-                            android:layout_height="20dp"
-                            android:layout_marginRight="5dp"
-                            android:background="@drawable/grey_m"
-                            android:orientation="horizontal" />
-
-                        <LinearLayout
-                            android:id="@+id/female_view"
-                            android:layout_width="45dp"
-                            android:layout_height="20dp"
-                            android:layout_marginLeft="5dp"
-                            android:background="@drawable/grey_f"
-                            android:orientation="horizontal" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_below="@+id/editProfileBasicInfo"
-                android:padding="10dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Physical Statistics"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Height"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
-
-                    <LinearLayout
-                        android:id="@+id/select_height"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/height_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/sm1"
-                            android:text="Select height"
-                            android:textSize="14sp"
-                            android:textColor="#474747" />
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/edit_svg" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Weight"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorPrimary" />
-
-                    <LinearLayout
-                        android:id="@+id/select_weight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/weight_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/sm1"
-                            android:text="Select weight"
-                            android:textSize="14sp"
-                            android:textColor="#474747" />
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/edit_svg" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Waist"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
-
-                    <LinearLayout
-                        android:id="@+id/select_waist"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/waist_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/sm1"
-                            android:text="Select waist"
-                            android:textSize="14sp"
-                            android:textColor="#474747" />
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/edit_svg" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Goal weight"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
-
-                    <LinearLayout
-                        android:id="@+id/select_goal_weight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/goal_weight_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/sm1"
-                            android:text="Select goal weight"
-                            android:textSize="14sp"
-                            android:textColor="#474747" />
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/edit_svg" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Goal Time"
-                        android:id="@+id/tvGoalTime"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="8 Weeks"
-                        android:layout_alignParentRight="true"
-                        android:id="@+id/tvGoalTimeValue"
-                        android:textColor="#474747"
-                        android:textSize="14sp"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="14sp"
-                        android:layout_below="@+id/tvGoalTime"
-                        android:id="@+id/tvMonthsHeading"
-                        android:text="You want to loose "/>
-
-                    <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                        android:id="@+id/seekbarMonths"
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        android:layout_below="@+id/tvMonthsHeading"
-                        app:dsb_allowTrackClickToDrag="true"
-                        app:dsb_min="0"
-                        app:dsb_max="52"
-                        app:dsb_indicatorColor="@color/colorPrimary"
-                        app:dsb_indicatorFormatter="%d"
-                        app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
-                        app:dsb_progressColor="@color/colorPrimary" />
-
-                </RelativeLayout>
+                    android:textSize="16sp" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:weightSum="2"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Diet Preference"
-                        android:layout_weight="0.7"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
-
-                    <LinearLayout
-                        android:id="@+id/select_diet_preference"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1.3"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:gravity="center_vertical">
-
-                        <Spinner
-                            android:id="@+id/spinner_diet_preference"
-                            android:layout_width="wrap_content"
-                            android:layout_gravity="right"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="My Goals"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp"/>
-
-                    <LinearLayout
-                        android:id="@+id/select_goals"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentTop="true"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/goals_tv"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/sm1"
-                            android:text="Be Healthier"
-                            android:textSize="14sp"
-                            android:textColor="#474747" />
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:src="@drawable/edit_svg" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-                <RelativeLayout
-                    android:id="@+id/relativeCuisines"
+                    android:id="@+id/select_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="50dp"
-                    android:background="@drawable/bg_filter">
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
 
                     <TextView
-                        android:id="@+id/buttonCuisines"
+                        android:id="@+id/dob"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="9dp"
-                        android:text="Select Cuisines"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16sp" />
+                        android:drawableRight="@drawable/sm1"
+                        android:text="Select Date"
+                        android:textColor="#474747"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/edit_svg" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gender"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="20dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/male_view"
+                        android:layout_width="45dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/grey_m"
+                        android:orientation="horizontal" />
+
+                    <LinearLayout
+                        android:id="@+id/female_view"
+                        android:layout_width="45dp"
+                        android:layout_height="20dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/grey_f"
+                        android:orientation="horizontal" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/editProfilePhysicalStatistics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editProfileBasicInfo"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/iv_physical_statistics"
+                android:drawablePadding="10dp"
+                android:text="Physical Statistics"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="34dp"
+                android:layout_marginTop="5dp"
+                android:background="#cacaca" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="34dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Height"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/select_height"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
 
                     <TextView
-                        android:id="@+id/tvCuisinesSize"
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_toRightOf="@+id/buttonCuisines"
-                        android:background="@drawable/solid_cicle"
-                        android:gravity="center"
-                        android:textAlignment="center"
-                        android:textColor="#ffffff"
-                        android:visibility="gone"
-                        android:text="2"
+                        android:id="@+id/height_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/sm1"
+                        android:text="Select height"
+                        android:textColor="#474747"
                         android:textSize="14sp" />
-                </RelativeLayout>
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/edit_svg" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="34dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/select_weight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/weight_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/sm1"
+                        android:text="Select weight"
+                        android:textColor="#474747"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/edit_svg" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="34dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Waist"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/select_waist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/waist_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/sm1"
+                        android:text="Select waist"
+                        android:textColor="#474747"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/edit_svg" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editProfilePhysicalStatistics"
+            android:orientation="vertical"
+            android:id="@+id/editProfileSetGoal"
+            android:padding="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/iv_set_goal"
+                android:drawablePadding="10dp"
+                android:text="Set Goal"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="34dp"
+                android:layout_marginTop="5dp"
+                android:background="#cacaca" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="34dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My Goals"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/select_goals"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
+
+                    <Spinner
+                        android:id="@+id/spinnerGoal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right" />
+                </LinearLayout>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="34dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Goal weight"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/select_goal_weight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/goal_weight_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/sm1"
+                        android:text="Select goal weight"
+                        android:textColor="#474747"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/edit_svg" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="34dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvGoalTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Goal Time"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tvGoalTimeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="8 Weeks"
+                    android:textColor="#474747"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvMonthsHeading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvGoalTime"
+                    android:layout_centerHorizontal="true"
+                    android:text="You want to loose "
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp" />
+
+                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+                    android:id="@+id/seekbarMonths"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_below="@+id/tvMonthsHeading"
+                    app:dsb_allowTrackClickToDrag="true"
+                    app:dsb_indicatorColor="@color/colorPrimary"
+                    app:dsb_indicatorFormatter="%d"
+                    app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
+                    app:dsb_max="52"
+                    app:dsb_min="0"
+                    app:dsb_progressColor="@color/colorPrimary" />
+
+            </RelativeLayout>
             </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/editProfileSetGoal"
+            android:orientation="vertical"
+            android:padding="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/setting_meals"
+                android:drawablePadding="10dp"
+                android:text="Meal Preference"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="34dp"
+                android:layout_marginTop="5dp"
+                android:background="#cacaca" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="34dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Diet Preference"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/select_diet_preference"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
+
+                    <Spinner
+                        android:id="@+id/spinner_diet_preference"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right" />
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+
+
+            <RelativeLayout
+                android:id="@+id/relativeCuisines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="34dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cuisines"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:id="@+id/tvCuisinesHeading"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/buttonCuisines"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/tvCuisines"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/sm1"
+                        android:text="Select cuisines"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textColor="#474747"
+                        android:textSize="14sp" />
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/edit_svg" />
+                </LinearLayout>
+                <!--<TextView-->
+                    <!--android:id="@+id/buttonCuisines"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="9dp"-->
+                    <!--android:text="Select Cuisines"-->
+                    <!--android:textColor="@color/colorPrimary"-->
+                    <!--android:textSize="16sp" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tvCuisinesSize"-->
+                    <!--android:layout_width="25dp"-->
+                    <!--android:layout_height="25dp"-->
+                    <!--android:layout_toRightOf="@+id/buttonCuisines"-->
+                    <!--android:background="@drawable/solid_cicle"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="2"-->
+                    <!--android:textAlignment="center"-->
+                    <!--android:textColor="#ffffff"-->
+                    <!--android:textSize="14sp"-->
+                    <!--android:visibility="gone" />-->
+            </RelativeLayout>
+        </LinearLayout>
+
         <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/progressBar"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:id="@+id/progressBar"
             android:layout_centerHorizontal="true"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:layout_marginBottom="60dp"
             android:indeterminateTintMode="src_atop"
-            android:visibility="gone"
             android:src="@drawable/loader"
-            />
+            android:visibility="gone" />
     </RelativeLayout>
 </ScrollView>

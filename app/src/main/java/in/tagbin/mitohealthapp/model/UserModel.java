@@ -29,10 +29,11 @@ public class UserModel {
     }
 
     public class ProfileModel{
-        int id,user,age,goal_time,total_coins;
+        int id,user,age,goal_time,total_coins,maximum_distance;
         float weight,waist,height,goal_weight;
-        String phone_number,created_timestamp,gender,dob,updated_timestamp,email_hash;
+        String phone_number,created_timestamp,gender,dob,updated_timestamp,email_hash,occupation,description,home_town;
         boolean is_nutritionist,email_varified;
+        int[] age_range;
         SetGoalModel goal;
         PrefernceModel preferences;
         List<CuisineModel> cuisines;
@@ -46,6 +47,26 @@ public class UserModel {
 
         public SetGoalModel getGoal() {
             return goal;
+        }
+
+        public int getMaximum_distance() {
+            return maximum_distance;
+        }
+
+        public int[] getAge_range() {
+            return age_range;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public String getHometown() {
+            return home_town;
+        }
+
+        public String getOccupation() {
+            return occupation;
         }
 
         public PrefernceModel getPreferences() {

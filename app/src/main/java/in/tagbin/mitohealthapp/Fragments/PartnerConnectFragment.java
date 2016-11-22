@@ -23,9 +23,11 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.appyvet.rangebar.RangeBar;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -42,6 +44,7 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.squareup.picasso.Picasso;
 
+import org.adw.library.widgets.discreteseekbar.DiscreteSeekBar;
 import org.json.JSONException;
 
 import java.io.File;
@@ -78,7 +81,7 @@ import static android.app.Activity.RESULT_OK;
 public class PartnerConnectFragment extends Fragment implements View.OnClickListener {
     ImageView img1, img2, img3, img4, img5, img6, img7, delete, delete1, delete2, delete3, delete4, delete5, delete6;
     EditText etGender, etOccupation, etHomeTwon;
-    TextView name,coins;
+    TextView name,coins,ageSet,distanceSet,interestSet;
     TextInputLayout inputOccupation,inputHomeTown,inputDescription;
     ConnectProfileModel connectProfileModel;
     LoginButton facebookConnect;
@@ -88,8 +91,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
     PrefManager pref;
     GestureDetector gestureDetector1, gestureDetector2, gestureDetector3, gestureDetector4, gestureDetector5, gestureDetector6, gestureDetector7;
     Intent i;
+    RangeBar age;
+    DiscreteSeekBar distance;
     int coinsFinal = 0;
     boolean deleteVisible = false;
+    LinearLayout interstsLinear;
     GifImageView progressBar, progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, progressBar7;
     int SELECT_PICTURE1 = 0, SELECT_PICTURE2 = 1, SELECT_PICTURE3 = 2, SELECT_PICTURE4 = 3, SELECT_PICTURE5 = 4, SELECT_PICTURE6 = 5, SELECT_PICTURE7 = 6;
 
@@ -142,6 +148,13 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         inputOccupation = (TextInputLayout) layout.findViewById(R.id.tvOccupationHeading);
         inputHomeTown = (TextInputLayout) layout.findViewById(R.id.tvHomeTownHeading);
         facebookConnect = (LoginButton) layout.findViewById(R.id.facebook_people_connect);
+        distance = (DiscreteSeekBar) layout.findViewById(R.id.rangebarDistance);
+        age = (RangeBar) layout.findViewById(R.id.rangebarAge);
+        ageSet = (TextView) layout.findViewById(R.id.tvSettingAgeSet);
+        distanceSet = (TextView) layout.findViewById(R.id.tvSettingDistanceSet);
+        interstsLinear = (LinearLayout) layout.findViewById(R.id.buttonInterests);
+        interestSet = (TextView) layout.findViewById(R.id.tvInterests);
+        interstsLinear.setOnClickListener(this);
         facebookConnect.setCompoundDrawablesWithIntrinsicBounds(R.drawable.facebook, 0, 0, 0);
         facebookConnect.setText("Pick from my Facebook profile");
 //        facebookConnect.setCompoundDrawablesRelativeWithIntrinsicBounds(0, R.drawable.facebook, 0, 0);
@@ -265,6 +278,32 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         etGender.addTextChangedListener(new MyTextWatcher(etGender));
         progressBar.setVisibility(View.VISIBLE);
         Controller.getConnectProfile(getContext(), mConnectListener);
+        distance.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+            @Override
+            public int transform(int value) {
+                //settingsModel.setMaximum_distance(value);
+                distanceSet.setText(value+ " kms");
+                return value;
+            }
+        });
+        age.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+                int[] age = {Integer.parseInt(leftPinValue), Integer.parseInt(rightPinValue)};
+                //settingsModel.setAge_range(age);
+                ageSet.setText(leftPinValue+"-"+rightPinValue+" yrs");
+            }
+        });
+        if (pref.getKeyUserDetails() != null) {
+//            if (pref.getKeyUserDetails().getProfile().getMaximum_distance() != 0) {
+//                distance.setProgress(pref.getKeyUserDetails().getProfile().getMaximum_distance());
+//                distanceSet.setText(pref.getKeyUserDetails().getProfile().getMaximum_distance() + " kms");
+//            }
+            if (pref.getKeyUserDetails().getProfile().getAge_range() != null && pref.getKeyUserDetails().getProfile().getAge_range().length == 2) {
+                age.setRangePinsByValue(pref.getKeyUserDetails().getProfile().getAge_range()[0], pref.getKeyUserDetails().getProfile().getAge_range()[1]);
+                ageSet.setText(pref.getKeyUserDetails().getProfile().getAge_range()[0] + "-" + pref.getKeyUserDetails().getProfile().getAge_range()[1] + " yrs");
+            }
+        }
         return layout;
     }
 
@@ -633,6 +672,13 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
 //                    etLocation.setText(MyUtils.getCityNameFromLatLng(getContext(), pref.getCurrentLocationAsObject().getLatitude(), pref.getCurrentLocationAsObject().getLongitude()));
 //                }
 //            }
+            if (data.getInterests().size() >0){
+                if (data.getInterests().size() > 1){
+                    interestSet.setText(data.getInterests().get(0).getInterest().getName()+"+ "+(data.getInterests().size()-1));
+                }else if (data.getInterests().size() == 1){
+                    interestSet.setText(data.getInterests().get(0).getInterest().getName());
+                }
+            }
             coinsFinal = data.getTotal_coins();
             pref.setKeyCoins(data.getTotal_coins());
         }
@@ -650,7 +696,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         //InitActivity i = (InitActivity) getActivity();
         //i.getActionBar().setTitle("Profile");
         menu.findItem(R.id.action_next).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                .setVisible(true);
+                .setVisible(false);
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(false);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
@@ -830,6 +876,9 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 pref.setKeyUserPic6("");
                 delete6.setVisibility(View.GONE);
                 img7.setImageResource(R.drawable.userpic1);
+                break;
+            case R.id.buttonInterests:
+                Controller.getInterests(getContext(), mInterestListener);
                 break;
         }
     }

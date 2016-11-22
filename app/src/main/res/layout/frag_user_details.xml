@@ -1,29 +1,128 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="#ffffff"
+    android:orientation="vertical">
 
+    <RelativeLayout
+        android:id="@+id/relativeProfileHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="20dp">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/cvMainImage"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="20dp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/cvMainImage">
+
+            <RelativeLayout
+                android:id="@+id/linearName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvMainProfileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Hugh Jackman"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/edit_svg" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/linearDob"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearName"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvMainProfileDob"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="12/5/1889" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/edit_svg" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/linearGender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linearDob"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/tvMainProfileGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Male" />
+
+                <ImageView
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/edit_svg" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#cacaca"
+        android:layout_below="@+id/relativeProfileHeader"
+        android:id="@+id/viewSeperator"/>
     <android.support.design.widget.TabLayout
         android:id="@+id/ProfileTabs"
         android:layout_width="match_parent"
         android:layout_height="40dp"
+        android:layout_below="@+id/viewSeperator"
         android:background="#ffffff"
-        app:tabPadding="10sp"
-        app:tabIndicatorHeight="3sp"
-        app:tabGravity="fill"
-        app:tabMode="fixed"
+        android:minHeight="?attr/actionBarSize"
         android:theme="@style/Theme1"
-        android:minHeight="?attr/actionBarSize">
+        app:tabGravity="fill"
+        app:tabIndicatorHeight="3sp"
+        app:tabMode="fixed"
+        app:tabPadding="10sp">
 
     </android.support.design.widget.TabLayout>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/ProfilePager"
         android:layout_width="match_parent"
-        android:layout_weight="3"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ProfileTabs"
+        android:layout_weight="3" />
 
 
-</LinearLayout>
+</RelativeLayout>
