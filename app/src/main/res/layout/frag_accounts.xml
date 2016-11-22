@@ -59,12 +59,36 @@
                 android:textSize="16sp" />
 
         </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/phoneotp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/phoneNumber"
+            android:layout_marginLeft="20dp"
+            android:visibility="gone"
+            android:layout_marginTop="20dp"
+            android:theme="@style/TextLabel1">
 
+            <EditText
+                android:id="@+id/etPhoneOtp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="50dp"
+                android:hint="Enter Otp"
+                android:inputType="number"
+                android:shadowColor="@color/colorPrimary"
+                android:textColor="@color/colorPrimary"
+                android:textColorHighlight="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                android:textColorLink="@color/colorPrimary"
+                android:textSize="16sp" />
+
+        </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:id="@+id/newPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/phoneNumber"
+            android:layout_below="@+id/phoneotp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
             android:theme="@style/TextLabel1">

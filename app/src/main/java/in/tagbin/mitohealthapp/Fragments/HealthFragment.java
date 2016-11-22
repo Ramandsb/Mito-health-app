@@ -1226,6 +1226,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         }else{
             profile_name.setText("Your Name?");
         }
+        UserDetailsFragment.genderSel = gender;
         if (gender.equals("M")) {
             UserDetailsFragment.gender.setText("Male");
             male_view.setBackgroundDrawable(getResources().getDrawable(R.drawable.green_m));

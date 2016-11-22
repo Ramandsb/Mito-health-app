@@ -69,6 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/linearDialogSelection"
             android:weightSum="2">
 
             <android.support.design.widget.TextInputLayout
@@ -125,9 +126,9 @@
             android:id="@+id/relativeLooseWeight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginTop="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tvMonthsHeading"
@@ -151,6 +152,43 @@
                 app:dsb_min="0"
                 app:dsb_progressColor="@color/colorPrimary" />
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/profileGender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone">
+
+            <RadioGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_toRightOf="@+id/tvProfileGenderHeading"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioMale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Male"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+                <RadioButton
+                    android:id="@+id/radioFemale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:text="Female"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="16sp" />
+            </RadioGroup>
         </RelativeLayout>
 
         <LinearLayout

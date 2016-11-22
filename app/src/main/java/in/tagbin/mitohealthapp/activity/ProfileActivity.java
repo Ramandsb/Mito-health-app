@@ -62,8 +62,8 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         age = (TextView) findViewById(R.id.tvProfileAge);
         distance = (TextView) findViewById(R.id.tvProfileDistance);
         time = (TextView) findViewById(R.id.tvProfileTime);
-        occupation = (TextView) findViewById(R.id.tvProfileOccupation);
-        description = (TextView) findViewById(R.id.tvProfileDescription);
+//        occupation = (TextView) findViewById(R.id.tvProfileOccupation);
+//        description = (TextView) findViewById(R.id.tvProfileDescription);
         flowLayout = (FlowLayout) findViewById(R.id.flowLayoutProfile);
         //blankSpace = (TextView) findViewById(R.id.tvProfileBlank);
         allInfo = (RelativeLayout) findViewById(R.id.relativeProfileAllInfo);
@@ -146,10 +146,22 @@ public class ProfileActivity extends AppCompatActivity implements ViewPager.OnPa
         intro_images.setCurrentItem(0);
         intro_images.setOnPageChangeListener(this);
         setUiPageViewController();
+        if(data.getUser().getFirst_name() != null){
+            if(data.getUser().getLast_name() != null){
+                name.setText(data.getUser().getFirst_name()+" "+data.getUser().getLast_name());
+            }else{
+                name.setText(data.getUser().getFirst_name());
+            }
+        }
         name.setText(data.getUser().getFirst_name());
         age.setText(data.getAge()+", "+data.getGender());
-        occupation.setText(data.getOccupation());
-        description.setText(data.getDescription());
+        if(data.getGender().equals("M")){
+            age.setCompoundDrawablesWithIntrinsicBounds(R.drawable.iv_male,0,0,0);
+        }else if(data.getGender().equals("F")){
+            age.setCompoundDrawablesWithIntrinsicBounds(R.drawable.iv_female,0,0,0);
+        }
+//        occupation.setText(data.getOccupation());
+//        description.setText(data.getDescription());
         double lat2 = MyUtils.getLatitude(this,data.getLocation());
         double long2 = MyUtils.getLongitude(this,data.getLocation());
         double result = MyUtils.calculateDistance(latitde, longitude, lat2, long2, "M");

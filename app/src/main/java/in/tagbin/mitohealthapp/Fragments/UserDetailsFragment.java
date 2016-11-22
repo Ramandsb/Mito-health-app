@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +41,7 @@ import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
 import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.UserDateModel;
+import in.tagbin.mitohealthapp.model.UserGenderModel;
 import in.tagbin.mitohealthapp.model.UserModel;
 import in.tagbin.mitohealthapp.model.UserNameModel;
 
@@ -52,7 +55,7 @@ public class UserDetailsFragment extends Fragment implements TabLayout.OnTabSele
     static public CircleImageView circleView;
     UserDetailsSliderAdapter adapter;
     RelativeLayout relativeName,relativeDob,relativeGender;
-    public static String first_name,last_name,user_id,dob1;
+    public static String first_name,last_name,user_id,dob1,genderSel;
     public static int year,month,day;
     Calendar calendar;
     PrefManager pref;
@@ -93,7 +96,7 @@ public class UserDetailsFragment extends Fragment implements TabLayout.OnTabSele
         relativeGender.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showGenderDialog();
             }
         });
         if ( getArguments() !=null && getArguments().getString("profile_connect") != null){
@@ -254,6 +257,50 @@ public class UserDetailsFragment extends Fragment implements TabLayout.OnTabSele
                 }, year, month, day);
 
         dpd.show();
+    }
+    public void showGenderDialog(){
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.item_value_picker);
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        LinearLayout dialogSelection = (LinearLayout) dialog.findViewById(R.id.linearDialogSelection);
+        dialogSelection.setVisibility(View.GONE);
+        RelativeLayout radioSelction = (RelativeLayout) dialog.findViewById(R.id.profileGender);
+        radioSelction.setVisibility(View.VISIBLE);
+        final TextView dialog_name = (TextView) dialog.findViewById(R.id.dialog_name);
+        final TextView dialog_heading = (TextView) dialog.findViewById(R.id.dialogHeading);
+        dialog_name.setText("Gender");
+        dialog_heading.setText("Select gender");
+        final RadioButton male = (RadioButton) dialog.findViewById(R.id.radioMale);
+        final RadioButton female = (RadioButton) dialog.findViewById(R.id.radioFemale);
+        if (genderSel.equals("M")){
+            male.setChecked(true);
+        }else if (genderSel.equals("F")){
+            female.setChecked(true);
+        }else{
+            male.setChecked(true);
+        }
+
+        View done = dialog.findViewById(R.id.height_done);
+        //seekBar.setMax(200);
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (male.isChecked()){
+                    genderSel = "M";
+                    gender.setText("Male");
+                }else if (female.isChecked()){
+                    genderSel = "F";
+                    gender.setText("Female");
+                }
+
+                UserGenderModel userGenderModel = new UserGenderModel();
+                userGenderModel.setGender(genderSel);
+                Controller.setUserGender(getContext(),userGenderModel,user_id,mSetUserDetailsListener);
+                dialog.dismiss();
+
+            }
+        });
+        dialog.show();
     }
     RequestListener mSetUserDetailsListener = new RequestListener() {
         @Override

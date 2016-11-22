@@ -69,6 +69,9 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
         pref = new PrefManager(getContext());
         if (pref.getKeyUserDetails() != null){
             email.setText(pref.getKeyUserDetails().getUser().getEmail());
+            if (pref.getKeyUserDetails().getProfile().getPhone_number() != null){
+                phoneNumber.setText(pref.getKeyUserDetails().getProfile().getPhone_number());
+            }
 
         }
         return view;

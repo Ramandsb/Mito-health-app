@@ -58,6 +58,7 @@ import in.tagbin.mitohealthapp.model.SignUpModel;
 import in.tagbin.mitohealthapp.model.SleepLogModel;
 import in.tagbin.mitohealthapp.model.SocialModel;
 import in.tagbin.mitohealthapp.model.UserDateModel;
+import in.tagbin.mitohealthapp.model.UserGenderModel;
 import in.tagbin.mitohealthapp.model.UserGoalWeightModel;
 import in.tagbin.mitohealthapp.model.UserHeightModel;
 import in.tagbin.mitohealthapp.model.UserNameModel;
@@ -328,6 +329,16 @@ public class Controller {
     }
     public static void setUserDate(Context context,UserDateModel userDateModel,String user_id,
                                       RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserGender(Context context, UserGenderModel userDateModel, String user_id,
+                                     RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.USERS);
         url += user_id+"/";
