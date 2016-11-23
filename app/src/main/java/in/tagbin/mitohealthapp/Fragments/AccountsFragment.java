@@ -16,11 +16,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONException;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 
+import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.activity.MainActivity;
 import in.tagbin.mitohealthapp.activity.SettingsActivity;
@@ -28,7 +35,10 @@ import in.tagbin.mitohealthapp.activity.SplashActivity;
 import in.tagbin.mitohealthapp.app.Controller;
 import in.tagbin.mitohealthapp.helper.JsonUtils;
 import in.tagbin.mitohealthapp.helper.PrefManager;
+import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
+import in.tagbin.mitohealthapp.model.UserChangePasswordModel;
+import in.tagbin.mitohealthapp.model.UserModel;
 
 
 /**
@@ -40,7 +50,12 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
     TextInputLayout textInputEmail,textInputPhoneNumber,textInputNewPassword,textInputConfirmPassword;
     TextView logout,coins;
     int coinsFinal;
+    String user_id;
+    SharedPreferences login_details;
+    RelativeLayout relativeChangePassword;
+    Button changePassword;
     PrefManager pref;
+    RelativeLayout relativeOtp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +75,13 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
         textInputPhoneNumber = (TextInputLayout) view.findViewById(R.id.phoneNumber);
         textInputNewPassword = (TextInputLayout) view.findViewById(R.id.newPassword);
         textInputConfirmPassword = (TextInputLayout) view.findViewById(R.id.confirmNewPassword);
+        relativeChangePassword = (RelativeLayout) view.findViewById(R.id.relativeChangePassword);
+        relativeOtp = (RelativeLayout) view.findViewById(R.id.relativeOtp);
         logout = (TextView) view.findViewById(R.id.tvLogout);
+        changePassword = (Button) view.findViewById(R.id.buttonSaveAccount);
+        login_details = getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+        user_id = login_details.getString("user_id", "");
+        changePassword.setOnClickListener(this);
         logout.setOnClickListener(this);
         email.addTextChangedListener(new MyTextWatcher(email));
         phoneNumber.addTextChangedListener(new MyTextWatcher(phoneNumber));
@@ -72,7 +93,11 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
             if (pref.getKeyUserDetails().getProfile().getPhone_number() != null){
                 phoneNumber.setText(pref.getKeyUserDetails().getProfile().getPhone_number());
             }
-
+            if (!pref.getKeyUserDetails().getProfile().getSource().toLowerCase().equals("email")){
+                relativeChangePassword.setVisibility(View.GONE);
+            }else {
+                relativeChangePassword.setVisibility(View.VISIBLE);
+            }
         }
         return view;
     }
@@ -89,6 +114,16 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
                 pref.clearSession();
                 startActivity(new Intent(getContext(),SplashActivity.class));
                 getActivity().finish();
+                break;
+            case R.id.buttonSaveAccount:
+                if (!validateConfirmNewPassword())
+                    return;
+                if (!validateNewPassword())
+                    return;
+                UserChangePasswordModel changePasswordModel = new UserChangePasswordModel();
+                changePasswordModel.setOld_password(newPassword.getText().toString());
+                changePasswordModel.setNew_password(confirmPassowrd.getText().toString());
+                Controller.setUserPassword(getContext(),changePasswordModel,user_id,mSetUserDetailsListener);
                 break;
         }
     }
@@ -211,6 +246,9 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
             requestFocus(phoneNumber);
             return false;
         }else {
+            if (phoneNumber.getText().toString().length() == 10){
+                phoneNumber.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.food_accept,0);
+            }
             textInputPhoneNumber.setErrorEnabled(false);
 
         }
@@ -243,4 +281,50 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
         String regEx = "[7-9]{1}[0-9]{9}";
         return mobile.matches(regEx);
     }
+    RequestListener mSetUserDetailsListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            final UserModel userModel = JsonUtils.objectify(responseObject.toString(), UserModel.class);
+            pref.setKeyUserDetails(userModel);
+            if (getActivity() == null)
+                return;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(),"Password changed successfully",Toast.LENGTH_LONG).show();
+                    newPassword.setText("");
+                    confirmPassowrd.setText("");
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            if (getActivity() == null)
+                return;
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
 }

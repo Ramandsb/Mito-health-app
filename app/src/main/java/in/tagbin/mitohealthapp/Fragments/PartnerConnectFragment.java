@@ -93,10 +93,11 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
     Intent i;
     RangeBar age;
     DiscreteSeekBar distance;
-    int coinsFinal = 0;
+    int coinsFinal = 0,distanceFinal = 2;
     boolean deleteVisible = false;
     LinearLayout interstsLinear;
-    GifImageView progressBar, progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, progressBar7;
+    int[] ageFinal = {5,80};
+    GifImageView progressBar, progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, progressBar7,submit;
     int SELECT_PICTURE1 = 0, SELECT_PICTURE2 = 1, SELECT_PICTURE3 = 2, SELECT_PICTURE4 = 3, SELECT_PICTURE5 = 4, SELECT_PICTURE6 = 5, SELECT_PICTURE7 = 6;
 
     @Override
@@ -144,6 +145,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         progressBar5 = (GifImageView) layout.findViewById(R.id.progressBar5);
         progressBar6 = (GifImageView) layout.findViewById(R.id.progressBar6);
         progressBar7 = (GifImageView) layout.findViewById(R.id.progressBar7);
+        submit = (GifImageView) layout.findViewById(R.id.ivExploreSubmit);
+        submit.setOnClickListener(this);
         inputDescription = (TextInputLayout) layout.findViewById(R.id.tvDescriptionHeading);
         inputOccupation = (TextInputLayout) layout.findViewById(R.id.tvOccupationHeading);
         inputHomeTown = (TextInputLayout) layout.findViewById(R.id.tvHomeTownHeading);
@@ -282,6 +285,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
             @Override
             public int transform(int value) {
                 //settingsModel.setMaximum_distance(value);
+                distanceFinal = value;
                 distanceSet.setText(value+ " kms");
                 return value;
             }
@@ -289,16 +293,16 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         age.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
-                int[] age = {Integer.parseInt(leftPinValue), Integer.parseInt(rightPinValue)};
+                ageFinal = new int[]{Integer.parseInt(leftPinValue), Integer.parseInt(rightPinValue)};
                 //settingsModel.setAge_range(age);
                 ageSet.setText(leftPinValue+"-"+rightPinValue+" yrs");
             }
         });
         if (pref.getKeyUserDetails() != null) {
-//            if (pref.getKeyUserDetails().getProfile().getMaximum_distance() != 0) {
-//                distance.setProgress(pref.getKeyUserDetails().getProfile().getMaximum_distance());
-//                distanceSet.setText(pref.getKeyUserDetails().getProfile().getMaximum_distance() + " kms");
-//            }
+            if (pref.getKeyUserDetails().getProfile().getMaximum_distance() != 0) {
+                distance.setProgress(pref.getKeyUserDetails().getProfile().getMaximum_distance());
+                distanceSet.setText(pref.getKeyUserDetails().getProfile().getMaximum_distance() + " kms");
+            }
             if (pref.getKeyUserDetails().getProfile().getAge_range() != null && pref.getKeyUserDetails().getProfile().getAge_range().length == 2) {
                 age.setRangePinsByValue(pref.getKeyUserDetails().getProfile().getAge_range()[0], pref.getKeyUserDetails().getProfile().getAge_range()[1]);
                 ageSet.setText(pref.getKeyUserDetails().getProfile().getAge_range()[0] + "-" + pref.getKeyUserDetails().getProfile().getAge_range()[1] + " yrs");
@@ -725,70 +729,71 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_next) {
-            SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
-            setConnectProfileModel.setDescription(etGender.getText().toString());
-            setConnectProfileModel.setOccupation(etOccupation.getText().toString());
-            setConnectProfileModel.setHometown(etHomeTwon.getText().toString());
-            PrefManager pref = new PrefManager(getActivity());
-            if (pref.getCurrentLocationAsObject() != null) {
-                double[] location = {pref.getCurrentLocationAsObject().getLongitude(), pref.getCurrentLocationAsObject().getLatitude()};
-                setConnectProfileModel.setLocation(location);
-            }
-            SetConnectProfileModel.Images1Model images1Model = setConnectProfileModel.getImages();
-
-                if (pref.getKeyMasterImage() != null || pref.getKeyMasterImage().isEmpty()) {
-                    images1Model.setMaster(pref.getKeyMasterImage());
-                    setConnectProfileModel.setImages(images1Model);
-                }
-
-
-                ArrayList<String> other = new ArrayList<String>();
-                    if (pref.getKeyUserPic1() != null) {
-                        other.add(pref.getKeyUserPic1());
-                    }
-                    if (pref.getKeyUserPic2() != null) {
-                        other.add(pref.getKeyUserPic2());
-                    }
-                    if (pref.getKeyUserPic3() != null) {
-                        other.add(pref.getKeyUserPic3());
-                    }
-                    if (pref.getKeyUserPic4() != null) {
-                        other.add(pref.getKeyUserPic4());
-                    }
-                    if (pref.getKeyUserPic5() != null) {
-                        other.add(pref.getKeyUserPic5());
-                    }
-
-
-                    if (pref.getKeyUserPic6() != null) {
-                        other.add(pref.getKeyUserPic6());
-                    }
-
-                images1Model.setOther(other);
-                setConnectProfileModel.setImages(images1Model);
-                if (!validateOccuption()) {
-                    return false;
-                }
-                if (!validateHomeTown()){
-                    return false;
-                }
-                if (!validateDescription()){
-                    return false;
-                }
-                Log.d("profile", JsonUtils.jsonify(setConnectProfileModel));
-                progressBar.setVisibility(View.VISIBLE);
-                Controller.setConnectProfile(getContext(), setConnectProfileModel, msetProfileListener);
-
-//            InitActivity.change(2);
-
-
-            //i.change(2);
-
-//            getFragmentManager().beginTransaction().replace(R.id.fragmentnew,new MitoHealthFragment()).commit();
-            //finish();
-            return true;
-        }else if (id == R.id.action_Settings) {
+//        if (id == R.id.action_next) {
+//            SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
+//            setConnectProfileModel.setDescription(etGender.getText().toString());
+//            setConnectProfileModel.setOccupation(etOccupation.getText().toString());
+//            setConnectProfileModel.setHometown(etHomeTwon.getText().toString());
+//            PrefManager pref = new PrefManager(getActivity());
+//            if (pref.getCurrentLocationAsObject() != null) {
+//                double[] location = {pref.getCurrentLocationAsObject().getLongitude(), pref.getCurrentLocationAsObject().getLatitude()};
+//                setConnectProfileModel.setLocation(location);
+//            }
+//            SetConnectProfileModel.Images1Model images1Model = setConnectProfileModel.getImages();
+//
+//                if (pref.getKeyMasterImage() != null || pref.getKeyMasterImage().isEmpty()) {
+//                    images1Model.setMaster(pref.getKeyMasterImage());
+//                    setConnectProfileModel.setImages(images1Model);
+//                }
+//
+//
+//                ArrayList<String> other = new ArrayList<String>();
+//                    if (pref.getKeyUserPic1() != null) {
+//                        other.add(pref.getKeyUserPic1());
+//                    }
+//                    if (pref.getKeyUserPic2() != null) {
+//                        other.add(pref.getKeyUserPic2());
+//                    }
+//                    if (pref.getKeyUserPic3() != null) {
+//                        other.add(pref.getKeyUserPic3());
+//                    }
+//                    if (pref.getKeyUserPic4() != null) {
+//                        other.add(pref.getKeyUserPic4());
+//                    }
+//                    if (pref.getKeyUserPic5() != null) {
+//                        other.add(pref.getKeyUserPic5());
+//                    }
+//
+//
+//                    if (pref.getKeyUserPic6() != null) {
+//                        other.add(pref.getKeyUserPic6());
+//                    }
+//
+//                images1Model.setOther(other);
+//                setConnectProfileModel.setImages(images1Model);
+//                if (!validateOccuption()) {
+//                    return false;
+//                }
+//                if (!validateHomeTown()){
+//                    return false;
+//                }
+//                if (!validateDescription()){
+//                    return false;
+//                }
+//                Log.d("profile", JsonUtils.jsonify(setConnectProfileModel));
+//                progressBar.setVisibility(View.VISIBLE);
+//                Controller.setConnectProfile(getContext(), setConnectProfileModel, msetProfileListener);
+//
+////            InitActivity.change(2);
+//
+//
+//            //i.change(2);
+//
+////            getFragmentManager().beginTransaction().replace(R.id.fragmentnew,new MitoHealthFragment()).commit();
+//            //finish();
+//            return true;
+//        }else
+        if (id == R.id.action_Settings) {
             //if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){
                 //toolbar_title.setText("Settings");
                 //toolbar.setTitle("");
@@ -879,6 +884,66 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 break;
             case R.id.buttonInterests:
                 Controller.getInterests(getContext(), mInterestListener);
+                break;
+            case R.id.ivExploreSubmit:
+                SetConnectProfileModel setConnectProfileModel = new SetConnectProfileModel();
+                setConnectProfileModel.setDescription(etGender.getText().toString());
+                setConnectProfileModel.setOccupation(etOccupation.getText().toString());
+                setConnectProfileModel.setHometown(etHomeTwon.getText().toString());
+                PrefManager pref = new PrefManager(getActivity());
+                if (pref.getCurrentLocationAsObject() != null) {
+                    double[] location = {pref.getCurrentLocationAsObject().getLongitude(), pref.getCurrentLocationAsObject().getLatitude()};
+                    setConnectProfileModel.setLocation(location);
+                }
+                SetConnectProfileModel.Images1Model images1Model = setConnectProfileModel.getImages();
+                setConnectProfileModel.setAge_range(ageFinal);
+                setConnectProfileModel.setMaximum_distance(distanceFinal);
+                if (pref.getKeyMasterImage() != null || pref.getKeyMasterImage().isEmpty()) {
+                    images1Model.setMaster(pref.getKeyMasterImage());
+                    setConnectProfileModel.setImages(images1Model);
+                }
+
+
+                ArrayList<String> other = new ArrayList<String>();
+                if (pref.getKeyUserPic1() != null) {
+                    other.add(pref.getKeyUserPic1());
+                }
+                if (pref.getKeyUserPic2() != null) {
+                    other.add(pref.getKeyUserPic2());
+                }
+                if (pref.getKeyUserPic3() != null) {
+                    other.add(pref.getKeyUserPic3());
+                }
+                if (pref.getKeyUserPic4() != null) {
+                    other.add(pref.getKeyUserPic4());
+                }
+                if (pref.getKeyUserPic5() != null) {
+                    other.add(pref.getKeyUserPic5());
+                }
+
+
+                if (pref.getKeyUserPic6() != null) {
+                    other.add(pref.getKeyUserPic6());
+                }
+
+                images1Model.setOther(other);
+                setConnectProfileModel.setImages(images1Model);
+                if (!validateOccuption()) {
+                    return;
+                }
+                if (!validateHomeTown()){
+                    return;
+                }
+                if (!validateDescription()){
+                    return;
+                }
+                if (interestSet.getText().toString().equals("Select interests")){
+                    Toast.makeText(getContext(),"Please select interests",Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Log.d("profile", JsonUtils.jsonify(setConnectProfileModel));
+                progressBar.setVisibility(View.VISIBLE);
+                Controller.setConnectProfile(getContext(), setConnectProfileModel, msetProfileListener);
                 break;
         }
     }
@@ -1012,21 +1077,12 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     Toast.makeText(getContext(), "Profile submitted succesfully", Toast.LENGTH_LONG).show();
                 }
             });
-            if (getArguments() != null && getArguments().getString("profile_connect") != null) {
                 PrefManager pref = new PrefManager(getContext());
                 pref.setTutorial(true);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
-                });
-                Controller.getInterests(getContext(), mInterestListener);
-            } else {
                 Intent i = new Intent(getContext(),BinderActivity.class);
-                i.putExtra("selection",0);
+                i.putExtra("selection",1);
                 startActivity(i);
-            }
+
         }
 
         @Override

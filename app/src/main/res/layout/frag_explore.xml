@@ -15,9 +15,9 @@
         <RelativeLayout
             android:id="@+id/relativeMainProfile"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="70dp"
-            android:visibility="gone"
-            android:layout_height="wrap_content">
+            android:visibility="gone">
 
             <com.daprlabs.cardstack.SwipeDeck
                 android:id="@+id/container"
@@ -77,16 +77,44 @@
                 android:src="@drawable/splash_logo" />
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/tvNoNearbyUsersData"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/relativeNoUsersNearby"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:text="No users nearby"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_marginTop="30dp">
+
+            <ImageView
+                android:id="@+id/ivNoUsers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/bg_no_users_explore" />
+
+            <TextView
+                android:id="@+id/tvNoNearbyUsersData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ivNoUsers"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="No users nearby"
+                android:layout_margin="10dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
+            <TextView
+                android:id="@+id/tvNoNearbyUsersDataDetail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvNoNearbyUsersData"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:textAlignment="center"
+                android:text="No user in your vicinity. Try again after sometime or increase your distance range"
+                android:layout_margin="10dp"
+                android:textSize="16sp" />
+        </RelativeLayout>
 
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/progressBar"

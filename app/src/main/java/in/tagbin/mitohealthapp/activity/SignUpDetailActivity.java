@@ -81,7 +81,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
     RadioButton male,female;
     Button submit;
     Spinner diet_preference,goal_type;
-    String height_new = "",weight_new = "",goal_weight_new = "",waist_new = "",dob = "",user_id,url = "",name = "default",gender = "",first_name = "",last_name = "",email = "";
+    String height_new = "",weight_new = "",goal_weight_new = "",waist_new = "",dob = "",user_id,url = "",name = "default",gender = "",first_name = "",last_name = "",email = "",goalText;
     double bmi_lower_limit=18.5,bmi_upper_limit = 24.9;
     int weight_speed = 500;
     boolean changed = false;
@@ -173,39 +173,46 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Log.d("item selected", diet.get(i));
-                    changed = true;
+                    goalText = diet.get(i);
                     //unit[0] = diet_options.get(i);
                     for (int y= 0; y<diet_options.size();y++){
                         if (diet.get(i).equals("Maintain weight")){
-                            goal_weight = weight;
-                            monthsValue = 0;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight/1000).toString() +" Kg");
-                                    goalTimeValue.setText(monthsValue+ " weeks");
-                                    monthsSeekbar.setProgress(monthsValue);
-                                }
-                            });
+                            if (goal_weight != weight) {
+                                goal_weight = weight;
+                                monthsValue = 0;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight / 1000).toString() + " Kg");
+                                        goalTimeValue.setText(monthsValue + " weeks");
+                                        monthsSeekbar.setProgress(monthsValue);
+                                    }
+                                });
+                            }
                         }else if(diet.get(i).equals("Gain weight")){
-                            goal_weight = 0;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tv_goal_weight.setText("");
-                                }
-                            });
+                            if (goal_weight <= weight) {
+                                goal_weight = 0;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_goal_weight.setText("");
+                                    }
+                                });
+                            }
                         }else if (diet.get(i).equals("Loose weight")){
-                            goal_weight = 0;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tv_goal_weight.setText("");
-                                }
-                            });
+                            if (goal_weight >= weight) {
+                                goal_weight = 0;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        tv_goal_weight.setText("");
+                                    }
+                                });
+                            }
                         }
                         if (diet.get(i).equals(diet_options.get(y).getGoal())){
                             goal_id = diet_options.get(y).getId();
+                            Log.d("changed","goal");
                         }
                     }
                     Controller.setGoal(SignUpDetailActivity.this,goal_id,user_id,mPreferenceListener);
@@ -234,7 +241,6 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             @Override
             public int transform(int value) {
                 //settingsModel.setMaximum_distance(value);
-                changed = true;
                 monthsValue = value;
                 goalTimeValue.setText(monthsValue+ " weeks");
                 return value;
@@ -279,28 +285,28 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         UserDateModel userDateModel = new UserDateModel();
                         userDateModel.setDob(dob);
                         Controller.setUserDate(SignUpDetailActivity.this,userDateModel,user_id,mSetUserDetailsListener);
-                        if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
-//                            if (first_name == null || first_name.equals("")){
-//                                showNameDialog();
-//                            }else
-                            if (dob == null || dob.equals("")){
-                                showDateDialog();
-                            }else if (height == 0) {
-                                //dialog.dismiss();
-                                showHeightDialog();
-                            } else if (weight == 0) {
-                                //dialog.dismiss();
-                                showWeightDialog();
-                            } else if (waist == 0) {
-                                //dialog.dismiss();
-                                showWaistDialog();
-                            } else if (goal_weight == 0) {
-                                //dialog.dismiss();
-                                showGoal_WeightDialog();
-                            }
-                        } else {
-                            //dialog.dismiss();
-                        }
+//                        if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
+////                            if (first_name == null || first_name.equals("")){
+////                                showNameDialog();
+////                            }else
+//                            if (dob == null || dob.equals("")){
+//                                showDateDialog();
+//                            }else if (height == 0) {
+//                                //dialog.dismiss();
+//                                showHeightDialog();
+//                            } else if (weight == 0) {
+//                                //dialog.dismiss();
+//                                showWeightDialog();
+//                            } else if (waist == 0) {
+//                                //dialog.dismiss();
+//                                showWaistDialog();
+//                            } else if (goal_weight == 0) {
+//                                //dialog.dismiss();
+//                                showGoal_WeightDialog();
+//                            }
+//                        } else {
+//                            //dialog.dismiss();
+//                        }
 
                     }
                 }, year, month, day);
@@ -377,35 +383,35 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     editor.putFloat("height", (float) height);
                     tv_height.setText(height_new);
                     Log.d("height value", height_new);
-                    if(height != 0 && weight != 0 && !changed){
+                    //if(height != 0 && weight != 0 && !changed){
                         calculateDefaultValues(height,weight);
-                    }
+                    //}
                 }
 
-                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
-//                    if (first_name == null || first_name.equals("")){
+//                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
+////                    if (first_name == null || first_name.equals("")){
+////                        dialog.dismiss();
+////                        showNameDialog();
+////                    }else
+//                    if (dob == null || dob.equals("")){
 //                        dialog.dismiss();
-//                        showNameDialog();
-//                    }else
-                    if (dob == null || dob.equals("")){
-                        dialog.dismiss();
-                        showDateDialog();
-                    }else if (height == 0) {
-                        dialog.dismiss();
-                        showHeightDialog();
-                    } else if (weight == 0) {
-                        dialog.dismiss();
-                        showWeightDialog();
-                    } else if (waist == 0) {
-                        dialog.dismiss();
-                        showWaistDialog();
-                    } else if (goal_weight == 0) {
-                        dialog.dismiss();
-                        showGoal_WeightDialog();
-                    }
-                } else {
+//                        showDateDialog();
+//                    }else if (height == 0) {
+//                        dialog.dismiss();
+//                        showHeightDialog();
+//                    } else if (weight == 0) {
+//                        dialog.dismiss();
+//                        showWeightDialog();
+//                    } else if (waist == 0) {
+//                        dialog.dismiss();
+//                        showWaistDialog();
+//                    } else if (goal_weight == 0) {
+//                        dialog.dismiss();
+//                        showGoal_WeightDialog();
+//                    }
+//                } else {
                     dialog.dismiss();
-                }
+                //}
 
             }
         });
@@ -476,35 +482,35 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     tv_weight.setText(weight_new);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("weight", (float) weight);
-                    if(height != 0 && weight != 0 && !changed){
+                    //if(height != 0 && weight != 0 && !changed){
                         calculateDefaultValues(height,weight);
-                    }
+                    //}
                 }
 
-                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
-//                    if (first_name == null || first_name.equals("")){
+//                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
+////                    if (first_name == null || first_name.equals("")){
+////                        dialog.dismiss();
+////                        showNameDialog();
+////                    }else
+//                    if (dob == null || dob.equals("")){
+//                       dialog.dismiss();
+//                        showDateDialog();
+//                    }else if (height == 0) {
 //                        dialog.dismiss();
-//                        showNameDialog();
-//                    }else
-                    if (dob == null || dob.equals("")){
-                       dialog.dismiss();
-                        showDateDialog();
-                    }else if (height == 0) {
-                        dialog.dismiss();
-                        showHeightDialog();
-                    } else if (weight == 0) {
-                        dialog.dismiss();
-                        showWeightDialog();
-                    } else if (waist == 0) {
-                        dialog.dismiss();
-                        showWaistDialog();
-                    } else if (goal_weight == 0) {
-                        dialog.dismiss();
-                        showGoal_WeightDialog();
-                    }
-                } else {
+//                        showHeightDialog();
+//                    } else if (weight == 0) {
+//                        dialog.dismiss();
+//                        showWeightDialog();
+//                    } else if (waist == 0) {
+//                        dialog.dismiss();
+//                        showWaistDialog();
+//                    } else if (goal_weight == 0) {
+//                        dialog.dismiss();
+//                        showGoal_WeightDialog();
+//                    }
+//                } else {
                     dialog.dismiss();
-                }
+               // }
 
             }
         });
@@ -586,30 +592,30 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     }
                     diet_preference.setSelection(goal_id - 1);
                 }
-                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
-//                    if (first_name == null || first_name.equals("")){
+//                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
+////                    if (first_name == null || first_name.equals("")){
+////                        dialog.dismiss();
+////                        showNameDialog();
+////                    }else
+//                    if (dob == null || dob.equals("")){
 //                        dialog.dismiss();
-//                        showNameDialog();
-//                    }else
-                    if (dob == null || dob.equals("")){
-                        dialog.dismiss();
-                        showDateDialog();
-                    }else if (height == 0) {
-                        dialog.dismiss();
-                        showHeightDialog();
-                    } else if (weight == 0) {
-                        dialog.dismiss();
-                        showWeightDialog();
-                    } else if (waist == 0) {
-                        dialog.dismiss();
-                        showWaistDialog();
-                    } else if (goal_weight == 0) {
-                        dialog.dismiss();
-                        showGoal_WeightDialog();
-                    }
-                } else {
+//                        showDateDialog();
+//                    }else if (height == 0) {
+//                        dialog.dismiss();
+//                        showHeightDialog();
+//                    } else if (weight == 0) {
+//                        dialog.dismiss();
+//                        showWeightDialog();
+//                    } else if (waist == 0) {
+//                        dialog.dismiss();
+//                        showWaistDialog();
+//                    } else if (goal_weight == 0) {
+//                        dialog.dismiss();
+//                        showGoal_WeightDialog();
+//                    }
+//                } else {
                     dialog.dismiss();
-                }
+                //}
 
             }
         });
@@ -685,35 +691,35 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     Controller.setUserWaist(SignUpDetailActivity.this,userDateModel,user_id,mSetUserDetailsListener);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("waist", (float) waist);
-                    if(height != 0 && weight != 0 && !changed){
+                    //if(height != 0 && weight != 0 && !changed){
                         calculateDefaultValues(height,weight);
-                    }
+                    //}
                 }
 
-                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
-//                    if (first_name == null || first_name.equals("")){
+//                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
+////                    if (first_name == null || first_name.equals("")){
+////                        dialog.dismiss();
+////                        showNameDialog();
+////                    }else
+//                    if (dob == null || dob.equals("")){
 //                        dialog.dismiss();
-//                        showNameDialog();
-//                    }else
-                    if (dob == null || dob.equals("")){
-                        dialog.dismiss();
-                        showDateDialog();
-                    }else if (height == 0) {
-                        dialog.dismiss();
-                        showHeightDialog();
-                    } else if (weight == 0) {
-                        dialog.dismiss();
-                        showWeightDialog();
-                    } else if (waist == 0) {
-                        dialog.dismiss();
-                        showWaistDialog();
-                    } else if (goal_weight == 0) {
-                        dialog.dismiss();
-                        showGoal_WeightDialog();
-                    }
-                } else {
+//                        showDateDialog();
+//                    }else if (height == 0) {
+//                        dialog.dismiss();
+//                        showHeightDialog();
+//                    } else if (weight == 0) {
+//                        dialog.dismiss();
+//                        showWeightDialog();
+//                    } else if (waist == 0) {
+//                        dialog.dismiss();
+//                        showWaistDialog();
+//                    } else if (goal_weight == 0) {
+//                        dialog.dismiss();
+//                        showGoal_WeightDialog();
+//                    }
+//                } else {
                     dialog.dismiss();
-                }
+                //}
 
             }
         });
@@ -980,9 +986,9 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             double kg = weight / 1000;
             tv_weight.setText(new DecimalFormat("##.#").format(kg).toString() +" Kg");
         }
-        if(height != 0 && weight != 0 && !changed){
-            calculateDefaultValues(height,weight);
-        }
+//        if(height != 0 && weight != 0 && !changed){
+//            calculateDefaultValues(height,weight);
+//        }
         if (goal_weight != 0) {
             double grams = goal_weight % 1000;
             double kg = goal_weight / 1000;
@@ -1167,39 +1173,47 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             Log.d("item selected", diet.get(i));
-                            changed = true;
+                            goalText = diet.get(i);
                             //unit[0] = diet_options.get(i);
                             if (diet.get(i).equals("Maintain weight")){
-                                goal_weight = weight;
-                                monthsValue = 0;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight/1000).toString() +" Kg");
-                                        goalTimeValue.setText(monthsValue+ " weeks");
-                                        monthsSeekbar.setProgress(monthsValue);
-                                    }
-                                });
+                                if (goal_weight != weight) {
+                                    goal_weight = weight;
+                                    monthsValue = 0;
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight / 1000).toString() + " Kg");
+                                            goalTimeValue.setText(monthsValue + " weeks");
+                                            monthsSeekbar.setProgress(monthsValue);
+                                        }
+                                    });
+                                }
                             }else if(diet.get(i).equals("Gain weight")){
-                                goal_weight = 0;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tv_goal_weight.setText("");
-                                    }
-                                });
+                                if (goal_weight <= weight) {
+                                    goal_weight = 0;
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            tv_goal_weight.setText("");
+                                        }
+                                    });
+                                }
                             }else if (diet.get(i).equals("Loose weight")){
-                                goal_weight = 0;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        tv_goal_weight.setText("");
-                                    }
-                                });
+                                if (goal_weight >= weight) {
+                                    goal_weight = 0;
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            tv_goal_weight.setText("");
+                                        }
+                                    });
+                                }
                             }
                             for (int y= 0; y<diet_options.size();y++){
                                 if (diet.get(i).equals(diet_options.get(y).getGoal())){
                                     goal_id = diet_options.get(y).getId();
+//                                    Log.d("changed","goal");
+//                                    changed = true;
                                 }
                             }
                             Controller.setGoal(SignUpDetailActivity.this,goal_id,user_id,mPreferenceListener);
@@ -1263,22 +1277,56 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.etProfileGoalWeight:
                 changed = true;
+                Log.d("changed","goal weight");
                 showGoal_WeightDialog();
                 break;
             case R.id.buttonEnterProfile:
                 pref.setKeyUserDetails(null);
-                if (!validateName())
+                if (!validateName()) {
+                    Toast.makeText(SignUpDetailActivity.this,"Please enter name",Toast.LENGTH_LONG).show();
                     return;
-                if(!validateHeight())
+                }
+                if(!validateHeight()){
+                    Toast.makeText(SignUpDetailActivity.this,"Please enter height",Toast.LENGTH_LONG).show();
                     return;
-                if (!validateWeight())
+                }
+                if (!validateWeight()){
+                    Toast.makeText(SignUpDetailActivity.this,"Please enter weight",Toast.LENGTH_LONG).show();
                     return;
+                }
                 if (!validatedob())
+                {
+                    Toast.makeText(SignUpDetailActivity.this,"Please enter date of birth",Toast.LENGTH_LONG).show();
                     return;
-                if (!validateWaist())
+                }
+                if (!validateWaist()){
+                    Toast.makeText(SignUpDetailActivity.this,"Please enter waist",Toast.LENGTH_LONG).show();
                     return;
-                if (!validateGoalWeight())
+                }
+                if (!validateGoalWeight()){
+                    Toast.makeText(SignUpDetailActivity.this,"Please enter goal weight",Toast.LENGTH_LONG).show();
                     return;
+                }
+                switch (goalText){
+                    case "Maintain Weight":
+                        if (goal_weight != weight){
+                            Toast.makeText(SignUpDetailActivity.this,"Goal weight should be same as your weight",Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        break;
+                    case "Loose Weight":
+                        if (goal_weight >= weight){
+                            Toast.makeText(SignUpDetailActivity.this,"Goal weight should be less than your weight",Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        break;
+                    case "Gain Weight":
+                        if (goal_weight <= weight){
+                            Toast.makeText(SignUpDetailActivity.this,"Goal weight should be greater than your weight",Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        break;
+                }
                 SendEditProfileModel sendEditProfileModel = new SendEditProfileModel();
                 sendEditProfileModel.setDob(dob);
                 sendEditProfileModel.setEmail(email);
@@ -1459,31 +1507,34 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         return true;
     }
     public void calculateDefaultValues(double height,double weight){
-        double weight_delta;
-        double curerentBmi = MyUtils.calculateBmi(height,weight);
-        if (curerentBmi < bmi_lower_limit){
-            goal_id = 1;
-            goal_weight = MyUtils.calculateGoalWeight(bmi_lower_limit,height);
-            weight_delta = goal_weight - weight;
-        }else if(curerentBmi > bmi_upper_limit){
-            goal_id = 2;
-            goal_weight = MyUtils.calculateGoalWeight(bmi_upper_limit,height);
-            weight_delta = weight - goal_weight;
-        }else {
-            goal_id = 3;
-            goal_weight = weight;
-            weight_delta = 0;
-        }
-        monthsValue = (int) (weight_delta/weight_speed);
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight/1000).toString() +" Kg");
-                goalTimeValue.setText(monthsValue+ " weeks");
-                monthsSeekbar.setProgress(monthsValue);
-                diet_preference.setSelection(goal_id-1);
+        if (!changed && dob != null && height != 0 && weight != 0 && waist != 0) {
+            Log.d("inside","insied calculation");
+            double weight_delta;
+            double curerentBmi = MyUtils.calculateBmi(height, weight);
+            if (curerentBmi < bmi_lower_limit) {
+                goal_id = 1;
+                goal_weight = MyUtils.calculateGoalWeight(bmi_lower_limit, height);
+                weight_delta = goal_weight - weight;
+            } else if (curerentBmi > bmi_upper_limit) {
+                goal_id = 2;
+                goal_weight = MyUtils.calculateGoalWeight(bmi_upper_limit, height);
+                weight_delta = weight - goal_weight;
+            } else {
+                goal_id = 3;
+                goal_weight = weight;
+                weight_delta = 0;
             }
-        });
+            monthsValue = (int) (weight_delta / weight_speed);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight / 1000).toString() + " Kg");
+                    goalTimeValue.setText(monthsValue + " weeks");
+                    monthsSeekbar.setProgress(monthsValue);
+                    diet_preference.setSelection(goal_id - 1);
+                }
+            });
+        }
     }
 }

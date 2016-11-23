@@ -31,7 +31,7 @@ public class UserModel {
     public class ProfileModel{
         int id,user,age,goal_time,total_coins,maximum_distance;
         float weight,waist,height,goal_weight;
-        String phone_number,created_timestamp,gender,dob,updated_timestamp,email_hash,occupation,description,home_town;
+        String phone_number,created_timestamp,gender,dob,updated_timestamp,email_hash,occupation,description,home_town,source;
         boolean is_nutritionist,email_varified;
         int[] age_range;
         SetGoalModel goal;
@@ -51,6 +51,10 @@ public class UserModel {
 
         public int getMaximum_distance() {
             return maximum_distance;
+        }
+
+        public String getSource() {
+            return source;
         }
 
         public int[] getAge_range() {

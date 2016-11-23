@@ -9,7 +9,17 @@ public class SetConnectProfileModel {
     String gender;
     double[] location = {77.8880, 29.8543};
     Images1Model images;
+    int[] age_range;
+    int maximum_distance;
     String occupation,description,home_town;
+
+    public void setAge_range(int[] age_range) {
+        this.age_range = age_range;
+    }
+
+    public void setMaximum_distance(int maximum_distance) {
+        this.maximum_distance = maximum_distance;
+    }
 
     public void setDescription(String description) {
         this.description = description;
@@ -32,17 +42,17 @@ public class SetConnectProfileModel {
     }
     public class Images1Model{
         String master;
-        ArrayList<String> other = new ArrayList<String>();
+        ArrayList<String> others = new ArrayList<String>();
         public void setMaster(String master) {
             this.master = master;
         }
 
         public void setOther(ArrayList<String> other) {
-            this.other = other;
+            this.others = other;
         }
 
         public ArrayList<String> getOther() {
-            return other;
+            return others;
         }
 
         public String getMaster() {

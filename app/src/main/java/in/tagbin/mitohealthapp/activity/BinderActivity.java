@@ -35,6 +35,7 @@ import java.util.List;
 import in.tagbin.mitohealthapp.Fragments.ChatDieticianFragment;
 import in.tagbin.mitohealthapp.Fragments.HealthFragment;
 import in.tagbin.mitohealthapp.Fragments.MitoHealthFragment;
+import in.tagbin.mitohealthapp.Fragments.UserChatFragment;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.Fragments.UserConnectFragment;
 import in.tagbin.mitohealthapp.Fragments.UserDetailsFragment;
@@ -331,7 +332,7 @@ public class BinderActivity extends AppCompatActivity implements View.OnClickLis
             case 1:
                 setImages();
                 iv2.setImageResource(R.drawable.iv_partner_connect_clicked);
-                toolbar_title.setText("Partner Connect");
+                toolbar_title.setText("MitoConnect");
                 toolbar.setTitle("");
 
 
@@ -387,18 +388,9 @@ public class BinderActivity extends AppCompatActivity implements View.OnClickLis
             case 2:
                 setImages();
                 iv3.setImageResource(R.drawable.iv_nutritionist_chat_clicked);
-                if (pref.getDietician() != null){
-                    if (pref.getDietician().getFirst_name() != null){
-                        toolbar_title.setText(pref.getDietician().getFirst_name());
-                        if (pref.getDietician().getLast_name() != null){
-                            toolbar_title.setText(pref.getDietician().getFirst_name()+" "+pref.getDietician().getLast_name());
-                        }
-                    }
-                }else {
-                    toolbar_title.setText("Dietician Chat");
-                }
+                toolbar_title.setText("Chat");
                 toolbar.setTitle("");
-                fra = new ChatDieticianFragment();
+                fra = new UserChatFragment();
                 break;
 //            case 4:
 //                if (pref.getKeyUserDetails() != null && pref.getKeyUserDetails().getProfile().getHeight() != 0 && pref.getKeyUserDetails().getProfile().getWeight() != 0){

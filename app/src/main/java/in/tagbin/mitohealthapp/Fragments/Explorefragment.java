@@ -43,8 +43,8 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
     private ExploreAdapter mCardAdapter;
     GifImageView imageView;
     ExploreModel data;
-    RelativeLayout mainContent;
-    TextView name,age,distance,noData,coins;
+    RelativeLayout noData,mainContent;
+    TextView name,age,distance,coins;
     GifImageView progressBar;
     PrefManager pref;
     boolean connected = false;
@@ -66,7 +66,7 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
         age = (TextView)(viewGroup.findViewById(R.id.tvExploreAge));
         distance = (TextView)(viewGroup.findViewById(R.id.tvExploreDistance));
         imageView = (GifImageView) viewGroup.findViewById(R.id.ivExploreSubmit);
-        noData = (TextView) viewGroup.findViewById(R.id.tvNoNearbyUsersData);
+        noData = (RelativeLayout) viewGroup.findViewById(R.id.relativeNoUsersNearby);
         mainContent = (RelativeLayout) viewGroup.findViewById(R.id.relativeMainProfile);
         progressBar = (GifImageView) viewGroup.findViewById(R.id.progressBar);
         data = new ExploreModel();
@@ -103,7 +103,7 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
         menu.findItem(R.id.action_save).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS)
                 .setVisible(false);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
-        menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
         menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
         View view = menu.findItem(R.id.action_coin).getActionView();
         coins = (TextView) view.findViewById(R.id.tvCoins);

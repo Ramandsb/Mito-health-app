@@ -51,6 +51,7 @@
                 android:layout_marginRight="50dp"
                 android:hint="Phone Number"
                 android:inputType="number"
+                android:maxLength="10"
                 android:shadowColor="@color/colorPrimary"
                 android:textColor="@color/colorPrimary"
                 android:textColorHighlight="@color/colorPrimary"
@@ -59,91 +60,139 @@
                 android:textSize="16sp" />
 
         </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/phoneotp"
+
+        <RelativeLayout
+            android:id="@+id/relativeOtp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/phoneNumber"
-            android:layout_marginLeft="20dp"
             android:visibility="gone"
-            android:layout_marginTop="20dp"
-            android:theme="@style/TextLabel1">
-
-            <EditText
-                android:id="@+id/etPhoneOtp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="50dp"
-                android:hint="Enter Otp"
-                android:inputType="number"
-                android:shadowColor="@color/colorPrimary"
-                android:textColor="@color/colorPrimary"
-                android:textColorHighlight="@color/colorPrimary"
-                android:textColorHint="@color/colorPrimary"
-                android:textColorLink="@color/colorPrimary"
-                android:textSize="16sp" />
-
-        </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/newPassword"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/phoneotp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:theme="@style/TextLabel1">
+            android:layout_below="@+id/phoneNumber">
 
-            <EditText
-                android:id="@+id/etNewPassword"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/phoneotp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="50dp"
-                android:hint="Old Password"
-                android:inputType="textPassword"
-                android:shadowColor="@color/colorPrimary"
-                android:textColor="@color/colorPrimary"
-                android:textColorHighlight="@color/colorPrimary"
-                android:textColorHint="@color/colorPrimary"
-                android:textColorLink="@color/colorPrimary"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:theme="@style/TextLabel1">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/confirmNewPassword"
-            android:layout_width="match_parent"
+                <EditText
+                    android:id="@+id/etPhoneOtp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:hint="Enter Otp"
+                    android:inputType="number"
+                    android:shadowColor="@color/colorPrimary"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHighlight="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary"
+                    android:textColorLink="@color/colorPrimary"
+                    android:textSize="16sp" />
+
+            </android.support.design.widget.TextInputLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/phoneotp"
+                android:layout_centerHorizontal="true">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvDidntOtp"
+                    android:padding="5dp"
+                    android:text="Didn't receive any otp?Try"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RESEND"
+                    android:padding="5dp"
+                    android:layout_toRightOf="@+id/tvDidntOtp"
+                    android:textStyle="bold"
+                    android:layout_marginLeft="5dp"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relativeChangePassword"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/newPassword"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:theme="@style/TextLabel1">
+            android:layout_below="@+id/relativeOtp">
 
-            <EditText
-                android:id="@+id/etConfirmNewPassword"
+            <TextView
+                android:id="@+id/tvChangePassowrdHeading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Change Password"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/newPassword"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginRight="50dp"
-                android:hint="New Password"
-                android:inputType="textPassword"
-                android:shadowColor="@color/colorPrimary"
-                android:textColor="@color/colorPrimary"
-                android:textColorHighlight="@color/colorPrimary"
-                android:textColorHint="@color/colorPrimary"
-                android:textColorLink="@color/colorPrimary"
-                android:textSize="16sp" />
-        </android.support.design.widget.TextInputLayout>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:id="@+id/buttonSaveAccount"
-            android:layout_below="@+id/confirmNewPassword"
-            android:text="Save Changes"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvChangePassowrdHeading"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:theme="@style/TextLabel1">
+
+                <EditText
+                    android:id="@+id/etNewPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:hint="Old Password"
+                    android:inputType="textPassword"
+                    android:shadowColor="@color/colorPrimary"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHighlight="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary"
+                    android:textColorLink="@color/colorPrimary"
+                    android:textSize="16sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/confirmNewPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/newPassword"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:theme="@style/TextLabel1">
+
+                <EditText
+                    android:id="@+id/etConfirmNewPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="50dp"
+                    android:hint="New Password"
+                    android:inputType="textPassword"
+                    android:shadowColor="@color/colorPrimary"
+                    android:textColor="@color/colorPrimary"
+                    android:textColorHighlight="@color/colorPrimary"
+                    android:textColorHint="@color/colorPrimary"
+                    android:textColorLink="@color/colorPrimary"
+                    android:textSize="16sp" />
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/buttonSaveAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/confirmNewPassword"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Change Password" />
+        </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/buttonSaveAccount"
+            android:layout_below="@+id/relativeChangePassword"
             android:layout_marginBottom="70dp"
             android:layout_marginTop="40dp">
 
@@ -162,7 +211,7 @@
                 android:padding="10dp"
                 android:text="Log out"
                 android:textAlignment="center"
-                android:textColor="#ed273f"
+                android:textColor="#FF523B"
                 android:textSize="18sp" />
 
             <View

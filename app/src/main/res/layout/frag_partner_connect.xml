@@ -341,12 +341,27 @@
             <!--android:textColor="#474747"-->
             <!--android:textColorHint="#b7b7b7"-->
             <!--android:textSize="14sp" />-->
-
+            <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/facebook_people_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/linearPhotos"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_filter"
+                android:drawableLeft="@drawable/facebook"
+                android:drawablePadding="10dp"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/colorPrimary"
+                fb:confirm_logout="false"
+                fb:login_text="Pick from my Facebook profile"
+                fb:logout_text="Pick from my Facebook profile" />
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/tvOccupationHeading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/linearPhotos"
+                android:layout_below="@+id/facebook_people_connect"
                 android:layout_marginLeft="10dp"
                 android:theme="@style/TextLabel1"
                 android:layout_marginTop="5dp">
@@ -553,23 +568,15 @@
                     app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
                     app:dsb_progressColor="@color/bottombar" />
             </RelativeLayout>
-            <com.facebook.login.widget.LoginButton xmlns:fb="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/facebook_people_connect"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/ivExploreSubmit"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
                 android:layout_below="@+id/relativeSettingDistance"
-                android:layout_marginBottom="60dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/bg_filter"
-                android:drawableLeft="@drawable/facebook"
-                android:drawablePadding="10dp"
-                android:padding="10dp"
-                android:textSize="16sp"
-                android:textColor="@color/colorPrimary"
-                fb:confirm_logout="false"
-                fb:login_text="Pick from my Facebook profile"
-                fb:logout_text="Pick from my Facebook profile" />
+                android:layout_marginBottom="60dp"
+                android:src="@drawable/splash_logo" />
         </RelativeLayout>
 
         <pl.droidsonroids.gif.GifImageView

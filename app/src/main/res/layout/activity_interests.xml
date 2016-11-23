@@ -6,9 +6,9 @@
     android:orientation="vertical">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/app_bar"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -19,66 +19,78 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
-    <SearchView
-        android:id="@+id/searchView"
-        android:layout_width="match_parent"
-        android:elevation="2dp"
-        android:layout_marginLeft="20dp"
-        android:focusableInTouchMode="true"
-        android:layout_marginRight="20dp"
-        android:queryHint="What interest you?"
-        android:layout_below="@+id/app_bar"
-        android:layout_height="wrap_content">
-    </SearchView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Suggest Interest"
-        android:id="@+id/tvSuggestInterst"
-        android:layout_below="@+id/searchView"
-        android:textColor="@color/colorPrimary"
-        android:drawableRight="@drawable/add_interest"
-        android:textSize="17sp"
-        android:visibility="gone"
-        android:layout_margin="20dp"/>
-    <in.tagbin.mitohealthapp.helper.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/flowLayout"
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="20dp"
-        android:textAlignment="center"
-        android:layout_below="@+id/searchView"
-        android:layout_centerHorizontal="true"
-        app:horizontalSpacing="3dp"
-        app:verticalSpacing="2dp">
+        android:layout_below="@+id/app_bar">
 
-    </in.tagbin.mitohealthapp.helper.FlowLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <SearchView
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:elevation="2dp"
+                android:focusableInTouchMode="true"
+                android:queryHint="What interest you?"></SearchView>
+
+            <TextView
+                android:id="@+id/tvSuggestInterst"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/searchView"
+                android:layout_margin="20dp"
+                android:drawableRight="@drawable/add_interest"
+                android:text="Suggest Interest"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp"
+                android:visibility="gone" />
+
+            <in.tagbin.mitohealthapp.helper.FlowLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/flowLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/searchView"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="20dp"
+                android:orientation="vertical"
+                android:textAlignment="center"
+                app:horizontalSpacing="3dp"
+                app:verticalSpacing="2dp">
+
+            </in.tagbin.mitohealthapp.helper.FlowLayout>
+        </RelativeLayout>
+    </ScrollView>
+
     <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/progressBar"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:id="@+id/progressBar"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
         android:layout_marginBottom="60dp"
         android:indeterminateTintMode="src_atop"
-        android:visibility="gone"
         android:src="@drawable/loader"
-        />
+        android:visibility="gone" />
     <!--<ProgressBar-->
-        <!--android:id="@+id/progressBar"-->
-        <!--android:layout_width="60dp"-->
-        <!--android:layout_height="60dp"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_centerInParent="true"-->
-        <!--android:layout_centerVertical="true"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_marginBottom="60dp"-->
-        <!--android:indeterminateTint="@color/colorAccent"-->
-        <!--android:indeterminateTintMode="src_atop"-->
-        <!--android:visibility="gone" />-->
+    <!--android:id="@+id/progressBar"-->
+    <!--android:layout_width="60dp"-->
+    <!--android:layout_height="60dp"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:layout_marginBottom="60dp"-->
+    <!--android:indeterminateTint="@color/colorAccent"-->
+    <!--android:indeterminateTintMode="src_atop"-->
+    <!--android:visibility="gone" />-->
 </RelativeLayout>

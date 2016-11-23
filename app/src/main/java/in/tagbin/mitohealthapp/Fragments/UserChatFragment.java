@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,9 +21,10 @@ import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.activity.BinderActivity;
 
 /**
- * Created by aasaqt on 13/8/16.
+ * Created by chetan on 23/11/16.
  */
-public class UserConnectFragment extends Fragment implements TabLayout.OnTabSelectedListener {
+
+public class UserChatFragment extends Fragment implements TabLayout.OnTabSelectedListener {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     TextView tabOne,tabTwo,tabThree;
@@ -81,7 +81,7 @@ public class UserConnectFragment extends Fragment implements TabLayout.OnTabSele
             relativeLayout.setGravity(RelativeLayout.CENTER_HORIZONTAL);
 
             tabOne = (TextView) relativeLayout.findViewById(R.id.tabtext);
-            tabOne.setText("Explore");
+            tabOne.setText("MitoCoach");
             tabOne.setGravity(Gravity.CENTER);
             tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout));
             //tabLayout.getTabAt(0).setCustomView(relativeLayout);
@@ -91,18 +91,18 @@ public class UserConnectFragment extends Fragment implements TabLayout.OnTabSele
 
 
             tabTwo = (TextView) relativeLayout1.findViewById(R.id.tabtext);
-            tabTwo.setText("Social");
+            tabTwo.setText("Explore");
             tabTwo.setGravity(Gravity.CENTER);
             tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout1),true);
             //tabLayout.getTabAt(1).setCustomView(relativeLayout1);
 
-//            RelativeLayout relativeLayout2 = (RelativeLayout)
-//                    LayoutInflater.from(getActivity()).inflate(R.layout.item_tabs, tabLayout, false);
-//            tabThree = (TextView) relativeLayout2.findViewById(R.id.tabtext);
-//
-//            tabThree.setText("Chat");
-//            tabThree.setGravity(Gravity.CENTER);
-//            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout2));
+            RelativeLayout relativeLayout2 = (RelativeLayout)
+                    LayoutInflater.from(getActivity()).inflate(R.layout.item_tabs, tabLayout, false);
+            tabThree = (TextView) relativeLayout2.findViewById(R.id.tabtext);
+
+            tabThree.setText("Social");
+            tabThree.setGravity(Gravity.CENTER);
+            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout2));
             //tabLayout.getTabAt(2).setCustomView(relativeLayout2);
 
 
@@ -131,22 +131,22 @@ public class UserConnectFragment extends Fragment implements TabLayout.OnTabSele
         switch (tabPosition)
         {
             case 0 :
-                replaceFragment(new Explorefragment());
+                replaceFragment(new ChatDieticianFragment());
                 break;
             case 1 :
-                Fragment fragment = new Lookupfragment();
-                if (getArguments() != null){
-                    if (getArguments().getString("activity_create_event") != null){
-                        Bundle bundle = new Bundle();
-                        bundle.putString("activity_create_event","activity_create_event");
-                        fragment.setArguments(bundle);
-                    }
-                }
-                replaceFragment(fragment);
+//                Fragment fragment = new Lookupfragment();
+//                if (getArguments() != null){
+//                    if (getArguments().getString("activity_create_event") != null){
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("activity_create_event","activity_create_event");
+//                        fragment.setArguments(bundle);
+//                    }
+//                }
+                replaceFragment(new Chatfragment());
                 break;
-//            case 2 :
-//                replaceFragment(new Chatfragment());
-//                break;
+            case 2 :
+                replaceFragment(new SocialChatFragment());
+                break;
         }
     }
     public void replaceFragment(Fragment fragment) {
