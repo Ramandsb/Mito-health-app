@@ -70,6 +70,7 @@ public class ExerciseSearchActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.activity_open_translate_from_bottom, R.anim.activity_no_animation);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_search);
         pref = new PrefManager(this);

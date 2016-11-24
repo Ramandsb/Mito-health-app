@@ -2,6 +2,7 @@ package in.tagbin.mitohealthapp.activity;
 
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -341,7 +342,10 @@ public class BinderActivity extends AppCompatActivity implements View.OnClickLis
                     startActivity(i);
 
                 }else if(!pref.isTutorialShown1()){
-                    Controller.getInterests(this,mInterestListener);
+                    Toast.makeText(BinderActivity.this,"Complete your MitoConnect profile first",Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(this,BinderActivity.class);
+                    i.putExtra("profile_connect","profile");
+                    startActivity(i);
                 }else{
                     fra = new UserConnectFragment();
                 }

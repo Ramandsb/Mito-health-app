@@ -55,7 +55,7 @@ public class InterestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_interests);
         flowLayout = (FlowLayout) findViewById(R.id.flowLayout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -353,11 +353,9 @@ public class InterestActivity extends AppCompatActivity {
         @Override
         public void onRequestCompleted(Object responseObject) {
             Log.d("iterest ",responseObject.toString());
-            PrefManager pref = new PrefManager(InterestActivity.this);
-            pref.setTutorial1(true);
-            Intent intent = new Intent(InterestActivity.this, BinderActivity.class);
-            intent.putExtra("selection", 3);
-            startActivity(intent);
+            Intent i = new Intent(InterestActivity.this,BinderActivity.class);
+            i.putExtra("profile_connect","profile");
+            startActivity(i);
             finish();
             runOnUiThread(new Runnable() {
                 @Override

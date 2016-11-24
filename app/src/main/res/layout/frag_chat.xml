@@ -13,7 +13,41 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp">
     </android.support.v7.widget.RecyclerView>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/relativeNoExploreChat"
+        android:layout_marginTop="30dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/iv_empty_explore_chat"
+            android:id="@+id/ivEmptySocialChat"/>
+        <TextView
+            android:id="@+id/tvNoNearbyUsersData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivEmptySocialChat"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="Type your first message!"
+            android:layout_margin="10dp"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
+        <TextView
+            android:id="@+id/tvNoNearbyUsersDataDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvNoNearbyUsersData"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:textAlignment="center"
+            android:text="It's time to explore people around and start a Chat:)"
+            android:layout_margin="10dp"
+            android:textSize="16sp" />
+    </RelativeLayout>
 
 
 </RelativeLayout>

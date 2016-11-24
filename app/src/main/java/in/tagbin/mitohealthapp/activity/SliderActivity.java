@@ -27,6 +27,24 @@ public class SliderActivity extends AppCompatActivity implements ViewPager.OnPag
             R.drawable.profile_intro3,
             R.drawable.profile_intro4/*,
             R.drawable.intro4*/};
+    private int[] mIcons= {
+            R.drawable.iv_intro1,
+            R.drawable.iv_intro2,
+            R.drawable.iv_intro3,
+            R.drawable.iv_intro4/*,
+            R.drawable.intro4*/};
+    private String[] text={
+            "EXPLORE",
+            "CREATE",
+            "JOIN",
+            "SWIPE RIGHT"
+    };
+    private String[] text1={
+            "PEOPLE",
+            "EVENT",
+            "EVENT",
+            "TO START"
+    };
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +52,7 @@ public class SliderActivity extends AppCompatActivity implements ViewPager.OnPag
         pager = (RelativeLayout) findViewById(R.id.relativeProfileIntro);
         intro_images = (ViewPager) findViewById(R.id.pagerProfileIntro);
         pager_indicator = (LinearLayout) findViewById(R.id.viewPagerCountDots);
-        mAdapter = new SliderImageAdapter(this, mImageResources,getSupportFragmentManager());
+        mAdapter = new SliderImageAdapter(this, mImageResources,text,text1,mIcons,getSupportFragmentManager());
         intro_images.setAdapter(mAdapter);
         intro_images.setCurrentItem(0);
         intro_images.setOnPageChangeListener(this);

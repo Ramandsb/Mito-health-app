@@ -375,6 +375,7 @@
                     android:ellipsize="end"
                     android:ems="20"
                     android:hint="Occupation"
+                    android:focusableInTouchMode="true"
                     android:inputType="textCapSentences"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
@@ -403,6 +404,7 @@
                     android:ems="20"
                     android:hint="Home Town"
                     android:inputType="textCapSentences"
+                    android:focusableInTouchMode="true"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
                     android:textColor="#474747"
@@ -430,6 +432,7 @@
                     android:ems="20"
                     android:hint="About Me"
                     android:inputType="textCapSentences"
+                    android:focusableInTouchMode="true"
                     android:selectAllOnFocus="true"
                     android:singleLine="true"
                     android:textColor="#474747"
@@ -568,7 +571,7 @@
                     app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
                     app:dsb_progressColor="@color/bottombar" />
             </RelativeLayout>
-            <pl.droidsonroids.gif.GifImageView
+            <ImageView
                 android:id="@+id/ivExploreSubmit"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
@@ -576,7 +579,7 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="60dp"
-                android:src="@drawable/splash_logo" />
+                android:src="@drawable/mitoconnect" />
         </RelativeLayout>
 
         <pl.droidsonroids.gif.GifImageView

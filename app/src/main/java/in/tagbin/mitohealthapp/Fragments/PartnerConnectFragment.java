@@ -79,7 +79,7 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class PartnerConnectFragment extends Fragment implements View.OnClickListener {
-    ImageView img1, img2, img3, img4, img5, img6, img7, delete, delete1, delete2, delete3, delete4, delete5, delete6;
+    ImageView img1, img2, img3, img4, img5, img6, img7, delete, delete1, delete2, delete3, delete4, delete5, delete6,submit;
     EditText etGender, etOccupation, etHomeTwon;
     TextView name,coins,ageSet,distanceSet,interestSet;
     TextInputLayout inputOccupation,inputHomeTown,inputDescription;
@@ -97,7 +97,8 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
     boolean deleteVisible = false;
     LinearLayout interstsLinear;
     int[] ageFinal = {5,80};
-    GifImageView progressBar, progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, progressBar7,submit;
+    GifImageView progressBar, progressBar1, progressBar2, progressBar3, progressBar4, progressBar5, progressBar6, progressBar7;
+
     int SELECT_PICTURE1 = 0, SELECT_PICTURE2 = 1, SELECT_PICTURE3 = 2, SELECT_PICTURE4 = 3, SELECT_PICTURE5 = 4, SELECT_PICTURE6 = 5, SELECT_PICTURE7 = 6;
 
     @Override
@@ -145,7 +146,7 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         progressBar5 = (GifImageView) layout.findViewById(R.id.progressBar5);
         progressBar6 = (GifImageView) layout.findViewById(R.id.progressBar6);
         progressBar7 = (GifImageView) layout.findViewById(R.id.progressBar7);
-        submit = (GifImageView) layout.findViewById(R.id.ivExploreSubmit);
+        submit = (ImageView) layout.findViewById(R.id.ivExploreSubmit);
         submit.setOnClickListener(this);
         inputDescription = (TextInputLayout) layout.findViewById(R.id.tvDescriptionHeading);
         inputOccupation = (TextInputLayout) layout.findViewById(R.id.tvOccupationHeading);
@@ -373,9 +374,9 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 case R.id.etPartnerOccupation:
                     validateOccuption();
                     break;
-                case R.id.etPartnerHomeTown:
-                    validateHomeTown();
-                    break;
+//                case R.id.etPartnerHomeTown:
+//                    validateHomeTown();
+//                    break;
                 case R.id.etPartnerGender:
                     validateDescription();
                     break;
@@ -384,20 +385,27 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
         }
     }
     private boolean validateDescription(){
-        inputDescription.setErrorEnabled(false);
-        return true;
-    }
-    private boolean validateHomeTown(){
-        String hometown = etHomeTwon.getText().toString().trim();
+        String hometown = etGender.getText().toString().trim();
         if (hometown.isEmpty()){
-            inputHomeTown.setError("Please enter home town");
-            requestFocus(etHomeTwon);
+            inputDescription.setError("Please enter something about yourself");
+            requestFocus(etGender);
             return false;
         }else {
-            inputHomeTown.setErrorEnabled(false);
+            inputDescription.setErrorEnabled(false);
         }
         return true;
     }
+//    private boolean validateHomeTown(){
+//        String hometown = etHomeTwon.getText().toString().trim();
+//        if (hometown.isEmpty()){
+//            inputHomeTown.setError("Please enter home town");
+//            requestFocus(etHomeTwon);
+//            return false;
+//        }else {
+//            inputHomeTown.setErrorEnabled(false);
+//        }
+//        return true;
+//    }
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
@@ -898,9 +906,12 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 SetConnectProfileModel.Images1Model images1Model = setConnectProfileModel.getImages();
                 setConnectProfileModel.setAge_range(ageFinal);
                 setConnectProfileModel.setMaximum_distance(distanceFinal);
-                if (pref.getKeyMasterImage() != null || pref.getKeyMasterImage().isEmpty()) {
+                if (pref.getKeyMasterImage() != null) {
                     images1Model.setMaster(pref.getKeyMasterImage());
                     setConnectProfileModel.setImages(images1Model);
+                }else{
+                    Toast.makeText(getContext(),"Please enter top image",Toast.LENGTH_LONG).show();
+                    return;
                 }
 
 
@@ -931,9 +942,9 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                 if (!validateOccuption()) {
                     return;
                 }
-                if (!validateHomeTown()){
-                    return;
-                }
+//                if (!validateHomeTown()){
+//                    return;
+//                }
                 if (!validateDescription()){
                     return;
                 }
@@ -1077,8 +1088,10 @@ public class PartnerConnectFragment extends Fragment implements View.OnClickList
                     Toast.makeText(getContext(), "Profile submitted succesfully", Toast.LENGTH_LONG).show();
                 }
             });
-                PrefManager pref = new PrefManager(getContext());
-                pref.setTutorial(true);
+
+            PrefManager pref = new PrefManager(getContext());
+            pref.setTutorial1(true);
+            pref.setTutorial(true);
                 Intent i = new Intent(getContext(),BinderActivity.class);
                 i.putExtra("selection",1);
                 startActivity(i);

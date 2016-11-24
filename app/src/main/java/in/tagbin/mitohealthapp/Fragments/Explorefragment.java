@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +42,7 @@ import pl.droidsonroids.gif.GifImageView;
 public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCallback {
     private SwipeDeck mCardStack;
     private ExploreAdapter mCardAdapter;
-    GifImageView imageView;
+    ImageView imageView;
     ExploreModel data;
     RelativeLayout noData,mainContent;
     TextView name,age,distance,coins;
@@ -65,7 +66,7 @@ public class Explorefragment extends Fragment implements SwipeDeck.SwipeEventCal
         name = (TextView)(viewGroup.findViewById(R.id.tvExploreName));
         age = (TextView)(viewGroup.findViewById(R.id.tvExploreAge));
         distance = (TextView)(viewGroup.findViewById(R.id.tvExploreDistance));
-        imageView = (GifImageView) viewGroup.findViewById(R.id.ivExploreSubmit);
+        imageView = (ImageView) viewGroup.findViewById(R.id.ivExploreSubmit);
         noData = (RelativeLayout) viewGroup.findViewById(R.id.relativeNoUsersNearby);
         mainContent = (RelativeLayout) viewGroup.findViewById(R.id.relativeMainProfile);
         progressBar = (GifImageView) viewGroup.findViewById(R.id.progressBar);

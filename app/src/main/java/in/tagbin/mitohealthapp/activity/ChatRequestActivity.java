@@ -75,6 +75,7 @@ public class ChatRequestActivity extends AppCompatActivity {
                 .setVisible(false);
         menu.findItem(R.id.action_requests).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
         menu.findItem(R.id.action_coin).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(true);
+        menu.findItem(R.id.action_Settings).setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS).setVisible(false);
         View view = menu.findItem(R.id.action_coin).getActionView();
         coins = (TextView) view.findViewById(R.id.tvCoins);
         PrefManager pref = new PrefManager(this);

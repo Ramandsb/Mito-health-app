@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -119,6 +120,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
     String first_name = "",last_name = "",email = "";
     public static final String TEMP_PHOTO_FILE_NAME = "temp_photo.jpg";
     public static final int REQUEST_CODE_UPDATE_PIC = 0x1;
+    ArrayAdapter<String> adapter,adapter1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -259,9 +261,9 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             for (int i= 0;i<diet_options.size();i++){
                 diet.add(diet_options.get(i).getRecipe_type());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.item_spinner, diet);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            diet_preference.setAdapter(adapter);
+            adapter1 = new ArrayAdapter<String>(getActivity(),R.layout.item_spinner, diet);
+            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            diet_preference.setAdapter(adapter1);
             diet_preference.setSelection(0,false);
             diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -290,7 +292,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             for (int i= 0;i<diet_options.size();i++){
                 diet.add(diet_options.get(i).getGoal());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner, diet);
+            adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner, diet);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             goal_type.setAdapter(adapter);
             goal_type.setSelection(0,false);
@@ -728,8 +730,8 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         dialog.setContentView(R.layout.item_value_picker);
         final List<String> measuring_units = new ArrayList<>();
         //measuring_units.add("Feets");
-        measuring_units.add("Centimeters");
         measuring_units.add("Inches");
+        measuring_units.add("Centimeters");
         //measuring_units.add("Meters");
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -739,13 +741,13 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         dialog_name.setText("Height");
         final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
         if (height != 0.0) {
-            seekBar.setText(new DecimalFormat("##.#").format(height).toString());
+            seekBar.setText(new DecimalFormat("##.#").format(height/2.54).toString());
         }
         seekBar.setSelectAllOnFocus(true);
         View done = dialog.findViewById(R.id.height_done);
         TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
         textInputLayout.setHint("Height");
-        final String[] unit = {"Centimeters"};
+        final String[] unit = {"Inches"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -1302,30 +1304,35 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 }
             });
         }
-        if (userModel.getProfile().getPreferences() != null){
-            diet_preference.post(new Runnable() {
-                @Override
-                public void run() {
-                    diet_preference.setSelection(userModel.getProfile().getPreferences().getId()-1);
-                }
-            });
+        if (pref.getCurrentPreferenceAsObject() != null) {
+            if (userModel.getProfile().getPreferences() != null) {
+                final int position = adapter1.getPosition(userModel.getProfile().getPreferences().getRecipe_type());
+                diet_preference.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        diet_preference.setSelection(position);
+                    }
+                });
 
+            }
         }
-        if (userModel.getProfile().getGoal() != null) {
-            //changed = true;
-            goal_type.post(new Runnable() {
-                @Override
-                public void run() {
-                    goal_type.setSelection(userModel.getProfile().getGoal().getId() - 1);
-                }
-            });
+        if (pref.getCurrentGoalAsObject() != null) {
+            if (userModel.getProfile().getGoal() != null) {
+                //changed = true;
+                final int position = adapter.getPosition(userModel.getProfile().getGoal().getGoal());
+                goal_type.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        goal_type.setSelection(position);
+                    }
+                });
+            }
         }
-
         if(pref.getKeyCoins() == 0){
             coinsFinal = userModel.getProfile().getTotal_coins();
             pref.setKeyCoins(userModel.getProfile().getTotal_coins());
         }
-        if (userModel != null && userModel.getProfile().getImages() != null && userModel.getProfile().getImages().getMaster() != null) {
+        if (userModel.getProfile().getImages() != null && userModel.getProfile().getImages().getMaster() != null) {
             pref.setKeyMasterImage(userModel.getProfile().getImages().getMaster());
             ImageLoader.getInstance().loadImage(userModel.getProfile().getImages().getMaster(), new ImageLoadingListener() {
                 @Override
@@ -1348,6 +1355,9 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                     UserDetailsFragment.circleView.setImageBitmap(loadedImage);
                 }
             });
+        }else{
+            UserDetailsFragment.circleView.setImageResource(R.drawable.userpic);
+            UserDetailsFragment.circleView.setBackgroundColor(Color.parseColor("#313466"));
         }
     }
 
@@ -1465,9 +1475,9 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),R.layout.item_spinner, diet);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    diet_preference.setAdapter(adapter);
+                    adapter1 = new ArrayAdapter<String>(getActivity(),R.layout.item_spinner, diet);
+                    adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    diet_preference.setAdapter(adapter1);
                     diet_preference.setSelection(0,false);
                     diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -1609,7 +1619,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner, diet);
+                    adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner, diet);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     goal_type.setAdapter(adapter);
                     goal_type.setSelection(0,false);

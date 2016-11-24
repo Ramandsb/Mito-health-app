@@ -67,14 +67,14 @@
                 android:textColor="@color/colorAccent"
                 android:textSize="17sp" />
 
-            <pl.droidsonroids.gif.GifImageView
+            <ImageView
                 android:id="@+id/ivExploreSubmit"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_below="@+id/tvExploreDistance"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
-                android:src="@drawable/splash_logo" />
+                android:src="@drawable/mitoconnect" />
         </RelativeLayout>
 
         <RelativeLayout

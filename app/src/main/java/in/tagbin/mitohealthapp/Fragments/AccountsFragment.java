@@ -226,7 +226,7 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
     }
     private void requestFocus(View view) {
         if (view.requestFocus()) {
-            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         }
     }
     private boolean validateEmail(){
@@ -299,6 +299,8 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getContext(),"Password changed successfully",Toast.LENGTH_LONG).show();
                     newPassword.setText("");
                     confirmPassowrd.setText("");
+                    textInputConfirmPassword.setFocusable(false);
+                    textInputNewPassword.setFocusable(false);
                 }
             });
         }

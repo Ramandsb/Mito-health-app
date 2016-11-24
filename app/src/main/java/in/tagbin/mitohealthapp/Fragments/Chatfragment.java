@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -51,6 +52,7 @@ public class Chatfragment extends Fragment {
     PrefManager pref;
     DieticainModel dieticainModel;
     ChatDatabase chatDatabase;
+    RelativeLayout noExploreChat;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,6 +65,7 @@ public class Chatfragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.frag_chat, container, false);
         recyclerView=(RecyclerView)view.findViewById(R.id.recycleView);
+        noExploreChat = (RelativeLayout) view.findViewById(R.id.relativeNoExploreChat);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         pref = new PrefManager(getContext());
 
@@ -84,6 +87,13 @@ public class Chatfragment extends Fragment {
             chatDatabase = new ChatDatabase(getContext());
             listContentArr=chatDatabase.getChatUsers(dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server());
             adapter.notifyDataSetChanged();
+            if (listContentArr.size() == 0){
+                noExploreChat.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }else {
+                noExploreChat.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
         }
     };
     @Override
@@ -162,6 +172,13 @@ public class Chatfragment extends Fragment {
             listContentArr = chatDatabase.getChatUsers(dieticainModel.getChat_username() + "@" + dieticainModel.getChat_server());
             adapter = new ChatFriendsAdapter(getActivity(), listContentArr);
             recyclerView.setAdapter(adapter);
+            if (listContentArr.size() == 0){
+                noExploreChat.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }else {
+                noExploreChat.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }
         }else{
             Controller.getDietician(getContext(),mDieticianListener);
         }
@@ -185,6 +202,13 @@ public class Chatfragment extends Fragment {
                     listContentArr=chatDatabase.getChatUsers(dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server());
                     adapter = new ChatFriendsAdapter(getActivity(), listContentArr);
                     recyclerView.setAdapter(adapter);
+                    if (listContentArr.size() == 0){
+                        noExploreChat.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    }else {
+                        noExploreChat.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
                 }
             });
         }

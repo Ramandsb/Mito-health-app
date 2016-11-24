@@ -18,6 +18,32 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginLeft="20dp" />
+        <RelativeLayout
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginLeft="20dp">
+
+            <Button
+                android:id="@+id/choose_image"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/cam_image" />
+
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/progressBar1"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center"
+                android:indeterminateTintMode="src_atop"
+                android:src="@drawable/loader"
+                android:visibility="gone" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="wrap_content"

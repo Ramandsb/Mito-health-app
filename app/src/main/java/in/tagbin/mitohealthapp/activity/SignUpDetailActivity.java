@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -70,7 +72,7 @@ import pl.droidsonroids.gif.GifImageView;
 public class SignUpDetailActivity extends AppCompatActivity implements View.OnClickListener {
     EditText tv_name, tv_dateOfBirth,tv_height,tv_waist,tv_weight,tv_goal_weight;
     TextInputLayout textInputName,textInputDob,textInputHeight,textInputWaist,textInputWeight,textInputGoalWeight;
-    TextView goalTimeValue;
+    TextView goalTimeValue,notYou;
     static double height = 0.0,weight = 0.0,waist = 0.0,goal_weight = 0.0;
     private int year, month, day,monthsValue = 8,prefernce_final,goal_id;
     SharedPreferences login_details;
@@ -85,6 +87,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
     double bmi_lower_limit=18.5,bmi_upper_limit = 24.9;
     int weight_speed = 500;
     boolean changed = false;
+    ArrayAdapter<String> adapter,adapter1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -110,6 +113,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         progressBar = (GifImageView) findViewById(R.id.progressBar);
         monthsSeekbar = (DiscreteSeekBar) findViewById(R.id.seekbarMonths);
         goalTimeValue = (TextView) findViewById(R.id.tvGoalTimeValue);
+        notYou = (TextView) findViewById(R.id.tvProfileNotYou);
+        notYou.setOnClickListener(this);
         male = (RadioButton) findViewById(R.id.radioMale);
         female = (RadioButton) findViewById(R.id.radioFemale);
         submit = (Button) findViewById(R.id.buttonEnterProfile);
@@ -127,6 +132,10 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         progressBar.setVisibility(View.VISIBLE);
+        tv_name.setFocusableInTouchMode(false);
+        tv_name.setFocusable(false);
+        tv_name.setFocusableInTouchMode(true);
+        tv_name.setFocusable(true);
         Controller.getUserDetails(SignUpDetailActivity.this, user_id, mUserDetailsListener);
         if (pref.getCurrentPreferenceAsObject() != null){
             final List<PrefernceModel> diet_options = pref.getCurrentPreferenceAsObject();
@@ -134,9 +143,9 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             for (int i= 0;i<diet_options.size();i++){
                 diet.add(diet_options.get(i).getRecipe_type());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.item_spinner1, diet);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            diet_preference.setAdapter(adapter);
+            adapter1 = new ArrayAdapter<String>(this,R.layout.item_spinner1, diet);
+            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            diet_preference.setAdapter(adapter1);
             diet_preference.setSelection(0,false);
             diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -165,7 +174,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             for (int i= 0;i<diet_options.size();i++){
                 diet.add(diet_options.get(i).getGoal());
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,R.layout.item_spinner1, diet);
+            adapter = new ArrayAdapter<String>(this,R.layout.item_spinner1, diet);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             goal_type.setAdapter(adapter);
             goal_type.setSelection(0,false);
@@ -312,6 +321,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 }, year, month, day);
 
         dpd.show();
+        hideKeyboard();
     }
     public void showHeightDialog() {
 
@@ -319,8 +329,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         dialog.setContentView(R.layout.item_value_picker);
         final List<String> measuring_units = new ArrayList<>();
         //measuring_units.add("Feets");
-        measuring_units.add("Centimeters");
         measuring_units.add("Inches");
+        measuring_units.add("Centimeters");
         //measuring_units.add("Meters");
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
@@ -330,13 +340,13 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         dialog_name.setText("Height");
         final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
         if (height != 0.0) {
-            seekBar.setText(new DecimalFormat("##.#").format(height).toString());
+            seekBar.setText(new DecimalFormat("##.#").format(height/2.54).toString());
         }
         seekBar.setSelectAllOnFocus(true);
         View done = dialog.findViewById(R.id.height_done);
         TextInputLayout textInputLayout = (TextInputLayout) dialog.findViewById(R.id.textLayoutHeight);
         textInputLayout.setHint("Height");
-        final String[] unit = {"Centimeters"};
+        final String[] unit = {"Inches"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -388,6 +398,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     //}
                 }
 
+                hideKeyboard();
 //                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
 ////                    if (first_name == null || first_name.equals("")){
 ////                        dialog.dismiss();
@@ -416,8 +427,19 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             }
         });
         dialog.show();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                hideKeyboard();
+                tv_name.setFocusableInTouchMode(false);
+                tv_name.setFocusable(false);
+                tv_name.setFocusableInTouchMode(true);
+                tv_name.setFocusable(true);
 
+            }
+        });
 
+        hideKeyboard();
     }
 
     public void showWeightDialog() {
@@ -509,12 +531,25 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 //                        showGoal_WeightDialog();
 //                    }
 //                } else {
+
+                hideKeyboard();
                     dialog.dismiss();
                // }
 
             }
         });
         dialog.show();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                hideKeyboard();
+                tv_name.setFocusableInTouchMode(false);
+                tv_name.setFocusable(false);
+                tv_name.setFocusableInTouchMode(true);
+                tv_name.setFocusable(true);
+            }
+        });
+        hideKeyboard();
     }
 
     public void showGoal_WeightDialog() {
@@ -540,7 +575,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         if (goal_weight != 0.0) {
             seekBar.setText(new DecimalFormat("##.#").format(goal_weight/1000).toString());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measuring_units);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         spinner.setSelection(0,false);
@@ -584,13 +619,19 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("goal_weight", (float) goal_weight);
                     if(goal_weight == weight){
-                        goal_id = 3;
+                        goalText = "Maintain weight";
                     }else if (goal_weight < weight){
-                        goal_id = 2;
+                        goalText = "Loose weight";
                     }else if(goal_weight > weight){
-                        goal_id = 1;
+                        goalText = "Gain weight";
                     }
-                    diet_preference.setSelection(goal_id - 1);
+                    final int position = adapter.getPosition(goalText);
+                    goal_type.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            goal_type.setSelection(position);
+                        }
+                    });
                 }
 //                if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
 ////                    if (first_name == null || first_name.equals("")){
@@ -614,6 +655,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 //                        showGoal_WeightDialog();
 //                    }
 //                } else {
+
+                hideKeyboard();
                     dialog.dismiss();
                 //}
 
@@ -623,7 +666,18 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
         dialog.show();
 
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                hideKeyboard();
+                tv_name.setFocusableInTouchMode(false);
+                tv_name.setFocusable(false);
+                tv_name.setFocusableInTouchMode(true);
+                tv_name.setFocusable(true);
+            }
+        });
 
+        hideKeyboard();
     }
 
     public void showWaistDialog() {
@@ -718,12 +772,27 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 //                        showGoal_WeightDialog();
 //                    }
 //                } else {
+
+                hideKeyboard();
                     dialog.dismiss();
                 //}
 
             }
         });
+
         dialog.show();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                hideKeyboard();
+                tv_name.setFocusableInTouchMode(false);
+                tv_name.setFocusable(false);
+                tv_name.setFocusableInTouchMode(true);
+                tv_name.setFocusable(true);
+            }
+        });
+
+        hideKeyboard();
     }
     public void showNameDialog(){
         final Dialog dialog = new Dialog(this);
@@ -1000,20 +1069,24 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             tv_waist.setText(new DecimalFormat("##.#").format(waist/2.54).toString()+ " inches");
         }
         if (userModel.getProfile().getGoal() != null) {
+            goalText = userModel.getProfile().getGoal().getGoal();
+            final int position = adapter.getPosition(userModel.getProfile().getGoal().getGoal());
             //changed = true;
             goal_type.post(new Runnable() {
                 @Override
                 public void run() {
-                    goal_type.setSelection(userModel.getProfile().getGoal().getId() - 1);
+
+                    goal_type.setSelection(position);
                 }
             });
         }
 
         if (userModel.getProfile().getPreferences() != null){
+            final int position = adapter1.getPosition(userModel.getProfile().getPreferences().getRecipe_type());
             diet_preference.post(new Runnable() {
                 @Override
                 public void run() {
-                    diet_preference.setSelection(userModel.getProfile().getPreferences().getId()-1);
+                    diet_preference.setSelection(position);
                 }
             });
 
@@ -1085,9 +1158,9 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(SignUpDetailActivity.this,R.layout.item_spinner1, diet);
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    diet_preference.setAdapter(adapter);
+                    adapter1 = new ArrayAdapter<String>(SignUpDetailActivity.this,R.layout.item_spinner1, diet);
+                    adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    diet_preference.setAdapter(adapter1);
                     diet_preference.setSelection(0,false);
                     diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
@@ -1165,7 +1238,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(SignUpDetailActivity.this,R.layout.item_spinner1, diet);
+                    adapter = new ArrayAdapter<String>(SignUpDetailActivity.this,R.layout.item_spinner1, diet);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     goal_type.setAdapter(adapter);
                     goal_type.setSelection(0,false);
@@ -1307,25 +1380,29 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     Toast.makeText(SignUpDetailActivity.this,"Please enter goal weight",Toast.LENGTH_LONG).show();
                     return;
                 }
-                switch (goalText){
-                    case "Maintain Weight":
-                        if (goal_weight != weight){
-                            Toast.makeText(SignUpDetailActivity.this,"Goal weight should be same as your weight",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        break;
-                    case "Loose Weight":
-                        if (goal_weight >= weight){
-                            Toast.makeText(SignUpDetailActivity.this,"Goal weight should be less than your weight",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        break;
-                    case "Gain Weight":
-                        if (goal_weight <= weight){
-                            Toast.makeText(SignUpDetailActivity.this,"Goal weight should be greater than your weight",Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                        break;
+                if (goalText.toLowerCase().equals("maintain weight")){
+                    if (goal_weight != weight){
+                        Toast.makeText(SignUpDetailActivity.this,"Goal weight should be same as your weight",Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }else if (goalText.toLowerCase().equals("loose weight")){
+                    if (goal_weight >= weight){
+                        Toast.makeText(SignUpDetailActivity.this,"Goal weight should be less than your weight",Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if (monthsValue == 0){
+                        Toast.makeText(SignUpDetailActivity.this,"Please enter goal time",Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                }else if(goalText.toLowerCase().equals("gain weight")){
+                    if (goal_weight <= weight){
+                        Toast.makeText(SignUpDetailActivity.this,"Goal weight should be greater than your weight",Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if (monthsValue == 0){
+                        Toast.makeText(SignUpDetailActivity.this,"Please enter goal time",Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 }
                 SendEditProfileModel sendEditProfileModel = new SendEditProfileModel();
                 sendEditProfileModel.setDob(dob);
@@ -1342,6 +1419,16 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 sendEditProfileModel.setGoal(goal_id);
                 progressBar.setVisibility(View.VISIBLE);
                 Controller.setUserDetails(SignUpDetailActivity.this,user_id,sendEditProfileModel,mSendUserListener);
+                break;
+            case R.id.tvProfileNotYou:
+                SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor=loginDetails.edit();
+                editor.clear();
+                editor.commit();
+                PrefManager pref = new PrefManager(this);
+                pref.clearSession();
+                startActivity(new Intent(this,SplashActivity.class));
+                finish();
                 break;
         }
     }
@@ -1442,8 +1529,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
     }
     private boolean validateName(){
         if(tv_name.getText().toString().trim().isEmpty()){
-            textInputName.setError("Please enter name");
-            requestFocus(tv_name);
+//            textInputName.setError("Please enter name");
+//            requestFocus(tv_name);
             return false;
         }else {
             textInputName.setErrorEnabled(false);
@@ -1510,17 +1597,21 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         if (!changed && dob != null && height != 0 && weight != 0 && waist != 0) {
             Log.d("inside","insied calculation");
             double weight_delta;
+            final int position;
             double curerentBmi = MyUtils.calculateBmi(height, weight);
             if (curerentBmi < bmi_lower_limit) {
-                goal_id = 1;
+                goalText = "Gain weight";
+                position = adapter.getPosition(goalText);
                 goal_weight = MyUtils.calculateGoalWeight(bmi_lower_limit, height);
                 weight_delta = goal_weight - weight;
             } else if (curerentBmi > bmi_upper_limit) {
-                goal_id = 2;
+                goalText = "Loose weight";
+                position = adapter.getPosition(goalText);
                 goal_weight = MyUtils.calculateGoalWeight(bmi_upper_limit, height);
                 weight_delta = weight - goal_weight;
             } else {
-                goal_id = 3;
+                goalText = "Maintain weight";
+                position = adapter.getPosition(goalText);
                 goal_weight = weight;
                 weight_delta = 0;
             }
@@ -1532,9 +1623,22 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight / 1000).toString() + " Kg");
                     goalTimeValue.setText(monthsValue + " weeks");
                     monthsSeekbar.setProgress(monthsValue);
-                    diet_preference.setSelection(goal_id - 1);
+                    goal_type.setSelection(position);
                 }
             });
         }
+    }
+    public void hideKeyboard(){
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        hideKeyboard();
     }
 }

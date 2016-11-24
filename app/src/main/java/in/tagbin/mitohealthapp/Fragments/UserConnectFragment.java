@@ -83,7 +83,7 @@ public class UserConnectFragment extends Fragment implements TabLayout.OnTabSele
             tabOne = (TextView) relativeLayout.findViewById(R.id.tabtext);
             tabOne.setText("Explore");
             tabOne.setGravity(Gravity.CENTER);
-            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout));
+            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout),true);
             //tabLayout.getTabAt(0).setCustomView(relativeLayout);
 
             RelativeLayout relativeLayout1 = (RelativeLayout)
@@ -93,7 +93,7 @@ public class UserConnectFragment extends Fragment implements TabLayout.OnTabSele
             tabTwo = (TextView) relativeLayout1.findViewById(R.id.tabtext);
             tabTwo.setText("Social");
             tabTwo.setGravity(Gravity.CENTER);
-            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout1),true);
+            tabLayout.addTab(tabLayout.newTab().setCustomView(relativeLayout1));
             //tabLayout.getTabAt(1).setCustomView(relativeLayout1);
 
 //            RelativeLayout relativeLayout2 = (RelativeLayout)

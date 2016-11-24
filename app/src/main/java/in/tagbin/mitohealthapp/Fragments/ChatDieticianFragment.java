@@ -63,7 +63,7 @@ public class ChatDieticianFragment  extends Fragment {
     String user="rman";
     private EditText textMessage;
     Intent SendMessages;
-    TextView coins;
+    TextView coins,dieticianName;
     int coinsFinal = 10;
     PrefManager pref;
     LinearLayout chatLinear;
@@ -80,7 +80,7 @@ public class ChatDieticianFragment  extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view= inflater.inflate(R.layout.content_chat, container, false);
+        View view= inflater.inflate(R.layout.content_dietician_chat, container, false);
         pref = new PrefManager(getContext());
         recyclerView=(RecyclerView)view.findViewById(R.id.recycleView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -88,6 +88,7 @@ public class ChatDieticianFragment  extends Fragment {
         textMessage = (EditText) view.findViewById(R.id.chatET);
         send = (Button) view.findViewById(R.id.sendBtn);
         chatLinear = (LinearLayout) view.findViewById(R.id.linearChat);
+        dieticianName = (TextView) view.findViewById(R.id.tvDieticianName);
         Controller.getDietician(getContext(),mDieticianListener);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) chatLinear.getLayoutParams();
         int bottom = MyUtils.dpToPx(getContext(),40);
@@ -182,7 +183,13 @@ public class ChatDieticianFragment  extends Fragment {
         }
     };
     public void  getDieticianChat(DieticainModel dieticainModel){
-
+        if (dieticainModel.getFirst_name() != null){
+            if (dieticainModel.getLast_name()!= null){
+                dieticianName.setText(dieticainModel.getFirst_name()+" "+dieticainModel.getLast_name());
+            }else{
+                dieticianName.setText(dieticainModel.getFirst_name());
+            }
+        }
         SendMessages= new Intent(XmppChatService.SENTMSGS);
         user_name = dieticainModel.getChat_username()+"@"+dieticainModel.getChat_server();
         ChatMessagesDatabase chatMessagesDatabase = new ChatMessagesDatabase(getContext());

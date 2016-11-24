@@ -13,15 +13,19 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.LruCache;
 import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
 import in.tagbin.mitohealthapp.activity.BinderActivity;
 import in.tagbin.mitohealthapp.R;
+import in.tagbin.mitohealthapp.helper.PrefManager;
 
 /**
  * Created by aasaqt on 13/8/16.
@@ -29,15 +33,19 @@ import in.tagbin.mitohealthapp.R;
 public class SliderImageAdapter extends PagerAdapter {
 
     private Context mContext;
-    private int[] mResources;
+    private int[] mResources,mIcons;
+    String[] mText,mText1;
     FragmentManager fragmentManager;
     private LruCache<String, Bitmap> mMemoryCache;
     FragmentTransaction fraTra;
     static Fragment fra;
 
-    public SliderImageAdapter(Context mContext, int[] mResources, FragmentManager fragmentManager) {
+    public SliderImageAdapter(Context mContext, int[] mResources,String[] text,String[] text1,int[] icons, FragmentManager fragmentManager) {
         this.mContext = mContext;
         this.mResources = mResources;
+        mIcons = icons;
+        mText = text;
+        mText1 = text1;
         this.fragmentManager = fragmentManager;
     }
 
@@ -53,45 +61,62 @@ public class SliderImageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_images_slider, container, false);
-
-        ImageView imageView = (ImageView) itemView.findViewById(R.id.img_pager_item);
-        final String imageKey = String.valueOf(mResources[position]);
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-
-        // Use 1/8th of the available memory for this memory cache.
-        final int cacheSize = maxMemory / 8;
-
-        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
-            @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
-                // The cache size will be measured in kilobytes rather than
-                // number of items.
-                return bitmap.getByteCount() / 1024;
-            }
-        };
-
-        final Bitmap bitmap = mMemoryCache.get(imageKey);
-        if (bitmap != null) {
-            imageView.setImageBitmap(bitmap);
-        } else {
-            imageView.setImageResource(R.drawable.profile_intro1);
-            BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-            task.execute(mResources[position]);
-        }
-
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_images_slider1, container, false);
+        RelativeLayout relativeLayout= (RelativeLayout) itemView.findViewById(R.id.relativeSlider);
+        //ImageView imageView = (ImageView) itemView.findViewById(R.id.img_pager_item);
+        ImageView icons = (ImageView) itemView.findViewById(R.id.img_pager_item);
+        ImageView back = (ImageView) itemView.findViewById(R.id.ivBack);
+        TextView textView = (TextView) itemView.findViewById(R.id.tvPagerSlider);
+        TextView textView1 = (TextView) itemView.findViewById(R.id.tvPagerSlider1);
+//        final String imageKey = String.valueOf(mResources[position]);
+//        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+//
+//        // Use 1/8th of the available memory for this memory cache.
+//        final int cacheSize = maxMemory / 8;
+//
+//        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+//            @Override
+//            protected int sizeOf(String key, Bitmap bitmap) {
+//                // The cache size will be measured in kilobytes rather than
+//                // number of items.
+//                return bitmap.getByteCount() / 1024;
+//            }
+//        };
+//
+//        final Bitmap bitmap = mMemoryCache.get(imageKey);
+//        if (bitmap != null) {
+//            relativeLayout.setBackgroundResource(bitmap);
+//        } else {
+//            relativeLayout.setBackgroundResource(R.drawable.profile_intro1);
+//            BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+//            task.execute(mResources[position]);
+//        }
+        relativeLayout.setBackgroundResource(mResources[position]);
+        icons.setImageResource(mIcons[position]);
+        textView.setText(mText[position]);
+        textView1.setText(mText1[position]);
 //        imageView.setImageResource(mResources[position]);
         if (position == 3){
-            imageView.setOnClickListener(new View.OnClickListener() {
+            relativeLayout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onClick(View view) {
+                public boolean onTouch(View v, MotionEvent event) {
+                    PrefManager pref = new PrefManager(mContext);
+                    pref.setTutorial(true);
+                    Toast.makeText(mContext,"Complete your MitoConnect profile first",Toast.LENGTH_LONG).show();
                     Intent i = new Intent(mContext,BinderActivity.class);
                     i.putExtra("profile_connect","profile");
                     mContext.startActivity(i);
                     ((Activity) mContext).finish();
+                    return true;
                 }
             });
         }
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((Activity) mContext).finish();
+            }
+        });
         container.addView(itemView);
         return itemView;
     }

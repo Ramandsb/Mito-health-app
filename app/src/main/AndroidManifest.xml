@@ -78,6 +78,7 @@
             android:name=".activity.SignUpDetailActivity"
             android:label="@string/title_activity_signup"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data

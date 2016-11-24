@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.TextView;
@@ -40,6 +41,7 @@ public class FoodSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         overridePendingTransition(R.anim.activity_open_translate_from_bottom, R.anim.activity_no_animation);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_food_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
