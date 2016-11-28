@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
@@ -25,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -46,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.R;
 import in.tagbin.mitohealthapp.app.Controller;
@@ -57,6 +60,7 @@ import in.tagbin.mitohealthapp.model.PrefernceModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
 import in.tagbin.mitohealthapp.model.SetGoalModel;
 import in.tagbin.mitohealthapp.model.UserDateModel;
+import in.tagbin.mitohealthapp.model.UserGoalTimeModel;
 import in.tagbin.mitohealthapp.model.UserGoalWeightModel;
 import in.tagbin.mitohealthapp.model.UserHeightModel;
 import in.tagbin.mitohealthapp.model.UserModel;
@@ -70,24 +74,24 @@ import pl.droidsonroids.gif.GifImageView;
  */
 
 public class SignUpDetailActivity extends AppCompatActivity implements View.OnClickListener {
-    EditText tv_name, tv_dateOfBirth,tv_height,tv_waist,tv_weight,tv_goal_weight;
-    TextInputLayout textInputName,textInputDob,textInputHeight,textInputWaist,textInputWeight,textInputGoalWeight;
-    TextView goalTimeValue,notYou;
-    static double height = 0.0,weight = 0.0,waist = 0.0,goal_weight = 0.0;
-    private int year, month, day,monthsValue = 8,prefernce_final,goal_id;
+    EditText tv_name, tv_dateOfBirth, tv_height, tv_waist, tv_weight, tv_goal_weight, tv_goal_time;
+    TextInputLayout textInputName, textInputDob, textInputHeight, textInputWaist, textInputWeight, textInputGoalWeight, textInputGoalTime;
+    TextView /*goalTimeValue,*/notYou;
+    static double height = 0.0, weight = 0.0, waist = 0.0, goal_weight = 0.0;
+    private int year, month, day, monthsValue = 8, prefernce_final, goal_id;
     SharedPreferences login_details;
     private Calendar calendar;
     PrefManager pref;
-    DiscreteSeekBar monthsSeekbar;
+    //DiscreteSeekBar monthsSeekbar;
     GifImageView progressBar;
-    RadioButton male,female;
+    RadioButton male, female;
     Button submit;
-    Spinner diet_preference,goal_type;
-    String height_new = "",weight_new = "",goal_weight_new = "",waist_new = "",dob = "",user_id,url = "",name = "default",gender = "",first_name = "",last_name = "",email = "",goalText;
-    double bmi_lower_limit=18.5,bmi_upper_limit = 24.9;
+    Spinner diet_preference, goal_type;
+    String height_new = "", weight_new = "", goal_weight_new = "", waist_new = "", dob = "", user_id, url = "", name = "default", gender = "", first_name = "", last_name = "", email = "", goalText;
+    double bmi_lower_limit = 18.5, bmi_upper_limit = 24.9;
     int weight_speed = 500;
     boolean changed = false;
-    ArrayAdapter<String> adapter,adapter1;
+    ArrayAdapter<String> adapter, adapter1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,17 +106,19 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         tv_waist = (EditText) findViewById(R.id.etProfileWaist);
         tv_weight = (EditText) findViewById(R.id.etProfileWeight);
         tv_goal_weight = (EditText) findViewById(R.id.etProfileGoalWeight);
+        tv_goal_time = (EditText) findViewById(R.id.etProfileGoalTime);
         textInputName = (TextInputLayout) findViewById(R.id.profileName);
         textInputDob = (TextInputLayout) findViewById(R.id.profileDob);
         textInputHeight = (TextInputLayout) findViewById(R.id.profileHeight);
         textInputWaist = (TextInputLayout) findViewById(R.id.profileWaist);
         textInputWeight = (TextInputLayout) findViewById(R.id.profileWeight);
         textInputGoalWeight = (TextInputLayout) findViewById(R.id.profileGoalWeight);
+        textInputGoalTime = (TextInputLayout) findViewById(R.id.profileGoalWeight);
         diet_preference = (Spinner) findViewById(R.id.spinnerDietPreference);
         goal_type = (Spinner) findViewById(R.id.spinnerGoal);
         progressBar = (GifImageView) findViewById(R.id.progressBar);
-        monthsSeekbar = (DiscreteSeekBar) findViewById(R.id.seekbarMonths);
-        goalTimeValue = (TextView) findViewById(R.id.tvGoalTimeValue);
+//        monthsSeekbar = (DiscreteSeekBar) findViewById(R.id.seekbarMonths);
+//        goalTimeValue = (TextView) findViewById(R.id.tvGoalTimeValue);
         notYou = (TextView) findViewById(R.id.tvProfileNotYou);
         notYou.setOnClickListener(this);
         male = (RadioButton) findViewById(R.id.radioMale);
@@ -122,6 +128,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         tv_dateOfBirth.setOnClickListener(this);
         tv_height.setOnClickListener(this);
         tv_goal_weight.setOnClickListener(this);
+        tv_goal_time.setOnClickListener(this);
         tv_weight.setOnClickListener(this);
         tv_waist.setOnClickListener(this);
         pref = new PrefManager(this);
@@ -136,28 +143,28 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         tv_name.setFocusable(false);
         tv_name.setFocusableInTouchMode(true);
         tv_name.setFocusable(true);
-        Controller.getUserDetails(SignUpDetailActivity.this, user_id, mUserDetailsListener);
-        if (pref.getCurrentPreferenceAsObject() != null){
+
+        if (pref.getCurrentPreferenceAsObject() != null) {
             final List<PrefernceModel> diet_options = pref.getCurrentPreferenceAsObject();
             final List<String> diet = new ArrayList<String>();
-            for (int i= 0;i<diet_options.size();i++){
+            for (int i = 0; i < diet_options.size(); i++) {
                 diet.add(diet_options.get(i).getRecipe_type());
             }
-            adapter1 = new ArrayAdapter<String>(this,R.layout.item_spinner1, diet);
+            adapter1 = new ArrayAdapter<String>(this, R.layout.item_spinner1, diet);
             adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             diet_preference.setAdapter(adapter1);
-            diet_preference.setSelection(0,false);
+            diet_preference.setSelection(0, false);
             diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Log.d("item selected", diet.get(i));
                     //unit[0] = diet_options.get(i);
-                    for (int y= 0; y<diet_options.size();y++){
-                        if (diet.get(i).equals(diet_options.get(y).getRecipe_type())){
+                    for (int y = 0; y < diet_options.size(); y++) {
+                        if (diet.get(i).equals(diet_options.get(y).getRecipe_type())) {
                             prefernce_final = diet_options.get(y).getId();
                         }
                     }
-                    Controller.setPreferences(SignUpDetailActivity.this,prefernce_final,user_id,mPreferenceListener);
+                    Controller.setPreferences(SignUpDetailActivity.this, prefernce_final, user_id, mPreferenceListener);
                 }
 
                 @Override
@@ -165,27 +172,27 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
                 }
             });
-        }else{
-            Controller.getDietPrefernce(SignUpDetailActivity.this,mDietListener);
+        } else {
+            Controller.getDietPrefernce(SignUpDetailActivity.this, mDietListener);
         }
-        if (pref.getCurrentGoalAsObject() != null){
+        if (pref.getCurrentGoalAsObject() != null) {
             final List<SetGoalModel> diet_options = pref.getCurrentGoalAsObject();
             final List<String> diet = new ArrayList<String>();
-            for (int i= 0;i<diet_options.size();i++){
+            for (int i = 0; i < diet_options.size(); i++) {
                 diet.add(diet_options.get(i).getGoal());
             }
-            adapter = new ArrayAdapter<String>(this,R.layout.item_spinner1, diet);
+            adapter = new ArrayAdapter<String>(this, R.layout.item_spinner1, diet);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             goal_type.setAdapter(adapter);
-            goal_type.setSelection(0,false);
+            goal_type.setSelection(0, false);
             goal_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     Log.d("item selected", diet.get(i));
                     goalText = diet.get(i);
                     //unit[0] = diet_options.get(i);
-                    for (int y= 0; y<diet_options.size();y++){
-                        if (diet.get(i).equals("Maintain weight")){
+                    for (int y = 0; y < diet_options.size(); y++) {
+                        if (diet.get(i).equals("Maintain weight")) {
                             if (goal_weight != weight) {
                                 goal_weight = weight;
                                 monthsValue = 0;
@@ -193,12 +200,12 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                                     @Override
                                     public void run() {
                                         tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight / 1000).toString() + " Kg");
-                                        goalTimeValue.setText(monthsValue + " weeks");
-                                        monthsSeekbar.setProgress(monthsValue);
+                                        tv_goal_time.setText(monthsValue + " weeks");
+                                        //monthsSeekbar.setProgress(monthsValue);
                                     }
                                 });
                             }
-                        }else if(diet.get(i).equals("Gain weight")){
+                        } else if (diet.get(i).equals("Gain weight")) {
                             if (goal_weight <= weight) {
                                 goal_weight = 0;
                                 runOnUiThread(new Runnable() {
@@ -208,7 +215,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                                     }
                                 });
                             }
-                        }else if (diet.get(i).equals("Loose weight")){
+                        } else if (diet.get(i).equals("Loose weight")) {
                             if (goal_weight >= weight) {
                                 goal_weight = 0;
                                 runOnUiThread(new Runnable() {
@@ -219,12 +226,12 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                                 });
                             }
                         }
-                        if (diet.get(i).equals(diet_options.get(y).getGoal())){
+                        if (diet.get(i).equals(diet_options.get(y).getGoal())) {
                             goal_id = diet_options.get(y).getId();
-                            Log.d("changed","goal");
+                            Log.d("changed", "goal");
                         }
                     }
-                    Controller.setGoal(SignUpDetailActivity.this,goal_id,user_id,mPreferenceListener);
+                    Controller.setGoal(SignUpDetailActivity.this, goal_id, user_id, mPreferenceListener);
                 }
 
                 @Override
@@ -232,29 +239,30 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
                 }
             });
-        }else {
+        } else {
             Controller.getGoals(this, mGoalsListener);
         }
-        if (male.isChecked()){
+        Controller.getUserDetails(SignUpDetailActivity.this, user_id, mUserDetailsListener);
+        if (male.isChecked()) {
             gender = "M";
             SharedPreferences.Editor saveGender = login_details.edit();
             saveGender.putString("gender", gender);
             saveGender.commit();
-        }else if (female.isChecked()){
+        } else if (female.isChecked()) {
             gender = "F";
             SharedPreferences.Editor saveGender = login_details.edit();
             saveGender.putString("gender", gender);
             saveGender.commit();
         }
-        monthsSeekbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
-            @Override
-            public int transform(int value) {
-                //settingsModel.setMaximum_distance(value);
-                monthsValue = value;
-                goalTimeValue.setText(monthsValue+ " weeks");
-                return value;
-            }
-        });
+//        monthsSeekbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+//            @Override
+//            public int transform(int value) {
+//                //settingsModel.setMaximum_distance(value);
+//                monthsValue = value;
+//                goalTimeValue.setText(monthsValue+ " weeks");
+//                return value;
+//            }
+//        });
         tv_name.addTextChangedListener(new MyTextWatcher(tv_name));
         tv_dateOfBirth.addTextChangedListener(new MyTextWatcher(tv_dateOfBirth));
         tv_height.addTextChangedListener(new MyTextWatcher(tv_height));
@@ -262,7 +270,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         tv_weight.addTextChangedListener(new MyTextWatcher(tv_weight));
         tv_goal_weight.addTextChangedListener(new MyTextWatcher(tv_goal_weight));
     }
-    public void  showDateDialog(){
+
+    public void showDateDialog() {
         int j = 0, j1 = 0, j2 = 0;
         final DatePickerDialog dpd = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
@@ -293,7 +302,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         tv_dateOfBirth.setText(dob);
                         UserDateModel userDateModel = new UserDateModel();
                         userDateModel.setDob(dob);
-                        Controller.setUserDate(SignUpDetailActivity.this,userDateModel,user_id,mSetUserDetailsListener);
+                        Controller.setUserDate(SignUpDetailActivity.this, userDateModel, user_id, mSetUserDetailsListener);
 //                        if (height == 0 || waist == 0 || weight == 0 || goal_weight == 0  || dob == null || dob.equals("")) {
 ////                            if (first_name == null || first_name.equals("")){
 ////                                showNameDialog();
@@ -323,6 +332,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         dpd.show();
         hideKeyboard();
     }
+
     public void showHeightDialog() {
 
         final Dialog dialog = new Dialog(this);
@@ -340,7 +350,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         dialog_name.setText("Height");
         final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
         if (height != 0.0) {
-            seekBar.setText(new DecimalFormat("##.#").format(height/2.54).toString());
+            seekBar.setText(new DecimalFormat("##.#").format(height / 2.54).toString());
         }
         seekBar.setSelectAllOnFocus(true);
         View done = dialog.findViewById(R.id.height_done);
@@ -351,19 +361,19 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(0,false);
+        spinner.setSelection(0, false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Log.d("item selected", measuring_units.get(i));
                 unit[0] = measuring_units.get(i);
-                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()){
+                if (seekBar.getText().toString() != null && !seekBar.getText().toString().isEmpty()) {
                     if (unit[0].equals("Inches")) {
                         seekBar.setSelectAllOnFocus(true);
-                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString())/2.54).toString());
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString()) / 2.54).toString());
                     } else if (unit[0].equals("Centimeters")) {
                         seekBar.setSelectAllOnFocus(true);
-                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString())*2.54).toString());
+                        seekBar.setText(new DecimalFormat("##.#").format(Float.parseFloat(seekBar.getText().toString()) * 2.54).toString());
                     }
                 }
             }
@@ -388,13 +398,13 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     }
                     UserHeightModel userDateModel = new UserHeightModel();
                     userDateModel.setHeight(String.valueOf(height));
-                    Controller.setUserHeight(SignUpDetailActivity.this,userDateModel,user_id,mSetUserDetailsListener);
+                    Controller.setUserHeight(SignUpDetailActivity.this, userDateModel, user_id, mSetUserDetailsListener);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("height", (float) height);
                     tv_height.setText(height_new);
                     Log.d("height value", height_new);
                     //if(height != 0 && weight != 0 && !changed){
-                        calculateDefaultValues(height,weight);
+                    calculateDefaultValues(height, weight);
                     //}
                 }
 
@@ -421,7 +431,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 //                        showGoal_WeightDialog();
 //                    }
 //                } else {
-                    dialog.dismiss();
+                dialog.dismiss();
                 //}
 
             }
@@ -459,13 +469,13 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         textInputLayout.setHint("Weight");
         final String[] unit = {"Kg"};
         if (weight != 0.0) {
-            seekBar.setText(new DecimalFormat("##.#").format(weight/1000).toString());
+            seekBar.setText(new DecimalFormat("##.#").format(weight / 1000).toString());
         }
         seekBar.setSelectAllOnFocus(true);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(0,false);
+        spinner.setSelection(0, false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -500,12 +510,12 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     }
                     UserWeightModel userDateModel = new UserWeightModel();
                     userDateModel.setWeight(String.valueOf(weight));
-                    Controller.setUserWeight(SignUpDetailActivity.this,userDateModel,user_id,mSetUserDetailsListener);
+                    Controller.setUserWeight(SignUpDetailActivity.this, userDateModel, user_id, mSetUserDetailsListener);
                     tv_weight.setText(weight_new);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("weight", (float) weight);
                     //if(height != 0 && weight != 0 && !changed){
-                        calculateDefaultValues(height,weight);
+                    calculateDefaultValues(height, weight);
                     //}
                 }
 
@@ -533,8 +543,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 //                } else {
 
                 hideKeyboard();
-                    dialog.dismiss();
-               // }
+                dialog.dismiss();
+                // }
 
             }
         });
@@ -549,6 +559,38 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 tv_name.setFocusable(true);
             }
         });
+        hideKeyboard();
+    }
+
+    public void showGoalTimeDialog() {
+        final NumberPicker picker;
+        MaterialNumberPicker.Builder numberPickerBuilder = new MaterialNumberPicker.Builder(this);
+        numberPickerBuilder
+                .minValue(1)
+                .maxValue(52)
+                .defaultValue(8)
+                .separatorColor(ContextCompat.getColor(this, R.color.colorAccent))
+                .textColor(ContextCompat.getColor(this, R.color.colorPrimary))
+                .textSize(25);
+        picker = numberPickerBuilder.build();
+        final android.app.AlertDialog.Builder alertDialog1 = new android.app.AlertDialog.Builder(SignUpDetailActivity.this, R.style.AppCompatAlertDialogStyle);
+        alertDialog1.setTitle("Set Goal Time");
+        alertDialog1.setView(picker);
+        alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+//                mProgressBar.setVisibility(View.VISIBLE);
+//                Controller.deleteLogFood(mContext, mModel.getId(), mDeleteListener);
+                monthsValue = picker.getValue();
+                tv_goal_time.setText(monthsValue+" weeks");
+                dialog.dismiss();
+            }
+        });
+        alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog1.show();
         hideKeyboard();
     }
 
@@ -573,12 +615,12 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         seekBar.setSelectAllOnFocus(true);
         final String[] unit = {"Kg"};
         if (goal_weight != 0.0) {
-            seekBar.setText(new DecimalFormat("##.#").format(goal_weight/1000).toString());
+            seekBar.setText(new DecimalFormat("##.#").format(goal_weight / 1000).toString());
         }
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(0,false);
+        spinner.setSelection(0, false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -615,14 +657,14 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     tv_goal_weight.setText(goal_weight_new);
                     UserGoalWeightModel userDateModel = new UserGoalWeightModel();
                     userDateModel.setGoal_weight(String.valueOf(goal_weight));
-                    Controller.setUserGoalWeight(SignUpDetailActivity.this,userDateModel,user_id,mSetUserDetailsListener);
+                    Controller.setUserGoalWeight(SignUpDetailActivity.this, userDateModel, user_id, mSetUserDetailsListener);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("goal_weight", (float) goal_weight);
-                    if(goal_weight == weight){
+                    if (goal_weight == weight) {
                         goalText = "Maintain weight";
-                    }else if (goal_weight < weight){
+                    } else if (goal_weight < weight) {
                         goalText = "Loose weight";
-                    }else if(goal_weight > weight){
+                    } else if (goal_weight > weight) {
                         goalText = "Gain weight";
                     }
                     final int position = adapter.getPosition(goalText);
@@ -657,7 +699,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 //                } else {
 
                 hideKeyboard();
-                    dialog.dismiss();
+                dialog.dismiss();
                 //}
 
             }
@@ -700,12 +742,12 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         textInputLayout.setHint("Waist");
         final String[] unit = {"Inches"};
         if (waist != 0.0) {
-            seekBar.setText(new DecimalFormat("##.#").format(waist/2.54).toString());
+            seekBar.setText(new DecimalFormat("##.#").format(waist / 2.54).toString());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, measuring_units);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        spinner.setSelection(0,false);
+        spinner.setSelection(0, false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -742,11 +784,11 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                     tv_waist.setText(waist_new);
                     UserWaistModel userDateModel = new UserWaistModel();
                     userDateModel.setWaist(String.valueOf(waist));
-                    Controller.setUserWaist(SignUpDetailActivity.this,userDateModel,user_id,mSetUserDetailsListener);
+                    Controller.setUserWaist(SignUpDetailActivity.this, userDateModel, user_id, mSetUserDetailsListener);
                     SharedPreferences.Editor editor = login_details.edit();
                     editor.putFloat("waist", (float) waist);
                     //if(height != 0 && weight != 0 && !changed){
-                        calculateDefaultValues(height,weight);
+                    calculateDefaultValues(height, weight);
                     //}
                 }
 
@@ -774,7 +816,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 //                } else {
 
                 hideKeyboard();
-                    dialog.dismiss();
+                dialog.dismiss();
                 //}
 
             }
@@ -794,7 +836,8 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
         hideKeyboard();
     }
-    public void showNameDialog(){
+
+    public void showNameDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.item_value_picker);
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -808,10 +851,10 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         spinner.setVisibility(View.GONE);
         final EditText seekBar = (EditText) dialog.findViewById(R.id.height_seekbar);
         final EditText seekBar1 = (EditText) dialog.findViewById(R.id.height_seekbar1);
-        if (first_name != null){
+        if (first_name != null) {
             seekBar.setText(first_name);
         }
-        if (last_name != null){
+        if (last_name != null) {
             seekBar1.setText(last_name);
         }
         seekBar.setSelectAllOnFocus(true);
@@ -835,16 +878,16 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 UserNameModel userDateModel = new UserNameModel();
                 userDateModel.setFirst_name(first_name);
                 userDateModel.setLast_name(last_name);
-                Controller.setUserName(SignUpDetailActivity.this,userDateModel,user_id,mSetUserDetailsListener);
+                Controller.setUserName(SignUpDetailActivity.this, userDateModel, user_id, mSetUserDetailsListener);
                 if (height == 0 || waist == 0 || weight == 0 || dob == null || dob.equals("")) {
 //                    if (first_name == null || first_name.equals("")){
 //                        dialog.dismiss();
 //                        showNameDialog();
 //                    }else
-                    if (dob == null || dob.equals("")){
+                    if (dob == null || dob.equals("")) {
                         dialog.dismiss();
                         showDateDialog();
-                    }else if (height == 0) {
+                    } else if (height == 0) {
                         dialog.dismiss();
                         showHeightDialog();
                     } else if (weight == 0) {
@@ -864,6 +907,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         });
         dialog.show();
     }
+
     RequestListener mSetUserDetailsListener = new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -880,14 +924,14 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         public void onRequestError(int errorCode, String message) {
 
             if (errorCode >= 400 && errorCode < 500) {
-                if (errorCode == 403){
-                    SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor=loginDetails.edit();
+                if (errorCode == 403) {
+                    SharedPreferences loginDetails = getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = loginDetails.edit();
                     editor.clear();
                     editor.commit();
                     PrefManager pref = new PrefManager(SignUpDetailActivity.this);
                     pref.clearSession();
-                    startActivity(new Intent(SignUpDetailActivity.this,SplashActivity.class));
+                    startActivity(new Intent(SignUpDetailActivity.this, SplashActivity.class));
                     finish();
                 }
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
@@ -898,7 +942,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         Toast.makeText(SignUpDetailActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }else{
+            } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -917,7 +961,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
-            Log.d("edit profile",responseObject.toString());
+            Log.d("edit profile", responseObject.toString());
             final UserModel userModel = JsonUtils.objectify(responseObject.toString(), UserModel.class);
             pref.setKeyUserDetails(userModel);
 
@@ -953,9 +997,9 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         public void onRequestError(int errorCode, String message) {
-            Log.d("edit profile error",message);
+            Log.d("edit profile error", message);
 
-            if (pref.getKeyUserDetails() != null){
+            if (pref.getKeyUserDetails() != null) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -965,14 +1009,14 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 });
             }
             if (errorCode >= 400 && errorCode < 500) {
-                if (errorCode == 403){
-                    SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor=loginDetails.edit();
+                if (errorCode == 403) {
+                    SharedPreferences loginDetails = getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = loginDetails.edit();
                     editor.clear();
                     editor.commit();
                     PrefManager pref = new PrefManager(SignUpDetailActivity.this);
                     pref.clearSession();
-                    startActivity(new Intent(SignUpDetailActivity.this,SplashActivity.class));
+                    startActivity(new Intent(SignUpDetailActivity.this, SplashActivity.class));
                     finish();
                 }
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
@@ -983,7 +1027,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         Toast.makeText(SignUpDetailActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }else{
+            } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -994,6 +1038,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             }
         }
     };
+
     public void updateProfile(final UserModel userModel) {
         if (userModel.getProfile().getDob() != null) {
             dob = userModel.getProfile().getDob();
@@ -1007,12 +1052,15 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         weight = userModel.getProfile().getWeight();
         goal_weight = userModel.getProfile().getGoal_weight();
         waist = userModel.getProfile().getWaist();
-        monthsValue = userModel.getProfile().getGoal_time()/7;
-        goalTimeValue.setText(monthsValue+ " weeks");
-        monthsSeekbar.setProgress(monthsValue);
-        if (goal_weight != 0 && weight != 0){
-            double goal = goal_weight/1000;
-            double weightFinal = weight/1000;
+        monthsValue = userModel.getProfile().getGoal_time() / 7;
+        if (monthsValue != 0) {
+            tv_goal_time.setText(monthsValue + " weeks");
+        }
+//        goalTimeValue.setText(monthsValue+ " weeks");
+//        monthsSeekbar.setProgress(monthsValue);
+        if (goal_weight != 0 && weight != 0) {
+            double goal = goal_weight / 1000;
+            double weightFinal = weight / 1000;
 //            monthsHeading.setVisibility(View.VISIBLE);
 //            if (weightFinal - goal <0 ){
 //                monthsHeading.setText("Gaining "+new DecimalFormat("##.#").format((-(weightFinal-goal)/monthsValue)).toString()+" kgs/week");
@@ -1020,13 +1068,13 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 //                monthsHeading.setText("Loosing "+new DecimalFormat("##.#").format(((weightFinal-goal)/monthsValue)).toString()+" kgs/week");
 //            }
 
-        }else{
+        } else {
 //            monthsHeading.setVisibility(View.GONE);
         }
         if (userModel.getUser().getFirst_name() != null) {
             if (userModel.getUser().getLast_name() != null) {
                 tv_name.setText(userModel.getUser().getFirst_name() + " " + userModel.getUser().getLast_name());
-            }else
+            } else
                 tv_name.setText(userModel.getUser().getFirst_name());
         }
         if (gender.equals("M")) {
@@ -1048,12 +1096,12 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             //double fee = height *0.03;
             //double inch = height % 12;
 
-            tv_height.setText(new DecimalFormat("##.#").format(height).toString()+ " cms" );
+            tv_height.setText(new DecimalFormat("##.#").format(height).toString() + " cms");
 
         }
         if (weight != 0) {
             double kg = weight / 1000;
-            tv_weight.setText(new DecimalFormat("##.#").format(kg).toString() +" Kg");
+            tv_weight.setText(new DecimalFormat("##.#").format(kg).toString() + " Kg");
         }
 //        if(height != 0 && weight != 0 && !changed){
 //            calculateDefaultValues(height,weight);
@@ -1062,11 +1110,11 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             double grams = goal_weight % 1000;
             double kg = goal_weight / 1000;
             //changed = true;
-            tv_goal_weight.setText(new DecimalFormat("##.#").format(kg).toString() +" Kg");
+            tv_goal_weight.setText(new DecimalFormat("##.#").format(kg).toString() + " Kg");
         }
         if (waist != 0) {
             //double inv = waist % 0.39;
-            tv_waist.setText(new DecimalFormat("##.#").format(waist/2.54).toString()+ " inches");
+            tv_waist.setText(new DecimalFormat("##.#").format(waist / 2.54).toString() + " inches");
         }
         if (userModel.getProfile().getGoal() != null) {
             goalText = userModel.getProfile().getGoal().getGoal();
@@ -1081,7 +1129,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             });
         }
 
-        if (userModel.getProfile().getPreferences() != null){
+        if (userModel.getProfile().getPreferences() != null) {
             final int position = adapter1.getPosition(userModel.getProfile().getPreferences().getRecipe_type());
             diet_preference.post(new Runnable() {
                 @Override
@@ -1093,6 +1141,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         }
 
     }
+
     RequestListener mPreferenceListener = new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -1107,14 +1156,14 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         @Override
         public void onRequestError(int errorCode, String message) {
             if (errorCode >= 400 && errorCode < 500) {
-                if (errorCode == 403){
-                    SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor=loginDetails.edit();
+                if (errorCode == 403) {
+                    SharedPreferences loginDetails = getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = loginDetails.edit();
                     editor.clear();
                     editor.commit();
                     PrefManager pref = new PrefManager(SignUpDetailActivity.this);
                     pref.clearSession();
-                    startActivity(new Intent(SignUpDetailActivity.this,SplashActivity.class));
+                    startActivity(new Intent(SignUpDetailActivity.this, SplashActivity.class));
                     finish();
                 }
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
@@ -1125,7 +1174,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         Toast.makeText(SignUpDetailActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }else{
+            } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1151,28 +1200,28 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
             pref.saveCurrentPrefernces(diet_options);
             final List<String> diet = new ArrayList<String>();
-            for (int i= 0;i<diet_options.size();i++){
+            for (int i = 0; i < diet_options.size(); i++) {
                 diet.add(diet_options.get(i).getRecipe_type());
             }
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    adapter1 = new ArrayAdapter<String>(SignUpDetailActivity.this,R.layout.item_spinner1, diet);
+                    adapter1 = new ArrayAdapter<String>(SignUpDetailActivity.this, R.layout.item_spinner1, diet);
                     adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     diet_preference.setAdapter(adapter1);
-                    diet_preference.setSelection(0,false);
+                    diet_preference.setSelection(0, false);
                     diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             Log.d("item selected", diet.get(i));
                             //unit[0] = diet_options.get(i);
-                            for (int y= 0; y<diet_options.size();y++){
-                                if (diet.get(i).equals(diet_options.get(y).getRecipe_type())){
+                            for (int y = 0; y < diet_options.size(); y++) {
+                                if (diet.get(i).equals(diet_options.get(y).getRecipe_type())) {
                                     prefernce_final = diet_options.get(y).getId();
                                 }
                             }
-                            Controller.setPreferences(SignUpDetailActivity.this,prefernce_final,user_id,mPreferenceListener);
+                            Controller.setPreferences(SignUpDetailActivity.this, prefernce_final, user_id, mPreferenceListener);
                         }
 
                         @Override
@@ -1187,14 +1236,14 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         @Override
         public void onRequestError(int errorCode, String message) {
             if (errorCode >= 400 && errorCode < 500) {
-                if (errorCode == 403){
-                    SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor=loginDetails.edit();
+                if (errorCode == 403) {
+                    SharedPreferences loginDetails = getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = loginDetails.edit();
                     editor.clear();
                     editor.commit();
                     PrefManager pref = new PrefManager(SignUpDetailActivity.this);
                     pref.clearSession();
-                    startActivity(new Intent(SignUpDetailActivity.this,SplashActivity.class));
+                    startActivity(new Intent(SignUpDetailActivity.this, SplashActivity.class));
                     finish();
                 }
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
@@ -1205,7 +1254,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         Toast.makeText(SignUpDetailActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }else{
+            } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1231,24 +1280,24 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
             pref.saveCurrentGoal(diet_options);
             final List<String> diet = new ArrayList<String>();
-            for (int i= 0;i<diet_options.size();i++){
+            for (int i = 0; i < diet_options.size(); i++) {
                 diet.add(diet_options.get(i).getGoal());
             }
 
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    adapter = new ArrayAdapter<String>(SignUpDetailActivity.this,R.layout.item_spinner1, diet);
+                    adapter = new ArrayAdapter<String>(SignUpDetailActivity.this, R.layout.item_spinner1, diet);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     goal_type.setAdapter(adapter);
-                    goal_type.setSelection(0,false);
+                    goal_type.setSelection(0, false);
                     goal_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             Log.d("item selected", diet.get(i));
                             goalText = diet.get(i);
                             //unit[0] = diet_options.get(i);
-                            if (diet.get(i).equals("Maintain weight")){
+                            if (diet.get(i).equals("Maintain weight")) {
                                 if (goal_weight != weight) {
                                     goal_weight = weight;
                                     monthsValue = 0;
@@ -1256,12 +1305,12 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                                         @Override
                                         public void run() {
                                             tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight / 1000).toString() + " Kg");
-                                            goalTimeValue.setText(monthsValue + " weeks");
-                                            monthsSeekbar.setProgress(monthsValue);
+                                            tv_goal_time.setText(monthsValue + " weeks");
+                                            //monthsSeekbar.setProgress(monthsValue);
                                         }
                                     });
                                 }
-                            }else if(diet.get(i).equals("Gain weight")){
+                            } else if (diet.get(i).equals("Gain weight")) {
                                 if (goal_weight <= weight) {
                                     goal_weight = 0;
                                     runOnUiThread(new Runnable() {
@@ -1271,7 +1320,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                                         }
                                     });
                                 }
-                            }else if (diet.get(i).equals("Loose weight")){
+                            } else if (diet.get(i).equals("Loose weight")) {
                                 if (goal_weight >= weight) {
                                     goal_weight = 0;
                                     runOnUiThread(new Runnable() {
@@ -1282,14 +1331,14 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                                     });
                                 }
                             }
-                            for (int y= 0; y<diet_options.size();y++){
-                                if (diet.get(i).equals(diet_options.get(y).getGoal())){
+                            for (int y = 0; y < diet_options.size(); y++) {
+                                if (diet.get(i).equals(diet_options.get(y).getGoal())) {
                                     goal_id = diet_options.get(y).getId();
 //                                    Log.d("changed","goal");
 //                                    changed = true;
                                 }
                             }
-                            Controller.setGoal(SignUpDetailActivity.this,goal_id,user_id,mPreferenceListener);
+                            Controller.setGoal(SignUpDetailActivity.this, goal_id, user_id, mPreferenceListener);
                         }
 
                         @Override
@@ -1304,14 +1353,14 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         @Override
         public void onRequestError(int errorCode, String message) {
             if (errorCode >= 400 && errorCode < 500) {
-                if (errorCode == 403){
-                    SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor=loginDetails.edit();
+                if (errorCode == 403) {
+                    SharedPreferences loginDetails = getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = loginDetails.edit();
                     editor.clear();
                     editor.commit();
                     PrefManager pref = new PrefManager(SignUpDetailActivity.this);
                     pref.clearSession();
-                    startActivity(new Intent(SignUpDetailActivity.this,SplashActivity.class));
+                    startActivity(new Intent(SignUpDetailActivity.this, SplashActivity.class));
                     finish();
                 }
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
@@ -1322,7 +1371,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         Toast.makeText(SignUpDetailActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }else{
+            } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1333,9 +1382,10 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             }
         }
     };
+
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.etProfileDob:
                 showDateDialog();
                 break;
@@ -1350,57 +1400,60 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.etProfileGoalWeight:
                 changed = true;
-                Log.d("changed","goal weight");
+                Log.d("changed", "goal weight");
                 showGoal_WeightDialog();
+                break;
+            case R.id.etProfileGoalTime:
+                changed = true;
+                showGoalTimeDialog();
                 break;
             case R.id.buttonEnterProfile:
                 pref.setKeyUserDetails(null);
                 if (!validateName()) {
-                    Toast.makeText(SignUpDetailActivity.this,"Please enter name",Toast.LENGTH_LONG).show();
+                    Toast.makeText(SignUpDetailActivity.this, "Please enter name", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if(!validateHeight()){
-                    Toast.makeText(SignUpDetailActivity.this,"Please enter height",Toast.LENGTH_LONG).show();
+                if (!validateHeight()) {
+                    Toast.makeText(SignUpDetailActivity.this, "Please enter height", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (!validateWeight()){
-                    Toast.makeText(SignUpDetailActivity.this,"Please enter weight",Toast.LENGTH_LONG).show();
+                if (!validateWeight()) {
+                    Toast.makeText(SignUpDetailActivity.this, "Please enter weight", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (!validatedob())
-                {
-                    Toast.makeText(SignUpDetailActivity.this,"Please enter date of birth",Toast.LENGTH_LONG).show();
+                if (!validatedob()) {
+                    Toast.makeText(SignUpDetailActivity.this, "Please enter date of birth", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (!validateWaist()){
-                    Toast.makeText(SignUpDetailActivity.this,"Please enter waist",Toast.LENGTH_LONG).show();
+                if (!validateWaist()) {
+                    Toast.makeText(SignUpDetailActivity.this, "Please enter waist", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (!validateGoalWeight()){
-                    Toast.makeText(SignUpDetailActivity.this,"Please enter goal weight",Toast.LENGTH_LONG).show();
+                if (!validateGoalWeight()) {
+                    Toast.makeText(SignUpDetailActivity.this, "Please enter goal weight", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (goalText.toLowerCase().equals("maintain weight")){
-                    if (goal_weight != weight){
-                        Toast.makeText(SignUpDetailActivity.this,"Goal weight should be same as your weight",Toast.LENGTH_LONG).show();
+                if (goalText.toLowerCase().equals("maintain weight")) {
+                    if (goal_weight != weight) {
+                        Toast.makeText(SignUpDetailActivity.this, "Goal weight should be same as your weight", Toast.LENGTH_LONG).show();
                         return;
                     }
-                }else if (goalText.toLowerCase().equals("loose weight")){
-                    if (goal_weight >= weight){
-                        Toast.makeText(SignUpDetailActivity.this,"Goal weight should be less than your weight",Toast.LENGTH_LONG).show();
+                } else if (goalText.toLowerCase().equals("loose weight")) {
+                    if (goal_weight >= weight) {
+                        Toast.makeText(SignUpDetailActivity.this, "Goal weight should be less than your weight", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    if (monthsValue == 0){
-                        Toast.makeText(SignUpDetailActivity.this,"Please enter goal time",Toast.LENGTH_LONG).show();
+                    if (monthsValue == 0) {
+                        Toast.makeText(SignUpDetailActivity.this, "Please enter goal time", Toast.LENGTH_LONG).show();
                         return;
                     }
-                }else if(goalText.toLowerCase().equals("gain weight")){
-                    if (goal_weight <= weight){
-                        Toast.makeText(SignUpDetailActivity.this,"Goal weight should be greater than your weight",Toast.LENGTH_LONG).show();
+                } else if (goalText.toLowerCase().equals("gain weight")) {
+                    if (goal_weight <= weight) {
+                        Toast.makeText(SignUpDetailActivity.this, "Goal weight should be greater than your weight", Toast.LENGTH_LONG).show();
                         return;
                     }
-                    if (monthsValue == 0){
-                        Toast.makeText(SignUpDetailActivity.this,"Please enter goal time",Toast.LENGTH_LONG).show();
+                    if (monthsValue == 0) {
+                        Toast.makeText(SignUpDetailActivity.this, "Please enter goal time", Toast.LENGTH_LONG).show();
                         return;
                     }
                 }
@@ -1415,23 +1468,24 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 sendEditProfileModel.setWaist(String.valueOf(waist));
                 sendEditProfileModel.setWeight(String.valueOf(weight));
                 sendEditProfileModel.setPreferences(prefernce_final);
-                sendEditProfileModel.setGoal_time(monthsValue*7);
+                sendEditProfileModel.setGoal_time(monthsValue * 7);
                 sendEditProfileModel.setGoal(goal_id);
                 progressBar.setVisibility(View.VISIBLE);
-                Controller.setUserDetails(SignUpDetailActivity.this,user_id,sendEditProfileModel,mSendUserListener);
+                Controller.setUserDetails(SignUpDetailActivity.this, user_id, sendEditProfileModel, mSendUserListener);
                 break;
             case R.id.tvProfileNotYou:
-                SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor=loginDetails.edit();
+                SharedPreferences loginDetails = getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = loginDetails.edit();
                 editor.clear();
                 editor.commit();
                 PrefManager pref = new PrefManager(this);
                 pref.clearSession();
-                startActivity(new Intent(this,SplashActivity.class));
+                startActivity(new Intent(this, SplashActivity.class));
                 finish();
                 break;
         }
     }
+
     RequestListener mSendUserListener = new RequestListener() {
         @Override
         public void onRequestStarted() {
@@ -1441,7 +1495,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
         @Override
         public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
             Log.d("user set", responseObject.toString());
-            pref.setKeyUserDetails(JsonUtils.objectify(responseObject.toString(),UserModel.class));
+            pref.setKeyUserDetails(JsonUtils.objectify(responseObject.toString(), UserModel.class));
             pref.setSignup(true);
             runOnUiThread(new Runnable() {
                 @Override
@@ -1456,16 +1510,16 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         public void onRequestError(int errorCode, String message) {
-            Log.d("send user error",message);
+            Log.d("send user error", message);
             if (errorCode >= 400 && errorCode < 500) {
-                if (errorCode == 403){
-                    SharedPreferences loginDetails= getSharedPreferences(MainActivity.LOGIN_DETAILS,Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor=loginDetails.edit();
+                if (errorCode == 403) {
+                    SharedPreferences loginDetails = getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = loginDetails.edit();
                     editor.clear();
                     editor.commit();
                     PrefManager pref = new PrefManager(SignUpDetailActivity.this);
                     pref.clearSession();
-                    startActivity(new Intent(SignUpDetailActivity.this,SplashActivity.class));
+                    startActivity(new Intent(SignUpDetailActivity.this, SplashActivity.class));
                     finish();
                 }
                 final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
@@ -1476,7 +1530,7 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                         Toast.makeText(SignUpDetailActivity.this, errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
-            }else{
+            } else {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1487,20 +1541,25 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             }
         }
     };
+
     private class MyTextWatcher implements TextWatcher {
         private View view;
-        private MyTextWatcher(View view){
+
+        private MyTextWatcher(View view) {
             this.view = view;
         }
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
         @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
 
         @Override
         public void afterTextChanged(Editable s) {
-            switch (view.getId()){
+            switch (view.getId()) {
                 case R.id.etProfileName:
                     validateName();
                     break;
@@ -1522,80 +1581,88 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
             }
         }
     }
+
     private void requestFocus(View view) {
         if (view.requestFocus()) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
-    private boolean validateName(){
-        if(tv_name.getText().toString().trim().isEmpty()){
+
+    private boolean validateName() {
+        if (tv_name.getText().toString().trim().isEmpty()) {
 //            textInputName.setError("Please enter name");
 //            requestFocus(tv_name);
             return false;
-        }else {
+        } else {
             textInputName.setErrorEnabled(false);
 
         }
         return true;
     }
-    private boolean validatedob(){
-        if(tv_dateOfBirth.getText().toString().trim().isEmpty()){
+
+    private boolean validatedob() {
+        if (tv_dateOfBirth.getText().toString().trim().isEmpty()) {
 //            textInputDob.setError("Please enter date of birth");
 //            requestFocus(tv_dateOfBirth);
             return false;
-        }else {
+        } else {
             textInputDob.setErrorEnabled(false);
 
         }
         return true;
     }
-    private boolean validateHeight(){
-        if(tv_height.getText().toString().trim().isEmpty()){
+
+    private boolean validateHeight() {
+        if (tv_height.getText().toString().trim().isEmpty()) {
 //            textInputHeight.setError("Please enter height");
 //            requestFocus(tv_height);
             return false;
-        }else {
+        } else {
             textInputHeight.setErrorEnabled(false);
 
         }
         return true;
     }
-    private boolean validateWeight(){
-        if(tv_weight.getText().toString().trim().isEmpty()){
+
+    private boolean validateWeight() {
+        if (tv_weight.getText().toString().trim().isEmpty()) {
 //            textInputWeight.setError("Please enter weight");
 //            requestFocus(tv_weight);
             return false;
-        }else {
+        } else {
             textInputWeight.setErrorEnabled(false);
 
         }
         return true;
     }
-    private boolean validateWaist(){
-        if(tv_waist.getText().toString().trim().isEmpty()){
+
+    private boolean validateWaist() {
+        if (tv_waist.getText().toString().trim().isEmpty()) {
 //            textInputWaist.setError("Please enter waist");
 //            requestFocus(tv_waist);
             return false;
-        }else {
+        } else {
             textInputWaist.setErrorEnabled(false);
 
         }
         return true;
     }
-    private boolean validateGoalWeight(){
-        if(tv_goal_weight.getText().toString().trim().isEmpty()){
+
+    private boolean validateGoalWeight() {
+        if (tv_goal_weight.getText().toString().trim().isEmpty()) {
 //            textInputGoalWeight.setError("Please enter goal weight");
 //            requestFocus(tv_goal_weight);
             return false;
-        }else {
+        } else {
             textInputGoalWeight.setErrorEnabled(false);
 
         }
         return true;
     }
-    public void calculateDefaultValues(double height,double weight){
+
+    public void calculateDefaultValues(double height, double weight) {
         if (!changed && dob != null && height != 0 && weight != 0 && waist != 0) {
-            Log.d("inside","insied calculation");
+            Log.d("inside", "insied calculation");
             double weight_delta;
             final int position;
             double curerentBmi = MyUtils.calculateBmi(height, weight);
@@ -1621,17 +1688,18 @@ public class SignUpDetailActivity extends AppCompatActivity implements View.OnCl
                 @Override
                 public void run() {
                     tv_goal_weight.setText(new DecimalFormat("##.#").format(goal_weight / 1000).toString() + " Kg");
-                    goalTimeValue.setText(monthsValue + " weeks");
-                    monthsSeekbar.setProgress(monthsValue);
+                    tv_goal_time.setText(monthsValue + " weeks");
+                    //monthsSeekbar.setProgress(monthsValue);
                     goal_type.setSelection(position);
                 }
             });
         }
     }
-    public void hideKeyboard(){
+
+    public void hideKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }

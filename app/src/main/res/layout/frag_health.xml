@@ -460,38 +460,60 @@
                     android:text="Goal Time"
                     android:textColor="@color/colorPrimary"
                     android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tvGoalTimeValue"
+                <LinearLayout
+                    android:id="@+id/select_goal_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="8 Weeks"
-                    android:textColor="#474747"
-                    android:textSize="14sp" />
+                    android:layout_alignParentTop="true"
+                    android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/tvMonthsHeading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tvGoalTime"
-                    android:layout_centerHorizontal="true"
-                    android:text="You want to loose "
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/goal_time_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableRight="@drawable/sm1"
+                        android:text="Select goal time"
+                        android:textColor="#474747"
+                        android:textSize="14sp" />
 
-                <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                    android:id="@+id/seekbarMonths"
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_below="@+id/tvMonthsHeading"
-                    app:dsb_allowTrackClickToDrag="true"
-                    app:dsb_indicatorColor="@color/colorPrimary"
-                    app:dsb_indicatorFormatter="%d"
-                    app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
-                    app:dsb_max="52"
-                    app:dsb_min="0"
-                    app:dsb_progressColor="@color/colorPrimary" />
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/edit_svg" />
+                </LinearLayout>
+                <!--<TextView-->
+                    <!--android:id="@+id/tvGoalTimeValue"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:text="8 Weeks"-->
+                    <!--android:textColor="#474747"-->
+                    <!--android:textSize="14sp" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tvMonthsHeading"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_below="@+id/tvGoalTime"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:text="You want to loose "-->
+                    <!--android:textColor="@color/colorPrimary"-->
+                    <!--android:textSize="14sp" />-->
+
+                <!--<org.adw.library.widgets.discreteseekbar.DiscreteSeekBar-->
+                    <!--android:id="@+id/seekbarMonths"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="72dp"-->
+                    <!--android:layout_below="@+id/tvMonthsHeading"-->
+                    <!--app:dsb_allowTrackClickToDrag="true"-->
+                    <!--app:dsb_indicatorColor="@color/colorPrimary"-->
+                    <!--app:dsb_indicatorFormatter="%d"-->
+                    <!--app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"-->
+                    <!--app:dsb_max="52"-->
+                    <!--app:dsb_min="0"-->
+                    <!--app:dsb_progressColor="@color/colorPrimary" />-->
 
             </RelativeLayout>
             </LinearLayout>

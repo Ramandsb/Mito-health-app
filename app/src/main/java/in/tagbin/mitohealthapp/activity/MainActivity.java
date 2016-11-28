@@ -61,7 +61,6 @@ import com.google.android.gms.common.api.Status;
 //import com.newrelic.agent.android.NewRelic;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
-import com.newrelic.agent.android.NewRelic;
 
 import com.uxcam.UXCam;
 
@@ -126,10 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-        NewRelic.withApplicationToken(
 
-                "AAab8a197df22ed375a8ad6f54fcb1c736ae09e5f2"
-        ).start(this.getApplication());
         UXCam.startWithKey("075a1785b64ccb2");
         validateServerClientID();
         try {

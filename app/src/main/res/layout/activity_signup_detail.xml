@@ -294,47 +294,74 @@
                 android:textSize="16sp" />
 
         </android.support.design.widget.TextInputLayout>
-
-        <RelativeLayout
+        <android.support.design.widget.TextInputLayout
             android:id="@+id/profileGoalTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/profileGoalWeight"
-            android:layout_margin="10dp">
+            android:layout_below="@+id/profileGoal"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:theme="@style/TextLabel">
 
-            <TextView
-                android:id="@+id/tvGoaltime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/iv_goal_time"
-                android:drawablePadding="10dp"
-                android:layout_marginLeft="5dp"
-                android:text="Goal Time"
-                android:textColor="#ffffff"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tvGoalTimeValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="8 Weeks"
-                android:textColor="#ffffff"
-                android:textSize="16sp" />
-
-            <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
-                android:id="@+id/seekbarMonths"
+            <EditText
+                android:id="@+id/etProfileGoalTime"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:layout_below="@+id/tvGoaltime"
-                app:dsb_allowTrackClickToDrag="true"
-                app:dsb_indicatorColor="@color/bottombar"
-                app:dsb_indicatorFormatter="%d"
-                app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"
-                app:dsb_max="52"
-                app:dsb_min="0"
-                app:dsb_progressColor="@color/bottombar" />
-        </RelativeLayout>
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/iv_weight"
+                android:drawablePadding="10dp"
+                android:hint="Goal Time"
+                android:focusableInTouchMode="true"
+                android:focusable="false"
+                android:inputType="textPersonName"
+                android:shadowColor="#f2f2f2"
+                android:textColor="#f2f2f2"
+                android:textColorHighlight="#f2f2f2"
+                android:textColorHint="#f2f2f2"
+                android:textColorLink="#f2f2f2"
+                android:textSize="16sp" />
+
+        </android.support.design.widget.TextInputLayout>
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/profileGoalTime"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/profileGoalWeight"-->
+            <!--android:layout_margin="10dp">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvGoaltime"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:drawableLeft="@drawable/iv_goal_time"-->
+                <!--android:drawablePadding="10dp"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:text="Goal Time"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="16sp" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tvGoalTimeValue"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:text="8 Weeks"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="16sp" />-->
+
+            <!--<org.adw.library.widgets.discreteseekbar.DiscreteSeekBar-->
+                <!--android:id="@+id/seekbarMonths"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="72dp"-->
+                <!--android:layout_below="@+id/tvGoaltime"-->
+                <!--app:dsb_allowTrackClickToDrag="true"-->
+                <!--app:dsb_indicatorColor="@color/bottombar"-->
+                <!--app:dsb_indicatorFormatter="%d"-->
+                <!--app:dsb_indicatorTextAppearance="@style/CustomFloaterTextAppearance"-->
+                <!--app:dsb_max="52"-->
+                <!--app:dsb_min="0"-->
+                <!--app:dsb_progressColor="@color/bottombar" />-->
+        <!--</RelativeLayout>-->
 
         <RelativeLayout
             android:id="@+id/profileDietPreference"

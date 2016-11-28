@@ -38,6 +38,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -60,6 +61,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import biz.kasual.materialnumberpicker.MaterialNumberPicker;
 import in.tagbin.mitohealthapp.Interfaces.RequestListener;
 import in.tagbin.mitohealthapp.activity.SettingsActivity;
 import in.tagbin.mitohealthapp.activity.SignUpDetailActivity;
@@ -83,6 +85,7 @@ import in.tagbin.mitohealthapp.model.PrefernceModel;
 import in.tagbin.mitohealthapp.model.SendEditProfileModel;
 import in.tagbin.mitohealthapp.model.SetGoalModel;
 import in.tagbin.mitohealthapp.model.UserDateModel;
+import in.tagbin.mitohealthapp.model.UserGoalTimeModel;
 import in.tagbin.mitohealthapp.model.UserGoalWeightModel;
 import in.tagbin.mitohealthapp.model.UserHeightModel;
 import in.tagbin.mitohealthapp.model.UserModel;
@@ -99,7 +102,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
     private int year, month, day;
     private DatePicker datePicker;
     private Calendar calendar;
-    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,coins,monthsHeading,goalTimeValue;
+    TextView dob_tv, height_tv, weight_tv, waist_tv, goal_weight_tv,profile_name,cusineSize,coins,/*monthsHeading,*/tv_goal_time;
     ImageView profile_pic;
     SharedPreferences login_details;
     static double height = 0.0,weight = 0.0,waist = 0.0,goal_weight = 0.0;
@@ -112,7 +115,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
     PrefManager pref;
     int prefernce_final,coinsFinal = 0,monthsValue = 8,goal_id;
     GifImageView progressBar1;
-    DiscreteSeekBar monthsSeekbar;
+    //DiscreteSeekBar monthsSeekbar;
     Spinner diet_preference,goal_type;
     LinearLayout editName,cusines;
     View female_view;
@@ -154,6 +157,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         editName.setOnClickListener(this);
         progressBar1 = (GifImageView) Fragview.findViewById(R.id.progressBar1);
         View select_goal_weight = Fragview.findViewById(R.id.select_goal_weight);
+        View select_goal_time = Fragview.findViewById(R.id.select_goal_time);
         male_view = Fragview.findViewById(R.id.male_view);
         female_view = Fragview.findViewById(R.id.female_view);
         dob_tv = (TextView) Fragview.findViewById(R.id.dob);
@@ -169,9 +173,9 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         profile_pic = (ImageView) Fragview.findViewById(R.id.profile_pic);
         profile_name = (TextView) Fragview.findViewById(R.id.profile_name);
         //months = (TextView) Fragview.findViewById(R.id.tvMonths);
-        monthsHeading = (TextView) Fragview.findViewById(R.id.tvMonthsHeading);
-        goalTimeValue = (TextView) Fragview.findViewById(R.id.tvGoalTimeValue);
-        monthsSeekbar = (DiscreteSeekBar) Fragview.findViewById(R.id.seekbarMonths);
+        //monthsHeading = (TextView) Fragview.findViewById(R.id.tvMonthsHeading);
+        tv_goal_time = (TextView) Fragview.findViewById(R.id.goal_time_tv);
+        //monthsSeekbar = (DiscreteSeekBar) Fragview.findViewById(R.id.seekbarMonths);
         goal_type = (Spinner) Fragview.findViewById(R.id.spinnerGoal);
         //mygoals.setOnClickListener(this);
         login_details = getActivity().getSharedPreferences(MainActivity.LOGIN_DETAILS, Context.MODE_PRIVATE);
@@ -184,7 +188,69 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         day = calendar.get(Calendar.DAY_OF_MONTH);
         //customDialog();
 
+        if (pref.getCurrentPreferenceAsObject() != null){
+            final List<PrefernceModel> diet_options = pref.getCurrentPreferenceAsObject();
+            final List<String> diet = new ArrayList<String>();
+            for (int i= 0;i<diet_options.size();i++){
+                diet.add(diet_options.get(i).getRecipe_type());
+            }
+            adapter1 = new ArrayAdapter<String>(getActivity(),R.layout.item_spinner, diet);
+            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            diet_preference.setAdapter(adapter1);
+            diet_preference.setSelection(0,false);
+            diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d("item selected", diet.get(i));
+                    //unit[0] = diet_options.get(i);
+                    for (int y= 0; y<diet_options.size();y++){
+                        if (diet.get(i).equals(diet_options.get(y).getRecipe_type())){
+                            prefernce_final = diet_options.get(y).getId();
+                        }
+                    }
+                    Controller.setPreferences(getContext(),prefernce_final,user_id,mPreferenceListener);
+                }
 
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }else{
+            Controller.getDietPrefernce(getContext(),mDietListener);
+        }
+        if (pref.getCurrentGoalAsObject() != null){
+            final List<SetGoalModel> diet_options = pref.getCurrentGoalAsObject();
+            final List<String> diet = new ArrayList<String>();
+            for (int i= 0;i<diet_options.size();i++){
+                diet.add(diet_options.get(i).getGoal());
+            }
+            adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner, diet);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            goal_type.setAdapter(adapter);
+            goal_type.setSelection(0,false);
+            goal_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    Log.d("item selected", diet.get(i));
+                    //unit[0] = diet_options.get(i);
+                    for (int y= 0; y<diet_options.size();y++){
+
+                        if (diet.get(i).equals(diet_options.get(y).getGoal())){
+                            goal_id = diet_options.get(y).getId();
+                        }
+                    }
+                    Controller.setGoal(getContext(),goal_id,user_id,mPreferenceListener);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+        }else {
+            Controller.getGoals(getContext(), mGoalsListener);
+        }
             progressBar.setVisibility(View.VISIBLE);
             Controller.getUserDetails(getContext(), user_id, mUserDetailsListener);
 
@@ -255,69 +321,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 saveGender.commit();
             }
         });
-        if (pref.getCurrentPreferenceAsObject() != null){
-            final List<PrefernceModel> diet_options = pref.getCurrentPreferenceAsObject();
-            final List<String> diet = new ArrayList<String>();
-            for (int i= 0;i<diet_options.size();i++){
-                diet.add(diet_options.get(i).getRecipe_type());
-            }
-            adapter1 = new ArrayAdapter<String>(getActivity(),R.layout.item_spinner, diet);
-            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            diet_preference.setAdapter(adapter1);
-            diet_preference.setSelection(0,false);
-            diet_preference.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    Log.d("item selected", diet.get(i));
-                    //unit[0] = diet_options.get(i);
-                    for (int y= 0; y<diet_options.size();y++){
-                        if (diet.get(i).equals(diet_options.get(y).getRecipe_type())){
-                            prefernce_final = diet_options.get(y).getId();
-                        }
-                    }
-                    Controller.setPreferences(getContext(),prefernce_final,user_id,mPreferenceListener);
-                }
 
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-        }else{
-            Controller.getDietPrefernce(getContext(),mDietListener);
-        }
-        if (pref.getCurrentGoalAsObject() != null){
-            final List<SetGoalModel> diet_options = pref.getCurrentGoalAsObject();
-            final List<String> diet = new ArrayList<String>();
-            for (int i= 0;i<diet_options.size();i++){
-                diet.add(diet_options.get(i).getGoal());
-            }
-            adapter = new ArrayAdapter<String>(getContext(),R.layout.item_spinner, diet);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            goal_type.setAdapter(adapter);
-            goal_type.setSelection(0,false);
-            goal_type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    Log.d("item selected", diet.get(i));
-                    //unit[0] = diet_options.get(i);
-                    for (int y= 0; y<diet_options.size();y++){
-
-                        if (diet.get(i).equals(diet_options.get(y).getGoal())){
-                            goal_id = diet_options.get(y).getId();
-                        }
-                    }
-                    Controller.setGoal(getContext(),goal_id,user_id,mPreferenceListener);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-        }else {
-            Controller.getGoals(getContext(), mGoalsListener);
-        }
         assert select_date != null;
         select_date.setOnClickListener(new View.OnClickListener() {
             @TargetApi(Build.VERSION_CODES.N)
@@ -340,6 +344,13 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 showGoal_WeightDialog();
             }
         });
+        select_goal_time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                WheelDialog("weight","select");
+                showGoalTimeDialog();
+            }
+        });
         select_height.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -354,28 +365,28 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
                 showWaistDialog();
             }
         });
-        monthsSeekbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
-            @Override
-            public int transform(int value) {
-                //settingsModel.setMaximum_distance(value);
-                if (goal_weight != 0 && weight != 0){
-                    double goal = goal_weight/1000;
-                    double weightFinal = weight/1000;
-                    monthsHeading.setVisibility(View.VISIBLE);
-                    if (weightFinal - goal <0 ){
-                        monthsHeading.setText("Gaining "+new DecimalFormat("##.#").format((-(weightFinal-goal)/value)).toString()+" kgs/week");
-                    }else{
-                        monthsHeading.setText("Loosing "+new DecimalFormat("##.#").format(((weightFinal-goal)/value)).toString()+" kgs/week");
-                    }
-
-                }else{
-                    monthsHeading.setVisibility(View.GONE);
-                }
-                monthsValue = value;
-                goalTimeValue.setText(monthsValue+ " weeks");
-                return value;
-            }
-        });
+//        monthsSeekbar.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+//            @Override
+//            public int transform(int value) {
+//                //settingsModel.setMaximum_distance(value);
+//                if (goal_weight != 0 && weight != 0){
+//                    double goal = goal_weight/1000;
+//                    double weightFinal = weight/1000;
+//                    monthsHeading.setVisibility(View.VISIBLE);
+//                    if (weightFinal - goal <0 ){
+//                        monthsHeading.setText("Gaining "+new DecimalFormat("##.#").format((-(weightFinal-goal)/value)).toString()+" kgs/week");
+//                    }else{
+//                        monthsHeading.setText("Loosing "+new DecimalFormat("##.#").format(((weightFinal-goal)/value)).toString()+" kgs/week");
+//                    }
+//
+//                }else{
+//                    monthsHeading.setVisibility(View.GONE);
+//                }
+//                monthsValue = value;
+//                goalTimeValue.setText(monthsValue+ " weeks");
+//                return value;
+//            }
+//        });
         return Fragview;
     }
 
@@ -917,7 +928,40 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         });
         dialog.show();
     }
-
+    public void showGoalTimeDialog() {
+        final NumberPicker picker;
+        MaterialNumberPicker.Builder numberPickerBuilder = new MaterialNumberPicker.Builder(getContext());
+        numberPickerBuilder
+                .minValue(1)
+                .maxValue(52)
+                .defaultValue(monthsValue)
+                .separatorColor(ContextCompat.getColor(getContext(), R.color.colorAccent))
+                .textColor(ContextCompat.getColor(getContext(), R.color.colorPrimary))
+                .textSize(25);
+        picker = numberPickerBuilder.build();
+        final android.app.AlertDialog.Builder alertDialog1 = new android.app.AlertDialog.Builder(getContext(), R.style.AppCompatAlertDialogStyle);
+        alertDialog1.setTitle("Set Goal Time");
+        alertDialog1.setMessage("Goal time in weeks");
+        alertDialog1.setView(picker);
+        alertDialog1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+//                mProgressBar.setVisibility(View.VISIBLE);
+//                Controller.deleteLogFood(mContext, mModel.getId(), mDeleteListener);
+                UserGoalTimeModel userGoalTimeModel = new UserGoalTimeModel();
+                monthsValue = picker.getValue();
+                userGoalTimeModel.setGoal_time(monthsValue*7);
+                Controller.setUserGoalTime(getContext(),userGoalTimeModel,user_id,mSetUserDetailsListener);
+                tv_goal_time.setText(monthsValue+" weeks");
+                dialog.dismiss();
+            }
+        });
+        alertDialog1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog1.show();
+    }
     public void showGoal_WeightDialog() {
 
         final Dialog dialog = new Dialog(getActivity());
@@ -1202,21 +1246,25 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         goal_weight = userModel.getProfile().getGoal_weight();
         waist = userModel.getProfile().getWaist();
         monthsValue = userModel.getProfile().getGoal_time()/7;
-        goalTimeValue.setText(monthsValue+ " weeks");
-        monthsSeekbar.setProgress(monthsValue);
-        if (goal_weight != 0 && weight != 0){
-            double goal = goal_weight/1000;
-            double weightFinal = weight/1000;
-            monthsHeading.setVisibility(View.VISIBLE);
-            if (weightFinal - goal <0 ){
-                monthsHeading.setText("Gaining "+new DecimalFormat("##.#").format((-(weightFinal-goal)/monthsValue)).toString()+" kgs/week");
-            }else{
-                monthsHeading.setText("Loosing "+new DecimalFormat("##.#").format(((weightFinal-goal)/monthsValue)).toString()+" kgs/week");
-            }
-
+        if(monthsValue != 0){
+            tv_goal_time.setText(monthsValue+ " weeks");
         }else{
-            monthsHeading.setVisibility(View.GONE);
+            tv_goal_time.setText("Select goal time");
         }
+//        monthsSeekbar.setProgress(monthsValue);
+//        if (goal_weight != 0 && weight != 0){
+//            double goal = goal_weight/1000;
+//            double weightFinal = weight/1000;
+//            monthsHeading.setVisibility(View.VISIBLE);
+//            if (weightFinal - goal <0 ){
+//                monthsHeading.setText("Gaining "+new DecimalFormat("##.#").format((-(weightFinal-goal)/monthsValue)).toString()+" kgs/week");
+//            }else{
+//                monthsHeading.setText("Loosing "+new DecimalFormat("##.#").format(((weightFinal-goal)/monthsValue)).toString()+" kgs/week");
+//            }
+//
+//        }else{
+//            monthsHeading.setVisibility(View.GONE);
+//        }
         if (userModel.getUser().getFirst_name() != null) {
             if (userModel.getUser().getLast_name() != null) {
                 profile_name.setText(userModel.getUser().getFirst_name() + " " + userModel.getUser().getLast_name());
@@ -1306,6 +1354,7 @@ public class HealthFragment extends Fragment implements PicModeSelectDialogFragm
         }
         if (pref.getCurrentPreferenceAsObject() != null) {
             if (userModel.getProfile().getPreferences() != null) {
+
                 final int position = adapter1.getPosition(userModel.getProfile().getPreferences().getRecipe_type());
                 diet_preference.post(new Runnable() {
                     @Override

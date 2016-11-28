@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -39,6 +40,7 @@ import in.tagbin.mitohealthapp.model.ErrorResponseModel;
 import in.tagbin.mitohealthapp.model.SetConnectProfileModel;
 import in.tagbin.mitohealthapp.model.UserChangePasswordModel;
 import in.tagbin.mitohealthapp.model.UserModel;
+import in.tagbin.mitohealthapp.model.UserNumberModel;
 
 
 /**
@@ -244,11 +246,33 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
         if(phoneNumber.getText().toString().trim().isEmpty() && !isvalidMobileNumber(phoneNumber.getText().toString())){
             textInputPhoneNumber.setError("Please enter valid phone number");
             requestFocus(phoneNumber);
+            phoneNumber.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            relativeOtp.setVisibility(View.GONE);
             return false;
         }else {
             if (phoneNumber.getText().toString().length() == 10){
                 phoneNumber.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.food_accept,0);
             }
+            phoneNumber.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    final int DRAWABLE_LEFT = 0;
+                    final int DRAWABLE_TOP = 1;
+                    final int DRAWABLE_RIGHT = 2;
+                    final int DRAWABLE_BOTTOM = 3;
+
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        if (event.getRawX() >= (phoneNumber.getRight() - phoneNumber.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                            UserNumberModel userNumberModel = new UserNumberModel();
+                            userNumberModel.setPhone_number(phoneNumber.getText().toString());
+                            Controller.setUserPhoneNumber(getContext(),userNumberModel,user_id,mPhoneListener);
+                            relativeOtp.setVisibility(View.VISIBLE);
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            });
             textInputPhoneNumber.setErrorEnabled(false);
 
         }
@@ -301,6 +325,66 @@ public class AccountsFragment extends Fragment implements View.OnClickListener {
                     confirmPassowrd.setText("");
                     textInputConfirmPassword.setFocusable(false);
                     textInputNewPassword.setFocusable(false);
+                }
+            });
+        }
+
+        @Override
+        public void onRequestError(int errorCode, String message) {
+            if (getActivity() == null)
+                return;
+            if (errorCode >= 400 && errorCode < 500) {
+                final ErrorResponseModel errorResponseModel = JsonUtils.objectify(message, ErrorResponseModel.class);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), errorResponseModel.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+            }else{
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Internet connection error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        }
+    };
+    RequestListener mPhoneListener = new RequestListener() {
+        @Override
+        public void onRequestStarted() {
+
+        }
+
+        @Override
+        public void onRequestCompleted(Object responseObject) throws JSONException, ParseException {
+            final UserModel userModel = JsonUtils.objectify(responseObject.toString(), UserModel.class);
+            pref.setKeyUserDetails(userModel);
+            if (getActivity() == null)
+                return;
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getContext(),"OTP has been send on your entered number",Toast.LENGTH_LONG).show();
+                    phoneNumber.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            final int DRAWABLE_LEFT = 0;
+                            final int DRAWABLE_TOP = 1;
+                            final int DRAWABLE_RIGHT = 2;
+                            final int DRAWABLE_BOTTOM = 3;
+
+                            if (event.getAction() == MotionEvent.ACTION_UP) {
+                                if (event.getRawX() >= (phoneNumber.getRight() - phoneNumber.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+                                    return false;
+                                }
+                            }
+                            return false;
+                        }
+                    });
                 }
             });
         }

@@ -60,9 +60,11 @@ import in.tagbin.mitohealthapp.model.SocialModel;
 import in.tagbin.mitohealthapp.model.UserChangePasswordModel;
 import in.tagbin.mitohealthapp.model.UserDateModel;
 import in.tagbin.mitohealthapp.model.UserGenderModel;
+import in.tagbin.mitohealthapp.model.UserGoalTimeModel;
 import in.tagbin.mitohealthapp.model.UserGoalWeightModel;
 import in.tagbin.mitohealthapp.model.UserHeightModel;
 import in.tagbin.mitohealthapp.model.UserNameModel;
+import in.tagbin.mitohealthapp.model.UserNumberModel;
 import in.tagbin.mitohealthapp.model.UserWaistModel;
 import in.tagbin.mitohealthapp.model.UserWeightModel;
 import in.tagbin.mitohealthapp.model.WaterLogModel;
@@ -109,10 +111,6 @@ public class Controller {
         StringBuffer buffer = new StringBuffer(url);
         buffer.replace(0, UrlResolver.BASE_URL.length() - 1, "response--");
         final String url_recieved = buffer.toString();
-        // end
-
-        Log.d("Post Json",JsonUtils.jsonify(newRequest));
-
         Request<String> tempRequest = new JsonRequest<String>(
                 request_method_type, url, JsonUtils.jsonify(newRequest),
                 new Response.Listener<String>() {
@@ -400,6 +398,26 @@ public class Controller {
     }
     public static void setUserGoalWeight(Context context, UserGoalWeightModel userDateModel, String user_id,
                                          RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserPhoneNumber(Context context, UserNumberModel userDateModel, String user_id,
+                                          RequestListener requestListener) {
+        String url = UrlResolver
+                .withAppendedPath(UrlResolver.EndPoints.USERS);
+        url += user_id+"/";
+        Request<String> volleyTypeRequest = bundleToVolleyRequestNoCaching(
+                context, Request.Method.PUT, userDateModel, url, requestListener);
+        volleyTypeRequest.setShouldCache(false);
+        dispatchToQueue(volleyTypeRequest, context);
+    }
+    public static void setUserGoalTime(Context context, UserGoalTimeModel userDateModel, String user_id,
+                                       RequestListener requestListener) {
         String url = UrlResolver
                 .withAppendedPath(UrlResolver.EndPoints.USERS);
         url += user_id+"/";
